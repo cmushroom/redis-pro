@@ -6,26 +6,31 @@
       "size" : "16x16"
     },
     {
+      "filename" : "redis@32-1.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "16x16"
     },
     {
+      "filename" : "redis@32.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "32x32"
     },
     {
+      "filename" : "redis@64.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "32x32"
     },
     {
+      "filename" : "redis@128.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "128x128"
     },
     {
+      "filename" : "redis@256.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "128x128"

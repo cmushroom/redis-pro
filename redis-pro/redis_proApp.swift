@@ -9,9 +9,16 @@ import SwiftUI
 
 @main
 struct redis_proApp: App {
+    @StateObject private var modelData = ModelData()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            Login()
+//            ContentView()
+//                .environmentObject(modelData)
+        }
+        .commands {
+            LandmarkCommands()
         }
     }
 }

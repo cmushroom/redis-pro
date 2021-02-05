@@ -3,17 +3,49 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		430A09D025BE66E600B60DFC /* LandmarkCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430A09CF25BE66E600B60DFC /* LandmarkCommands.swift */; };
+		430A09D325BEA91700B60DFC /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430A09D225BEA91700B60DFC /* Login.swift */; };
+		430A09D625BEA98300B60DFC /* RedisInstanceList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430A09D525BEA98300B60DFC /* RedisInstanceList.swift */; };
+		430A09D925BEA9A700B60DFC /* RedisInstanceRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430A09D825BEA9A700B60DFC /* RedisInstanceRow.swift */; };
+		430A09DC25BEAD2700B60DFC /* RedisInsanceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430A09DB25BEAD2700B60DFC /* RedisInsanceModel.swift */; };
+		430A09E225C1559400B60DFC /* FormLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430A09E125C1559400B60DFC /* FormLabel.swift */; };
+		430A09E625C155F800B60DFC /* FormItemText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430A09E525C155F800B60DFC /* FormItemText.swift */; };
+		431E5FC825C17A8000058C3C /* RediStack in Frameworks */ = {isa = PBXBuildFile; productRef = 431E5FC725C17A8000058C3C /* RediStack */; };
+		431E5FCA25C17A8000058C3C /* RedisTypes in Frameworks */ = {isa = PBXBuildFile; productRef = 431E5FC925C17A8000058C3C /* RedisTypes */; };
 		4320AAF425B6740900A8E214 /* redis_proApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4320AAF325B6740900A8E214 /* redis_proApp.swift */; };
 		4320AAF625B6740900A8E214 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4320AAF525B6740900A8E214 /* ContentView.swift */; };
 		4320AAF825B6740A00A8E214 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4320AAF725B6740A00A8E214 /* Assets.xcassets */; };
 		4320AAFB25B6740A00A8E214 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4320AAFA25B6740A00A8E214 /* Preview Assets.xcassets */; };
+		4320AB0525B67A1200A8E214 /* CircleImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4320AB0425B67A1200A8E214 /* CircleImage.swift */; };
+		4320AB0825B67BB600A8E214 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4320AB0725B67BB600A8E214 /* MapView.swift */; };
+		4320AB0B25B67D0100A8E214 /* landmarkData.json in Resources */ = {isa = PBXBuildFile; fileRef = 4320AB0A25B67D0100A8E214 /* landmarkData.json */; };
+		4320AB0E25B67D1C00A8E214 /* Landmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4320AB0D25B67D1C00A8E214 /* Landmark.swift */; };
+		4320AB1125B67DC800A8E214 /* ModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4320AB1025B67DC800A8E214 /* ModelData.swift */; };
+		4320AB1B25B67E6800A8E214 /* LandmarkRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4320AB1A25B67E6800A8E214 /* LandmarkRow.swift */; };
+		4320AB1F25B6802E00A8E214 /* LandmarkList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4320AB1E25B6802E00A8E214 /* LandmarkList.swift */; };
+		4320AB2225B681DA00A8E214 /* LandmarkDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4320AB2125B681DA00A8E214 /* LandmarkDetail.swift */; };
+		4373C4FE25C2DEC8002B700E /* MButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4373C4FD25C2DEC8002B700E /* MButton.swift */; };
+		4373C50125C2E75B002B700E /* BizError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4373C50025C2E75B002B700E /* BizError.swift */; };
+		4373C50525C3F0B6002B700E /* UserDefaultsKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4373C50425C3F0B6002B700E /* UserDefaultsKeys.swift */; };
+		4373C50925C3F218002B700E /* RedisModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4373C50825C3F218002B700E /* RedisModel.swift */; };
+		4373C50C25C3FC81002B700E /* LoginForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4373C50B25C3FC81002B700E /* LoginForm.swift */; };
+		43DFEF3725C29288006EF535 /* FormItemInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DFEF3625C29288006EF535 /* FormItemInt.swift */; };
+		43DFEF3B25C2A496006EF535 /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = 43DFEF3A25C2A496006EF535 /* SwiftyJSON */; };
+		43DFEF3F25C2AD5C006EF535 /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 43DFEF3E25C2AD5C006EF535 /* Logging */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		430A09CF25BE66E600B60DFC /* LandmarkCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandmarkCommands.swift; sourceTree = "<group>"; };
+		430A09D225BEA91700B60DFC /* Login.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
+		430A09D525BEA98300B60DFC /* RedisInstanceList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisInstanceList.swift; sourceTree = "<group>"; };
+		430A09D825BEA9A700B60DFC /* RedisInstanceRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisInstanceRow.swift; sourceTree = "<group>"; };
+		430A09DB25BEAD2700B60DFC /* RedisInsanceModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisInsanceModel.swift; sourceTree = "<group>"; };
+		430A09E125C1559400B60DFC /* FormLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormLabel.swift; sourceTree = "<group>"; };
+		430A09E525C155F800B60DFC /* FormItemText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormItemText.swift; sourceTree = "<group>"; };
 		4320AAF025B6740900A8E214 /* redis-pro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "redis-pro.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4320AAF325B6740900A8E214 /* redis_proApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = redis_proApp.swift; sourceTree = "<group>"; };
 		4320AAF525B6740900A8E214 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -21,6 +53,20 @@
 		4320AAFA25B6740A00A8E214 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		4320AAFC25B6740A00A8E214 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4320AAFD25B6740A00A8E214 /* redis_pro.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = redis_pro.entitlements; sourceTree = "<group>"; };
+		4320AB0425B67A1200A8E214 /* CircleImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleImage.swift; sourceTree = "<group>"; };
+		4320AB0725B67BB600A8E214 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
+		4320AB0A25B67D0100A8E214 /* landmarkData.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = landmarkData.json; sourceTree = "<group>"; };
+		4320AB0D25B67D1C00A8E214 /* Landmark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Landmark.swift; sourceTree = "<group>"; };
+		4320AB1025B67DC800A8E214 /* ModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelData.swift; sourceTree = "<group>"; };
+		4320AB1A25B67E6800A8E214 /* LandmarkRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandmarkRow.swift; sourceTree = "<group>"; };
+		4320AB1E25B6802E00A8E214 /* LandmarkList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandmarkList.swift; sourceTree = "<group>"; };
+		4320AB2125B681DA00A8E214 /* LandmarkDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandmarkDetail.swift; sourceTree = "<group>"; };
+		4373C4FD25C2DEC8002B700E /* MButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MButton.swift; sourceTree = "<group>"; };
+		4373C50025C2E75B002B700E /* BizError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BizError.swift; sourceTree = "<group>"; };
+		4373C50425C3F0B6002B700E /* UserDefaultsKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsKeys.swift; sourceTree = "<group>"; };
+		4373C50825C3F218002B700E /* RedisModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisModel.swift; sourceTree = "<group>"; };
+		4373C50B25C3FC81002B700E /* LoginForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginForm.swift; sourceTree = "<group>"; };
+		43DFEF3625C29288006EF535 /* FormItemInt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormItemInt.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -28,12 +74,27 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				43DFEF3B25C2A496006EF535 /* SwiftyJSON in Frameworks */,
+				431E5FCA25C17A8000058C3C /* RedisTypes in Frameworks */,
+				43DFEF3F25C2AD5C006EF535 /* Logging in Frameworks */,
+				431E5FC825C17A8000058C3C /* RediStack in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		430A09E025C1557900B60DFC /* components */ = {
+			isa = PBXGroup;
+			children = (
+				430A09E125C1559400B60DFC /* FormLabel.swift */,
+				430A09E525C155F800B60DFC /* FormItemText.swift */,
+				43DFEF3625C29288006EF535 /* FormItemInt.swift */,
+				4373C4FD25C2DEC8002B700E /* MButton.swift */,
+			);
+			path = components;
+			sourceTree = "<group>";
+		};
 		4320AAE725B6740900A8E214 = {
 			isa = PBXGroup;
 			children = (
@@ -53,12 +114,15 @@
 		4320AAF225B6740900A8E214 /* redis-pro */ = {
 			isa = PBXGroup;
 			children = (
+				4320AB1725B67E2C00A8E214 /* Model */,
+				4320AB1625B67E2400A8E214 /* Views */,
+				4320AB1525B67E1A00A8E214 /* Resources */,
 				4320AAF325B6740900A8E214 /* redis_proApp.swift */,
-				4320AAF525B6740900A8E214 /* ContentView.swift */,
 				4320AAF725B6740A00A8E214 /* Assets.xcassets */,
 				4320AAFC25B6740A00A8E214 /* Info.plist */,
 				4320AAFD25B6740A00A8E214 /* redis_pro.entitlements */,
 				4320AAF925B6740A00A8E214 /* Preview Content */,
+				430A09CF25BE66E600B60DFC /* LandmarkCommands.swift */,
 			);
 			path = "redis-pro";
 			sourceTree = "<group>";
@@ -69,6 +133,45 @@
 				4320AAFA25B6740A00A8E214 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		4320AB1525B67E1A00A8E214 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				4320AB0A25B67D0100A8E214 /* landmarkData.json */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		4320AB1625B67E2400A8E214 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				430A09E025C1557900B60DFC /* components */,
+				4320AAF525B6740900A8E214 /* ContentView.swift */,
+				4320AB0425B67A1200A8E214 /* CircleImage.swift */,
+				4320AB0725B67BB600A8E214 /* MapView.swift */,
+				4320AB1A25B67E6800A8E214 /* LandmarkRow.swift */,
+				4320AB1E25B6802E00A8E214 /* LandmarkList.swift */,
+				4320AB2125B681DA00A8E214 /* LandmarkDetail.swift */,
+				430A09D225BEA91700B60DFC /* Login.swift */,
+				430A09D525BEA98300B60DFC /* RedisInstanceList.swift */,
+				430A09D825BEA9A700B60DFC /* RedisInstanceRow.swift */,
+				4373C50B25C3FC81002B700E /* LoginForm.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		4320AB1725B67E2C00A8E214 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				4320AB0D25B67D1C00A8E214 /* Landmark.swift */,
+				4320AB1025B67DC800A8E214 /* ModelData.swift */,
+				430A09DB25BEAD2700B60DFC /* RedisInsanceModel.swift */,
+				4373C50025C2E75B002B700E /* BizError.swift */,
+				4373C50425C3F0B6002B700E /* UserDefaultsKeys.swift */,
+				4373C50825C3F218002B700E /* RedisModel.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -87,6 +190,12 @@
 			dependencies = (
 			);
 			name = "redis-pro";
+			packageProductDependencies = (
+				431E5FC725C17A8000058C3C /* RediStack */,
+				431E5FC925C17A8000058C3C /* RedisTypes */,
+				43DFEF3A25C2A496006EF535 /* SwiftyJSON */,
+				43DFEF3E25C2AD5C006EF535 /* Logging */,
+			);
 			productName = "redis-pro";
 			productReference = 4320AAF025B6740900A8E214 /* redis-pro.app */;
 			productType = "com.apple.product-type.application";
@@ -98,7 +207,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1230;
-				LastUpgradeCheck = 1230;
+				LastUpgradeCheck = 1240;
 				TargetAttributes = {
 					4320AAEF25B6740900A8E214 = {
 						CreatedOnToolsVersion = 12.3;
@@ -106,7 +215,7 @@
 				};
 			};
 			buildConfigurationList = 4320AAEB25B6740900A8E214 /* Build configuration list for PBXProject "redis-pro" */;
-			compatibilityVersion = "Xcode 9.3";
+			compatibilityVersion = "Xcode 12.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -114,6 +223,11 @@
 				Base,
 			);
 			mainGroup = 4320AAE725B6740900A8E214;
+			packageReferences = (
+				431E5FC625C17A8000058C3C /* XCRemoteSwiftPackageReference "RediStack" */,
+				43DFEF3925C2A496006EF535 /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
+				43DFEF3D25C2AD5C006EF535 /* XCRemoteSwiftPackageReference "swift-log" */,
+			);
 			productRefGroup = 4320AAF125B6740900A8E214 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -130,6 +244,7 @@
 			files = (
 				4320AAFB25B6740A00A8E214 /* Preview Assets.xcassets in Resources */,
 				4320AAF825B6740A00A8E214 /* Assets.xcassets in Resources */,
+				4320AB0B25B67D0100A8E214 /* landmarkData.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -140,8 +255,28 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4373C50525C3F0B6002B700E /* UserDefaultsKeys.swift in Sources */,
 				4320AAF625B6740900A8E214 /* ContentView.swift in Sources */,
+				4320AB0825B67BB600A8E214 /* MapView.swift in Sources */,
+				430A09D025BE66E600B60DFC /* LandmarkCommands.swift in Sources */,
+				430A09D925BEA9A700B60DFC /* RedisInstanceRow.swift in Sources */,
+				430A09D325BEA91700B60DFC /* Login.swift in Sources */,
 				4320AAF425B6740900A8E214 /* redis_proApp.swift in Sources */,
+				430A09DC25BEAD2700B60DFC /* RedisInsanceModel.swift in Sources */,
+				4320AB1F25B6802E00A8E214 /* LandmarkList.swift in Sources */,
+				4373C50C25C3FC81002B700E /* LoginForm.swift in Sources */,
+				430A09D625BEA98300B60DFC /* RedisInstanceList.swift in Sources */,
+				43DFEF3725C29288006EF535 /* FormItemInt.swift in Sources */,
+				4320AB2225B681DA00A8E214 /* LandmarkDetail.swift in Sources */,
+				4320AB0525B67A1200A8E214 /* CircleImage.swift in Sources */,
+				4320AB0E25B67D1C00A8E214 /* Landmark.swift in Sources */,
+				4320AB1B25B67E6800A8E214 /* LandmarkRow.swift in Sources */,
+				430A09E225C1559400B60DFC /* FormLabel.swift in Sources */,
+				4373C50925C3F218002B700E /* RedisModel.swift in Sources */,
+				4373C50125C2E75B002B700E /* BizError.swift in Sources */,
+				4320AB1125B67DC800A8E214 /* ModelData.swift in Sources */,
+				4373C4FE25C2DEC8002B700E /* MButton.swift in Sources */,
+				430A09E625C155F800B60DFC /* FormItemText.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -269,6 +404,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "redis-pro/redis_pro.entitlements";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"redis-pro/Preview Content\"";
@@ -291,6 +427,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "redis-pro/redis_pro.entitlements";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"redis-pro/Preview Content\"";
@@ -329,6 +466,56 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		431E5FC625C17A8000058C3C /* XCRemoteSwiftPackageReference "RediStack" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://gitlab.com/mordil/RediStack.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.0;
+			};
+		};
+		43DFEF3925C2A496006EF535 /* XCRemoteSwiftPackageReference "SwiftyJSON" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwiftyJSON/SwiftyJSON.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
+		43DFEF3D25C2AD5C006EF535 /* XCRemoteSwiftPackageReference "swift-log" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-log.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.4.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		431E5FC725C17A8000058C3C /* RediStack */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 431E5FC625C17A8000058C3C /* XCRemoteSwiftPackageReference "RediStack" */;
+			productName = RediStack;
+		};
+		431E5FC925C17A8000058C3C /* RedisTypes */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 431E5FC625C17A8000058C3C /* XCRemoteSwiftPackageReference "RediStack" */;
+			productName = RedisTypes;
+		};
+		43DFEF3A25C2A496006EF535 /* SwiftyJSON */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 43DFEF3925C2A496006EF535 /* XCRemoteSwiftPackageReference "SwiftyJSON" */;
+			productName = SwiftyJSON;
+		};
+		43DFEF3E25C2AD5C006EF535 /* Logging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 43DFEF3D25C2AD5C006EF535 /* XCRemoteSwiftPackageReference "swift-log" */;
+			productName = Logging;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 4320AAE825B6740900A8E214 /* Project object */;
 }

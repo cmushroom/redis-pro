@@ -118,7 +118,7 @@ struct LoginForm: View {
                 }
                 .padding(.horizontal, 8.0)
                 .tabItem {
-                    Label("Menu", systemImage: "list.dash")
+                    Label("TCP/IP", systemImage: "bolt.fill")
                 }
                 
                 Text("Another Tab")
@@ -133,7 +133,7 @@ struct LoginForm: View {
                     }
             }
             .padding(20.0)
-            .frame(width: 500.0, height: 400.0)
+            .frame(width: 500.0, height: 400)
         }
         .padding(20.0)
         .border(Color.blue, width: /*@START_MENU_TOKEN@*/1/*@END_MENU_TOKEN@*/)

@@ -23,16 +23,26 @@ struct RedisInstanceList: View {
     }
     
     var body: some View {
-        NavigationView {
+        HSplitView {
             List(selection: $selectedRedisModel) {
                 ForEach(filteredRedisModel) { redisModel in
                     RedisInstanceRow(redisModel: redisModel)
                         .tag(redisModel.id)
                 }
             }
-            .frame(minWidth: 120)
+            .listStyle(SidebarListStyle())
+            .frame(minWidth:150)
             
-            LoginForm()
+            VStack{
+                Spacer()
+                HStack {
+                    Spacer()
+                    LoginForm()
+                    Spacer()
+                }
+                Spacer()
+            }
+            .frame(minWidth: 800, maxWidth: .infinity, minHeight: 600, maxHeight: .infinity)
         }
     }
 }

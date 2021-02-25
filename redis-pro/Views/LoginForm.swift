@@ -30,7 +30,7 @@ struct LoginForm: View {
     
     func saveRedisInstanceAction()  throws -> Void {
         
-        logger.info("save redis to favorite id: \(redisModel.id), name: \(redisModel.name), host: \(redisModel.host), port: \(redisModel.port), password: \(redisModel.password)")
+        logger.info("save redis to favorite, id: \(redisModel.id), name: \(redisModel.name), host: \(redisModel.host), port: \(redisModel.port), password: \(redisModel.password)")
         
         let defaults = UserDefaults.standard
         var savedRedisList:[RedisModel] = defaults.object(forKey: UserDefaulsKeys.RedisFavoriteListKey.rawValue) as? [RedisModel] ?? [RedisModel]()
@@ -49,9 +49,20 @@ struct LoginForm: View {
             }
         }
         
+        print("save list \(savedRedisList.capacity)")
         
         
-        defaults.set(savedRedisList, forKey: UserDefaulsKeys.RedisFavoriteListKey.rawValue)
+        let json = JSON(["1", "2"])
+        //convert the JSON to a raw String
+        if let rawString = json.rawString() {
+          //Do something you want
+            print("json is \(rawString)")
+        } else {
+            print("json.rawString is nil")
+        }
+        
+//        defaults.set(encodedString, forKey: UserDefaulsKeys.RedisFavoriteListKey.rawValue)
+        logger.info("save redis to favorite complete")
     }
     
     func signIn() throws -> Void {
@@ -132,10 +143,10 @@ struct LoginForm: View {
                         Text("Third")
                     }
             }
-            .padding(20.0)
-            .frame(width: 500.0, height: 400)
+            .padding(10.0)
+            .frame(width: 400.0, height: 400)
         }
-        .padding(20.0)
+        .padding(10.0)
         .border(Color.blue, width: /*@START_MENU_TOKEN@*/1/*@END_MENU_TOKEN@*/)
     }
 }

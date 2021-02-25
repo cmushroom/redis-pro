@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 class RedisModel:ObservableObject, Identifiable {
-    @Published var id: String = ""
+    @Published var id: String = UUID().uuidString
     @Published var name: String = "test"
     @Published var host: String = "127.0.0.1"
     @Published var port: Int = 6379

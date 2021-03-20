@@ -33,35 +33,35 @@ struct LoginForm: View {
         logger.info("save redis to favorite, id: \(redisModel.id), name: \(redisModel.name), host: \(redisModel.host), port: \(redisModel.port), password: \(redisModel.password)")
         
         let defaults = UserDefaults.standard
-        var savedRedisList:[RedisModel] = defaults.object(forKey: UserDefaulsKeys.RedisFavoriteListKey.rawValue) as? [RedisModel] ?? [RedisModel]()
-        
+        var savedRedisList:[Dictionary] = defaults.object(forKey: UserDefaulsKeys.RedisFavoriteListKey.rawValue) as? [Dictionary<String, Any>] ?? [Dictionary]()
+        logger.info("get user favorite redis: \(savedRedisList)")
         
         if(redisModel.id.isEmpty) {
             redisModel.id = UUID().uuidString
-            savedRedisList.append(redisModel)
+            savedRedisList.append(redisModel.dictionary)
         } else {
             if let index = savedRedisList.firstIndex(where: { (e) -> Bool in
-                return e.id == redisModel.id
+                return e["id"] as! String == redisModel.id
             }) {
-                savedRedisList[index] = redisModel
+                savedRedisList[index] = redisModel.dictionary
             } else {
-                savedRedisList.append(redisModel)
+                savedRedisList.append(redisModel.dictionary)
             }
         }
         
-        print("save list \(savedRedisList.capacity)")
+        print("save list \(savedRedisList)")
         
         
-        let json = JSON(["1", "2"])
-        //convert the JSON to a raw String
-        if let rawString = json.rawString() {
-          //Do something you want
-            print("json is \(rawString)")
-        } else {
-            print("json.rawString is nil")
-        }
+//        let json = JSON(["1", "2"])
+//        //convert the JSON to a raw String
+//        if let rawString = json.rawString() {
+//          //Do something you want
+//            print("json is \(rawString)")
+//        } else {
+//            print("json.rawString is nil")
+//        }
         
-//        defaults.set(encodedString, forKey: UserDefaulsKeys.RedisFavoriteListKey.rawValue)
+        defaults.set(savedRedisList, forKey: UserDefaulsKeys.RedisFavoriteListKey.rawValue)
         logger.info("save redis to favorite complete")
     }
     
@@ -94,7 +94,7 @@ struct LoginForm: View {
                         Divider()
                         HStack(alignment: .center){
                             Button(action: {
-                                if let url = URL(string: "https://www.apple.com") {
+                                if let url = URL(string: "https://github.com/cmushroom/redis-pro") {
                                     NSWorkspace.shared.open(url)
                                 }
                             }) {

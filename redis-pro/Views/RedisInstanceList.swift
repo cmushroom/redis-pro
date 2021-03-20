@@ -14,8 +14,7 @@ func onAppear() {
 
 struct RedisInstanceList: View {
     @State private var showFavoritesOnly = false
-    var redisModels: [RedisModel] = [RedisModel](repeating: RedisModel(), count: 5)
-    var test: [Any]?
+    @ObservableObject var redisModels: [RedisModel] = [RedisModel](repeating: RedisModel(), count: 0)
     @State var selectedRedisModel:String?
     let userDefaults = UserDefaults.standard
     
@@ -31,14 +30,21 @@ struct RedisInstanceList: View {
     
     var body: some View {
         HSplitView {
-            List(selection: $selectedRedisModel) {
-                ForEach(filteredRedisModel) { redisModel in
-                    RedisInstanceRow(redisModel: redisModel)
-                        .tag(redisModel.id)
+            VStack(alignment: .leading,
+                   spacing: 0) {
+                Text("FAVORITES")
+                    .padding(.vertical, 5).padding(.horizontal, 4)
+                List(selection: $selectedRedisModel) {
+                    ForEach(filteredRedisModel) { redisModel in
+                        RedisInstanceRow(redisModel: redisModel)
+                            .tag(redisModel.id)
+                    }
                 }
+                .listStyle(SidebarListStyle())
+                .frame(minWidth:150)
             }
-            .listStyle(SidebarListStyle())
-            .frame(minWidth:150)
+            .padding(0)
+            
             
             VStack{
                 Spacer()
@@ -51,9 +57,12 @@ struct RedisInstanceList: View {
             }
             .frame(minWidth: 500, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
         }.onAppear{
-            logger.info("load redis models from user defaults")
-            let a = userDefaults.array(forKey: UserDefaulsKeys.RedisFavoriteListKey.rawValue)
-            logger.info("\(a?.description ?? "hello")")
+            var redisModels = userDefaults.array(forKey: UserDefaulsKeys.RedisFavoriteListKey.rawValue)
+            logger.info("load redis models from user defaults: \(String(describing: redisModels))")
+            redisModels?.forEach{ (element) in
+                redisModels?.append(RedisModel(dictionary: element as! [String : Any]))
+                print("hello \(redisModels?.capacity ?? 0)  \(element)")
+            }
         }
     }
 }

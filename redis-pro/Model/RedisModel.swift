@@ -21,4 +21,27 @@ class RedisModel:ObservableObject, Identifiable {
     var image:Image {
         Image("icon-redis")
     }
+    
+    
+    var dictionary: [String: Any] {
+        return ["id": id,
+                "name": name,
+                "host": host,
+                "port": port,
+                "database": database,
+                "password": password
+        ]
+    }
+    
+    init() {
+    }
+    
+    init(dictionary: [String: Any]) {
+        self.id = dictionary["id"] as! String
+        self.name = dictionary["name"] as! String
+        self.host = dictionary["host"] as! String
+        self.port = dictionary["port"] as! Int
+        self.database = dictionary["database"] as! Int
+        self.password = dictionary["password"] as! String
+    }
 }

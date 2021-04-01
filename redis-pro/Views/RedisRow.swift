@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-struct RedisInstanceRow: View {
+struct RedisRow: View {
     var redisModel:RedisModel
     
     var body: some View {
         HStack(alignment: .center) {
             redisModel.image
                 .resizable()
-                .frame(width: 24, height: 24)
+                .frame(width: 22, height: 22)
                 .padding(.horizontal, 0.0)
             Text(redisModel.name)
                 .lineLimit(1)

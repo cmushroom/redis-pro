@@ -22,8 +22,7 @@ struct Login: View {
     
     var body: some View {
         HStack {
-            RedisInstanceList()
-//                .environmentObject(redisFavoriteModel)
+            RedisList()
         }
     }
 }

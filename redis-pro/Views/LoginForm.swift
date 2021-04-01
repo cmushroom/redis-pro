@@ -12,9 +12,13 @@ import SwiftyJSON
 import Logging
 
 struct LoginForm: View {
-    @ObservedObject var redisModel:RedisModel = RedisModel()
+    @ObservedObject var redisModel:RedisModel
     @State private var loading:Bool = false
     @State private var pong:Bool = false
+    
+    var saveBtnDisable: Bool {
+        !redisModel.isFavorite
+    }
     
     
     func testConnectionAction() throws -> Void {
@@ -121,7 +125,7 @@ struct LoginForm: View {
                         HStack(alignment: .center){
                             MButton(text: "Add to Favorites", action: saveRedisInstanceAction)
                             Spacer()
-                            MButton(text: "Save changes", action: signIn)
+                            MButton(text: "Save changes", action: signIn).disabled(saveBtnDisable)
                             Spacer()
                             MButton(text: "Test connection", action: testConnectionAction)
                         }
@@ -153,6 +157,6 @@ struct LoginForm: View {
 
 struct LoginForm_Previews: PreviewProvider {
     static var previews: some View {
-        LoginForm()
+        LoginForm(redisModel: RedisModel())
     }
 }

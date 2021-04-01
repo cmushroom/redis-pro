@@ -9,8 +9,8 @@
 /* Begin PBXBuildFile section */
 		430A09D025BE66E600B60DFC /* LandmarkCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430A09CF25BE66E600B60DFC /* LandmarkCommands.swift */; };
 		430A09D325BEA91700B60DFC /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430A09D225BEA91700B60DFC /* Login.swift */; };
-		430A09D625BEA98300B60DFC /* RedisInstanceList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430A09D525BEA98300B60DFC /* RedisInstanceList.swift */; };
-		430A09D925BEA9A700B60DFC /* RedisInstanceRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430A09D825BEA9A700B60DFC /* RedisInstanceRow.swift */; };
+		430A09D625BEA98300B60DFC /* RedisList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430A09D525BEA98300B60DFC /* RedisList.swift */; };
+		430A09D925BEA9A700B60DFC /* RedisRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430A09D825BEA9A700B60DFC /* RedisRow.swift */; };
 		430A09DC25BEAD2700B60DFC /* RedisInsanceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430A09DB25BEAD2700B60DFC /* RedisInsanceModel.swift */; };
 		430A09E225C1559400B60DFC /* FormLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430A09E125C1559400B60DFC /* FormLabel.swift */; };
 		430A09E625C155F800B60DFC /* FormItemText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430A09E525C155F800B60DFC /* FormItemText.swift */; };
@@ -42,8 +42,8 @@
 /* Begin PBXFileReference section */
 		430A09CF25BE66E600B60DFC /* LandmarkCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandmarkCommands.swift; sourceTree = "<group>"; };
 		430A09D225BEA91700B60DFC /* Login.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
-		430A09D525BEA98300B60DFC /* RedisInstanceList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisInstanceList.swift; sourceTree = "<group>"; };
-		430A09D825BEA9A700B60DFC /* RedisInstanceRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisInstanceRow.swift; sourceTree = "<group>"; };
+		430A09D525BEA98300B60DFC /* RedisList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisList.swift; sourceTree = "<group>"; };
+		430A09D825BEA9A700B60DFC /* RedisRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisRow.swift; sourceTree = "<group>"; };
 		430A09DB25BEAD2700B60DFC /* RedisInsanceModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisInsanceModel.swift; sourceTree = "<group>"; };
 		430A09E125C1559400B60DFC /* FormLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormLabel.swift; sourceTree = "<group>"; };
 		430A09E525C155F800B60DFC /* FormItemText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormItemText.swift; sourceTree = "<group>"; };
@@ -157,8 +157,8 @@
 				4320AB1E25B6802E00A8E214 /* LandmarkList.swift */,
 				4320AB2125B681DA00A8E214 /* LandmarkDetail.swift */,
 				430A09D225BEA91700B60DFC /* Login.swift */,
-				430A09D525BEA98300B60DFC /* RedisInstanceList.swift */,
-				430A09D825BEA9A700B60DFC /* RedisInstanceRow.swift */,
+				430A09D525BEA98300B60DFC /* RedisList.swift */,
+				430A09D825BEA9A700B60DFC /* RedisRow.swift */,
 				4373C50B25C3FC81002B700E /* LoginForm.swift */,
 			);
 			path = Views;
@@ -270,13 +270,13 @@
 				4320AAF625B6740900A8E214 /* ContentView.swift in Sources */,
 				4320AB0825B67BB600A8E214 /* MapView.swift in Sources */,
 				430A09D025BE66E600B60DFC /* LandmarkCommands.swift in Sources */,
-				430A09D925BEA9A700B60DFC /* RedisInstanceRow.swift in Sources */,
+				430A09D925BEA9A700B60DFC /* RedisRow.swift in Sources */,
 				430A09D325BEA91700B60DFC /* Login.swift in Sources */,
 				4320AAF425B6740900A8E214 /* redis_proApp.swift in Sources */,
 				430A09DC25BEAD2700B60DFC /* RedisInsanceModel.swift in Sources */,
 				4320AB1F25B6802E00A8E214 /* LandmarkList.swift in Sources */,
 				4373C50C25C3FC81002B700E /* LoginForm.swift in Sources */,
-				430A09D625BEA98300B60DFC /* RedisInstanceList.swift in Sources */,
+				430A09D625BEA98300B60DFC /* RedisList.swift in Sources */,
 				43DFEF3725C29288006EF535 /* FormItemInt.swift in Sources */,
 				4320AB2225B681DA00A8E214 /* LandmarkDetail.swift in Sources */,
 				4320AB0525B67A1200A8E214 /* CircleImage.swift in Sources */,

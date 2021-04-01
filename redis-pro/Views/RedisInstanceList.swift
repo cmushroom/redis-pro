@@ -13,17 +13,18 @@ func onAppear() {
 }
 
 struct RedisInstanceList: View {
+    @EnvironmentObject var redisFavoriteModel: RedisFavoriteModel
     @State private var showFavoritesOnly = false
-    @ObservableObject var redisModels: [RedisModel] = [RedisModel](repeating: RedisModel(), count: 0)
+//    var redisModels: [RedisModel] = [RedisModel](repeating: RedisModel(), count: 0)
     @State var selectedRedisModel:String?
-    let userDefaults = UserDefaults.standard
+//    let userDefaults = UserDefaults.standard
     
     var index: Int {
-        redisModels.firstIndex(where: { $0.id == selectedRedisModel }) ?? 0
+        redisFavoriteModel.redisModels.firstIndex(where: { $0.id == selectedRedisModel }) ?? 0
     }
     
     var filteredRedisModel: [RedisModel] {
-        redisModels.filter { redisModel in
+        redisFavoriteModel.redisModels.filter { redisModel in
             (!showFavoritesOnly || redisModel.isFavorite)
         }
     }
@@ -35,7 +36,7 @@ struct RedisInstanceList: View {
                 Text("FAVORITES")
                     .padding(.vertical, 5).padding(.horizontal, 4)
                 List(selection: $selectedRedisModel) {
-                    ForEach(filteredRedisModel) { redisModel in
+                    ForEach(redisFavoriteModel.redisModels) { redisModel in
                         RedisInstanceRow(redisModel: redisModel)
                             .tag(redisModel.id)
                     }
@@ -56,20 +57,21 @@ struct RedisInstanceList: View {
                 Spacer()
             }
             .frame(minWidth: 500, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
-        }.onAppear{
-            var redisModels = userDefaults.array(forKey: UserDefaulsKeys.RedisFavoriteListKey.rawValue)
-            logger.info("load redis models from user defaults: \(String(describing: redisModels))")
-            redisModels?.forEach{ (element) in
-                redisModels?.append(RedisModel(dictionary: element as! [String : Any]))
-                print("hello \(redisModels?.capacity ?? 0)  \(element)")
-            }
         }
+//        .onAppear{
+//            var redisModels = userDefaults.array(forKey: UserDefaulsKeys.RedisFavoriteListKey.rawValue)
+//            logger.info("load redis models from user defaults: \(String(describing: redisModels))")
+//            redisModels?.forEach{ (element) in
+//                redisModels?.append(RedisModel(dictionary: element as! [String : Any]))
+//                print("hello \(redisModels?.capacity ?? 0)  \(element)")
+//            }
+//        }
     }
 }
 
 
 struct RedisInstanceList_Previews: PreviewProvider {
     static var previews: some View {
-        RedisInstanceList(redisModels: [RedisModel()])
+        RedisInstanceList()
     }
 }

@@ -28,6 +28,7 @@
 		4320AB1B25B67E6800A8E214 /* LandmarkRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4320AB1A25B67E6800A8E214 /* LandmarkRow.swift */; };
 		4320AB1F25B6802E00A8E214 /* LandmarkList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4320AB1E25B6802E00A8E214 /* LandmarkList.swift */; };
 		4320AB2225B681DA00A8E214 /* LandmarkDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4320AB2125B681DA00A8E214 /* LandmarkDetail.swift */; };
+		434047FA2611C828001519F9 /* RedisFavoriteModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434047F92611C828001519F9 /* RedisFavoriteModel.swift */; };
 		4373C4FE25C2DEC8002B700E /* MButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4373C4FD25C2DEC8002B700E /* MButton.swift */; };
 		4373C50125C2E75B002B700E /* BizError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4373C50025C2E75B002B700E /* BizError.swift */; };
 		4373C50525C3F0B6002B700E /* UserDefaultsKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4373C50425C3F0B6002B700E /* UserDefaultsKeys.swift */; };
@@ -61,6 +62,7 @@
 		4320AB1A25B67E6800A8E214 /* LandmarkRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandmarkRow.swift; sourceTree = "<group>"; };
 		4320AB1E25B6802E00A8E214 /* LandmarkList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandmarkList.swift; sourceTree = "<group>"; };
 		4320AB2125B681DA00A8E214 /* LandmarkDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandmarkDetail.swift; sourceTree = "<group>"; };
+		434047F92611C828001519F9 /* RedisFavoriteModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisFavoriteModel.swift; sourceTree = "<group>"; };
 		4373C4FD25C2DEC8002B700E /* MButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MButton.swift; sourceTree = "<group>"; };
 		4373C50025C2E75B002B700E /* BizError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BizError.swift; sourceTree = "<group>"; };
 		4373C50425C3F0B6002B700E /* UserDefaultsKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsKeys.swift; sourceTree = "<group>"; };
@@ -114,6 +116,7 @@
 		4320AAF225B6740900A8E214 /* redis-pro */ = {
 			isa = PBXGroup;
 			children = (
+				434047F72611C1D5001519F9 /* Common */,
 				4320AB1725B67E2C00A8E214 /* Model */,
 				4320AB1625B67E2400A8E214 /* Views */,
 				4320AB1525B67E1A00A8E214 /* Resources */,
@@ -167,11 +170,19 @@
 				4320AB0D25B67D1C00A8E214 /* Landmark.swift */,
 				4320AB1025B67DC800A8E214 /* ModelData.swift */,
 				430A09DB25BEAD2700B60DFC /* RedisInsanceModel.swift */,
-				4373C50025C2E75B002B700E /* BizError.swift */,
-				4373C50425C3F0B6002B700E /* UserDefaultsKeys.swift */,
 				4373C50825C3F218002B700E /* RedisModel.swift */,
+				434047F92611C828001519F9 /* RedisFavoriteModel.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		434047F72611C1D5001519F9 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				4373C50425C3F0B6002B700E /* UserDefaultsKeys.swift */,
+				4373C50025C2E75B002B700E /* BizError.swift */,
+			);
+			path = Common;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -272,6 +283,7 @@
 				4320AB0E25B67D1C00A8E214 /* Landmark.swift in Sources */,
 				4320AB1B25B67E6800A8E214 /* LandmarkRow.swift in Sources */,
 				430A09E225C1559400B60DFC /* FormLabel.swift in Sources */,
+				434047FA2611C828001519F9 /* RedisFavoriteModel.swift in Sources */,
 				4373C50925C3F218002B700E /* RedisModel.swift in Sources */,
 				4373C50125C2E75B002B700E /* BizError.swift in Sources */,
 				4320AB1125B67DC800A8E214 /* ModelData.swift in Sources */,

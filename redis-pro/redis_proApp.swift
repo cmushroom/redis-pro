@@ -9,13 +9,16 @@ import SwiftUI
 
 @main
 struct redis_proApp: App {
-    @StateObject private var modelData = ModelData()
+    private var redisFavoriteModel: RedisFavoriteModel = RedisFavoriteModel()
     
     var body: some Scene {
         WindowGroup {
             Login()
 //            ContentView()
-//                .environmentObject(modelData)
+                .environmentObject(redisFavoriteModel)
+                .onAppear {
+                    redisFavoriteModel.loadAll()
+                }
         }
         .commands {
             LandmarkCommands()

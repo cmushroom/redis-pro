@@ -17,7 +17,6 @@ struct RedisRow: View {
                 .resizable()
                 .frame(width: 18, height: 18)
                 .padding(0.0)
-                .withBaselineOffset(fromBottom: 0))
             Text(redisModel.name)
                 .lineLimit(1)
                 .font(.title3)

@@ -17,34 +17,49 @@ struct RedisList: View {
     @State private var showFavoritesOnly = false
     //    var redisModels: [RedisModel] = [RedisModel](repeating: RedisModel(), count: 0)
     @State var selectedRedisModelId: String?
-    //    let userDefaults = UserDefaults.standard
+    
+    var quickRedisModel:[RedisModel] = [RedisModel](repeating: RedisModel(name: "QUICK CONNECT"), count: 1)
     
     var selectRedisModel: RedisModel {
-        redisFavoriteModel.redisModels.first(where: { $0.id == selectedRedisModelId }) ?? redisFavoriteModel.redisModels[0]
+        redisFavoriteModel.redisModels.first(where: { $0.id == selectedRedisModelId }) ?? RedisModel()
     }
     
     var filteredRedisModel: [RedisModel] {
-        redisFavoriteModel.redisModels.filter { redisModel in
-            (!showFavoritesOnly || redisModel.isFavorite)
-        }
+        redisFavoriteModel.redisModels
     }
     
     var body: some View {
-//        Text(selectedRedisModel ?? "no value")
         HSplitView {
             VStack(alignment: .leading,
                    spacing: 0) {
-                Text("FAVORITES")
-                    .padding(.vertical, 5).padding(.horizontal, 4)
+                //                                Text(selectedRedisModelId ?? "no value")
+                //                Text("FAVORITES")
+                //                .padding(.vertical, 4).padding(.horizontal, 4)
                 List(selection: $selectedRedisModelId) {
-                    ForEach(filteredRedisModel) { redisModel in
-                        RedisRow(redisModel: redisModel)
-                            .tag(redisModel.id)
+                    
+                    
+                    ForEach(quickRedisModel) { redisModel in
+                        
+                        RedisQuickRow(redisModel: redisModel)
+                            .listRowInsets(EdgeInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0)))
                     }
                     
+//                    Rectangle().frame(height: 1)
+//                        .padding(0).foregroundColor(Color.gray)
+//                        .listRowInsets(EdgeInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0)))
+                    
+                    Section(header: Text("FAVORITES")) {
+                        ForEach(filteredRedisModel) { redisModel in
+                            RedisRow(redisModel: redisModel)
+                        }
+                    }
+                    .collapsible(false)
+                    
                 }
-                .listStyle(SidebarListStyle())
+                .listStyle(PlainListStyle())
                 .frame(minWidth:150)
+                .padding(.all, 0)
+                //                .border(Color.black, width: /*@START_MENU_TOKEN@*/1/*@END_MENU_TOKEN@*/)
             }
             .padding(0)
             
@@ -60,20 +75,20 @@ struct RedisList: View {
             }
             .frame(minWidth: 500, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
         }
-        //        .onAppear{
-        //            var redisModels = userDefaults.array(forKey: UserDefaulsKeys.RedisFavoriteListKey.rawValue)
-        //            logger.info("load redis models from user defaults: \(String(describing: redisModels))")
-        //            redisModels?.forEach{ (element) in
-        //                redisModels?.append(RedisModel(dictionary: element as! [String : Any]))
-        //                print("hello \(redisModels?.capacity ?? 0)  \(element)")
-        //            }
-        //        }
+        .onAppear{
+        }
     }
 }
 
 
 struct RedisInstanceList_Previews: PreviewProvider {
+    private static var redisFavoriteModel: RedisFavoriteModel = RedisFavoriteModel()
     static var previews: some View {
         RedisList()
+            .environmentObject(redisFavoriteModel)
+            .onAppear{
+                redisFavoriteModel.loadAll()
+            }
+        
     }
 }

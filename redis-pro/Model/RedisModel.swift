@@ -10,17 +10,14 @@ import SwiftUI
 
 class RedisModel:ObservableObject, Identifiable {
     @Published var id: String = UUID().uuidString
-    @Published var name: String = "new favorite"
+    @Published var name: String = "New Favorite"
     @Published var host: String = "127.0.0.1"
     @Published var port: Int = 6379
     @Published var database: Int = 0
     @Published var password: String = ""
     @Published var isFavorite: Bool = false
     
-    
-    var image:Image {
-        Image("icon-redis")
-    }
+    var image:Image  = Image("icon-redis")
     
     
     var dictionary: [String: Any] {
@@ -34,6 +31,10 @@ class RedisModel:ObservableObject, Identifiable {
     }
     
     init() {
+    }
+    
+    init(name: String) {
+        self.name = name
     }
     
     init(dictionary: [String: Any]) {

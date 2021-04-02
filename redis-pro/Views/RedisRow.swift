@@ -11,24 +11,20 @@ struct RedisRow: View {
     var redisModel:RedisModel
     
     var body: some View {
+
         HStack(alignment: .center) {
             redisModel.image
                 .resizable()
-                .frame(width: 22, height: 22)
-                .padding(.horizontal, 0.0)
+                .frame(width: 18, height: 18)
+                .padding(0.0)
+                .withBaselineOffset(fromBottom: 0))
             Text(redisModel.name)
                 .lineLimit(1)
                 .font(.title3)
-                .padding(.horizontal, 0.0)
-
+                .padding(0.0)
             Spacer()
-            
-            if (redisModel.isFavorite) {
-                Image(systemName: "star.fill")
-                    .foregroundColor(.yellow)
-            }
-            
         }
+//        .border(Color.red, width: /*@START_MENU_TOKEN@*/1/*@END_MENU_TOKEN@*/)
     }
 }
 

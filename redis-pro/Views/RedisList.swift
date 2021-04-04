@@ -39,14 +39,9 @@ struct RedisList: View {
                     
                     
                     ForEach(quickRedisModel) { redisModel in
-                        
                         RedisQuickRow(redisModel: redisModel)
                             .listRowInsets(EdgeInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0)))
                     }
-                    
-//                    Rectangle().frame(height: 1)
-//                        .padding(0).foregroundColor(Color.gray)
-//                        .listRowInsets(EdgeInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0)))
                     
                     Section(header: Text("FAVORITES")) {
                         ForEach(filteredRedisModel) { redisModel in

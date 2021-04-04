@@ -73,22 +73,22 @@ struct LoginForm: View {
                     Label("TCP/IP", systemImage: "bolt.fill")
                 }
                 
-                Text("Another Tab")
-                    .tabItem {
-                        Image(systemName: "2.square.fill")
-                        Text("Second")
-                    }
-                Text("The Last Tab")
-                    .tabItem {
-                        Image(systemName: "3.square.fill")
-                        Text("Third")
-                    }
+//                Text("Another Tab")
+//                    .tabItem {
+//                        Image(systemName: "2.square.fill")
+//                        Text("Second")
+//                    }
+//                Text("The Last Tab")
+//                    .tabItem {
+//                        Image(systemName: "3.square.fill")
+//                        Text("Third")
+//                    }
             }
             .padding(10.0)
             .frame(width: 400.0, height: 400)
         }
         .padding(10.0)
-        .border(Color.blue, width: /*@START_MENU_TOKEN@*/1/*@END_MENU_TOKEN@*/)
+//        .border(Color.blue, width: /*@START_MENU_TOKEN@*/1/*@END_MENU_TOKEN@*/)
     }
     
     

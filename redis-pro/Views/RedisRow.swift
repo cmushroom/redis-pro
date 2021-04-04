@@ -23,7 +23,6 @@ struct RedisRow: View {
                 .padding(0.0)
             Spacer()
         }
-//        .border(Color.red, width: /*@START_MENU_TOKEN@*/1/*@END_MENU_TOKEN@*/)
     }
 }
 

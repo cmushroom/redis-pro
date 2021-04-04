@@ -8,7 +8,6 @@
 import SwiftUI
 import NIO
 import RediStack
-import SwiftyJSON
 import Logging
 
 let logger = Logger(label: "login")

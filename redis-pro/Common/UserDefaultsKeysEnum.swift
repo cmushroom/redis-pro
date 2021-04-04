@@ -8,6 +8,6 @@
 import Foundation
 
 
-enum UserDefaulsKeys: String {
+enum UserDefaulsKeysEnum: String {
     case RedisFavoriteListKey = "RedisFavoriteListKey"
 }

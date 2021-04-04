@@ -16,10 +16,6 @@ class RedisInstanceModel:ObservableObject, Identifiable {
     @Published var loading:Bool = false
     var redisModel:RedisModel
     
-    var image: Image {
-        Image("icon-redis")
-    }
-    
     let logger = Logger(label: "RedisInstanceModel")
     
     init(redisModel: RedisModel) {
@@ -79,5 +75,9 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         }
         
         return false
+    }
+    
+    func queryKeys(size:Int) -> [RedisKeyModel] {
+        return [RedisKeyModel](repeating: RedisKeyModel(), count: 10)
     }
 }

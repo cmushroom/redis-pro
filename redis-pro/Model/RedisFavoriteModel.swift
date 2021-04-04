@@ -16,7 +16,7 @@ class RedisFavoriteModel:ObservableObject {
     func loadAll() -> Void {
         redisModels.removeAll()
         
-        let redisDicts = userDefaults.array(forKey: UserDefaulsKeys.RedisFavoriteListKey.rawValue)
+        let redisDicts = userDefaults.array(forKey: UserDefaulsKeysEnum.RedisFavoriteListKey.rawValue)
         logger.info("load redis models from user defaults: \(String(describing: redisDicts))")
         logger.info("orgin redisModels capacity \(redisModels.capacity )")
         redisDicts?.forEach{ (element) in

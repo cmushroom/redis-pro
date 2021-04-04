@@ -108,14 +108,14 @@ struct LoginForm: View {
         logger.info("add redis to favorite, id: \(redisModel.id), name: \(redisModel.name), host: \(redisModel.host), port: \(redisModel.port), password: \(redisModel.password)")
         
         let defaults = UserDefaults.standard
-        var savedRedisList:[Dictionary] = defaults.object(forKey: UserDefaulsKeys.RedisFavoriteListKey.rawValue) as? [Dictionary<String, Any>] ?? [Dictionary]()
+        var savedRedisList:[Dictionary] = defaults.object(forKey: UserDefaulsKeysEnum.RedisFavoriteListKey.rawValue) as? [Dictionary<String, Any>] ?? [Dictionary]()
         logger.info("get user favorite redis: \(savedRedisList)")
         
         savedRedisList.append(redisModel.dictionary)
         
         print("save list \(savedRedisList)")
         
-        defaults.set(savedRedisList, forKey: UserDefaulsKeys.RedisFavoriteListKey.rawValue)
+        defaults.set(savedRedisList, forKey: UserDefaulsKeysEnum.RedisFavoriteListKey.rawValue)
         logger.info("add redis to favorite complete")
         
         redisFavoriteModel.loadAll()
@@ -126,7 +126,7 @@ struct LoginForm: View {
         logger.info("save redis to favorite, id: \(redisModel.id), name: \(redisModel.name), host: \(redisModel.host), port: \(redisModel.port), password: \(redisModel.password)")
         
         let defaults = UserDefaults.standard
-        var savedRedisList:[Dictionary] = defaults.object(forKey: UserDefaulsKeys.RedisFavoriteListKey.rawValue) as? [Dictionary<String, Any>] ?? [Dictionary]()
+        var savedRedisList:[Dictionary] = defaults.object(forKey: UserDefaulsKeysEnum.RedisFavoriteListKey.rawValue) as? [Dictionary<String, Any>] ?? [Dictionary]()
         logger.info("get user favorite redis: \(savedRedisList)")
         
         if let index = savedRedisList.firstIndex(where: { (e) -> Bool in
@@ -139,7 +139,7 @@ struct LoginForm: View {
         
         print("save list \(savedRedisList)")
         
-        defaults.set(savedRedisList, forKey: UserDefaulsKeys.RedisFavoriteListKey.rawValue)
+        defaults.set(savedRedisList, forKey: UserDefaulsKeysEnum.RedisFavoriteListKey.rawValue)
         logger.info("save redis to favorite complete")
         
         redisFavoriteModel.loadAll()

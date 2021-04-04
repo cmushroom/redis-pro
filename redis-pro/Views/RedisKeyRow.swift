@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct RedisKeyRow: View {
+    var redisKeyModel:RedisKeyModel
     var body: some View {
         Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
     }
@@ -15,6 +16,6 @@ struct RedisKeyRow: View {
 
 struct RedisKeyRow_Previews: PreviewProvider {
     static var previews: some View {
-        RedisKeyRow()
+        RedisKeyRow(redisKeyModel: RedisKeyModel())
     }
 }

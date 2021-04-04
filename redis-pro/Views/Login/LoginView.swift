@@ -12,7 +12,7 @@ import Logging
 
 let logger = Logger(label: "login")
 
-struct Login: View {
+struct LoginView: View {
     @ObservedObject var redisModel:RedisModel = RedisModel()
     @State private var loading:Bool = false
     @State private var pong:Bool = false
@@ -28,6 +28,6 @@ struct Login: View {
 
 struct Login_Previews: PreviewProvider {
     static var previews: some View {
-        Login()
+        LoginView()
     }
 }

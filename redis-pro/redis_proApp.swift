@@ -13,7 +13,7 @@ struct redis_proApp: App {
     
     var body: some Scene {
         WindowGroup {
-            Login()
+            LoginView()
 //            ContentView()
                 .environmentObject(redisFavoriteModel)
                 .onAppear {

@@ -78,6 +78,6 @@ class RedisInstanceModel:ObservableObject, Identifiable {
     }
     
     func queryKeys(size:Int) -> [RedisKeyModel] {
-        return [RedisKeyModel](repeating: RedisKeyModel(), count: 10)
+        return [RedisKeyModel](repeating: RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.STRING.rawValue), count: 10)
     }
 }

@@ -14,7 +14,9 @@ struct FormItemText: View {
     
     var body: some View {
         HStack(alignment: .center) {
-            FormLabel(label: label)
+            if !label.isEmpty {
+                FormLabel(label: label)
+            }
             TextField(placeholder ?? label, text: $value)
         }
     }

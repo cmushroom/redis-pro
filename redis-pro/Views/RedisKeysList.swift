@@ -8,11 +8,12 @@
 import SwiftUI
 
 struct RedisKeysList: View {
-    var redisKeyModels:[RedisKeyModel]
-    @State var selectedRedisKeyId:String
+    var redisKeyModels:[RedisKeyModel] = [RedisKeyModel](repeating: RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.HASH.rawValue), count: 1)
+    @State var selectedRedisKeyId:String?
+    @State var keywords:String = ""
     
-    var filteredRedisModel: [RedisModel] {
-        redisFavoriteModel.redisModels
+    var filteredRedisKeyModel: [RedisKeyModel] {
+        redisKeyModels
     }
     
     var body: some View {
@@ -22,15 +23,17 @@ struct RedisKeysList: View {
                 //                                Text(selectedRedisModelId ?? "no value")
                 //                Text("FAVORITES")
                 //                .padding(.vertical, 4).padding(.horizontal, 4)
+                RedisKeySearchRow(value: $keywords)
+                    .frame(minWidth: 220)
                 List(selection: $selectedRedisKeyId) {
-                    ForEach(filteredRedisModel) { redisKeyModel in
+                    ForEach(filteredRedisKeyModel) { redisKeyModel in
                         RedisKeyRow(redisKeyModel: redisKeyModel)
                             .listRowInsets(EdgeInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0)))
                     }
-                    
+
                 }
                 .listStyle(PlainListStyle())
-                .frame(minWidth:150)
+                .frame(minWidth:220)
                 .padding(.all, 0)
             }
             .padding(0)
@@ -40,7 +43,7 @@ struct RedisKeysList: View {
                 Spacer()
                 HStack {
                     Spacer()
-                    LoginForm(redisModel: selectRedisModel)
+//                    LoginForm(redisModel: selectRedisModel)
                     Spacer()
                 }
                 Spacer()
@@ -52,8 +55,20 @@ struct RedisKeysList: View {
     }
 }
 
+
+func testData() -> [RedisKeyModel] {
+    var redisKeys:[RedisKeyModel] = [RedisKeyModel](repeating: RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.STRING.rawValue), count: 50)
+    redisKeys.append(RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.HASH.rawValue))
+    redisKeys.append(RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.LIST.rawValue))
+    redisKeys.append(RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.SET.rawValue))
+    redisKeys.append(RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.ZSET.rawValue))
+
+    
+    return redisKeys
+}
+
 struct RedisKeysList_Previews: PreviewProvider {
     static var previews: some View {
-        RedisKeysList()
+        RedisKeysList(redisKeyModels: testData(), selectedRedisKeyId: "")
     }
 }

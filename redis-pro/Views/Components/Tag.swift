@@ -10,7 +10,7 @@ import SwiftUI
 struct Tag: View {
     var name:String
     var color:Color = Color.orange
-    var bgColor:Color?
+    var bgColor:Color = Color.clear
     
     var body: some View {
         Text(name).foregroundColor(color)

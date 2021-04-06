@@ -11,6 +11,7 @@ struct RedisKeysList: View {
     var redisKeyModels:[RedisKeyModel] = [RedisKeyModel](repeating: RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.HASH.rawValue), count: 1)
     @State var selectedRedisKeyId:String?
     @State var keywords:String = ""
+    @State private var pageSize:Int = 50
     
     var filteredRedisKeyModel: [RedisKeyModel] {
         redisKeyModels
@@ -28,9 +29,6 @@ struct RedisKeysList: View {
                         .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
                     // redis key operate ...
                     HStack {
-                        
-//                        Button("Add", action: onAddAction)
-////                            .keyboardShortcut(.return)
                         Button(action: onDeleteAction) {
                             HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 2) {
                             Image(systemName: "plus")
@@ -57,15 +55,24 @@ struct RedisKeysList: View {
                     .padding(.horizontal, 0).foregroundColor(Color.gray)
                 
                 List(selection: $selectedRedisKeyId) {
-                    ForEach(filteredRedisKeyModel) { redisKeyModel in
-                        RedisKeyRow(redisKeyModel: redisKeyModel)
+                    ForEach(0..<filteredRedisKeyModel.count) { index in
+                        RedisKeyRow(redisKeyModel: filteredRedisKeyModel[index])
+                            .background(index % 2 == 0 ? Color.gray : Color.clear)
                             .listRowInsets(EdgeInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0)))
+                        
                     }
                     
                 }
                 .listStyle(PlainListStyle())
                 .frame(minWidth:220)
                 .padding(.all, 0)
+                
+                // footer
+                Picker("", selection: $pageSize) {
+                    Text("50").tag(50)
+                    Text("100").tag(100)
+                    Text("200").tag(200)
+                }
             }
             .padding(0)
             

@@ -9,5 +9,6 @@ import Foundation
 import SwiftUI
 
 struct MTheme {
-    static var PRIMARY:Color = Color(red: 0.2, green: 0.2, blue: 0.2)
+//    static var PRIMARY:Color = Color(red: 0.1, green: 0.1, blue: 0.1)
+    static var PRIMARY:Color = Color.gray
 }

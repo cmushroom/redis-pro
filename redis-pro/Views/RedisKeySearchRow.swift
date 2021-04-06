@@ -14,6 +14,7 @@ struct RedisKeySearchRow: View {
     var body: some View {
         HStack {
             TextField("Please input keywords", text: $value)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
             Button(action: onAction) {
                 Image(systemName: "magnifyingglass")
                     .font(.system(size: 16.0))

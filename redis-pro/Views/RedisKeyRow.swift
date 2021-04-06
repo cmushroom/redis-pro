@@ -15,8 +15,8 @@ struct RedisKeyRow: View {
             Tag(name: redisKeyModel.type)
                 .padding(EdgeInsets(top: 0, leading: 2, bottom: 0, trailing: 2))
                 .frame(width: 40, alignment: .leading)
+                
             Text(redisKeyModel.id)
-                .foregroundColor(MTheme.PRIMARY)
                 .multilineTextAlignment(.leading)
                 .lineLimit(1)
                 .font(.system(size: 12))

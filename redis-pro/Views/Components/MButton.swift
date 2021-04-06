@@ -12,6 +12,20 @@ struct MButton: View {
     @State private var msg:String = ""
     var text:String
     var action: () throws -> Void
+    var type:String = ButtonTypeEnum.DEFAULT.rawValue
+    
+    
+    var body: some View {
+        Button(text, action: doAction)
+//            .buttonStyle(style)
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text("warnning"), message: Text(msg), dismissButton: .default(Text("OK")))
+            }
+    }
+    
+    var style:some PrimitiveButtonStyle {
+        DefaultButtonStyle()
+    }
     
     func doAction() -> Void {
         print("m button do action...")
@@ -27,13 +41,6 @@ struct MButton: View {
         }
     }
     
-    
-    var body: some View {
-        Button(text, action: doAction)
-            .alert(isPresented: $showAlert) {
-                Alert(title: Text("warnning"), message: Text(msg), dismissButton: .default(Text("OK")))
-            }
-    }
 }
 
 struct MButton_Previews: PreviewProvider {

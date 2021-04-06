@@ -31,7 +31,6 @@ struct RedisKeySearchRow: View {
                     }
             Toggle("Fuzzy", isOn: $fuzzy)
         }
-        .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
     }
     
     

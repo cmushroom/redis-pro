@@ -20,17 +20,48 @@ struct RedisKeysList: View {
         HSplitView {
             VStack(alignment: .leading,
                    spacing: 0) {
-                //                                Text(selectedRedisModelId ?? "no value")
-                //                Text("FAVORITES")
-                //                .padding(.vertical, 4).padding(.horizontal, 4)
-                RedisKeySearchRow(value: $keywords)
-                    .frame(minWidth: 220)
+                // header area
+                VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 2) {
+                    // redis search ...
+                    RedisKeySearchRow(value: $keywords)
+                        .frame(minWidth: 220)
+                        .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
+                    // redis key operate ...
+                    HStack {
+                        
+//                        Button("Add", action: onAddAction)
+////                            .keyboardShortcut(.return)
+                        Button(action: onDeleteAction) {
+                            HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 2) {
+                            Image(systemName: "plus")
+                                .font(.system(size: 12.0))
+                                .padding(0)
+                            Text("Add")
+                            }
+                        }
+                        .buttonStyle(BorderedButtonStyle())
+                        Button(action: onDeleteAction) {
+                            HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 2) {
+                            Image(systemName: "trash")
+                                .font(.system(size: 10.0))
+                                .padding(0)
+                            Text("Delete")
+                            }
+                        }
+                        .buttonStyle(BorderedButtonStyle())
+                        Spacer()
+                    }
+                }
+                .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
+                Rectangle().frame(height: 1)
+                    .padding(.horizontal, 0).foregroundColor(Color.gray)
+                
                 List(selection: $selectedRedisKeyId) {
                     ForEach(filteredRedisKeyModel) { redisKeyModel in
                         RedisKeyRow(redisKeyModel: redisKeyModel)
                             .listRowInsets(EdgeInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0)))
                     }
-
+                    
                 }
                 .listStyle(PlainListStyle())
                 .frame(minWidth:220)
@@ -43,7 +74,7 @@ struct RedisKeysList: View {
                 Spacer()
                 HStack {
                     Spacer()
-//                    LoginForm(redisModel: selectRedisModel)
+                    //                    LoginForm(redisModel: selectRedisModel)
                     Spacer()
                 }
                 Spacer()
@@ -55,6 +86,13 @@ struct RedisKeysList: View {
     }
 }
 
+func onAddAction() -> Void {
+    logger.info("on add redis key")
+}
+func onDeleteAction() -> Void {
+    logger.info("on add redis key")
+}
+
 
 func testData() -> [RedisKeyModel] {
     var redisKeys:[RedisKeyModel] = [RedisKeyModel](repeating: RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.STRING.rawValue), count: 50)
@@ -62,7 +100,7 @@ func testData() -> [RedisKeyModel] {
     redisKeys.append(RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.LIST.rawValue))
     redisKeys.append(RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.SET.rawValue))
     redisKeys.append(RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.ZSET.rawValue))
-
+    
     
     return redisKeys
 }

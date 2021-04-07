@@ -12,7 +12,7 @@ struct MIcon: View {
     var fontSize:CGFloat = 10.0
     
     var body: some View {
-        Button(action: onDeleteAction) {
+        Button(action: onAction) {
             Image(systemName: icon)
                 .font(.system(size: fontSize))
                 .padding(0)
@@ -25,6 +25,10 @@ struct MIcon: View {
                         NSCursor.pop()
                     }
                 }
+    }
+    
+    func onAction() -> Void {
+        print("on icon action...")
     }
 }
 

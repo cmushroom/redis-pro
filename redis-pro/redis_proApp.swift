@@ -13,15 +13,17 @@ struct redis_proApp: App {
     
     var body: some Scene {
         WindowGroup {
-            LoginView()
+//            LoginView()
+            HomeView(redisInstanceModel: RedisInstanceModel(redisModel: RedisModel()))
 //            ContentView()
                 .environmentObject(redisFavoriteModel)
                 .onAppear {
                     redisFavoriteModel.loadAll()
                 }
+            
         }
         .commands {
-            LandmarkCommands()
+//            LandmarkCommands()
         }
     }
 }

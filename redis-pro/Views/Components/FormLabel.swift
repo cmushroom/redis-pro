@@ -9,17 +9,20 @@ import SwiftUI
 
 struct FormLabel: View {
     var label:String
+    var width:CGFloat?
+    var required:Bool = false
+    
     var body: some View {
-        Text("\(label):")
+        Text("\(required ? "* " : "")\(label):")
             .font(.body)
             .lineLimit(1)
-            .frame(width: 80.0, alignment: .trailing)
+            .frame(width: width, alignment: .trailing)
             
     }
 }
 
 struct FormLabel_Previews: PreviewProvider {
     static var previews: some View {
-        FormLabel(label: "form label")
+        FormLabel(label: "form label", width: 80, required: true)
     }
 }

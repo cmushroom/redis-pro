@@ -10,10 +10,12 @@ import SwiftUI
 struct RedisValueView: View {
     var redisKeyModel:RedisKeyModel
     var body: some View {
-        VStack {
+        VStack(alignment: .leading, spacing: 0) {
             RedisValueHeaderView(redisKeyModel: redisKeyModel)
+                .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
             Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
         }
+        .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
     }
 }
 

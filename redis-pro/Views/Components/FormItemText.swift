@@ -9,13 +9,15 @@ import SwiftUI
 
 struct FormItemText: View {
     var label: String
+    var labelWidth:CGFloat = 80
     var placeholder: String?
+    var required:Bool = false
     @Binding var value: String
     
     var body: some View {
         HStack(alignment: .center) {
             if !label.isEmpty {
-                FormLabel(label: label)
+                FormLabel(label: label, width: labelWidth, required: required)
             }
             TextField(placeholder ?? label, text: $value)
         }

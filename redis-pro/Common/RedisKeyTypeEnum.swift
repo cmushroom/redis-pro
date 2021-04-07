@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum RedisKeyTypeEnum: String {
+enum RedisKeyTypeEnum: String,CaseIterable {
     case STRING = "string"
     case HASH = "hash"
     case LIST = "list"

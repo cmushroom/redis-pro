@@ -11,9 +11,12 @@ struct RedisValueHeaderView: View {
     @State var redisKeyModel:RedisKeyModel
     
     var body: some View {
-        HStack {
-            FormItemText(label: "Key", value: $redisKeyModel.id)
-            FormItemText(label: "Type", value: $redisKeyModel.type)
+        HStack(alignment: .center, spacing: 6) {
+            FormItemText(label: "Key", labelWidth: 40, required: true, value: $redisKeyModel.id)
+            RedisKeyTypePicker(label: "Type", value: redisKeyModel.type)
+            FormItemInt(label: "TTL", value: $redisKeyModel.ttl)
+                .frame(width: 160)
+            Spacer()
         }
     }
 }

@@ -8,17 +8,16 @@
 import SwiftUI
 
 struct RedisKeyTypePicker: View {
+    var label:String = ""
+    @State var value:String = RedisKeyTypeEnum.STRING.rawValue
+    
     var body: some View {
-        Picker("", selection: $pageSize) {
-            ForEach(0..<filteredRedisKeyModel.count)
-            Text("50").tag(50)
-            Text("100").tag(100)
-            Text("200").tag(200)
-            Text("500").tag(500)
+        Picker("\(label):", selection: $value) {
+            ForEach(RedisKeyTypeEnum.allCases, id: \.self) { item in
+                Text(item.rawValue).tag(item.rawValue)
+            }
         }
-        .frame(width: 70)
-        Text("Keys:123")
-            .font(.footnote)
+        .frame(width: 120)
     }
 }
 

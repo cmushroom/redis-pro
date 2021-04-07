@@ -9,9 +9,9 @@ import SwiftUI
 
 struct FormItemInt: View {
     var label:String
+    var labelWidth:CGFloat = 80
     var placeholder:String?
     @Binding var value:Int
-    
     
     var body: some View {
         let valueProxy = Binding<String>(
@@ -24,7 +24,9 @@ struct FormItemInt: View {
         )
         
         HStack(alignment: .center) {
-            FormLabel(label: label)
+            if !label.isEmpty {
+                FormLabel(label: label, width: labelWidth)
+            }
             TextField(placeholder ?? label, text: valueProxy)
             
         }

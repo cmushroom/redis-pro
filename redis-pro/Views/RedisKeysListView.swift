@@ -8,13 +8,16 @@
 import SwiftUI
 
 struct RedisKeysListView: View {
-    var redisKeyModels:[RedisKeyModel] = [RedisKeyModel](repeating: RedisKeyModel(id: UUID().uuidString.lowercased(), type: RedisKeyTypeEnum.HASH.rawValue), count: 1)
-    @State var selectedRedisKeyId:Int?
+    var redisKeyModels:[RedisKeyModel] = testData()
+    @State var selectedRedisKeyIndex:Int?
     @State var keywords:String = ""
     @State private var pageSize:Int = 50
     
     var filteredRedisKeyModel: [RedisKeyModel] {
         redisKeyModels
+    }
+    var selectRedisKeyModel:RedisKeyModel {
+        redisKeyModels[selectedRedisKeyIndex ?? 0]
     }
     
     var body: some View {
@@ -54,17 +57,20 @@ struct RedisKeysListView: View {
                 Rectangle().frame(height: 1)
                     .padding(.horizontal, 0).foregroundColor(Color.gray)
                 
-                List(selection: $selectedRedisKeyId) {
-                    ForEach(0..<filteredRedisKeyModel.count) { index in
+                List(selection: $selectedRedisKeyIndex) {
+                    ForEach(filteredRedisKeyModel.indices, id:\.self) { index in
                         RedisKeyRowView(index: index, redisKeyModel: filteredRedisKeyModel[index])
                             //                            .listRowBackground((index  % 2 == 0) ? Color(.systemGray) : Color(.white))
-//                            .background(index % 2 == 0 ? Color.gray.opacity(0.2) : Color.clear)
+                            //                            .background(index % 2 == 0 ? Color.gray.opacity(0.2) : Color.clear)
                             //                            .border(Color.blue, width: /*@START_MENU_TOKEN@*/1/*@END_MENU_TOKEN@*/)
                             .listRowInsets(EdgeInsets(.init(top: 2, leading: 0, bottom: 2, trailing: 0)))
-                        
+//                            .onTapGesture {
+//                                print("selection \(selectedRedisKeyIndex ?? 0)")
+//                            }
                     }
                     
                 }
+                
                 
                 .listStyle(PlainListStyle())
                 .frame(minWidth:220)
@@ -72,6 +78,11 @@ struct RedisKeysListView: View {
                 
                 // footer
                 HStack {
+                    Text("Keys:123")
+                        .font(.footnote)
+                        .padding(.leading, 4.0)
+                        
+                    Spacer()
                     Picker("", selection: $pageSize) {
                         Text("50").tag(50)
                         Text("100").tag(100)
@@ -79,10 +90,6 @@ struct RedisKeysListView: View {
                         Text("500").tag(500)
                     }
                     .frame(width: 70)
-                    Text("Keys:123")
-                        .font(.footnote)
-                    
-                    Spacer()
                     HStack {
                         MIcon(icon: "chevron.left").disabled(true)
                         Text("1/100000")
@@ -90,19 +97,15 @@ struct RedisKeysListView: View {
                             .multilineTextAlignment(.center)
                             .lineLimit(1)
                         MIcon(icon: "chevron.right")
-                    }.padding(EdgeInsets(top: 0, leading: 2, bottom: 0, trailing: 4))
+                    }
                 }
+                .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 8))
             }
             .padding(0)
             
             
-            VStack{
-                Spacer()
-                HStack {
-                    Spacer()
-                    //                    LoginForm(redisModel: selectRedisModel)
-                    Spacer()
-                }
+            VStack(alignment: .leading, spacing: 0){
+                RedisValueView(redisKeyModel: selectRedisKeyModel)
                 Spacer()
             }
             .frame(minWidth: 500, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
@@ -110,14 +113,16 @@ struct RedisKeysListView: View {
         .onAppear{
         }
     }
+    
+    func onAddAction() -> Void {
+        logger.info("on add redis key index: \(selectedRedisKeyIndex ?? -1)")
+    }
+    func onDeleteAction() -> Void {
+        logger.info("on delete redis key index: \(selectedRedisKeyIndex ?? -1)")
+    }
+
 }
 
-func onAddAction() -> Void {
-    logger.info("on add redis key")
-}
-func onDeleteAction() -> Void {
-    logger.info("on add redis key")
-}
 
 
 func testData() -> [RedisKeyModel] {
@@ -133,6 +138,6 @@ func testData() -> [RedisKeyModel] {
 
 struct RedisKeysList_Previews: PreviewProvider {
     static var previews: some View {
-        RedisKeysListView(redisKeyModels: testData(), selectedRedisKeyId: 0)
+        RedisKeysListView(redisKeyModels: testData(), selectedRedisKeyIndex: 0)
     }
 }

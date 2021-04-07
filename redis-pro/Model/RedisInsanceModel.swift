@@ -14,7 +14,11 @@ import Logging
 
 class RedisInstanceModel:ObservableObject, Identifiable {
     @Published var loading:Bool = false
-    @Published var isConnect:Bool = false
+    @Published var isConnect:Bool = true {
+        didSet {
+            print("is connect did set ....")
+        }
+    }
     var redisModel:RedisModel
     
     let logger = Logger(label: "redis-instance")

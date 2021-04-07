@@ -10,24 +10,22 @@ import Logging
 
 @main
 struct redis_proApp: App {
-    private var redisFavoriteModel: RedisFavoriteModel = RedisFavoriteModel()
-    private var redisInstanceModel:RedisInstanceModel?
+    //    private var redisFavoriteModel: RedisFavoriteModel = RedisFavoriteModel()
+    private var redisInstanceModel:RedisInstanceModel = RedisInstanceModel(redisModel: RedisModel())
     
     let logger = Logger(label: "redis-app")
     
     var body: some Scene {
         WindowGroup {
-//            logger.info("redis pro window init ...")
-            
-            if (redisInstanceModel == nil) {
+            if (!redisInstanceModel.isConnect) {
                 LoginView()
-                    .environmentObject(redisFavoriteModel)
+                    .environmentObject(redisInstanceModel)
                     .onAppear {
-                        redisFavoriteModel.loadAll()
                         logger.info("redis pro login view init complete")
                     }
             } else {
-                HomeView(redisInstanceModel: redisInstanceModel!)
+                HomeView(redisInstanceModel: redisInstanceModel)
+                    .environmentObject(redisInstanceModel)
                     .onAppear {
                         logger.info("redis pro home view init complete")
                     }

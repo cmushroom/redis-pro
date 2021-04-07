@@ -11,11 +11,14 @@ import RediStack
 import Logging
 
 struct LoginForm: View {
-    @EnvironmentObject var redisFavoriteModel: RedisFavoriteModel
+    @EnvironmentObject var redisInstanceModel:RedisInstanceModel
+    @ObservedObject var redisFavoriteModel: RedisFavoriteModel
     @ObservedObject var redisModel:RedisModel
     @State private var loading:Bool = false
     @State private var pong:Bool = false
     @State private var isJump:Bool = false
+    
+    let logger = Logger(label: "redis-login")
     
     var saveBtnDisable: Bool {
         !redisModel.isFavorite
@@ -32,6 +35,7 @@ struct LoginForm: View {
                         FormItemText(label: "Password", value: $redisModel.password)
                         FormItemInt(label: "Database", value: $redisModel.database)
                     }
+                    
                     Section {
                         Divider()
                         HStack(alignment: .center){
@@ -44,6 +48,7 @@ struct LoginForm: View {
                                     .font(.system(size: 18.0))
                             }
                             .buttonStyle(PlainButtonStyle())
+                            
                             if (loading) {
                                 ProgressView().progressViewStyle(CircularProgressViewStyle()).scaleEffect(CGSize(width: 0.5, height: 0.5))
                             }
@@ -55,10 +60,10 @@ struct LoginForm: View {
                                 .frame(height: 10.0)
                             
                             Spacer()
-                            NavigationLink(
-                                "", destination: HomeView(redisInstanceModel: RedisInstanceModel(redisModel: RedisModel())),
-                                isActive: $isJump
-                            ).frame(width:0)
+                            //                            NavigationLink(
+                            //                                "", destination: HomeView(redisInstanceModel: RedisInstanceModel(redisModel: RedisModel())),
+                            //                                isActive: $isJump
+                            //                            ).frame(width:0)
                             MButton(text: "Connect", action: onConnect)
                                 .buttonStyle(BorderedButtonStyle())
                                 .keyboardShortcut(.defaultAction)
@@ -153,13 +158,15 @@ struct LoginForm: View {
     
     func onConnect() throws -> Void {
         logger.info("test connection, name: \(redisModel.name), host: \(redisModel.host), port: \(redisModel.port), password: \(redisModel.password)")
-        self.isJump = true
+//        self.isJump = true
+        redisInstanceModel.isConnect = true
+        print("redis instance is connect: \(redisInstanceModel.isConnect)")
     }
     
 }
 
 struct LoginForm_Previews: PreviewProvider {
     static var previews: some View {
-        LoginForm(redisModel: RedisModel())
+        LoginForm(redisFavoriteModel: RedisFavoriteModel(), redisModel: RedisModel())
     }
 }

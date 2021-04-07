@@ -13,10 +13,13 @@ func onAppear() {
 }
 
 struct RedisList: View {
-    @EnvironmentObject var redisFavoriteModel: RedisFavoriteModel
+//    @EnvironmentObject var redisFavoriteModel: RedisFavoriteModel
+    @ObservedObject var redisFavoriteModel: RedisFavoriteModel = RedisFavoriteModel()
     @State private var showFavoritesOnly = false
     //    var redisModels: [RedisModel] = [RedisModel](repeating: RedisModel(), count: 0)
     @State var selectedRedisModelId: String?
+    
+    let logger = Logger(label: "redis-login")
     
     var quickRedisModel:[RedisModel] = [RedisModel](repeating: RedisModel(name: "QUICK CONNECT"), count: 1)
     
@@ -55,20 +58,21 @@ struct RedisList: View {
                 //                .border(Color.black, width: /*@START_MENU_TOKEN@*/1/*@END_MENU_TOKEN@*/)
             }
             .padding(0)
-            
+            .onAppear{
+                logger.info("load all redis favorite list")
+                redisFavoriteModel.loadAll()
+            }
             
             VStack{
                 Spacer()
                 HStack {
                     Spacer()
-                    LoginForm(redisModel: selectRedisModel)
+                    LoginForm(redisFavoriteModel: redisFavoriteModel, redisModel: selectRedisModel)
                     Spacer()
                 }
                 Spacer()
             }
             .frame(minWidth: 500, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
-        }
-        .onAppear{
         }
     }
 }

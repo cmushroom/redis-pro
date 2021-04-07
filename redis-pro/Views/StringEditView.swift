@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct StringEditView: View {
-    @State private var fullText: String = "This is some editable text..."
+    @State var text: String
     
     var body: some View {
-        TextEditor(text: $fullText)
+        TextEditor(text: $text)
             .font(/*@START_MENU_TOKEN@*/.body/*@END_MENU_TOKEN@*/)
             .multilineTextAlignment(.leading)
             .padding(0)
@@ -23,6 +23,6 @@ struct StringEditView: View {
 
 struct StringEditView_Previews: PreviewProvider {
     static var previews: some View {
-        StringEditView()
+        StringEditView(text: "1234")
     }
 }

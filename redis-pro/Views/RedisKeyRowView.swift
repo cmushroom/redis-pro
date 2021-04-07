@@ -12,26 +12,32 @@ struct RedisKeyRowView: View {
     var redisKeyModel:RedisKeyModel
     
     var body: some View {
-        HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 2) {
-//            Text("\(index)")
-//                .multilineTextAlignment(.leading)
-//                .lineLimit(1)
-//                .font(.caption)
-            Tag(name: redisKeyModel.type)
-                .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                .frame(width: 40, alignment: .leading)
-//            Text(redisKeyModel.type).foregroundColor(.orange)
-//                .multilineTextAlignment(.leading)
-//                .lineLimit(1)
-//                .font(.system(size: 12))
-//                .padding(0.0)
+        VStack(spacing: 0){
+            HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 2) {
+                //            Text("\(index)")
+                //                .multilineTextAlignment(.leading)
+                //                .lineLimit(1)
+                //                .font(.caption)
+                Tag(name: redisKeyModel.type)
+                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                    .frame(width: 40, alignment: .leading)
+                //            Text(redisKeyModel.type).foregroundColor(.orange)
+                //                .multilineTextAlignment(.leading)
+                //                .lineLimit(1)
+                //                .font(.system(size: 12))
+                //                .padding(0.0)
                 
-            Text(redisKeyModel.id)
-                .multilineTextAlignment(.leading)
-                .lineLimit(1)
-                .font(.system(size: 12))
-                .padding(0.0)
-            Spacer()
+                Text(redisKeyModel.id)
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(1)
+                    .font(.system(size: 12))
+                    .padding(0.0)
+                Spacer()
+            }
+            .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
+            
+            Rectangle().frame(height: 1)
+                .padding(.horizontal, 0).foregroundColor(Color.gray.opacity(0.1))
         }
     }
 }

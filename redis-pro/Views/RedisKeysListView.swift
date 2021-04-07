@@ -63,7 +63,7 @@ struct RedisKeysListView: View {
                             //                            .listRowBackground((index  % 2 == 0) ? Color(.systemGray) : Color(.white))
                             //                            .background(index % 2 == 0 ? Color.gray.opacity(0.2) : Color.clear)
                             //                            .border(Color.blue, width: /*@START_MENU_TOKEN@*/1/*@END_MENU_TOKEN@*/)
-                            .listRowInsets(EdgeInsets(.init(top: 2, leading: 0, bottom: 2, trailing: 0)))
+                            .listRowInsets(EdgeInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0)))
 //                            .onTapGesture {
 //                                print("selection \(selectedRedisKeyIndex ?? 0)")
 //                            }

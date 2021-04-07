@@ -9,19 +9,15 @@ import SwiftUI
 
 struct RedisValueEditView: View {
     var redisKeyModel:RedisKeyModel
-    var value:Any
+    var value:Any = "sdf242314324132"
     
     var body: some View {
         VStack(alignment: .leading, spacing: 4)  {
-            Text("Value")
-            VStack {
             if RedisKeyTypeEnum.STRING.rawValue == redisKeyModel.type {
                 StringEditView(text: value as! String)
             }
-            }
-            .background(Color.white)
-            .padding(4)
         }
+        .padding(4)
     }
 }
 

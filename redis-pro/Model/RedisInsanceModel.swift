@@ -14,13 +14,14 @@ import Logging
 
 class RedisInstanceModel:ObservableObject, Identifiable {
     @Published var loading:Bool = false
+    @Published var isConnect:Bool = false
     var redisModel:RedisModel
     
-    let logger = Logger(label: "RedisInstanceModel")
+    let logger = Logger(label: "redis-instance")
     
     init(redisModel: RedisModel) {
         self.redisModel = redisModel
-        print("redis instance model init")
+        logger.info("redis instance model init")
     }
     
     func getConnection() throws -> RedisConnection?{

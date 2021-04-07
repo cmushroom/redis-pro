@@ -36,8 +36,6 @@ struct RedisList: View {
                 //                Text("FAVORITES")
                 //                .padding(.vertical, 4).padding(.horizontal, 4)
                 List(selection: $selectedRedisModelId) {
-                    
-                    
                     ForEach(quickRedisModel) { redisModel in
                         RedisQuickRow(redisModel: redisModel)
                             .listRowInsets(EdgeInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0)))

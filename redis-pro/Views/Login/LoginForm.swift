@@ -15,6 +15,7 @@ struct LoginForm: View {
     @ObservedObject var redisModel:RedisModel
     @State private var loading:Bool = false
     @State private var pong:Bool = false
+    @State private var isJump:Bool = false
     
     var saveBtnDisable: Bool {
         !redisModel.isFavorite
@@ -54,9 +55,14 @@ struct LoginForm: View {
                                 .frame(height: 10.0)
                             
                             Spacer()
+                            NavigationLink(
+                                "", destination: HomeView(redisInstanceModel: RedisInstanceModel(redisModel: RedisModel())),
+                                isActive: $isJump
+                            ).frame(width:0)
                             MButton(text: "Connect", action: onConnect)
                                 .buttonStyle(BorderedButtonStyle())
                                 .keyboardShortcut(.defaultAction)
+                            
                         }
                         .frame(height: 40.0)
                         HStack(alignment: .center){
@@ -73,22 +79,22 @@ struct LoginForm: View {
                     Label("TCP/IP", systemImage: "bolt.fill")
                 }
                 
-//                Text("Another Tab")
-//                    .tabItem {
-//                        Image(systemName: "2.square.fill")
-//                        Text("Second")
-//                    }
-//                Text("The Last Tab")
-//                    .tabItem {
-//                        Image(systemName: "3.square.fill")
-//                        Text("Third")
-//                    }
+                //                Text("Another Tab")
+                //                    .tabItem {
+                //                        Image(systemName: "2.square.fill")
+                //                        Text("Second")
+                //                    }
+                //                Text("The Last Tab")
+                //                    .tabItem {
+                //                        Image(systemName: "3.square.fill")
+                //                        Text("Third")
+                //                    }
             }
             .padding(10.0)
             .frame(width: 400.0, height: 400)
         }
         .padding(10.0)
-//        .border(Color.blue, width: /*@START_MENU_TOKEN@*/1/*@END_MENU_TOKEN@*/)
+        //        .border(Color.blue, width: /*@START_MENU_TOKEN@*/1/*@END_MENU_TOKEN@*/)
     }
     
     
@@ -147,6 +153,7 @@ struct LoginForm: View {
     
     func onConnect() throws -> Void {
         logger.info("test connection, name: \(redisModel.name), host: \(redisModel.host), port: \(redisModel.port), password: \(redisModel.password)")
+        self.isJump = true
     }
     
 }

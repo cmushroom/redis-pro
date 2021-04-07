@@ -12,8 +12,11 @@ struct RedisValueView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             RedisValueHeaderView(redisKeyModel: redisKeyModel)
-                .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
-            Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+                .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
+            Rectangle().frame(height: 1)
+                .padding(.horizontal, 0).foregroundColor(Color.gray.opacity(0.1))
+            
+            RedisValueEditView(redisKeyModel: redisKeyModel, value: "12342412")
         }
         .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
     }

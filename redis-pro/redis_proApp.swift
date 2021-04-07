@@ -6,24 +6,38 @@
 //
 
 import SwiftUI
+import Logging
 
 @main
 struct redis_proApp: App {
     private var redisFavoriteModel: RedisFavoriteModel = RedisFavoriteModel()
+    private var redisInstanceModel:RedisInstanceModel?
+    
+    let logger = Logger(label: "redis-app")
     
     var body: some Scene {
         WindowGroup {
-//            LoginView()
-            HomeView(redisInstanceModel: RedisInstanceModel(redisModel: RedisModel()))
-//            ContentView()
-                .environmentObject(redisFavoriteModel)
-                .onAppear {
-                    redisFavoriteModel.loadAll()
-                }
+//            logger.info("redis pro window init ...")
+            
+            if (redisInstanceModel == nil) {
+                LoginView()
+                    .environmentObject(redisFavoriteModel)
+                    .onAppear {
+                        redisFavoriteModel.loadAll()
+                        logger.info("redis pro login view init complete")
+                    }
+            } else {
+                HomeView(redisInstanceModel: redisInstanceModel!)
+                    .onAppear {
+                        logger.info("redis pro home view init complete")
+                    }
+            }
+            
             
         }
         .commands {
-//            LandmarkCommands()
+            //            LandmarkCommands()
         }
+        
     }
 }

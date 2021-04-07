@@ -10,7 +10,7 @@ import SwiftUI
 struct HomeView: View {
     var redisInstanceModel:RedisInstanceModel
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        RedisKeysListView()
     }
 }
 

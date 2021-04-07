@@ -8,7 +8,7 @@
 import SwiftUI
 import Logging
 
-struct RedisKeySearchRow: View {
+struct RedisKeySearchRowView: View {
     @Binding var value:String
     @State var fuzzy:Bool = false
     var body: some View {
@@ -44,6 +44,6 @@ struct RedisKeySearchRow_Previews: PreviewProvider {
     @State static var v: String = "";
     
     static var previews: some View {
-        RedisKeySearchRow(value: $v)
+        RedisKeySearchRowView(value: $v)
     }
 }

@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-struct RedisKeysList: View {
-    var redisKeyModels:[RedisKeyModel] = [RedisKeyModel](repeating: RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.HASH.rawValue), count: 1)
-    @State var selectedRedisKeyId:String?
+struct RedisKeysListView: View {
+    var redisKeyModels:[RedisKeyModel] = [RedisKeyModel](repeating: RedisKeyModel(id: UUID().uuidString.lowercased(), type: RedisKeyTypeEnum.HASH.rawValue), count: 1)
+    @State var selectedRedisKeyId:Int?
     @State var keywords:String = ""
     @State private var pageSize:Int = 50
     
@@ -24,26 +24,26 @@ struct RedisKeysList: View {
                 // header area
                 VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 2) {
                     // redis search ...
-                    RedisKeySearchRow(value: $keywords)
+                    RedisKeySearchRowView(value: $keywords)
                         .frame(minWidth: 220)
                         .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
                     // redis key operate ...
                     HStack {
                         Button(action: onDeleteAction) {
                             HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 2) {
-                            Image(systemName: "plus")
-                                .font(.system(size: 12.0))
-                                .padding(0)
-                            Text("Add")
+                                Image(systemName: "plus")
+                                    .font(.system(size: 12.0))
+                                    .padding(0)
+                                Text("Add")
                             }
                         }
                         .buttonStyle(BorderedButtonStyle())
                         Button(action: onDeleteAction) {
                             HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 2) {
-                            Image(systemName: "trash")
-                                .font(.system(size: 10.0))
-                                .padding(0)
-                            Text("Delete")
+                                Image(systemName: "trash")
+                                    .font(.system(size: 10.0))
+                                    .padding(0)
+                                Text("Delete")
                             }
                         }
                         .buttonStyle(BorderedButtonStyle())
@@ -56,22 +56,41 @@ struct RedisKeysList: View {
                 
                 List(selection: $selectedRedisKeyId) {
                     ForEach(0..<filteredRedisKeyModel.count) { index in
-                        RedisKeyRow(redisKeyModel: filteredRedisKeyModel[index])
-                            .background(index % 2 == 0 ? Color.gray : Color.clear)
-                            .listRowInsets(EdgeInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0)))
+                        RedisKeyRowView(index: index, redisKeyModel: filteredRedisKeyModel[index])
+                            //                            .listRowBackground((index  % 2 == 0) ? Color(.systemGray) : Color(.white))
+//                            .background(index % 2 == 0 ? Color.gray.opacity(0.2) : Color.clear)
+                            //                            .border(Color.blue, width: /*@START_MENU_TOKEN@*/1/*@END_MENU_TOKEN@*/)
+                            .listRowInsets(EdgeInsets(.init(top: 2, leading: 0, bottom: 2, trailing: 0)))
                         
                     }
                     
                 }
+                
                 .listStyle(PlainListStyle())
                 .frame(minWidth:220)
                 .padding(.all, 0)
                 
                 // footer
-                Picker("", selection: $pageSize) {
-                    Text("50").tag(50)
-                    Text("100").tag(100)
-                    Text("200").tag(200)
+                HStack {
+                    Picker("", selection: $pageSize) {
+                        Text("50").tag(50)
+                        Text("100").tag(100)
+                        Text("200").tag(200)
+                        Text("500").tag(500)
+                    }
+                    .frame(width: 70)
+                    Text("Keys:123")
+                        .font(.footnote)
+                    
+                    Spacer()
+                    HStack {
+                        MIcon(icon: "chevron.left").disabled(true)
+                        Text("1/100000")
+                            .font(.footnote)
+                            .multilineTextAlignment(.center)
+                            .lineLimit(1)
+                        MIcon(icon: "chevron.right")
+                    }.padding(EdgeInsets(top: 0, leading: 2, bottom: 0, trailing: 4))
                 }
             }
             .padding(0)
@@ -102,7 +121,7 @@ func onDeleteAction() -> Void {
 
 
 func testData() -> [RedisKeyModel] {
-    var redisKeys:[RedisKeyModel] = [RedisKeyModel](repeating: RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.STRING.rawValue), count: 50)
+    var redisKeys:[RedisKeyModel] = [RedisKeyModel](repeating: RedisKeyModel(id: UUID().uuidString.lowercased(), type: "string"), count: 50)
     redisKeys.append(RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.HASH.rawValue))
     redisKeys.append(RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.LIST.rawValue))
     redisKeys.append(RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.SET.rawValue))
@@ -114,6 +133,6 @@ func testData() -> [RedisKeyModel] {
 
 struct RedisKeysList_Previews: PreviewProvider {
     static var previews: some View {
-        RedisKeysList(redisKeyModels: testData(), selectedRedisKeyId: "")
+        RedisKeysListView(redisKeyModels: testData(), selectedRedisKeyId: 0)
     }
 }

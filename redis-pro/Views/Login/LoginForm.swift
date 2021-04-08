@@ -159,7 +159,7 @@ struct LoginForm: View {
     func onConnect() throws -> Void {
         logger.info("test connection, name: \(redisModel.name), host: \(redisModel.host), port: \(redisModel.port), password: \(redisModel.password)")
 //        self.isJump = true
-        redisInstanceModel.isConnect = true
+        redisInstanceModel.isConnect.toggle()
         print("redis instance is connect: \(redisInstanceModel.isConnect)")
     }
     

@@ -10,6 +10,7 @@ import SwiftUI
 struct KeyValueRowEditorView: View {
     @State var text:String = ""
     @State var hashMap:[String: String] = ["testesttesttesttesttesttesttesttesttesttesttestt":"234243242343", "test1":"2342"]
+    @State var selectKey:String?
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -20,7 +21,7 @@ struct KeyValueRowEditorView: View {
             }
             .padding(EdgeInsets(top: 6, leading: 6, bottom: 6, trailing: 6))
             
-            List() {
+            List(selection: $selectKey) {
                 //                TextField("test", text: $text).environment(\.isEnabled, true)
                 //                    .textFieldStyle(PlainTextFieldStyle())
                 LazyVGrid(columns: Array(repeating: GridItem(), count: 2), alignment: .leading, spacing: 20) {
@@ -31,17 +32,17 @@ struct KeyValueRowEditorView: View {
                 }
                 .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
                 .background(Color.gray.opacity(0.4))
-                LazyVGrid(columns: Array(repeating: GridItem(), count: 2), alignment: .leading, spacing: 20) {
+//                LazyVGrid(columns: Array(repeating: GridItem(), count: 2), alignment: .leading, spacing: 20) {
                     
                     
                     ForEach(hashMap.sorted(by: >), id:\.key) { key, value in
-                        //                    Text(key)
+                                            Text(key)
                         //                        .multilineTextAlignment(.leading)
-                        TextField("Key", text: $text)
+//                        TextField("Key", text: $text)
                         Text(value)
                             .multilineTextAlignment(.leading)
                     }
-                }
+//                }
             }
             .listStyle(PlainListStyle())
             .padding(.all, 0)

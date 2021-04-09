@@ -14,7 +14,7 @@ struct RedisValueEditView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4)  {
             if RedisKeyTypeEnum.STRING.rawValue == redisKeyModel.type {
-                StringEditView(text: value as! String)
+                StringEditorView(text: value as! String)
             }
         }
         .padding(4)

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct StringEditView: View {
+struct StringEditorView: View {
     @State var text: String
     @State var editing:Bool = false
     
@@ -50,6 +50,6 @@ struct StringEditView: View {
 }
 struct StringEditView_Previews: PreviewProvider {
     static var previews: some View {
-        StringEditView(text: "1234")
+        StringEditorView(text: "1234")
     }
 }

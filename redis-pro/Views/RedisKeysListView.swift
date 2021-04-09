@@ -32,24 +32,9 @@ struct RedisKeysListView: View {
                         .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
                     // redis key operate ...
                     HStack {
-                        Button(action: onDeleteAction) {
-                            HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 2) {
-                                Image(systemName: "plus")
-                                    .font(.system(size: 12.0))
-                                    .padding(0)
-                                Text("Add")
-                            }
-                        }
-                        .buttonStyle(BorderedButtonStyle())
-                        Button(action: onDeleteAction) {
-                            HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 2) {
-                                Image(systemName: "trash")
-                                    .font(.system(size: 10.0))
-                                    .padding(0)
-                                Text("Delete")
-                            }
-                        }
-                        .buttonStyle(BorderedButtonStyle())
+                        IconButton(icon: "plus", name: "Add", action: onDeleteAction)
+                        IconButton(icon: "trash", name: "Delete", action: onDeleteAction)
+
                         Spacer()
                     }
                 }
@@ -126,11 +111,12 @@ struct RedisKeysListView: View {
 
 
 func testData() -> [RedisKeyModel] {
-    var redisKeys:[RedisKeyModel] = [RedisKeyModel](repeating: RedisKeyModel(id: UUID().uuidString.lowercased(), type: "string"), count: 50)
+    var redisKeys:[RedisKeyModel] = [RedisKeyModel](repeating: RedisKeyModel(id: UUID().uuidString.lowercased(), type: "string"), count: 1)
     redisKeys.append(RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.HASH.rawValue))
     redisKeys.append(RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.LIST.rawValue))
     redisKeys.append(RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.SET.rawValue))
     redisKeys.append(RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.ZSET.rawValue))
+
     
     
     return redisKeys

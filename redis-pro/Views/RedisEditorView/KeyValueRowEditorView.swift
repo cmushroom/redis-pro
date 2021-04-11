@@ -6,11 +6,14 @@
 //
 
 import SwiftUI
+import Logging
 
 struct KeyValueRowEditorView: View {
     @State var text:String = ""
     @State var hashMap:[String: String] = ["testesttesttesttesttesttesttesttesttesttesttestt":"234243242343", "test1":"2342"]
     @State var selectKey:String?
+    
+    let logger = Logger(label: "redis-editor-kv")
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -22,27 +25,38 @@ struct KeyValueRowEditorView: View {
             .padding(EdgeInsets(top: 6, leading: 6, bottom: 6, trailing: 6))
             
             List(selection: $selectKey) {
-                //                TextField("test", text: $text).environment(\.isEnabled, true)
+                //                TextField("CGFloat(tes)t", text: $text).environment(\.isEnabled, true)
                 //                    .textFieldStyle(PlainTextFieldStyle())
-                LazyVGrid(columns: Array(repeating: GridItem(), count: 2), alignment: .leading, spacing: 20) {
-                    Text("Field")
-                    Text("Value")
-                        .padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 0))
-                        .border(width:1, edges: [.leading], color: Color.gray)
-                }
-                .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
-                .background(Color.gray.opacity(0.4))
 //                LazyVGrid(columns: Array(repeating: GridItem(), count: 2), alignment: .leading, spacing: 20) {
-                    
-                    
-                    ForEach(hashMap.sorted(by: >), id:\.key) { key, value in
-                                            Text(key)
-                        //                        .multilineTextAlignment(.leading)
-//                        TextField("Key", text: $text)
-                        Text(value)
-                            .multilineTextAlignment(.leading)
-                    }
+//                    Text("Field")
+//                    Text("Value")
+//                        .padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 0))
+//                        .border(width:1, edges: [.leading], color: Color.gray)
 //                }
+//                .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
+//                .background(Color.gray.opacity(0.4))
+                //                LazyVGrid(columns: Array(repeating: GridItem(), count: 2), alignment: .leading, spacing: 20) {
+                
+                
+                ForEach(hashMap.sorted(by: >), id:\.key) { key, value in
+                    
+                    GeometryReader { proxy in
+                        HStack {
+                            Text(key)
+                                .frame(minWidth: proxy.size.width/2, alignment: .leading)
+                            //                        .multilineTextAlignment(.leading)
+                            //                        TextField("Key", text: $text)
+                            Text(value)
+                                .multilineTextAlignment(.leading)
+                                .frame(minWidth: proxy.size.width/2, alignment: .leading)
+                        }
+//                        Button("width", action: {
+//                            logger.info("width: \(proxy.size.width)")
+//                        })
+                    }
+                    
+                }
+                //                }
             }
             .listStyle(PlainListStyle())
             .padding(.all, 0)
@@ -66,10 +80,10 @@ struct KeyValueRowEditorView_Previews: PreviewProvider {
 
 
 struct EdgeBorder: Shape {
-
+    
     var width: CGFloat
     var edges: [Edge]
-
+    
     func path(in rect: CGRect) -> Path {
         var path = Path()
         for edge in edges {
@@ -79,21 +93,21 @@ struct EdgeBorder: Shape {
                 case .trailing: return rect.maxX - width
                 }
             }
-
+            
             var y: CGFloat {
                 switch edge {
                 case .top, .leading, .trailing: return rect.minY
                 case .bottom: return rect.maxY - width
                 }
             }
-
+            
             var w: CGFloat {
                 switch edge {
                 case .top, .bottom: return rect.width
                 case .leading, .trailing: return self.width
                 }
             }
-
+            
             var h: CGFloat {
                 switch edge {
                 case .top, .bottom: return self.width

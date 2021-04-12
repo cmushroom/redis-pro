@@ -26,6 +26,8 @@
 		431266EE261D517500FB6B69 /* RedisKeyTypePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431266ED261D517500FB6B69 /* RedisKeyTypePicker.swift */; };
 		431266F2261D89E600FB6B69 /* RedisValueEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431266F1261D89E600FB6B69 /* RedisValueEditView.swift */; };
 		431266F5261D912500FB6B69 /* StringEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431266F4261D912500FB6B69 /* StringEditorView.swift */; };
+		4314A33E2624370E00053FEE /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4314A33D2624370E00053FEE /* SearchBar.swift */; };
+		4314A34126243ED500053FEE /* PageBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4314A34026243ED500053FEE /* PageBar.swift */; };
 		4320AAF425B6740900A8E214 /* redis_proApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4320AAF325B6740900A8E214 /* redis_proApp.swift */; };
 		4320AAF625B6740900A8E214 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4320AAF525B6740900A8E214 /* ContentView.swift */; };
 		4320AAF825B6740A00A8E214 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4320AAF725B6740A00A8E214 /* Assets.xcassets */; };
@@ -80,6 +82,8 @@
 		431266ED261D517500FB6B69 /* RedisKeyTypePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisKeyTypePicker.swift; sourceTree = "<group>"; };
 		431266F1261D89E600FB6B69 /* RedisValueEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisValueEditView.swift; sourceTree = "<group>"; };
 		431266F4261D912500FB6B69 /* StringEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringEditorView.swift; sourceTree = "<group>"; };
+		4314A33D2624370E00053FEE /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
+		4314A34026243ED500053FEE /* PageBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageBar.swift; sourceTree = "<group>"; };
 		4320AAF025B6740900A8E214 /* redis-pro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "redis-pro.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4320AAF325B6740900A8E214 /* redis_proApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = redis_proApp.swift; sourceTree = "<group>"; };
 		4320AAF525B6740900A8E214 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -139,6 +143,8 @@
 				431266CB261C450300FB6B69 /* Tag.swift */,
 				431266DD261D45C500FB6B69 /* MIcon.swift */,
 				431266ED261D517500FB6B69 /* RedisKeyTypePicker.swift */,
+				4314A33D2624370E00053FEE /* SearchBar.swift */,
+				4314A34026243ED500053FEE /* PageBar.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -367,6 +373,7 @@
 				431266F5261D912500FB6B69 /* StringEditorView.swift in Sources */,
 				431266CF261C4E0900FB6B69 /* RedisKeySearchRowView.swift in Sources */,
 				4320AB1F25B6802E00A8E214 /* LandmarkList.swift in Sources */,
+				4314A34126243ED500053FEE /* PageBar.swift in Sources */,
 				62CB3D7D2619AF990061E8C3 /* RedisKeyModel.swift in Sources */,
 				431266CC261C450300FB6B69 /* Tag.swift in Sources */,
 				4373C50C25C3FC81002B700E /* LoginForm.swift in Sources */,
@@ -377,6 +384,7 @@
 				4320AB2225B681DA00A8E214 /* LandmarkDetail.swift in Sources */,
 				4320AB0525B67A1200A8E214 /* CircleImage.swift in Sources */,
 				4320AB0E25B67D1C00A8E214 /* Landmark.swift in Sources */,
+				4314A33E2624370E00053FEE /* SearchBar.swift in Sources */,
 				431266DE261D45C500FB6B69 /* MIcon.swift in Sources */,
 				4320AB1B25B67E6800A8E214 /* LandmarkRow.swift in Sources */,
 				430A09E225C1559400B60DFC /* FormLabel.swift in Sources */,

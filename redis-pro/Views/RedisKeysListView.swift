@@ -27,7 +27,7 @@ struct RedisKeysListView: View {
                 // header area
                 VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 2) {
                     // redis search ...
-                    RedisKeySearchRowView(value: $keywords)
+                    SearchBar(showFuzzy: true)
                         .frame(minWidth: 220)
                         .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
                     // redis key operate ...
@@ -62,28 +62,7 @@ struct RedisKeysListView: View {
                 .padding(.all, 0)
                 
                 // footer
-                HStack {
-                    Text("Keys:123")
-                        .font(.footnote)
-                        .padding(.leading, 4.0)
-                        
-                    Spacer()
-                    Picker("", selection: $pageSize) {
-                        Text("50").tag(50)
-                        Text("100").tag(100)
-                        Text("200").tag(200)
-                        Text("500").tag(500)
-                    }
-                    .frame(width: 70)
-                    HStack {
-                        MIcon(icon: "chevron.left").disabled(true)
-                        Text("1/100000")
-                            .font(.footnote)
-                            .multilineTextAlignment(.center)
-                            .lineLimit(1)
-                        MIcon(icon: "chevron.right")
-                    }
-                }
+                PageBar()
                 .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 8))
             }
             .padding(0)

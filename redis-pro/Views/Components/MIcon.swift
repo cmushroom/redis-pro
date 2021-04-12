@@ -10,9 +10,10 @@ import SwiftUI
 struct MIcon: View {
     var icon:String
     var fontSize:CGFloat = 10.0
+    var action: () ->Void = {print("on icon action...")}
     
     var body: some View {
-        Button(action: onAction) {
+        Button(action: action) {
             Image(systemName: icon)
                 .font(.system(size: fontSize))
                 .padding(0)
@@ -34,6 +35,6 @@ struct MIcon: View {
 
 struct MIcon_Previews: PreviewProvider {
     static var previews: some View {
-        MIcon(icon: "chevron.right")
+        MIcon(icon: "chevron.right").disabled(true)
     }
 }

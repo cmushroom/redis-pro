@@ -10,8 +10,9 @@ import Logging
 
 struct KeyValueRowEditorView: View {
     @State var text:String = ""
-    @State var hashMap:[String: String] = ["testesttesttesttesttesttesttesttesttesttesttestt":"234243242343", "test1":"2342"]
+    @State var hashMap:[String: String] = ["testesttesttesttesttesttesttesttesttesttesttestt":"234243242343"]
     @State var selectKey:String?
+    @State var isEditing:Bool = false
     
     let logger = Logger(label: "redis-editor-kv")
     
@@ -20,40 +21,59 @@ struct KeyValueRowEditorView: View {
             HStack(alignment: .center , spacing: 4) {
                 IconButton(icon: "plus", name: "Add", action: onDeleteAction)
                 IconButton(icon: "trash", name: "Delete", action: onDeleteAction)
+                
+                SearchBar(action: {k in
+                    logger.info("on sssss \(k)")
+                })
                 Spacer()
+                PageBar()
             }
             .padding(EdgeInsets(top: 6, leading: 6, bottom: 6, trailing: 6))
             
-            List(selection: $selectKey) {
-                //                TextField("CGFloat(tes)t", text: $text).environment(\.isEnabled, true)
-                //                    .textFieldStyle(PlainTextFieldStyle())
-//                LazyVGrid(columns: Array(repeating: GridItem(), count: 2), alignment: .leading, spacing: 20) {
-//                    Text("Field")
-//                    Text("Value")
-//                        .padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 0))
-//                        .border(width:1, edges: [.leading], color: Color.gray)
-//                }
-//                .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
-//                .background(Color.gray.opacity(0.4))
-                //                LazyVGrid(columns: Array(repeating: GridItem(), count: 2), alignment: .leading, spacing: 20) {
-                
-                
-                ForEach(hashMap.sorted(by: >), id:\.key) { key, value in
+            GeometryReader { proxy in
+                List(selection: $selectKey) {
+//                    HStack {
+//                        Text("Field")
+//                            .frame(width: proxy.size.width/2, alignment: .leading)
+//                        Text("Value")
+//                            .frame(width: proxy.size.width/2, alignment: .leading)
+//                            .padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 0))
+//                            .border(width:1, edges: [.leading], color: Color.gray)
+//                    }
+//                    .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
+//                    .background(Color.gray.opacity(0.4))
+
                     
-                    GeometryReader { proxy in
+                    Section(header: HStack {
+                        Text("Field")
+                            .frame(width: proxy.size.width/2, alignment: .leading)
+                        Text("Value")
+                            .frame(width: proxy.size.width/2, alignment: .leading)
+                            .padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 0))
+                            .border(width:1, edges: [.leading], color: Color.gray)
+                    }
+//                    .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
+//                    .background(Color.gray.opacity(0.4))
+                    ) {
+                    ForEach(hashMap.sorted(by: >), id:\.key) { key, value in
+                        
                         HStack {
-                            Text(key)
-                                .frame(minWidth: proxy.size.width/2, alignment: .leading)
-                            //                        .multilineTextAlignment(.leading)
-                            //                        TextField("Key", text: $text)
+                            
+                            TextField("text field", text: $text).environment(\.isEnabled, true)
+                                .focusable(true)
+                                .textFieldStyle(PlainTextFieldStyle())
+                                .frame(width: proxy.size.width/2, alignment: .leading)
                             Text(value)
                                 .multilineTextAlignment(.leading)
-                                .frame(minWidth: proxy.size.width/2, alignment: .leading)
+                                .frame(width: proxy.size.width/2, alignment: .leading)
+                                .onTapGesture(count: 2) {
+                                               print("double clicked")
+                                           }
                         }
-//                        Button("width", action: {
-//                            logger.info("width: \(proxy.size.width)")
-//                        })
+                        .background(Color.blue.opacity(0.1))
                     }
+                }
+                .collapsible(false)
                     
                 }
                 //                }

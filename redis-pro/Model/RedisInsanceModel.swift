@@ -83,6 +83,17 @@ class RedisInstanceModel:ObservableObject, Identifiable {
     }
     
     func queryKeys(size:Int) -> [RedisKeyModel] {
+        
         return [RedisKeyModel](repeating: RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.STRING.rawValue), count: 10)
+    }
+    
+    func queryKeyPage(page:Page, keywords:String) -> Void {
+        do {
+            let keys:(Int, [RedisKey]) = try getConnection()!.scanKeys(startingFrom: page.start, matching: keywords, count: page.size).wait()
+            
+            logger.info("redis scan keys, start: \(keys.0), keys: \(keys.1)")
+        } catch let err {
+            logger.error("query key page error \(err)")
+        }
     }
 }

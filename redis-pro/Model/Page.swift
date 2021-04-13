@@ -15,4 +15,8 @@ struct Page {
     var totalPage:Int {
         total < 1 ? 0 : (total % size == 0 ? total / size : total / size + 1)
     }
+    
+    var start:Int {
+        (current - 1) *  size
+    }
 }

@@ -73,7 +73,7 @@ struct RedisKeysListView: View {
             .frame(minWidth: 500, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
         }
         .onAppear{
-            
+            redisInstanceModel.queryKeyPage(page: Page(), keywords: "")
         }
     }
     

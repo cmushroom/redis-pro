@@ -12,7 +12,7 @@ import Logging
 
 struct LoginForm: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
-    @StateObject var redisFavoriteModel: RedisFavoriteModel
+    @ObservedObject var redisFavoriteModel: RedisFavoriteModel
     @ObservedObject var redisModel:RedisModel
     @State private var loading:Bool = false
     @State private var pong:Bool = false

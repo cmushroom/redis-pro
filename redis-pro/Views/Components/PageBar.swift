@@ -39,8 +39,9 @@ struct PageBar: View {
                 Text("200").tag(200)
                 Text("500").tag(500)
             }
+            .font(/*@START_MENU_TOKEN@*/.footnote/*@END_MENU_TOKEN@*/)
             .frame(width: 70)
-            HStack {
+            HStack(alignment:.center) {
                 MIcon(icon: "chevron.left").disabled(hasPrevPage)
                 Text("\(current)/\(totalPage)")
                     .font(.footnote)

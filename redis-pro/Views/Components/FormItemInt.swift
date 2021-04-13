@@ -27,8 +27,8 @@ struct FormItemInt: View {
             if !label.isEmpty {
                 FormLabel(label: label, width: labelWidth)
             }
-            TextField(placeholder ?? label, text: valueProxy)
-            
+            MTextField(value: valueProxy, placeholder: placeholder ?? label)
+//            TextField(placeholder ?? label, text: valueProxy)
         }
     }
 }

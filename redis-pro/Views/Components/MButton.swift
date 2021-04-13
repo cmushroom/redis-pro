@@ -11,7 +11,7 @@ struct MButton: View {
     @State private var showAlert = false
     @State private var msg:String = ""
     var text:String
-    var action: () throws -> Void
+    var action: () throws -> Void = {}
     var type:String = ButtonTypeEnum.DEFAULT.rawValue
     
     

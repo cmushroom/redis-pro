@@ -25,81 +25,75 @@ struct LoginForm: View {
     }
     
     var body: some View {
-        HStack {
-            TabView{
-                Form {
-                    VStack(alignment: .leading) {
+        TabView{
+            Form {
+                Section {
+                    VStack(alignment: .leading, spacing: 14) {
                         FormItemText(label: "Name", placeholder: "name", value: $redisModel.name)
                         FormItemText(label: "Host", placeholder: "host", value: $redisModel.host)
                         FormItemInt(label: "Port", placeholder: "port", value: $redisModel.port)
                         FormItemText(label: "Password", value: $redisModel.password)
                         FormItemInt(label: "Database", value: $redisModel.database)
                     }
-                    
-                    Section {
-                        Divider()
-                        HStack(alignment: .center){
-                            Button(action: {
-                                if let url = URL(string: "https://github.com/cmushroom/redis-pro") {
-                                    NSWorkspace.shared.open(url)
-                                }
-                            }) {
-                                Image(systemName: "questionmark.circle")
-                                    .font(.system(size: 18.0))
-                            }
-                            .buttonStyle(PlainButtonStyle())
-                            
-                            if (loading) {
-                                ProgressView().progressViewStyle(CircularProgressViewStyle()).scaleEffect(CGSize(width: 0.5, height: 0.5))
-                            }
-                            
-                            Text(pong ? "Connect successed!" : " ")
-                                .font(.body)
-                                .multilineTextAlignment(.leading)
-                                .lineLimit(1)
-                                .frame(height: 10.0)
-                            
-                            Spacer()
-                            //                            NavigationLink(
-                            //                                "", destination: HomeView(redisInstanceModel: RedisInstanceModel(redisModel: RedisModel())),
-                            //                                isActive: $isJump
-                            //                            ).frame(width:0)
-                            MButton(text: "Connect", action: onConnect)
-                                .buttonStyle(BorderedButtonStyle())
-                                .keyboardShortcut(.defaultAction)
-                            
-                        }
-                        .frame(height: 40.0)
-                        HStack(alignment: .center){
-                            MButton(text: "Add to Favorites", action: onAddRedisInstanceAction)
-                            Spacer()
-                            MButton(text: "Save changes", action: onSaveRedisInstanceAction)
-                            Spacer()
-                            MButton(text: "Test connection", action: onTestConnectionAction)
-                        }
-                    }
-                }
-                .padding(.horizontal, 8.0)
-                .tabItem {
-                    Label("TCP/IP", systemImage: "bolt.fill")
                 }
                 
-                //                Text("Another Tab")
-                //                    .tabItem {
-                //                        Image(systemName: "2.square.fill")
-                //                        Text("Second")
-                //                    }
-                //                Text("The Last Tab")
-                //                    .tabItem {
-                //                        Image(systemName: "3.square.fill")
-                //                        Text("Third")
-                //                    }
+                Section {
+                    Divider()
+                        .padding(.vertical, 8)
+                    HStack(alignment: .center){
+                        Button(action: {
+                            if let url = URL(string: "https://github.com/cmushroom/redis-pro") {
+                                NSWorkspace.shared.open(url)
+                            }
+                        }) {
+                            Image(systemName: "questionmark.circle")
+                                .font(.system(size: 18.0))
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        
+                        if (loading) {
+                            ProgressView().progressViewStyle(CircularProgressViewStyle()).scaleEffect(CGSize(width: 0.5, height: 0.5))
+                        }
+                        
+                        Text(pong ? "Connect successed!" : " ")
+                            .font(.body)
+                            .multilineTextAlignment(.leading)
+                            .lineLimit(1)
+                            .frame(height: 10.0)
+                        
+                        Spacer()
+                        //                            NavigationLink(
+                        //                                "", destination: HomeView(redisInstanceModel: RedisInstanceModel(redisModel: RedisModel())),
+                        //                                isActive: $isJump
+                        //                            ).frame(width:0)
+                        MButton(text: "Connect", action: onConnect)
+                            .buttonStyle(BorderedButtonStyle())
+                            .keyboardShortcut(.defaultAction)
+                        
+                    }
+//                    .frame(height: 40.0)
+                    HStack(alignment: .center){
+                        MButton(text: "Add to Favorites", action: onAddRedisInstanceAction)
+                        Spacer()
+                        MButton(text: "Save changes", action: onSaveRedisInstanceAction)
+                        Spacer()
+                        MButton(text: "Test connection", action: onTestConnectionAction)
+                    }
+                }
             }
-            .padding(10.0)
-            .frame(width: 400.0, height: 400)
+            .padding(.horizontal, 18.0)
+            .tabItem {
+                Label("TCP/IP", systemImage: "bolt.fill")
+            }
+            
+            //                Text("Another Tab")
+            //                    .tabItem {
+            //                        Image(systemName: "2.square.fill")
+            //                        Text("Second")
+            //                    }
         }
-        .padding(10.0)
-        //        .border(Color.blue, width: /*@START_MENU_TOKEN@*/1/*@END_MENU_TOKEN@*/)
+        .padding(20.0)
+        .frame(width: 420.0, height: 340.0)
     }
     
     
@@ -158,7 +152,7 @@ struct LoginForm: View {
     
     func onConnect() throws -> Void {
         logger.info("test connection, name: \(redisModel.name), host: \(redisModel.host), port: \(redisModel.port), password: \(redisModel.password)")
-//        self.isJump = true
+        //        self.isJump = true
         redisInstanceModel.isConnect.toggle()
         print("redis instance is connect: \(redisInstanceModel.isConnect)")
     }

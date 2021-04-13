@@ -19,7 +19,7 @@ struct FormItemText: View {
             if !label.isEmpty {
                 FormLabel(label: label, width: labelWidth, required: required)
             }
-            TextField(placeholder ?? label, text: $value)
+            MTextField(value: $value, placeholder: placeholder ?? label)
         }
     }
 }

@@ -22,29 +22,12 @@ struct SearchBar: View {
         
         HStack {
             // Search text field
-//            ZStack (alignment: .trailing) {
-//
-//            }
-            TextField("Search...", text: $keywords, onEditingChanged: { isEditing in
-            }, onCommit: doAction)
-            .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 10))
-            .textFieldStyle(PlainTextFieldStyle())
-            .foregroundColor(.primary)
-            
-            
-            MIcon(icon: "magnifyingglass", fontSize: 14, action: doAction)
-                .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 4))
+            MTextField(value: $keywords, placeholder: "Search...", suffix: "magnifyingglass")
             
             if showFuzzy {
                 Toggle("Fuzzy", isOn: $fuzzy)
             }
         }
-        //            .padding(EdgeInsets(top: 8, leading: 6, bottom: 8, trailing: 6))
-        // For magnifying glass and placeholder test
-//        .foregroundColor(.secondary)
-//        .background(Color.gray.opacity(0.2))
-        .cornerRadius(4.0)
-        
     }
     
     func doAction() -> Void {

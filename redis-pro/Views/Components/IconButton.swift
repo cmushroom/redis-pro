@@ -11,7 +11,7 @@ struct IconButton: View {
     @State private var showAlert = false
     @State private var msg:String = ""
     var icon:String
-    var name:String
+    var name:String?
     
     var action: () throws -> Void = {
         print("icon button action...")
@@ -23,7 +23,9 @@ struct IconButton: View {
                 Image(systemName: icon)
                     .font(.system(size: 12.0))
                     .padding(0)
-                Text(name)
+                if name != nil {
+                    Text(name!)
+                }
             }
         }
         .buttonStyle(BorderedButtonStyle())

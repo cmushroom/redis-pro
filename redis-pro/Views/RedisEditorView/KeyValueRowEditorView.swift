@@ -23,8 +23,9 @@ struct KeyValueRowEditorView: View {
                 IconButton(icon: "trash", name: "Delete", action: onDeleteAction)
                 
                 SearchBar(action: {k in
-                    logger.info("on sssss \(k)")
+                    logger.info("on search commit: \(k)")
                 })
+
                 Spacer()
                 PageBar()
             }

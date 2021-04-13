@@ -40,7 +40,7 @@ struct MTextField: View {
                     .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
             }
         }
-        .padding(EdgeInsets(top: 2, leading: 4, bottom: 2, trailing: 4))
+        .padding(EdgeInsets(top: 3, leading: 4, bottom: 3, trailing: 4))
         .background(Color.white)
         .cornerRadius(4)
         .overlay(

@@ -8,9 +8,11 @@
 import SwiftUI
 
 struct RedisKeysListView: View {
+    var redisInstanceModel:RedisInstanceModel
     var redisKeyModels:[RedisKeyModel] = testData()
     @State var selectedRedisKeyIndex:Int?
     @State var keywords:String = ""
+    @State var page:Page = Page()
     @State private var pageSize:Int = 50
     
     var filteredRedisKeyModel: [RedisKeyModel] {
@@ -22,14 +24,14 @@ struct RedisKeysListView: View {
     
     var body: some View {
         HSplitView {
-            VStack(alignment: .leading,
-                   spacing: 0) {
+            VStack(alignment: .leading, spacing: 0) {
                 // header area
                 VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 2) {
                     // redis search ...
-                    SearchBar(showFuzzy: true)
+                    SearchBar(showFuzzy: true, placeholder: "Search keys...")
                         .frame(minWidth: 220)
                         .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
+                    
                     // redis key operate ...
                     HStack {
                         IconButton(icon: "plus", name: "Add", action: onDeleteAction)
@@ -49,13 +51,9 @@ struct RedisKeysListView: View {
                             //                            .background(index % 2 == 0 ? Color.gray.opacity(0.2) : Color.clear)
                             //                            .border(Color.blue, width: /*@START_MENU_TOKEN@*/1/*@END_MENU_TOKEN@*/)
                             .listRowInsets(EdgeInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0)))
-//                            .onTapGesture {
-//                                print("selection \(selectedRedisKeyIndex ?? 0)")
-//                            }
                     }
                     
                 }
-                
                 
                 .listStyle(PlainListStyle())
                 .frame(minWidth:220)
@@ -75,6 +73,7 @@ struct RedisKeysListView: View {
             .frame(minWidth: 500, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
         }
         .onAppear{
+            
         }
     }
     
@@ -83,6 +82,9 @@ struct RedisKeysListView: View {
     }
     func onDeleteAction() -> Void {
         logger.info("on delete redis key index: \(selectedRedisKeyIndex ?? -1)")
+    }
+    func queryKeysPage() -> Void {
+//        redisInstanceModel.getConnection()
     }
 
 }
@@ -103,6 +105,6 @@ func testData() -> [RedisKeyModel] {
 
 struct RedisKeysList_Previews: PreviewProvider {
     static var previews: some View {
-        RedisKeysListView(redisKeyModels: testData(), selectedRedisKeyIndex: 0)
+        RedisKeysListView(redisInstanceModel: RedisInstanceModel(redisModel: RedisModel()), redisKeyModels: testData(), selectedRedisKeyIndex: 0)
     }
 }

@@ -19,7 +19,6 @@ struct IndexView: View {
                 }
         } else {
             HomeView(redisInstanceModel: redisInstanceModel)
-                .environmentObject(redisInstanceModel)
                 .onAppear {
                     logger.info("redis pro home view init complete")
                 }

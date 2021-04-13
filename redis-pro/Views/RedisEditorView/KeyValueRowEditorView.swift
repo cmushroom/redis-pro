@@ -22,14 +22,14 @@ struct KeyValueRowEditorView: View {
                 IconButton(icon: "plus", name: "Add", action: onDeleteAction)
                 IconButton(icon: "trash", name: "Delete", action: onDeleteAction)
                 
-                SearchBar(action: {k in
+                SearchBar(placeholder: "Search field...", action: {k in
                     logger.info("on search commit: \(k)")
                 })
 
                 Spacer()
                 PageBar()
             }
-            .padding(EdgeInsets(top: 6, leading: 6, bottom: 6, trailing: 6))
+            .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
             
             GeometryReader { proxy in
                 List(selection: $selectKey) {

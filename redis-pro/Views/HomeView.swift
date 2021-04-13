@@ -9,8 +9,9 @@ import SwiftUI
 
 struct HomeView: View {
     var redisInstanceModel:RedisInstanceModel
+    
     var body: some View {
-        RedisKeysListView()
+        RedisKeysListView(redisInstanceModel:redisInstanceModel)
     }
 }
 

@@ -12,8 +12,8 @@ import Logging
 
 struct LoginForm: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
-    @ObservedObject var redisFavoriteModel: RedisFavoriteModel
-    @ObservedObject var redisModel:RedisModel
+    @StateObject var redisFavoriteModel: RedisFavoriteModel
+    @StateObject var redisModel:RedisModel
     @State private var loading:Bool = false
     @State private var pong:Bool = false
     @State private var isJump:Bool = false
@@ -153,6 +153,12 @@ struct LoginForm: View {
     func onConnect() throws -> Void {
         logger.info("test connection, name: \(redisModel.name), host: \(redisModel.host), port: \(redisModel.port), password: \(redisModel.password)")
         //        self.isJump = true
+//        redisInstanceModel.redisModel = redisModel
+//        do {
+//        try! redisInstanceModel.ping()
+//        } catch let e{
+//            throw e
+//        }
         redisInstanceModel.isConnect.toggle()
         print("redis instance is connect: \(redisInstanceModel.isConnect)")
     }

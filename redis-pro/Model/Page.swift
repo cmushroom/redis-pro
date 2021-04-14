@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct Page {
+class Page {
+    var cursor:Int = 0
     var current:Int = 1
     var size:Int = 50
     var total:Int = 0

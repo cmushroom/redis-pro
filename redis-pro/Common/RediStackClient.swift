@@ -20,10 +20,37 @@ class RediStackClient{
         self.redisModel = redisModel
     }
     
-    func scan(page:Page, keywords:String?) throws -> (cursor:Int, keys:[String]) {
+    func pageKeys(page:Page, keywords:String?) throws -> [String] {
         do {
-            logger.info("redis keys scan, page: \(page), keywords: \(keywords ?? "")")
-            return try getConnection().scan(startingFrom: page.start, matching: (keywords == nil || keywords!.isEmpty) ? "*" : keywords!, count: page.size).wait()
+            logger.info("redis keys page scan, page: \(page), keywords: \(String(describing: keywords))")
+            
+            let match = (keywords == nil || keywords!.isEmpty) ? nil : keywords
+            
+            var keys:[String] = [String]()
+            var cursor:Int = page.cursor
+            
+            while true {
+                let res:(cursor:Int, keys:[String]) = try scan(cursor:cursor, keywords: match)
+                
+                keys.append(contentsOf: res.1)
+                
+                cursor = res.0
+                page.cursor = cursor
+                if cursor == 0 || keys.count == page.size {
+                    break
+                }
+            }
+           
+            return keys
+        } catch {
+            throw BizError.RedisError(message: "\(error)")
+        }
+    }
+    
+    func scan(cursor:Int, keywords:String?, count:Int? = 1) throws -> (cursor:Int, keys:[String]) {
+        do {
+            logger.debug("redis keys scan, cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
+            return try getConnection().scan(startingFrom: cursor, matching: keywords, count: count).wait()
         } catch {
             logger.error("redis keys scan error \(error)")
             throw BizError.RedisError(message: "redis keys scan error \(error)" )

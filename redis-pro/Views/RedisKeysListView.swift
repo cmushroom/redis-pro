@@ -85,7 +85,7 @@ struct RedisKeysListView: View {
     }
     func onQueryKeyPageAction(keywords:String) -> Void {
         do {
-            let keysPage = try redisInstanceModel.getClient().scan(page: page, keywords: keywords)
+            let keysPage = try redisInstanceModel.getClient().pageKeys(page: page, keywords: keywords)
             logger.info("keys page \(keysPage)")
         } catch {
             redisInstanceModel.alertContext = AlertContext(true, msg: "scan redis keys error: \(error)")

@@ -31,13 +31,14 @@ class RedisInstanceModel:ObservableObject, Identifiable {
             return rediStackClient!
         }
         
-        return RediStackClient(redisModel:redisModel)
+        rediStackClient = RediStackClient(redisModel:redisModel)
+        return rediStackClient!
     }
     
     
     func queryKeyPage(page:Page, keywords:String) -> Void{
         do {
-            let v2 = try getClient().scan(page: page, keywords: keywords)
+            let v2 = try getClient().pageKeys(page: page, keywords: keywords)
             logger.info("query key page : \(v2)")
         } catch {
             logger.error("query key page error \(error)")
@@ -55,6 +56,7 @@ class RedisInstanceModel:ObservableObject, Identifiable {
     }
 
     func close() -> Void {
+        logger.info("redis stack client close...")
         rediStackClient?.close()
     }
 }

@@ -13,7 +13,7 @@ struct MTextField: View {
     var placeholder:String?
     var suffix:String?
     @State private var isEditing = false
-    var onCommit:(String) -> Void = {_ in }
+    var onCommit:() -> Void = {}
     
     let logger = Logger(label: "textfield")
     
@@ -28,11 +28,6 @@ struct MTextField: View {
             .textFieldStyle(PlainTextFieldStyle())
             .onHover { inside in
                 self.isEditing = inside
-                if inside {
-                    NSCursor.pointingHand.push()
-                } else {
-                    NSCursor.pop()
-                }
             }
             
             if suffix != nil {
@@ -52,7 +47,7 @@ struct MTextField: View {
     
     func doAction() -> Void {
         logger.info("on textField commit, value: \(value)")
-        onCommit(value)
+        onCommit()
     }
 }
 

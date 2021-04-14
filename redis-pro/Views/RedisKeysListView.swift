@@ -9,7 +9,7 @@ import SwiftUI
 
 struct RedisKeysListView: View {
     var redisInstanceModel:RedisInstanceModel
-    var redisKeyModels:[RedisKeyModel] = testData()
+    @State var redisKeyModels:[RedisKeyModel] = testData()
     @State var selectedRedisKeyIndex:Int?
     @State var keywords:String = ""
     @State var page:Page = Page()
@@ -28,7 +28,7 @@ struct RedisKeysListView: View {
                 // header area
                 VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 2) {
                     // redis search ...
-                    SearchBar(showFuzzy: true, placeholder: "Search keys...")
+                    SearchBar(showFuzzy: true, placeholder: "Search keys...", action: onQueryKeyPageAction)
                         .frame(minWidth: 220)
                         .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
                     
@@ -36,7 +36,7 @@ struct RedisKeysListView: View {
                     HStack {
                         IconButton(icon: "plus", name: "Add", action: onDeleteAction)
                         IconButton(icon: "trash", name: "Delete", action: onDeleteAction)
-
+                        
                         Spacer()
                     }
                 }
@@ -61,7 +61,7 @@ struct RedisKeysListView: View {
                 
                 // footer
                 PageBar()
-                .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 8))
+                    .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 8))
             }
             .padding(0)
             
@@ -73,7 +73,7 @@ struct RedisKeysListView: View {
             .frame(minWidth: 500, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
         }
         .onAppear{
-            redisInstanceModel.queryKeyPage(page: Page(), keywords: "")
+            //            redisInstanceModel.queryKeyPage(page: Page(), keywords: "")
         }
     }
     
@@ -83,10 +83,13 @@ struct RedisKeysListView: View {
     func onDeleteAction() -> Void {
         logger.info("on delete redis key index: \(selectedRedisKeyIndex ?? -1)")
     }
-    func queryKeysPage() -> Void {
-//        redisInstanceModel.getConnection()
+    func onQueryKeyPageAction(keywords:String) -> Void {
+        do {
+            try redisInstanceModel.getClient().scan(page: Page(), keywords: keywords)
+        } catch {
+            redisInstanceModel.alertContext = AlertContext(true, msg: "scan redis keys error: \(error)")
+        }
     }
-
 }
 
 
@@ -97,7 +100,7 @@ func testData() -> [RedisKeyModel] {
     redisKeys.append(RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.LIST.rawValue))
     redisKeys.append(RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.SET.rawValue))
     redisKeys.append(RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.ZSET.rawValue))
-
+    
     
     
     return redisKeys

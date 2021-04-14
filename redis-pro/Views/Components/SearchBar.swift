@@ -24,7 +24,7 @@ struct SearchBar: View {
         
         HStack {
             // Search text field
-            MTextField(value: $keywords, placeholder: placeholder, suffix: "magnifyingglass")
+            MTextField(value: $keywords, placeholder: placeholder, suffix: "magnifyingglass", onCommit: doAction)
             
             if showFuzzy {
                 Toggle("Fuzzy", isOn: $fuzzy)

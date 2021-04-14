@@ -5,9 +5,9 @@
         "package": "RediStack",
         "repositoryURL": "https://gitee.com/chengpan168_admin/RediStack.git",
         "state": {
-          "branch": "master",
-          "revision": "03a066f8f5cabc095218d8ffaeb923387b141615",
-          "version": null
+          "branch": null,
+          "revision": "b2367ac33eb8632011c1ec7afff12307838a4dab",
+          "version": "1.1.0"
         }
       },
       {
@@ -35,15 +35,6 @@
           "branch": null,
           "revision": "3be4e0980075de10a4bc8dee07491d49175cfd7a",
           "version": "2.27.0"
-        }
-      },
-      {
-        "package": "swift-service-discovery",
-        "repositoryURL": "https://github.com/apple/swift-service-discovery",
-        "state": {
-          "branch": null,
-          "revision": "fcf03632e5dc098dc433ffdcf93b42c9b6321968",
-          "version": "1.0.0"
         }
       }
     ]

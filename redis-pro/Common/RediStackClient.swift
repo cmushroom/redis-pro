@@ -20,8 +20,26 @@ class RediStackClient{
         self.redisModel = redisModel
     }
     
-    func scan(page:Page, keywords:String) throws -> (cursor:Int, keys:[String]) {
-        return try getConnection().scan(startingFrom: page.start, matching: keywords, count: page.size).wait()
+    func scan(page:Page, keywords:String?) throws -> (cursor:Int, keys:[String]) {
+        do {
+            logger.info("redis keys scan, page: \(page), keywords: \(keywords ?? "")")
+            return try getConnection().scan(startingFrom: page.start, matching: (keywords == nil || keywords!.isEmpty) ? "*" : keywords!, count: page.size).wait()
+        } catch {
+            logger.error("redis keys scan error \(error)")
+            throw BizError.RedisError(message: "redis keys scan error \(error)" )
+        }
+    }
+    
+    func dbsize() throws -> Int {
+        do {
+            let res:RESPValue = try getConnection().send(command: "dbsize").wait()
+            
+            logger.info("query redis dbsize success: \(res.int!)")
+            return res.int!
+        } catch {
+            logger.info("query redis dbsize error: \(error)")
+            throw BizError.RedisError(message: "query redis dbsize error: \(error)")
+        }
     }
     
     func ping() throws -> Bool {
@@ -29,7 +47,7 @@ class RediStackClient{
             let pong = try getConnection().ping().wait()
             
             logger.info("ping redis server: \(pong)")
-
+            
             if ("PONG".caseInsensitiveCompare(pong) == .orderedSame) {
                 return true
             }
@@ -43,6 +61,7 @@ class RediStackClient{
     
     func getConnection() throws -> RedisConnection{
         if connection != nil {
+            logger.debug("get redis exist connection...")
             return connection!
         }
         
@@ -60,7 +79,7 @@ class RediStackClient{
                 , boundEventLoop: eventLoop
             ).wait()
             
-            logger.info("get connection success from redis")
+            logger.info("get new redis connection success from redis")
             
         } catch let error as RedisError{
             print("connect redis error \(error.message)")
@@ -77,7 +96,7 @@ class RediStackClient{
                 return
             }
             
-            try connection!.close()
+            try connection!.close().wait()
             logger.info("redis connection close success")
             
         } catch {

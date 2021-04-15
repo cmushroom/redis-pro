@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Logging
 
 struct RedisKeysListView: View {
     var redisInstanceModel:RedisInstanceModel
@@ -13,6 +14,8 @@ struct RedisKeysListView: View {
     @State var selectedRedisKeyIndex:Int?
     @State var keywords:String = ""
     @StateObject var page:Page = Page()
+    
+    let logger = Logger(label: "redis-key-list-view")
     
     var filteredRedisKeyModel: [RedisKeyModel] {
         redisKeyModels

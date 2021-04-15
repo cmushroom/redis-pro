@@ -13,6 +13,8 @@ class RedisFavoriteModel:ObservableObject {
     @Published var redisModels: [RedisModel] = [RedisModel](repeating: RedisModel(), count: 0)
     let userDefaults = UserDefaults.standard
     
+    let logger = Logger(label: "redis-favorite-model")
+    
     func loadAll() -> Void {
         redisModels.removeAll()
         

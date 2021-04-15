@@ -11,6 +11,9 @@ import Logging
 struct RedisKeySearchRowView: View {
     @Binding var value:String
     @State var fuzzy:Bool = false
+    
+    let logger = Logger(label: "redis-key-search-view")
+    
     var body: some View {
         HStack {
             TextField("Please input keywords", text: $value)

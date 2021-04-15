@@ -17,7 +17,6 @@ struct MButton: View {
     
     var body: some View {
         Button(text, action: doAction)
-//            .buttonStyle(style)
             .alert(isPresented: $showAlert) {
                 Alert(title: Text("warnning"), message: Text(msg), dismissButton: .default(Text("OK")))
             }
@@ -31,22 +30,18 @@ struct MButton: View {
         print("m button do action...")
         do {
             try action()
-        } catch BizError.RedisError(let message) {
-            print(message)
-            showAlert = true
-            msg = message
         } catch {
             showAlert = true
-            msg = "system error: \(error)"
+            msg = "\(error)"
         }
+        
     }
     
-}
-
-struct MButton_Previews: PreviewProvider {
-    static var previews: some View {
-        MButton(text: "button ", action: {
-            print("hello")
-        })
+    struct MButton_Previews: PreviewProvider {
+        static var previews: some View {
+            MButton(text: "button ", action: {
+                print("hello")
+            })
+        }
     }
 }

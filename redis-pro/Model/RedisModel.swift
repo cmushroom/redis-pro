@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-class RedisModel:ObservableObject, Identifiable {
+class RedisModel:ObservableObject, Identifiable, CustomStringConvertible {
     @Published var id: String = UUID().uuidString
     @Published var name: String = "New Favorite"
     @Published var host: String = "127.0.0.1"
@@ -16,6 +16,7 @@ class RedisModel:ObservableObject, Identifiable {
     @Published var database: Int = 0
     @Published var password: String = ""
     @Published var isFavorite: Bool = false
+    @Published var ping: Bool = false
     
     var image:Image  = Image("icon-redis")
     
@@ -44,5 +45,10 @@ class RedisModel:ObservableObject, Identifiable {
         self.port = dictionary["port"] as! Int
         self.database = dictionary["database"] as! Int
         self.password = dictionary["password"] as! String
+    }
+    
+    
+    var description: String {
+        return "RedisModel:[id:\(id), name:\(name), host:\(host), port:\(port), password:\(password), database:\(database)]"
     }
 }

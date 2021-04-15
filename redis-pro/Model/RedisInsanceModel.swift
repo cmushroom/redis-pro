@@ -46,17 +46,23 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         }
     }
     
-    func ping() throws -> Bool{
-        do {
-            return try getClient().ping()
-        } catch {
-            print("connect redis error \(error)")
-            throw BizError.RedisError(message: "ping redis server error: \(error)")
-        }
+    func connect(redisModel:RedisModel) throws -> Void {
+        self.redisModel = redisModel
+        try getClient().ping()
+        isConnect = true
     }
-
+    
+    func testConnect() throws -> Bool {
+        defer {
+            close()
+        }
+        
+        return try getClient().ping()
+    }
+    
     func close() -> Void {
         logger.info("redis stack client close...")
         rediStackClient?.close()
+        rediStackClient = nil
     }
 }

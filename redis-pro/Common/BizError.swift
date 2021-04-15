@@ -7,6 +7,12 @@
 
 import Foundation
 
-enum BizError: Error{
-    case RedisError(message: String)
+struct BizError: Error{
+    public let message: String
+
+    public var errorDescription: String? { return message }
+    
+    init(message:String) {
+        self.message = message
+    }
 }

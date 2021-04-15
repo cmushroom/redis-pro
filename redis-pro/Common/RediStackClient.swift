@@ -55,7 +55,7 @@ class RediStackClient{
             
             return try toRedisKeyModels(keys: keys)
         } catch {
-            throw BizError.RedisError(message: "\(error)")
+            throw BizError(message: "\(error)")
         }
     }
     
@@ -75,7 +75,7 @@ class RediStackClient{
             return redisKeyModels
         } catch {
             logger.error("query redis key  type error \(error)")
-            throw BizError.RedisError(message: "query redis key  type error \(error)")
+            throw BizError(message: "query redis key  type error \(error)")
         }
     }
     
@@ -86,7 +86,7 @@ class RediStackClient{
             return res.string!
         } catch {
             logger.error("query redis key  type error \(error)")
-            throw BizError.RedisError(message: "query redis key  type error \(error)")
+            throw BizError(message: "query redis key  type error \(error)")
         }
     }
     
@@ -96,7 +96,7 @@ class RediStackClient{
             return try getConnection().scan(startingFrom: cursor, matching: keywords, count: count).wait()
         } catch {
             logger.error("redis keys scan error \(error)")
-            throw BizError.RedisError(message: "redis keys scan error \(error)" )
+            throw BizError(message: "redis keys scan error \(error)" )
         }
     }
     
@@ -108,7 +108,7 @@ class RediStackClient{
             return res.int!
         } catch {
             logger.info("query redis dbsize error: \(error)")
-            throw BizError.RedisError(message: "query redis dbsize error: \(error)")
+            throw BizError(message: "query redis dbsize error: \(error)")
         }
     }
     
@@ -119,14 +119,17 @@ class RediStackClient{
             logger.info("ping redis server: \(pong)")
             
             if ("PONG".caseInsensitiveCompare(pong) == .orderedSame) {
+                redisModel.ping = true
                 return true
             }
-        } catch let error {
-            logger.error("ping redis server error \(error)")
-            throw BizError.RedisError(message: "ping redis server error \(error)" )
-        }
         
-        return false
+            redisModel.ping = false
+            return false
+        } catch let error {
+            redisModel.ping = false
+            logger.error("ping redis server error \(error)")
+            throw error
+        }
     }
     
     func getConnection() throws -> RedisConnection{
@@ -151,9 +154,9 @@ class RediStackClient{
             
             logger.info("get new redis connection success from redis")
             
-        } catch let error as RedisError{
-            print("connect redis error \(error.message)")
-            throw BizError.RedisError(message: error.message)
+        } catch {
+            logger.error("get connect from redis error \(error)")
+            throw error
         }
         
         return connection!
@@ -167,6 +170,7 @@ class RediStackClient{
             }
             
             try connection!.close().wait()
+            connection = nil
             logger.info("redis connection close success")
             
         } catch {

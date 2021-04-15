@@ -12,11 +12,13 @@ import Logging
 
 struct LoginForm: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
+    @EnvironmentObject var globalContext:GlobalContext
+    
+    @State private var loading:Bool = false
+    
     @ObservedObject var redisFavoriteModel: RedisFavoriteModel
     @ObservedObject var redisModel:RedisModel
-    @State private var loading:Bool = false
-    @State private var pong:Bool = false
-    @State private var isJump:Bool = false
+    
     
     let logger = Logger(label: "redis-login")
     
@@ -55,7 +57,7 @@ struct LoginForm: View {
                             ProgressView().progressViewStyle(CircularProgressViewStyle()).scaleEffect(CGSize(width: 0.5, height: 0.5))
                         }
                         
-                        Text(pong ? "Connect successed!" : " ")
+                        Text(redisModel.ping ? "Connect successed!" : " ")
                             .font(.body)
                             .multilineTextAlignment(.leading)
                             .lineLimit(1)
@@ -98,14 +100,10 @@ struct LoginForm: View {
     
     
     func onTestConnectionAction() throws -> Void {
-        logger.info("test connection, name: \(redisModel.name), host: \(redisModel.host), port: \(redisModel.port), password: \(redisModel.password)")
-        loading = true
-        defer {
-            loading = false
-        }
-        let redisInstanceModel = RedisInstanceModel(redisModel: redisModel)
+        logger.info("test connect to redis server: \(redisModel)")
+        redisInstanceModel.redisModel = redisModel
         
-        self.pong = try redisInstanceModel.ping()
+        try redisInstanceModel.testConnect()
     }
     
     func onAddRedisInstanceAction()  throws -> Void {
@@ -151,16 +149,8 @@ struct LoginForm: View {
     }
     
     func onConnect() throws -> Void {
-        logger.info("test connection, name: \(redisModel.name), host: \(redisModel.host), port: \(redisModel.port), password: \(redisModel.password)")
-        //        self.isJump = true
-        redisInstanceModel.redisModel = redisModel
-        do {
-            try redisInstanceModel.ping()
-        } catch let e{
-            throw e
-        }
-        redisInstanceModel.isConnect.toggle()
-        print("redis instance is connect: \(redisInstanceModel.isConnect)")
+        try redisInstanceModel.connect(redisModel:redisModel)
+        logger.info("on connect to redis server: \(redisModel)")
     }
     
 }

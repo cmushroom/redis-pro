@@ -20,7 +20,7 @@ class RediStackClient{
         self.redisModel = redisModel
     }
     
-    func pageKeys(page:Page, keywords:String?) throws -> [String] {
+    func pageKeys(page:Page, keywords:String?) throws -> [RedisKeyModel] {
         do {
             logger.info("redis keys page scan, page: \(page), keywords: \(String(describing: keywords))")
             
@@ -29,21 +29,61 @@ class RediStackClient{
             var keys:[String] = [String]()
             var cursor:Int = page.cursor
             
-            while true {
-                let res:(cursor:Int, keys:[String]) = try scan(cursor:cursor, keywords: match)
-                
-                keys.append(contentsOf: res.1)
-                
-                cursor = res.0
-                page.cursor = cursor
-                if cursor == 0 || keys.count == page.size {
-                    break
+            let res:(cursor:Int, keys:[String]) = try scan(cursor:cursor, keywords: match, count: page.size)
+            
+            keys.append(contentsOf: res.1)
+            
+            cursor = res.0
+            
+            // 如果取出数量不够 page.size, 继续迭带补满
+            if cursor != 0 && keys.count < page.size {
+                while true {
+                    let moreRes:(cursor:Int, keys:[String]) = try scan(cursor:cursor, keywords: match, count: 1)
+                    
+                    keys.append(contentsOf: moreRes.1)
+                    
+                    cursor = moreRes.0
+                    page.cursor = cursor
+                    if cursor == 0 || keys.count == page.size {
+                        break
+                    }
                 }
             }
-           
-            return keys
+            
+            return try toRedisKeyModels(keys: keys)
         } catch {
             throw BizError.RedisError(message: "\(error)")
+        }
+    }
+    
+    func toRedisKeyModels(keys:[String]) throws -> [RedisKeyModel] {
+        if keys.isEmpty {
+            return [RedisKeyModel]()
+        }
+        
+        var redisKeyModels:[RedisKeyModel] = [RedisKeyModel]()
+        
+        do {
+            
+            for key in keys {
+                redisKeyModels.append(RedisKeyModel(id: key, type: try type(key: key)))
+            }
+            
+            return redisKeyModels
+        } catch {
+            logger.error("query redis key  type error \(error)")
+            throw BizError.RedisError(message: "query redis key  type error \(error)")
+        }
+    }
+    
+    func type(key:String) throws -> String {
+        do {
+            let res:RESPValue = try getConnection().send(command: "type", with: [RESPValue.init(from: key)]).wait()
+            
+            return res.string!
+        } catch {
+            logger.error("query redis key  type error \(error)")
+            throw BizError.RedisError(message: "query redis key  type error \(error)")
         }
     }
     

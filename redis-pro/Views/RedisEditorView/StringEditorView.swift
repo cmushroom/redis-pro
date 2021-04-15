@@ -25,7 +25,7 @@ struct StringEditorView: View {
                 
                 // text editor
                 TextEditor(text: $text)
-                    .font(/*@START_MENU_TOKEN@*/.body/*@END_MENU_TOKEN@*/)
+                    .font(.body)
                     .multilineTextAlignment(.leading)
                     .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
                     .lineSpacing(1.5)

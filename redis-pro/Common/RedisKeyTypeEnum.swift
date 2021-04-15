@@ -8,6 +8,7 @@
 import Foundation
 
 enum RedisKeyTypeEnum: String,CaseIterable {
+    case NONE = "none"
     case STRING = "string"
     case HASH = "hash"
     case LIST = "list"

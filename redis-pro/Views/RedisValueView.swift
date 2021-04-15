@@ -18,7 +18,7 @@ struct RedisValueView: View {
             
             RedisValueEditView(redisKeyModel: redisKeyModel, value: "12342412")
         }
-        .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
+        .padding(2)
     }
 }
 

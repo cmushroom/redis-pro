@@ -20,8 +20,8 @@ struct RedisKeysListView: View {
     var filteredRedisKeyModel: [RedisKeyModel] {
         redisKeyModels
     }
-    var selectRedisKeyModel:RedisKeyModel {
-        redisKeyModels[selectedRedisKeyIndex ?? 0]
+    var selectRedisKeyModel:RedisKeyModel? {
+        redisKeyModels.isEmpty ? nil : redisKeyModels[selectedRedisKeyIndex ?? 0]
     }
     
     var body: some View {
@@ -69,7 +69,11 @@ struct RedisKeysListView: View {
             
             
             VStack(alignment: .leading, spacing: 0){
-                RedisValueView(redisKeyModel: selectRedisKeyModel)
+                if selectRedisKeyModel == nil {
+                    EmptyView()
+                } else {
+                    RedisValueView(redisKeyModel: selectRedisKeyModel!)
+                }
                 Spacer()
             }
             .frame(minWidth: 400, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)

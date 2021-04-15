@@ -50,6 +50,9 @@ class RediStackClient{
                 }
             }
             
+            let total = try dbsize()
+            page.total = total
+            
             return try toRedisKeyModels(keys: keys)
         } catch {
             throw BizError.RedisError(message: "\(error)")

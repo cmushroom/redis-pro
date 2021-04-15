@@ -10,13 +10,12 @@ import Logging
 
 struct SearchBar: View {
     
-    @State var keywords: String = ""
+    @Binding var keywords: String
     @State var fuzzy: Bool = false
     @State var showFuzzy: Bool = false
     var placeholder:String = "Search..."
     
-    
-    var action: (String) -> Void = {_ in }
+    var action: () -> Void = {}
     
     let logger = Logger(label: "search-bar")
     
@@ -34,12 +33,13 @@ struct SearchBar: View {
     
     func doAction() -> Void {
         logger.info("on search bar action, keywords: \(keywords)")
-        action(keywords)
+        action()
     }
 }
 
 struct SearchBar_Previews: PreviewProvider {
+    @State static var keywords:String = ""
     static var previews: some View {
-        SearchBar()
+        SearchBar(keywords: $keywords)
     }
 }

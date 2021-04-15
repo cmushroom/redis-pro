@@ -10,6 +10,7 @@ import Logging
 
 struct KeyValueRowEditorView: View {
     @State var text:String = ""
+    @State var keywords:String = ""
     @State var hashMap:[String: String] = ["testesttesttesttesttesttesttesttesttesttesttestt":"234243242343"]
     @State var selectKey:String?
     @State var isEditing:Bool = false
@@ -22,12 +23,10 @@ struct KeyValueRowEditorView: View {
                 IconButton(icon: "plus", name: "Add", action: onDeleteAction)
                 IconButton(icon: "trash", name: "Delete", action: onDeleteAction)
                 
-                SearchBar(placeholder: "Search field...", action: {k in
-                    logger.info("on search commit: \(k)")
-                })
+                SearchBar(keywords: $keywords, placeholder: "Search field...", action: onQueryField)
 
                 Spacer()
-                PageBar()
+                PageBar(page:Page())
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
             
@@ -89,6 +88,9 @@ struct KeyValueRowEditorView: View {
     
     func onDeleteAction() -> Void {
         print("hash field delete action...")
+    }
+    func onQueryField() -> Void {
+        print("on query field...")
     }
 }
 

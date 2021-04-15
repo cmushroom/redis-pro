@@ -12,8 +12,7 @@ struct RedisKeysListView: View {
     @State var redisKeyModels:[RedisKeyModel] = testData()
     @State var selectedRedisKeyIndex:Int?
     @State var keywords:String = ""
-    @State var page:Page = Page()
-    @State private var pageSize:Int = 50
+    @StateObject var page:Page = Page()
     
     var filteredRedisKeyModel: [RedisKeyModel] {
         redisKeyModels
@@ -28,7 +27,7 @@ struct RedisKeysListView: View {
                 // header area
                 VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 2) {
                     // redis search ...
-                    SearchBar(showFuzzy: true, placeholder: "Search keys...", action: onQueryKeyPageAction)
+                    SearchBar(keywords: $keywords, showFuzzy: true, placeholder: "Search keys...", action: onQueryKeyPageAction)
                         .frame(minWidth: 220)
                         .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
                     
@@ -60,7 +59,7 @@ struct RedisKeysListView: View {
                 .padding(.all, 0)
                 
                 // footer
-                PageBar()
+                PageBar(page: page, action: onQueryKeyPageAction)
                     .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 8))
             }
             .padding(0)
@@ -83,10 +82,11 @@ struct RedisKeysListView: View {
     func onDeleteAction() -> Void {
         logger.info("on delete redis key index: \(selectedRedisKeyIndex ?? -1)")
     }
-    func onQueryKeyPageAction(keywords:String) -> Void {
+    
+    func onQueryKeyPageAction() -> Void {
         do {
             let keysPage = try redisInstanceModel.getClient().pageKeys(page: page, keywords: keywords)
-            logger.info("query keys page: \(keysPage)")
+            logger.info("query keys page, keys: \(keysPage), page: \(String(describing: page))")
             redisKeyModels = keysPage
         } catch {
             redisInstanceModel.alertContext = AlertContext(true, msg: "scan redis keys error: \(error)")

@@ -16,7 +16,6 @@ class RedisInstanceModel:ObservableObject, Identifiable {
     @Published var loading:Bool = false
     @Published var isConnect:Bool = false
     var redisModel:RedisModel
-    @Published var alertContext:AlertContext = AlertContext()
     private var rediStackClient:RediStackClient?
     
     let logger = Logger(label: "redis-instance")
@@ -36,14 +35,10 @@ class RedisInstanceModel:ObservableObject, Identifiable {
     }
     
     
-    func queryKeyPage(page:Page, keywords:String) -> Void{
-        do {
+    func queryKeyPage(page:Page, keywords:String) throws -> Void{
             let v2 = try getClient().pageKeys(page: page, keywords: keywords)
             logger.info("query key page : \(v2)")
-        } catch {
-            logger.error("query key page error \(error)")
-            alertContext = AlertContext(true, msg: "query key page error \(error)")
-        }
+
     }
     
     func connect(redisModel:RedisModel) throws -> Void {

@@ -10,7 +10,9 @@ import Logging
 
 struct PageBar: View {
     @ObservedObject var page:Page
-    var action:() -> Void = {}
+    var action:() throws -> Void = {}
+    @State private var showAlert = false
+    @State private var msg:String = ""
     
     let logger = Logger(label: "page-bar")
     
@@ -20,8 +22,8 @@ struct PageBar: View {
             Text("Keys:\(page.total)")
                 .font(.footnote)
                 .padding(.leading, 4.0)
-                
-//            Spacer()
+            
+            //            Spacer()
             Picker("", selection: $page.size) {
                 Text("50").tag(50)
                 Text("100").tag(100)
@@ -40,17 +42,25 @@ struct PageBar: View {
                     .font(.footnote)
                     .multilineTextAlignment(.center)
                     .lineLimit(1)
-//                    .layoutPriority(1)
+                //                    .layoutPriority(1)
                 MIcon(icon: "chevron.right", action: doAction).disabled(!page.hasNextPage)
             }
             .layoutPriority(1)
         }
         .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("warnning"), message: Text(msg), dismissButton: .default(Text("OK")))
+        }
     }
     
     func doAction() -> Void {
         logger.info("page bar change action, page: \(page)")
-        action()
+        do {
+            try action()
+        } catch {
+            showAlert = true
+            msg = "\(error)"
+        }
     }
 }
 

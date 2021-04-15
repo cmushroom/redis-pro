@@ -15,7 +15,7 @@ struct SearchBar: View {
     @State var showFuzzy: Bool = false
     var placeholder:String = "Search..."
     
-    var action: () -> Void = {}
+    var action: () throws -> Void = {}
     
     let logger = Logger(label: "search-bar")
     
@@ -31,9 +31,9 @@ struct SearchBar: View {
         }
     }
     
-    func doAction() -> Void {
+    func doAction() throws -> Void {
         logger.info("on search bar action, keywords: \(keywords)")
-        action()
+        try action()
     }
 }
 

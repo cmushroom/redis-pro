@@ -13,7 +13,9 @@ struct MTextField: View {
     var placeholder:String?
     var suffix:String?
     @State private var isEditing = false
-    var onCommit:() -> Void = {}
+    var onCommit:() throws -> Void = {}
+    @State private var showAlert = false
+    @State private var msg:String = ""
     
     let logger = Logger(label: "textfield")
     
@@ -41,13 +43,21 @@ struct MTextField: View {
         .overlay(
             RoundedRectangle(cornerRadius: 4).stroke(Color.gray.opacity(isEditing ?  0.4 : 0.2), lineWidth: 1)
             )
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("warnning"), message: Text(msg), dismissButton: .default(Text("OK")))
+        }
 //        .border(Color.gray.opacity(isEditing ?  0.4 : 0.2), width: 1)
 //        .cornerRadius(4)
     }
     
     func doAction() -> Void {
         logger.info("on textField commit, value: \(value)")
-        onCommit()
+        do {
+            try onCommit()
+        } catch {
+            showAlert = true
+            msg = "\(error)"
+        }
     }
 }
 

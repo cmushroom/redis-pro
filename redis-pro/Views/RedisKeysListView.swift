@@ -31,7 +31,7 @@ struct RedisKeysListView: View {
                 VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 2) {
                     // redis search ...
                     SearchBar(keywords: $keywords, showFuzzy: true, placeholder: "Search keys...", action: onQueryKeyPageAction)
-                        .frame(minWidth: 220)
+                        //                        .frame(minWidth: 220)
                         .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
                     
                     // redis key operate ...
@@ -58,7 +58,7 @@ struct RedisKeysListView: View {
                 }
                 
                 .listStyle(PlainListStyle())
-                .frame(minWidth:220)
+                .frame(minWidth:150)
                 .padding(.all, 0)
                 
                 // footer
@@ -72,7 +72,7 @@ struct RedisKeysListView: View {
                 RedisValueView(redisKeyModel: selectRedisKeyModel)
                 Spacer()
             }
-            .frame(minWidth: 500, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
+            .frame(minWidth: 400, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
         }
         .onAppear{
             //            redisInstanceModel.queryKeyPage(page: Page(), keywords: "")
@@ -86,14 +86,11 @@ struct RedisKeysListView: View {
         logger.info("on delete redis key index: \(selectedRedisKeyIndex ?? -1)")
     }
     
-    func onQueryKeyPageAction() -> Void {
-        do {
-            let keysPage = try redisInstanceModel.getClient().pageKeys(page: page, keywords: keywords)
-            logger.info("query keys page, keys: \(keysPage), page: \(String(describing: page))")
-            redisKeyModels = keysPage
-        } catch {
-            redisInstanceModel.alertContext = AlertContext(true, msg: "scan redis keys error: \(error)")
-        }
+    func onQueryKeyPageAction() throws -> Void {
+        let keysPage = try redisInstanceModel.getClient().pageKeys(page: page, keywords: keywords)
+        logger.info("query keys page, keys: \(keysPage), page: \(String(describing: page))")
+        redisKeyModels = keysPage
+        
     }
 }
 

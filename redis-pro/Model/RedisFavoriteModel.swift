@@ -32,4 +32,42 @@ class RedisFavoriteModel:ObservableObject {
         }
         
     }
+    
+    func save(redisModel:RedisModel) -> Void {
+        var savedRedisList:[Dictionary] = userDefaults.object(forKey: UserDefaulsKeysEnum.RedisFavoriteListKey.rawValue) as? [Dictionary<String, Any>] ?? [Dictionary]()
+        logger.info("get user favorite redis: \(savedRedisList)")
+        
+        if let index = savedRedisList.firstIndex(where: { (e) -> Bool in
+            return e["id"] as! String == redisModel.id
+        }) {
+            savedRedisList[index] = redisModel.dictionary
+        } else {
+            savedRedisList.append(redisModel.dictionary)
+        }
+        
+        userDefaults.set(savedRedisList, forKey: UserDefaulsKeysEnum.RedisFavoriteListKey.rawValue)
+        loadAll()
+        logger.info("save redis to favorite complete")
+    }
+    
+    
+    func delete(redisModel:RedisModel) -> Void {
+        delete(id: redisModel.id)
+    }
+    
+    func delete(id:String) -> Void {
+        var savedRedisList:[Dictionary] = userDefaults.object(forKey: UserDefaulsKeysEnum.RedisFavoriteListKey.rawValue) as? [Dictionary<String, Any>] ?? [Dictionary]()
+        logger.info("get user favorite redis: \(savedRedisList)")
+        
+        if let index = savedRedisList.firstIndex(where: { (e) -> Bool in
+            return e["id"] as! String == id
+        }) {
+            savedRedisList.remove(at: index)
+            userDefaults.set(savedRedisList, forKey: UserDefaulsKeysEnum.RedisFavoriteListKey.rawValue)
+            logger.info("remove redis from favorite complete, id:\(id)")
+            
+            loadAll()
+        }
+    }
+    
 }

@@ -35,9 +35,7 @@ struct RedisList: View {
         HSplitView {
             VStack(alignment: .leading,
                    spacing: 0) {
-                //                                Text(selectedRedisModelId ?? "no value")
-                //                Text("FAVORITES")
-                //                .padding(.vertical, 4).padding(.horizontal, 4)
+
                 List(selection: $selectedRedisModelId) {
                     ForEach(quickRedisModel) { redisModel in
                         RedisQuickRow(redisModel: redisModel)
@@ -55,7 +53,14 @@ struct RedisList: View {
                 .listStyle(PlainListStyle())
                 .frame(minWidth:150)
                 .padding(.all, 0)
-                //                .border(Color.black, width: /*@START_MENU_TOKEN@*/1/*@END_MENU_TOKEN@*/)
+                
+                
+                // footer
+                HStack(alignment: .center) {
+                    MIcon(icon: "plus", fontSize: 14, action: onAddAction)
+                    MIcon(icon: "minus", fontSize: 14, action: onDelAction)
+                }
+                .padding(EdgeInsets(top: 6, leading: 6, bottom: 6, trailing: 6))
             }
             .padding(0)
             .onAppear{
@@ -74,6 +79,19 @@ struct RedisList: View {
             }
             .frame(minWidth: 500, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
         }
+    }
+    
+    func onAddAction() -> Void {
+        logger.info("add new redis favorite action")
+        redisFavoriteModel.save(redisModel: RedisModel())
+    }
+    func onDelAction() -> Void {
+        logger.info("del redis favorite action")
+        if selectedRedisModelId == nil {
+            return
+        }
+
+        redisFavoriteModel.delete(id: selectedRedisModelId!)   
     }
 }
 

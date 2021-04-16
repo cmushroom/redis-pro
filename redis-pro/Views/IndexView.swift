@@ -44,6 +44,8 @@ struct IndexView: View {
         .alert(isPresented: $globalContext.alertVisible) {
             globalContext.showSecondButton ? Alert(title: Text("Confirm"), message: Text(globalContext.message), primaryButton: .default(Text(globalContext.primaryButtonText), action: globalContext.primaryAction), secondaryButton: .cancel(Text(globalContext.secondButtonText))) : Alert(title: Text("warnning"), message: Text(globalContext.message), dismissButton: .default(Text(globalContext.primaryButtonText)))
         }
+        
+        
     }
 }
 

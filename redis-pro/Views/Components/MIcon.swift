@@ -8,24 +8,35 @@
 import SwiftUI
 
 struct MIcon: View {
-    var icon:String
+    var icon:String?
+    var name:String?
     var fontSize:CGFloat = 10.0
+    var disabled:Bool = false
     var action: () ->Void = {print("on icon action...")}
     
     var body: some View {
         Button(action: action) {
-            Image(systemName: icon)
+            if icon != nil {
+            Image(systemName: icon!)
                 .font(.system(size: fontSize))
                 .padding(0)
+            }
+            if name != nil {
+                Text(name!)
+                    .font(.system(size: fontSize))
+            }
         }
         .buttonStyle(PlainButtonStyle())
+        .disabled(disabled)
         .onHover { inside in
-                    if inside {
-                        NSCursor.pointingHand.push()
-                    } else {
-                        NSCursor.pop()
-                    }
+            
+                if !disabled && inside {
+                    NSCursor.pointingHand.push()
+                } else {
+                    NSCursor.pop()
                 }
+            
+        }
     }
     
     func onAction() -> Void {

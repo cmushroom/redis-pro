@@ -40,7 +40,6 @@ struct MButton: View {
     struct MButton_Previews: PreviewProvider {
         static var previews: some View {
             MButton(text: "button ", action: {
-                print("hello")
             })
         }
     }

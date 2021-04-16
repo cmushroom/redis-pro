@@ -57,10 +57,10 @@ struct RedisList: View {
                 
                 // footer
                 HStack(alignment: .center) {
-                    MIcon(icon: "plus", fontSize: 14, action: onAddAction)
-                    MIcon(icon: "minus", fontSize: 14, action: onDelAction)
+                    MIcon(icon: "plus", fontSize: 13, action: onAddAction)
+                    MIcon(name: "􀅽", fontSize: 13, disabled: selectedRedisModelId == nil, action: onDelAction)
                 }
-                .padding(EdgeInsets(top: 6, leading: 6, bottom: 6, trailing: 6))
+                .padding(EdgeInsets(top: 2, leading: 8, bottom: 2, trailing: 8))
             }
             .padding(0)
             .onAppear{
@@ -86,12 +86,13 @@ struct RedisList: View {
         redisFavoriteModel.save(redisModel: RedisModel())
     }
     func onDelAction() -> Void {
-        logger.info("del redis favorite action")
+        logger.info("del redis favorite action, id:\(String(describing: selectedRedisModelId))")
         if selectedRedisModelId == nil {
             return
         }
 
-        redisFavoriteModel.delete(id: selectedRedisModelId!)   
+        let nextId:String? = redisFavoriteModel.delete(id: selectedRedisModelId!)
+        selectedRedisModelId = nextId
     }
 }
 

@@ -9,7 +9,7 @@ import SwiftUI
 import Logging
 
 struct RedisKeysListView: View {
-    var redisInstanceModel:RedisInstanceModel
+    @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @State var redisKeyModels:[RedisKeyModel] = testData()
     @State var selectedRedisKeyIndex:Int?
     @State var keywords:String = ""
@@ -21,7 +21,7 @@ struct RedisKeysListView: View {
         redisKeyModels
     }
     var selectRedisKeyModel:RedisKeyModel? {
-        redisKeyModels.isEmpty ? nil : redisKeyModels[selectedRedisKeyIndex ?? 0]
+        (selectedRedisKeyIndex == nil || redisKeyModels.isEmpty) ? nil : redisKeyModels[selectedRedisKeyIndex ?? 0]
     }
     
     var body: some View {
@@ -36,7 +36,7 @@ struct RedisKeysListView: View {
                     
                     // redis key operate ...
                     HStack {
-                        IconButton(icon: "plus", name: "Add", action: onDeleteAction)
+                        IconButton(icon: "plus", name: "Add", action: onAddAction)
                         IconButton(icon: "trash", name: "Delete", action: onDeleteAction)
                         
                         Spacer()
@@ -69,11 +69,7 @@ struct RedisKeysListView: View {
             
             
             VStack(alignment: .leading, spacing: 0){
-                if selectRedisKeyModel == nil {
-                    EmptyView()
-                } else {
-                    RedisValueView(redisKeyModel: selectRedisKeyModel!)
-                }
+                RedisValueView(redisKeyModel: selectRedisKeyModel)
                 Spacer()
             }
             .frame(minWidth: 400, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
@@ -91,6 +87,9 @@ struct RedisKeysListView: View {
     }
     
     func onQueryKeyPageAction() throws -> Void {
+        if !redisInstanceModel.isConnect {
+            return
+        }
         let keysPage = try redisInstanceModel.getClient().pageKeys(page: page, keywords: keywords)
         logger.info("query keys page, keys: \(keysPage), page: \(String(describing: page))")
         redisKeyModels = keysPage
@@ -112,7 +111,9 @@ func testData() -> [RedisKeyModel] {
 }
 
 struct RedisKeysList_Previews: PreviewProvider {
+    static var redisInstanceModel:RedisInstanceModel = RedisInstanceModel(redisModel: RedisModel())
     static var previews: some View {
-        RedisKeysListView(redisInstanceModel: RedisInstanceModel(redisModel: RedisModel()), redisKeyModels: testData(), selectedRedisKeyIndex: 0)
+        RedisKeysListView(redisKeyModels: testData())
+            .environmentObject(redisInstanceModel)
     }
 }

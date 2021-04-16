@@ -30,6 +30,7 @@ class RedisInstanceModel:ObservableObject, Identifiable {
             return rediStackClient!
         }
         
+        logger.info("get new redis client ...")
         rediStackClient = RediStackClient(redisModel:redisModel)
         return rediStackClient!
     }
@@ -61,5 +62,6 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         logger.info("redis stack client close...")
         rediStackClient?.close()
         rediStackClient = nil
+        isConnect = false
     }
 }

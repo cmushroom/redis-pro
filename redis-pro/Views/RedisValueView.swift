@@ -8,15 +8,19 @@
 import SwiftUI
 
 struct RedisValueView: View {
-    var redisKeyModel:RedisKeyModel
+    var redisKeyModel:RedisKeyModel?
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            RedisValueHeaderView(redisKeyModel: redisKeyModel)
-                .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
-            Rectangle().frame(height: 1)
-                .padding(.horizontal, 0).foregroundColor(Color.gray.opacity(0.1))
-            
-            RedisValueEditView(redisKeyModel: redisKeyModel, value: "12342412")
+            if redisKeyModel != nil {
+                RedisValueHeaderView(redisKeyModel: redisKeyModel!)
+                    .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
+                Rectangle().frame(height: 1)
+                    .padding(.horizontal, 0).foregroundColor(Color.gray.opacity(0.1))
+                
+                RedisValueEditView(redisKeyModel: redisKeyModel!, value: "12342412")
+            } else {
+                EmptyView()
+            }
         }
         .padding(2)
     }

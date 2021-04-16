@@ -9,12 +9,12 @@ import SwiftUI
 import Logging
 
 struct HomeView: View {
-    var redisInstanceModel:RedisInstanceModel
+    @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     
     let logger = Logger(label: "home-view")
     
     var body: some View {
-        RedisKeysListView(redisInstanceModel:redisInstanceModel)
+        RedisKeysListView()
             .onAppear {
                 logger.info("redis pro home view init complete")
             }
@@ -27,6 +27,6 @@ struct HomeView: View {
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView(redisInstanceModel: RedisInstanceModel(redisModel: RedisModel()))
+        HomeView()
     }
 }

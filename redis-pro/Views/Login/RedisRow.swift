@@ -26,9 +26,8 @@ struct RedisRow: View {
     }
 }
 
-//struct RedisInstanceRow_Previews: PreviewProvider {
-//    static var previews: some View {
-//        RedisInstanceRow(redisInstance: RedisInstance(id: 1, name: "redis-dev", host: "r-bp167z8gzeymrrvom0pd.redis.rds.aliyuncs.com", port: 6379, db: 0, password: "zaqwedxRTY123456"
-//                                                      , isFavorite: true))
-//    }
-//}
+struct RedisInstanceRow_Previews: PreviewProvider {
+    static var previews: some View {
+        RedisRow(redisModel: RedisModel())
+    }
+}

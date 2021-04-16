@@ -22,5 +22,3 @@ struct Extensions_Previews: PreviewProvider {
         Extensions()
     }
 }
-
-

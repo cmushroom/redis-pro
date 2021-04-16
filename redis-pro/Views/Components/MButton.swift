@@ -8,17 +8,24 @@
 import SwiftUI
 
 struct MButton: View {
-    @State private var showAlert = false
-    @State private var msg:String = ""
+    @EnvironmentObject var globalContext:GlobalContext
     var text:String
     var action: () throws -> Void = {}
+    var isConfirm:Bool = false
+    var disabled:Bool = false
     var type:String = ButtonTypeEnum.DEFAULT.rawValue
     
     
     var body: some View {
         Button(text, action: doAction)
-            .alert(isPresented: $showAlert) {
-                Alert(title: Text("warnning"), message: Text(msg), dismissButton: .default(Text("OK")))
+            .disabled(disabled)
+            .onHover { inside in
+                    if !disabled && inside {
+                        NSCursor.pointingHand.push()
+                    } else {
+                        NSCursor.pop()
+                    }
+                
             }
     }
     
@@ -31,8 +38,8 @@ struct MButton: View {
         do {
             try action()
         } catch {
-            showAlert = true
-            msg = "\(error)"
+            globalContext.alertVisible = true
+            globalContext.message = "\(error)"
         }
         
     }

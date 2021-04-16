@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct ContentView: View {
-    
+    var modelData:ModelData = ModelData()
     var body: some View {
         LandmarkList()
+            .environmentObject(modelData)
     }
 }
 

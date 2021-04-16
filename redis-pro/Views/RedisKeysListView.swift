@@ -30,7 +30,7 @@ struct RedisKeysListView: View {
                 // header area
                 VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 2) {
                     // redis search ...
-                    SearchBar(keywords: $keywords, showFuzzy: true, placeholder: "Search keys...", action: onQueryKeyPageAction)
+                    SearchBar(keywords: $keywords, showFuzzy: false, placeholder: "Search keys...", action: onQueryKeyPageAction)
                         //                        .frame(minWidth: 220)
                         .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
                     
@@ -79,7 +79,7 @@ struct RedisKeysListView: View {
             .frame(minWidth: 400, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
         }
         .onAppear{
-            //            redisInstanceModel.queryKeyPage(page: Page(), keywords: "")
+            try? onQueryKeyPageAction()
         }
     }
     
@@ -94,7 +94,6 @@ struct RedisKeysListView: View {
         let keysPage = try redisInstanceModel.getClient().pageKeys(page: page, keywords: keywords)
         logger.info("query keys page, keys: \(keysPage), page: \(String(describing: page))")
         redisKeyModels = keysPage
-        
     }
 }
 

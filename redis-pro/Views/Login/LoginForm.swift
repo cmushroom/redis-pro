@@ -64,10 +64,7 @@ struct LoginForm: View {
                             .frame(height: 10.0)
                         
                         Spacer()
-                        //                            NavigationLink(
-                        //                                "", destination: HomeView(redisInstanceModel: RedisInstanceModel(redisModel: RedisModel())),
-                        //                                isActive: $isJump
-                        //                            ).frame(width:0)
+
                         MButton(text: "Connect", action: onConnect)
                             .buttonStyle(BorderedButtonStyle())
                             .keyboardShortcut(.defaultAction)
@@ -103,7 +100,10 @@ struct LoginForm: View {
         logger.info("test connect to redis server: \(redisModel)")
         redisInstanceModel.redisModel = redisModel
         
-        try redisInstanceModel.testConnect()
+        let ping = try redisInstanceModel.testConnect()
+        if !ping {
+            throw BizError(message: "test connection redis error!")
+        }
     }
     
     func onAddRedisInstanceAction()  throws -> Void {

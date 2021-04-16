@@ -55,7 +55,8 @@ class RediStackClient{
             
             return try toRedisKeyModels(keys: keys)
         } catch {
-            throw BizError(message: "\(error)")
+            logger.error("query redis key page error \(error)")
+            throw error
         }
     }
     
@@ -75,7 +76,7 @@ class RediStackClient{
             return redisKeyModels
         } catch {
             logger.error("query redis key  type error \(error)")
-            throw BizError(message: "query redis key  type error \(error)")
+            throw error
         }
     }
     
@@ -86,7 +87,7 @@ class RediStackClient{
             return res.string!
         } catch {
             logger.error("query redis key  type error \(error)")
-            throw BizError(message: "query redis key  type error \(error)")
+            throw error
         }
     }
     
@@ -96,7 +97,7 @@ class RediStackClient{
             return try getConnection().scan(startingFrom: cursor, matching: keywords, count: count).wait()
         } catch {
             logger.error("redis keys scan error \(error)")
-            throw BizError(message: "redis keys scan error \(error)" )
+            throw error
         }
     }
     
@@ -108,7 +109,7 @@ class RediStackClient{
             return res.int!
         } catch {
             logger.info("query redis dbsize error: \(error)")
-            throw BizError(message: "query redis dbsize error: \(error)")
+            throw error
         }
     }
     
@@ -125,7 +126,7 @@ class RediStackClient{
         
             redisModel.ping = false
             return false
-        } catch let error {
+        } catch {
             redisModel.ping = false
             logger.error("ping redis server error \(error)")
             throw error
@@ -138,6 +139,7 @@ class RediStackClient{
             return connection!
         }
         
+        logger.debug("start get new redis connection...")
         let eventLoop = MultiThreadedEventLoopGroup(numberOfThreads: 1).next()
         var configuration: RedisConnection.Configuration
         do {
@@ -152,10 +154,10 @@ class RediStackClient{
                 , boundEventLoop: eventLoop
             ).wait()
             
-            logger.info("get new redis connection success from redis")
+            logger.info("get new redis connection success")
             
         } catch {
-            logger.error("get connect from redis error \(error)")
+            logger.error("get new redis connection error \(error)")
             throw error
         }
         
@@ -165,7 +167,7 @@ class RediStackClient{
     func close() -> Void {
         do {
             if connection == nil {
-                logger.info("redis connection is nil, over...")
+                logger.info("close redis connection, connection is nil, over...")
                 return
             }
             

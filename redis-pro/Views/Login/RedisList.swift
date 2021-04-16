@@ -13,10 +13,8 @@ func onAppear() {
 }
 
 struct RedisList: View {
-//    @EnvironmentObject var redisFavoriteModel: RedisFavoriteModel
-    @ObservedObject var redisFavoriteModel: RedisFavoriteModel = RedisFavoriteModel()
+    @StateObject var redisFavoriteModel: RedisFavoriteModel = RedisFavoriteModel()
     @State private var showFavoritesOnly = false
-    //    var redisModels: [RedisModel] = [RedisModel](repeating: RedisModel(), count: 0)
     @State var selectedRedisModelId: String?
     
     let logger = Logger(label: "redis-login")

@@ -10,13 +10,12 @@ import Logging
 
 @main
 struct redis_proApp: App {
-    //    private var redisFavoriteModel: RedisFavoriteModel = RedisFavoriteModel()
-    
     let logger = Logger(label: "redis-app")
     
     var body: some Scene {
         WindowGroup {
             IndexView()
+//            ContentView()
         }
         .commands {
             //            LandmarkCommands()

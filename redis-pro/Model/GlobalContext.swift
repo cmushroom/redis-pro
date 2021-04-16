@@ -8,6 +8,10 @@
 import Foundation
 
 class GlobalContext:ObservableObject {
-    var alertVisible:Bool = false
-    var message:String?
+    @Published var alertVisible:Bool = false
+    var message:String = ""
+    var showSecondButton:Bool = false
+    var primaryButtonText:String = "Ok"
+    var secondButtonText:String = "Cancel"
+    var primaryAction:() -> Void = {}
 }

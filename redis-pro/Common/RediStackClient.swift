@@ -80,14 +80,21 @@ class RediStackClient{
         }
     }
     
+    func set(_ key:String, value:String, ex:Int?) throws -> Void {
+        if (ex == nil || ex! == -1) {
+            try getConnection().set(RedisKey(key), to: value).wait()
+        } else {
+            try getConnection().setex(RedisKey(key), to: value, expirationInSeconds: ex!).wait()
+        }
+    }
     
     func get(key:String) throws -> String {
         do {
             let v = try getConnection().get(RedisKey(key)).wait()
-            logger.info("delete redis key \(key) complete, r: \(v)")
+            logger.info("get value key: \(key) complete, r: \(v)")
             return v.string!
         } catch {
-            logger.error("delete redis key:\(key) error: \(error)")
+            logger.error("get value key:\(key) error: \(error)")
             throw error
         }
     }

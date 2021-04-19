@@ -9,7 +9,8 @@ import SwiftUI
 
 struct RedisKeyTypePicker: View {
     var label:String = ""
-    @State var value:String = RedisKeyTypeEnum.STRING.rawValue
+    @Binding var value:String
+    var disabled:Bool = false
     
     var body: some View {
         Picker("\(label):", selection: $value) {
@@ -17,12 +18,14 @@ struct RedisKeyTypePicker: View {
                 Text(item.rawValue).tag(item.rawValue)
             }
         }
+        .disabled(disabled)
         .frame(width: 120)
     }
 }
 
 struct RedisKeyTypePicker_Previews: PreviewProvider {
+    @State static var value = RedisKeyTypeEnum.STRING.rawValue
     static var previews: some View {
-        RedisKeyTypePicker()
+        RedisKeyTypePicker(value: $value)
     }
 }

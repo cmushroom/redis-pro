@@ -13,13 +13,14 @@ struct FormItemText: View {
     var placeholder: String?
     var required:Bool = false
     @Binding var value: String
+    var disabled:Bool = false
     
     var body: some View {
         HStack(alignment: .center) {
             if !label.isEmpty {
                 FormLabel(label: label, width: labelWidth, required: required)
             }
-            MTextField(value: $value, placeholder: placeholder ?? label)
+            MTextField(value: $value, placeholder: placeholder ?? label, disabled: disabled)
         }
     }
 }

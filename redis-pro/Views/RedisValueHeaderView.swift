@@ -10,10 +10,14 @@ import SwiftUI
 struct RedisValueHeaderView: View {
     @ObservedObject var redisKeyModel:RedisKeyModel
     
+    var disableEdit:Bool {
+        !redisKeyModel.key.isEmpty
+    }
+    
     var body: some View {
         HStack(alignment: .center, spacing: 6) {
-            FormItemText(label: "Key", labelWidth: 40, required: true, value: $redisKeyModel.key)
-            RedisKeyTypePicker(label: "Type", value: redisKeyModel.type)
+            FormItemText(label: "Key", labelWidth: 40, required: true, value: $redisKeyModel.key, disabled: disableEdit)
+            RedisKeyTypePicker(label: "Type", value: $redisKeyModel.type, disabled: disableEdit)
             FormItemInt(label: "TTL(s)", value: $redisKeyModel.ttl)
                 .frame(width: 160)
             Spacer()

@@ -16,6 +16,7 @@ struct MTextField: View {
     var onCommit:() throws -> Void = {}
     @State private var showAlert = false
     @State private var msg:String = ""
+    var disabled:Bool = false
     
     let logger = Logger(label: "textfield")
     
@@ -25,6 +26,7 @@ struct MTextField: View {
                 self.isEditing = isEditing
                 logger.info("textfield status: \(isEditing)")
             }, onCommit: doAction)
+            .disabled(disabled)
             .font(/*@START_MENU_TOKEN@*/.body/*@END_MENU_TOKEN@*/)
             .disableAutocorrection(true)
             .textFieldStyle(PlainTextFieldStyle())
@@ -41,7 +43,7 @@ struct MTextField: View {
         .background(Color.white)
         .cornerRadius(4)
         .overlay(
-            RoundedRectangle(cornerRadius: 4).stroke(Color.gray.opacity(isEditing ?  0.4 : 0.2), lineWidth: 1)
+            RoundedRectangle(cornerRadius: 4).stroke(Color.gray.opacity(!disabled && isEditing ?  0.4 : 0.2), lineWidth: 1)
             )
         .alert(isPresented: $showAlert) {
             Alert(title: Text("warnning"), message: Text(msg), dismissButton: .default(Text("OK")))

@@ -16,10 +16,6 @@ struct StringEditorView: View {
     
     let logger = Logger(label: "redis-string-value-editor")
     
-    func onSubmitAction() -> Void {
-        print("on string value submit, text: \(text)")
-    }
-    
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             VStack(alignment: .leading, spacing: 4){
@@ -45,7 +41,7 @@ struct StringEditorView: View {
             // footer
             HStack(alignment: .center, spacing: 4) {
                 Spacer()
-                MButton(text: "Refresh", action: onRefreshAction)
+                IconButton(icon: "arrow.clockwise", name: "Refresh", action: onRefreshAction)
                 MButton(text: "Submit", action: onSubmitAction)
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
@@ -59,6 +55,11 @@ struct StringEditorView: View {
             getValue(redisKeyModel)
         }
         
+    }
+    
+    func onSubmitAction() throws -> Void {
+        logger.info("redis string value editor on submit")
+        try redisInstanceModel.getClient().set(redisKeyModel.key, value: text, ex: redisKeyModel.ttl)
     }
     
     func onRefreshAction() throws -> Void {

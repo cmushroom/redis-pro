@@ -80,6 +80,19 @@ class RediStackClient{
         }
     }
     
+    
+    func get(key:String) throws -> String {
+        do {
+            let v = try getConnection().get(RedisKey(key)).wait()
+            logger.info("delete redis key \(key) complete, r: \(v)")
+            return v.string!
+        } catch {
+            logger.error("delete redis key:\(key) error: \(error)")
+            throw error
+        }
+    }
+    
+    
     func del(key:String) throws -> Int {
         do {
             let count:Int = try getConnection().delete(RedisKey(key)).wait()

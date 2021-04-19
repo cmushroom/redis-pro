@@ -16,6 +16,7 @@ struct IconButton: View {
     var isConfirm:Bool = false
     var confirmTitle:String?
     var confirmMessage:String?
+    var confirmPrimaryButtonText:String?
     
     var action: () throws -> Void = {print("icon button action")}
     
@@ -55,6 +56,9 @@ struct IconButton: View {
                 globalContext.alertTitle = confirmTitle ?? ""
                 globalContext.alertMessage = confirmMessage ?? ""
                 globalContext.primaryAction = action
+                if confirmPrimaryButtonText != nil {
+                    globalContext.primaryButtonText = confirmPrimaryButtonText!
+                }
             }
         } catch {
             globalContext.alertVisible = true

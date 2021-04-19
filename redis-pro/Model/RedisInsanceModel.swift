@@ -20,9 +20,18 @@ class RedisInstanceModel:ObservableObject, Identifiable {
     
     let logger = Logger(label: "redis-instance")
     
+    private var observers = [NSObjectProtocol]()
+    
     init(redisModel: RedisModel) {
         self.redisModel = redisModel
         logger.info("redis instance model init")
+        
+        observers.append(
+            NotificationCenter.default.addObserver(forName: NSApplication.willTerminateNotification, object: nil, queue: .main) { [self] _ in
+                logger.info("redis pro will exit...")
+                close()
+            }
+        )
     }
     
     func getClient() -> RediStackClient {
@@ -37,9 +46,9 @@ class RedisInstanceModel:ObservableObject, Identifiable {
     
     
     func queryKeyPage(page:Page, keywords:String) throws -> Void{
-            let v2 = try getClient().pageKeys(page: page, keywords: keywords)
-            logger.info("query key page : \(v2)")
-
+        let v2 = try getClient().pageKeys(page: page, keywords: keywords)
+        logger.info("query key page : \(v2)")
+        
     }
     
     func connect(redisModel:RedisModel) throws -> Void {

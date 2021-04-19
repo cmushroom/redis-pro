@@ -43,7 +43,9 @@ struct RedisKeysListView: View {
                         IconButton(icon: "plus", name: "Add", action: onAddAction)
                         IconButton(icon: "trash", name: "Delete", disabled: selectedRedisKeyIndex == nil, isConfirm: true,
                                    confirmTitle: String(format: Helps.DELETE_CONFIRM_TITLE, selectRedisKey!),
-                                   confirmMessage: String(format:Helps.DELETE_CONFIRM_MESSAGE, selectRedisKey!), action: onDeleteAction)
+                                   confirmMessage: String(format:Helps.DELETE_CONFIRM_MESSAGE, selectRedisKey!),
+                                   confirmPrimaryButtonText: "Delete",
+                                   action: onDeleteAction)
                         
                         Spacer()
                     }

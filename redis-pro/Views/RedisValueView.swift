@@ -9,6 +9,7 @@ import SwiftUI
 
 struct RedisValueView: View {
     var redisKeyModel:RedisKeyModel?
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             if redisKeyModel != nil {
@@ -28,6 +29,6 @@ struct RedisValueView: View {
 
 struct RedisValueView_Previews: PreviewProvider {
     static var previews: some View {
-        RedisValueView(redisKeyModel: RedisKeyModel(id: "test", type: RedisKeyTypeEnum.STRING.rawValue))
+        RedisValueView(redisKeyModel: RedisKeyModel(key: "test", type: RedisKeyTypeEnum.STRING.rawValue))
     }
 }

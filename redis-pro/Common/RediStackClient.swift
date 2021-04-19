@@ -70,7 +70,7 @@ class RediStackClient{
         do {
             
             for key in keys {
-                redisKeyModels.append(RedisKeyModel(id: key, type: try type(key: key)))
+                redisKeyModels.append(RedisKeyModel(key: key, type: try type(key: key)))
             }
             
             return redisKeyModels
@@ -88,6 +88,20 @@ class RediStackClient{
         } catch {
             logger.error("delete redis key:\(key) error: \(error)")
             throw error
+        }
+    }
+    
+    
+    func ttl(key:String) throws -> Int {
+        let r:RedisKeyLifetime = try getConnection().ttl(RedisKey(key)).wait()
+        
+        logger.info("query redis key ttl, key: \(key), r:\(r)")
+        if r == RedisKeyLifetime.keyDoesNotExist {
+            throw BizError(message: "redis key: \(key) does not exist!")
+        } else if r == RedisKeyLifetime.unlimited {
+            return -1
+        } else {
+            return Int(r.timeAmount!.nanoseconds / 1000000000)
         }
     }
     
@@ -134,7 +148,7 @@ class RediStackClient{
                 redisModel.ping = true
                 return true
             }
-        
+            
             redisModel.ping = false
             return false
         } catch {

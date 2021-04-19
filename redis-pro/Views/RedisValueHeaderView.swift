@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct RedisValueHeaderView: View {
-    @State var redisKeyModel:RedisKeyModel
+    @ObservedObject var redisKeyModel:RedisKeyModel
     
     var body: some View {
         HStack(alignment: .center, spacing: 6) {
-            FormItemText(label: "Key", labelWidth: 40, required: true, value: $redisKeyModel.id)
+            FormItemText(label: "Key", labelWidth: 40, required: true, value: $redisKeyModel.key)
             RedisKeyTypePicker(label: "Type", value: redisKeyModel.type)
             FormItemInt(label: "TTL(s)", value: $redisKeyModel.ttl)
                 .frame(width: 160)
@@ -23,6 +23,6 @@ struct RedisValueHeaderView: View {
 
 struct RedisValueHeaderView_Previews: PreviewProvider {
     static var previews: some View {
-        RedisValueHeaderView(redisKeyModel: RedisKeyModel(id: "test", type: RedisKeyTypeEnum.STRING.rawValue))
+        RedisValueHeaderView(redisKeyModel: RedisKeyModel(key: "test", type: RedisKeyTypeEnum.STRING.rawValue))
     }
 }

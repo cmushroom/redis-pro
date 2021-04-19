@@ -44,6 +44,6 @@ struct RedisKeyRowView: View {
 
 struct RedisKeyRow_Previews: PreviewProvider {
     static var previews: some View {
-        RedisKeyRowView(redisKeyModel: RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.STRING.rawValue))
+        RedisKeyRowView(redisKeyModel: RedisKeyModel(key: UUID().uuidString, type: RedisKeyTypeEnum.STRING.rawValue))
     }
 }

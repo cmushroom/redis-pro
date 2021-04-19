@@ -6,16 +6,18 @@
 //
 
 import SwiftUI
+import Logging
 
 struct IconButton: View {
-    @State private var showAlert = false
-    @State private var msg:String = ""
+    @EnvironmentObject var globalContext:GlobalContext
     var icon:String
     var name:String?
+    var disabled:Bool = false
+    var isConfirm:Bool = false
     
-    var action: () throws -> Void = {
-        print("icon button action...")
-    }
+    let logger = Logger(label: "icon-button")
+    
+    var action: () throws -> Void = {print("icon button action")}
     
     var body: some View {
         Button(action: doAction) {
@@ -29,19 +31,30 @@ struct IconButton: View {
             }
         }
         .buttonStyle(BorderedButtonStyle())
-        .alert(isPresented: $showAlert) {
-            Alert(title: Text("warnning"), message: Text(msg), dismissButton: .default(Text("OK")))
+        .disabled(disabled)
+        .onHover { inside in
+            if !disabled && inside {
+                NSCursor.pointingHand.push()
+            } else {
+                NSCursor.pop()
+            }
         }
+        
     }
     
     
     func doAction() -> Void {
-        print("icon button do action...")
         do {
-            try action()
+            if !isConfirm {
+                try action()
+            } else {
+                globalContext.alertVisible = true
+                globalContext.showSecondButton = true
+                globalContext.primaryAction = action
+            }
         } catch {
-            showAlert = true
-            msg = "system error: \(error)"
+            globalContext.alertVisible = true
+            globalContext.message = "\(error)"
         }
     }
 }

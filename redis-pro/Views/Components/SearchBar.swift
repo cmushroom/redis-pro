@@ -24,7 +24,7 @@ struct SearchBar: View {
         HStack {
             // Search text field
             MTextField(value: $keywords, placeholder: placeholder, suffix: "magnifyingglass", onCommit: doAction)
-                .help("支持redis glob 风格的模式参数, 示例: key*, re?is")
+                .help(Helps.SEARCH_PATTERN)
             
             if showFuzzy {
                 Toggle("Fuzzy", isOn: $fuzzy)

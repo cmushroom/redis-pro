@@ -25,7 +25,6 @@ struct MButton: View {
                     } else {
                         NSCursor.pop()
                     }
-                
             }
     }
     

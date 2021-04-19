@@ -63,15 +63,18 @@ struct RedisKeysListView: View {
                 
                 // footer
                 PageBar(page: page, action: onQueryKeyPageAction)
-                    .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 8))
+                    .padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 6))
             }
             .padding(0)
+            .frame(minWidth:240, idealWidth: 240, maxWidth: .infinity)
+            .layoutPriority(0)
             
             VStack(alignment: .leading, spacing: 0){
                 RedisValueView(redisKeyModel: selectRedisKeyModel)
                 Spacer()
             }
-            .frame(minWidth: 400, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
+            .frame(minWidth: 600, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
+            .layoutPriority(1)
         }
         .onAppear{
             try? onQueryKeyPageAction()
@@ -98,7 +101,7 @@ struct RedisKeysListView: View {
 
 
 func testData() -> [RedisKeyModel] {
-    var redisKeys:[RedisKeyModel] = [RedisKeyModel](repeating: RedisKeyModel(id: UUID().uuidString.lowercased(), type: "string"), count: 0)
+    let redisKeys:[RedisKeyModel] = [RedisKeyModel](repeating: RedisKeyModel(id: UUID().uuidString.lowercased(), type: "string"), count: 0)
 //    redisKeys.append(RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.HASH.rawValue))
 //    redisKeys.append(RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.LIST.rawValue))
 //    redisKeys.append(RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.SET.rawValue))

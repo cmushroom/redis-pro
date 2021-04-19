@@ -13,5 +13,5 @@ class GlobalContext:ObservableObject {
     var showSecondButton:Bool = false
     var primaryButtonText:String = "Ok"
     var secondButtonText:String = "Cancel"
-    var primaryAction:() -> Void = {}
+    var primaryAction:() throws -> Void = {}
 }

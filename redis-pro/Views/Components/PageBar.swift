@@ -20,7 +20,7 @@ struct PageBar: View {
         HStack(alignment:.center) {
             Spacer()
             Text("Keys:\(page.total)")
-                .help("command `dbsize` keys count")
+                .help(Helps.PAGE_KEYS)
                 .font(.footnote)
                 .padding(.leading, 4.0)
             

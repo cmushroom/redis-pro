@@ -49,7 +49,6 @@ struct RedisList: View {
                     
                 }
                 .listStyle(PlainListStyle())
-                .frame(minWidth:150)
                 .padding(.all, 0)
                 
                 
@@ -61,6 +60,8 @@ struct RedisList: View {
                 .padding(EdgeInsets(top: 2, leading: 8, bottom: 2, trailing: 8))
             }
             .padding(0)
+            .frame(minWidth:180, idealWidth: 180, maxWidth: .infinity)
+            .layoutPriority(0)
             .onAppear{
                 logger.info("load all redis favorite list")
                 redisFavoriteModel.loadAll()
@@ -75,7 +76,8 @@ struct RedisList: View {
                 }
                 Spacer()
             }
-            .frame(minWidth: 500, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
+            .frame(minWidth: 500, idealWidth:500, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
+            .layoutPriority(1)
         }
     }
     

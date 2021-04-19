@@ -42,7 +42,7 @@ struct StringEditorView: View {
             HStack(alignment: .center, spacing: 4) {
                 Spacer()
                 IconButton(icon: "arrow.clockwise", name: "Refresh", action: onRefreshAction)
-                MButton(text: "Submit", action: onSubmitAction)
+                IconButton(icon: "checkmark", name: "Submit", isConfirm: true, confirmTitle: "", confirmMessage: "", confirmPrimaryButtonText: "", action: onSubmitAction)
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
         }

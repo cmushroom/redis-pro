@@ -38,7 +38,7 @@ struct MButton: View {
             try action()
         } catch {
             globalContext.alertVisible = true
-            globalContext.message = "\(error)"
+            globalContext.alertMessage = "\(error)"
         }
         
     }

@@ -25,9 +25,9 @@ struct IndexView: View {
                         }
                 }
                 .alert(isPresented: $globalContext.alertVisible) {
-                            globalContext.showSecondButton ? Alert(title: Text("Confirm"), message: Text(globalContext.message),
+                    globalContext.showSecondButton ? Alert(title: Text(globalContext.alertTitle), message: Text(globalContext.alertMessage),
                                                                    primaryButton: .default(Text(globalContext.primaryButtonText),
-                                                                                           action: doAction), secondaryButton: .cancel(Text(globalContext.secondButtonText))) : Alert(title: Text("warnning"), message: Text(globalContext.message), dismissButton: .default(Text(globalContext.primaryButtonText)))
+                                                                                           action: doAction), secondaryButton: .cancel(Text(globalContext.secondButtonText))) : Alert(title: Text(globalContext.alertTitle), message: Text(globalContext.alertMessage), dismissButton: .default(Text(globalContext.primaryButtonText)))
                 }
         
 //        ZStack {
@@ -57,7 +57,7 @@ struct IndexView: View {
         } catch {
             globalContext.alertVisible = true
             globalContext.showSecondButton = false
-            globalContext.message = "\(error)"
+            globalContext.alertMessage = "\(error)"
         }
         
     }

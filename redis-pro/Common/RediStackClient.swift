@@ -80,6 +80,17 @@ class RediStackClient{
         }
     }
     
+    func del(key:String) throws -> Int {
+        do {
+            let count:Int = try getConnection().delete(RedisKey(key)).wait()
+            logger.info("delete redis key \(key) complete, r: \(count)")
+            return count
+        } catch {
+            logger.error("delete redis key:\(key) error: \(error)")
+            throw error
+        }
+    }
+    
     func type(key:String) throws -> String {
         do {
             let res:RESPValue = try getConnection().send(command: "type", with: [RESPValue.init(from: key)]).wait()

@@ -9,7 +9,8 @@ import Foundation
 
 class GlobalContext:ObservableObject {
     @Published var alertVisible:Bool = false
-    var message:String = ""
+    var alertTitle:String = ""
+    var alertMessage:String = ""
     var showSecondButton:Bool = false
     var primaryButtonText:String = "Ok"
     var secondButtonText:String = "Cancel"

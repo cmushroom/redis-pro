@@ -24,6 +24,10 @@ struct RedisKeysListView: View {
         (selectedRedisKeyIndex == nil || redisKeyModels.isEmpty) ? nil : redisKeyModels[selectedRedisKeyIndex ?? 0]
     }
     
+    var selectRedisKey:String? {
+        selectRedisKeyModel == nil ? "" : selectRedisKeyModel?.id
+    }
+    
     var body: some View {
         HSplitView {
             VStack(alignment: .leading, spacing: 0) {
@@ -37,7 +41,9 @@ struct RedisKeysListView: View {
                     // redis key operate ...
                     HStack {
                         IconButton(icon: "plus", name: "Add", action: onAddAction)
-                        IconButton(icon: "trash", name: "Delete", action: onDeleteAction)
+                        IconButton(icon: "trash", name: "Delete", disabled: selectedRedisKeyIndex == nil, isConfirm: true,
+                                   confirmTitle: String(format: Helps.DELETE_CONFIRM_TITLE, selectRedisKey!),
+                                   confirmMessage: String(format:Helps.DELETE_CONFIRM_MESSAGE, selectRedisKey!), action: onDeleteAction)
                         
                         Spacer()
                     }
@@ -84,8 +90,16 @@ struct RedisKeysListView: View {
     func onAddAction() -> Void {
         logger.info("on add redis key index: \(selectedRedisKeyIndex ?? -1)")
     }
-    func onDeleteAction() -> Void {
-        logger.info("on delete redis key index: \(selectedRedisKeyIndex ?? -1)")
+    func onDeleteAction() throws -> Void {
+        logger.info("on delete redis key: \(selectRedisKey!)")
+        let r:Int = try redisInstanceModel.getClient().del(key: selectRedisKey!)
+        if r > 0 {
+            if let index = redisKeyModels.firstIndex(where: { (e) -> Bool in
+                return e.id == selectRedisKey
+            }) {
+                redisKeyModels.remove(at: index)
+            }
+        }
     }
     
     func onQueryKeyPageAction() throws -> Void {

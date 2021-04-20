@@ -61,8 +61,7 @@ struct IconButton: View {
                 }
             }
         } catch {
-            globalContext.alertVisible = true
-            globalContext.alertMessage = "\(error)"
+            globalContext.showError(error)
         }
     }
 }

@@ -92,6 +92,10 @@ class RediStackClient{
         do {
             let v = try getConnection().get(RedisKey(key)).wait()
             logger.info("get value key: \(key) complete, r: \(v)")
+            
+            if v.isNull {
+                throw BizError(message: "Key `\(key)` is not exist!")
+            }
             return v.string!
         } catch {
             logger.error("get value key:\(key) error: \(error)")

@@ -12,6 +12,7 @@ class Page:ObservableObject, CustomStringConvertible {
     @Published var current:Int = 1
     @Published var size:Int = 50
     @Published var total:Int = 0
+    @Published var keywords:String = ""
     
     var totalPage:Int {
         total < 1 ? 0 : (total % size == 0 ? total / size : total / size + 1)

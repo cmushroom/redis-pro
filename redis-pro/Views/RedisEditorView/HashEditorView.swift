@@ -14,6 +14,7 @@ struct HashEditorView: View {
     @ObservedObject var redisKeyModel:RedisKeyModel
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @EnvironmentObject var globalContext:GlobalContext
+    @ObservedObject var page:Page = Page()
     
     let logger = Logger(label: "hash-editor-view")
     
@@ -66,7 +67,7 @@ struct HashEditorView: View {
     }
     
     func getValue(_ redisKeyModel:RedisKeyModel) throws -> Void {
-//        text = try redisInstanceModel.getClient().get(key: redisKeyModel.key)
+//        text = try redisInstanceModel.getClient().pageHashEntry(redisKeyModel.key, page: page)
     }
     
     func ttl(_ redisKeyModel:RedisKeyModel) throws -> Void {

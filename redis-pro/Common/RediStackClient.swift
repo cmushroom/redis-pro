@@ -60,6 +60,50 @@ class RediStackClient{
         }
     }
     
+    
+    func pageHashEntry(_ key:String, page:Page) throws -> [String:String?] {
+        do {
+            logger.info("redis hash field page scan, key: \(key), page: \(page)")
+            
+            let match = page.keywords.isEmpty ? nil : page.keywords
+            
+            var entries:[String:String?] = [String:String?]()
+            var cursor:Int = page.cursor
+            
+            let res:(Int, [String:String?]) = try hscan(key, cursor: cursor, count: page.size, keywords: match)
+            
+            cursor = res.0
+            
+            entries = res.1
+            
+            // 如果取出数量不够 page.size, 继续迭带补满
+            if cursor != 0 && entries.count < page.size {
+                while true {
+                    let moreRes:(cursor:Int, [String:String?]) = try hscan(key, cursor:cursor, count: 1, keywords: match)
+                    
+                    entries = entries.merging(moreRes.1) { (first, _) -> String? in
+                        first
+                    }
+                    
+                    cursor = moreRes.0
+                    page.cursor = cursor
+                    if cursor == 0 || entries.count == page.size {
+                        break
+                    }
+                }
+            }
+            
+            let total = try hlen(key)
+            page.total = total
+            
+            return entries
+        } catch {
+            logger.error("query redis hash entry page error \(error)")
+            throw error
+        }
+    }
+    
+    
     func toRedisKeyModels(keys:[String]) throws -> [RedisKeyModel] {
         if keys.isEmpty {
             return [RedisKeyModel]()
@@ -76,6 +120,38 @@ class RediStackClient{
             return redisKeyModels
         } catch {
             logger.error("query redis key  type error \(error)")
+            throw error
+        }
+    }
+    
+    
+    func hlen(_ key:String) throws -> Int {
+        return try getConnection().hlen(of: RedisKey(key)).wait()
+    }
+    
+    func hscan(_ key:String, cursor:Int, count:Int? = 1, keywords:String?) throws -> (Int, [String: String?]) {
+        do {
+            logger.debug("redis hash scan, key: \(key) cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
+            
+            return try getConnection().hscan(RedisKey(key), startingFrom: cursor, matching: keywords, count: count, valueType: String.self).wait()
+            
+        } catch {
+            logger.error("redis hash scan key:\(key) error: \(error)")
+            throw error
+        }
+    }
+    
+    func hget(_ key:String, field:String) throws -> String {
+        do {
+            let v = try getConnection().hget(field, from: RedisKey(key)).wait()
+            logger.info("hget value key: \(key), field: \(field) complete, r: \(v)")
+            
+            if v.isNull {
+                throw BizError(message: "Key `\(key)`, field: `\(field)` is not exist!")
+            }
+            return v.string!
+        } catch {
+            logger.error("get value key:\(key) error: \(error)")
             throw error
         }
     }
@@ -140,6 +216,7 @@ class RediStackClient{
             throw error
         }
     }
+    
     
     func scan(cursor:Int, keywords:String?, count:Int? = 1) throws -> (cursor:Int, keys:[String]) {
         do {

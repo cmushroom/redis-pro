@@ -10,10 +10,13 @@ import Logging
 
 struct KeyValueRowEditorView: View {
     @State var text:String = ""
-    @State var keywords:String = ""
-    @State var hashMap:[String: String] = ["testesttesttesttesttesttesttesttesttesttesttestt":"234243242343"]
+    @State var hashMap:[String: String?] = ["testesttesttesttesttesttesttesttesttesttesttestt":"234243242343"]
     @State var selectKey:String?
     @State var isEditing:Bool = false
+    @EnvironmentObject var redisInstanceModel:RedisInstanceModel
+    @EnvironmentObject var globalContext:GlobalContext
+    @ObservedObject var redisKeyModel:RedisKeyModel
+    @StateObject var page:Page = Page()
     
     let logger = Logger(label: "redis-editor-kv")
     
@@ -23,26 +26,26 @@ struct KeyValueRowEditorView: View {
                 IconButton(icon: "plus", name: "Add", action: onDeleteAction)
                 IconButton(icon: "trash", name: "Delete", action: onDeleteAction)
                 
-                SearchBar(keywords: $keywords, placeholder: "Search field...", action: onQueryField)
-
+                SearchBar(keywords: $page.keywords, placeholder: "Search field...", action: onQueryField)
+                
                 Spacer()
-                PageBar(page:Page())
+                PageBar(page:page)
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
             
             GeometryReader { proxy in
                 List(selection: $selectKey) {
-//                    HStack {
-//                        Text("Field")
-//                            .frame(width: proxy.size.width/2, alignment: .leading)
-//                        Text("Value")
-//                            .frame(width: proxy.size.width/2, alignment: .leading)
-//                            .padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 0))
-//                            .border(width:1, edges: [.leading], color: Color.gray)
-//                    }
-//                    .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
-//                    .background(Color.gray.opacity(0.4))
-
+                    //                    HStack {
+                    //                        Text("Field")
+                    //                            .frame(width: proxy.size.width/2, alignment: .leading)
+                    //                        Text("Value")
+                    //                            .frame(width: proxy.size.width/2, alignment: .leading)
+                    //                            .padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 0))
+                    //                            .border(width:1, edges: [.leading], color: Color.gray)
+                    //                    }
+                    //                    .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
+                    //                    .background(Color.gray.opacity(0.4))
+                    
                     
                     Section(header: HStack {
                         Text("Field")
@@ -51,29 +54,22 @@ struct KeyValueRowEditorView: View {
                             .frame(width: proxy.size.width/2, alignment: .leading)
                             .padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 0))
                             .border(width:1, edges: [.leading], color: Color.gray)
-                    }
-//                    .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
-//                    .background(Color.gray.opacity(0.4))
-                    ) {
-                    ForEach(hashMap.sorted(by: >), id:\.key) { key, value in
+                    }) {
                         
-                        HStack {
+                        ForEach(Array(hashMap.keys), id:\.self) { key in
                             
-                            TextField("text field", text: $text).environment(\.isEnabled, true)
-                                .focusable(true)
-                                .textFieldStyle(PlainTextFieldStyle())
-                                .frame(width: proxy.size.width/2, alignment: .leading)
-                            Text(value)
-                                .multilineTextAlignment(.leading)
-                                .frame(width: proxy.size.width/2, alignment: .leading)
-                                .onTapGesture(count: 2) {
-                                               print("double clicked")
-                                           }
+                            HStack {
+                                
+                                Text(key)
+                                    .frame(width: proxy.size.width/2, alignment: .leading)
+                                Text((hashMap[key] ?? "")!)
+                                    .multilineTextAlignment(.leading)
+                                    .frame(width: proxy.size.width/2, alignment: .leading)
+                            }
+                            .background(Color.blue.opacity(0.1))
                         }
-                        .background(Color.blue.opacity(0.1))
                     }
-                }
-                .collapsible(false)
+                    .collapsible(false)
                     
                 }
                 //                }
@@ -82,21 +78,65 @@ struct KeyValueRowEditorView: View {
             .padding(.all, 0)
             //                    .frame(minWidth: 100, maxWidth: .infinity, minHeight: 100, maxHeight: .infinity, alignment: .topLeading)
             
+           
             
+            // footer
+            HStack(alignment: .center, spacing: 4) {
+                Spacer()
+                IconButton(icon: "arrow.clockwise", name: "Refresh", action: onRefreshAction)
+                IconButton(icon: "checkmark", name: "Submit", confirmPrimaryButtonText: "Submit", action: onSubmitAction)
+            }
+            .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
+        }
+        .onChange(of: redisKeyModel, perform: { value in
+            logger.info("redis string value editor view change \(value)")
+            onLoad(value)
+        })
+        .onAppear {
+            logger.info("redis string value editor view init...")
+            onLoad(redisKeyModel)
         }
     }
     
     func onDeleteAction() -> Void {
         print("hash field delete action...")
     }
-    func onQueryField() -> Void {
-        print("on query field...")
+    func onQueryField() throws -> Void {
+        try queryHashPage(redisKeyModel)
+    }
+    
+    func onSubmitAction() throws -> Void {
+        logger.info("redis string value editor on submit")
+        //        try redisInstanceModel.getClient().set(redisKeyModel.key, value: text, ex: redisKeyModel.ttl)
+    }
+    
+    func onRefreshAction() throws -> Void {
+        try queryHashPage(redisKeyModel)
+        try ttl(redisKeyModel)
+    }
+    
+    func onLoad(_ redisKeyModel:RedisKeyModel) -> Void {
+        do {
+            try queryHashPage(redisKeyModel)
+        } catch {
+            logger.error("on string editor view load query redis hash error:\(error)")
+            globalContext.showError(error)
+        }
+    }
+    
+    func queryHashPage(_ redisKeyModel:RedisKeyModel) throws -> Void {
+        hashMap = try redisInstanceModel.getClient().pageHashEntry(redisKeyModel.key, page: page)
+    }
+    
+    func ttl(_ redisKeyModel:RedisKeyModel) throws -> Void {
+        redisKeyModel.ttl = try redisInstanceModel.getClient().ttl(key: redisKeyModel.key)
     }
 }
 
 struct KeyValueRowEditorView_Previews: PreviewProvider {
+    static var redisKeyModel:RedisKeyModel = RedisKeyModel(key: "tes", type: "string")
     static var previews: some View {
-        KeyValueRowEditorView()
+        KeyValueRowEditorView(redisKeyModel: redisKeyModel)
     }
 }
 

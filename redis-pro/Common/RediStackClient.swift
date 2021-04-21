@@ -124,6 +124,9 @@ class RediStackClient{
         }
     }
     
+    func hdel(_ key:String, field:String) throws -> Int {
+        try getConnection().hdel(field, from: RedisKey(key)).wait()
+    }
     
     func hlen(_ key:String) throws -> Int {
         return try getConnection().hlen(of: RedisKey(key)).wait()

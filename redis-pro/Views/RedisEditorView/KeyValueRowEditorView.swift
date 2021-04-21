@@ -18,13 +18,17 @@ struct KeyValueRowEditorView: View {
     @ObservedObject var redisKeyModel:RedisKeyModel
     @StateObject var page:Page = Page()
     
+    var delButtonDisabled:Bool {
+        selectKey == nil
+    }
+    
     let logger = Logger(label: "redis-editor-kv")
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .center , spacing: 4) {
                 IconButton(icon: "plus", name: "Add", action: onDeleteAction)
-                IconButton(icon: "trash", name: "Delete", action: onDeleteAction)
+                IconButton(icon: "trash", name: "Delete", disabled:delButtonDisabled, action: onDeleteAction)
                 
                 SearchBar(keywords: $page.keywords, placeholder: "Search field...", action: onQueryField)
                 
@@ -98,8 +102,12 @@ struct KeyValueRowEditorView: View {
         }
     }
     
-    func onDeleteAction() -> Void {
-        print("hash field delete action...")
+    func onDeleteAction() throws -> Void {
+        logger.info("hash field delete action...")
+        let r = try redisInstanceModel.getClient().hdel(redisKeyModel.key, field: selectKey!)
+        if r > 0 {
+            hashMap.removeValue(forKey: selectKey!)
+        }
     }
     func onQueryField() throws -> Void {
         try queryHashPage(redisKeyModel)

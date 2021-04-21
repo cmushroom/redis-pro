@@ -21,11 +21,11 @@ struct RedisKeysListView: View {
         redisKeyModels
     }
     var selectRedisKeyModel:RedisKeyModel? {
-        (selectedRedisKeyIndex == nil || redisKeyModels.isEmpty) ? nil : redisKeyModels[selectedRedisKeyIndex ?? 0]
+        (selectedRedisKeyIndex == nil || redisKeyModels.isEmpty || redisKeyModels.count <= selectedRedisKeyIndex!) ? nil : redisKeyModels[selectedRedisKeyIndex ?? 0]
     }
     
     var selectRedisKey:String? {
-        selectRedisKeyModel == nil ? "" : selectRedisKeyModel?.id
+        selectRedisKeyModel?.id
     }
     
     var body: some View {
@@ -35,7 +35,6 @@ struct RedisKeysListView: View {
                 VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 2) {
                     // redis search ...
                     SearchBar(keywords: $keywords, showFuzzy: false, placeholder: "Search keys...", action: onQueryKeyPageAction)
-                        //                        .frame(minWidth: 220)
                         .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
                     
                     // redis key operate ...

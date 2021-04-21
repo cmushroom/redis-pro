@@ -81,6 +81,7 @@ class RediStackClient{
     }
     
     func set(_ key:String, value:String, ex:Int?) throws -> Void {
+        logger.info("set value, key:\(key), value:\(value), ex:\(ex ?? -1)")
         if (ex == nil || ex! == -1) {
             try getConnection().set(RedisKey(key), to: value).wait()
         } else {

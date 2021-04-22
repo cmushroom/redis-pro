@@ -11,7 +11,7 @@ import Logging
 struct KeyValueRowEditorView: View {
     @State var text:String = ""
     @State var hashMap:[String: String?] = ["testesttesttesttesttesttesttesttesttesttesttestt":"234243242343"]
-    @State var selectKey:String?
+    @State var selectField:String?
     @State var isEditing:Bool = false
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @EnvironmentObject var globalContext:GlobalContext
@@ -19,7 +19,7 @@ struct KeyValueRowEditorView: View {
     @StateObject var page:Page = Page()
     
     var delButtonDisabled:Bool {
-        selectKey == nil
+        selectField == nil
     }
     
     let logger = Logger(label: "redis-editor-kv")
@@ -28,7 +28,12 @@ struct KeyValueRowEditorView: View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .center , spacing: 4) {
                 IconButton(icon: "plus", name: "Add", action: onDeleteAction)
-                IconButton(icon: "trash", name: "Delete", disabled:delButtonDisabled, action: onDeleteAction)
+                IconButton(icon: "trash", name: "Delete", disabled:delButtonDisabled,
+                           isConfirm: true,
+                                      confirmTitle: String(format: Helps.DELETE_HASH_FIELD_CONFIRM_TITLE, selectField ?? ""),
+                                      confirmMessage: String(format:Helps.DELETE_HASH_FIELD_CONFIRM_MESSAGE, selectField ?? ""),
+                                      confirmPrimaryButtonText: "Delete",
+                           action: onDeleteAction)
                 
                 SearchBar(keywords: $page.keywords, placeholder: "Search field...", action: onQueryField)
                 
@@ -37,52 +42,48 @@ struct KeyValueRowEditorView: View {
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
             
-            GeometryReader { proxy in
-                List(selection: $selectKey) {
-                    //                    HStack {
-                    //                        Text("Field")
-                    //                            .frame(width: proxy.size.width/2, alignment: .leading)
-                    //                        Text("Value")
-                    //                            .frame(width: proxy.size.width/2, alignment: .leading)
-                    //                            .padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 0))
-                    //                            .border(width:1, edges: [.leading], color: Color.gray)
-                    //                    }
-                    //                    .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
-                    //                    .background(Color.gray.opacity(0.4))
-                    
-                    
+            GeometryReader { geometry in
+                let width0 = geometry.size.width/2
+                let width1 = width0
+                
+                List(selection: $selectField) {
                     Section(header: HStack {
                         Text("Field")
-                            .frame(width: proxy.size.width/2, alignment: .leading)
+                            .frame(width: width0, alignment: .leading)
                         Text("Value")
-                            .frame(width: proxy.size.width/2, alignment: .leading)
+                            .frame(width: width1, alignment: .leading)
                             .padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 0))
                             .border(width:1, edges: [.leading], color: Color.gray)
                     }) {
                         
                         ForEach(Array(hashMap.keys), id:\.self) { key in
-                            
                             HStack {
-                                
                                 Text(key)
-                                    .frame(width: proxy.size.width/2, alignment: .leading)
+                                    .font(.body)
+                                    .frame(width: width0, alignment: .leading)
                                 Text((hashMap[key] ?? "")!)
+                                    .font(.body)
                                     .multilineTextAlignment(.leading)
-                                    .frame(width: proxy.size.width/2, alignment: .leading)
+                                    .frame(width: width1, alignment: .leading)
                             }
-                            .background(Color.blue.opacity(0.1))
+                            .padding(EdgeInsets(top: 4, leading: 2, bottom: 4, trailing: 2))
+                            .overlay(
+                                           Rectangle()
+                                               .frame(height: 1)
+                                               .foregroundColor(Color.gray.opacity(0.1)),
+                                           alignment: .bottom
+                                   )
+                            .listRowInsets(EdgeInsets())
+//                            .border(Color.gray.opacity(0.2), width: 1)
                         }
                     }
                     .collapsible(false)
                     
                 }
-                //                }
+                .listStyle(PlainListStyle())
+                .padding(.all, 0)
+                .border(Color.blue.opacity(0.2), width: 1)
             }
-            .listStyle(PlainListStyle())
-            .padding(.all, 0)
-            //                    .frame(minWidth: 100, maxWidth: .infinity, minHeight: 100, maxHeight: .infinity, alignment: .topLeading)
-            
-           
             
             // footer
             HStack(alignment: .center, spacing: 4) {
@@ -104,9 +105,9 @@ struct KeyValueRowEditorView: View {
     
     func onDeleteAction() throws -> Void {
         logger.info("hash field delete action...")
-        let r = try redisInstanceModel.getClient().hdel(redisKeyModel.key, field: selectKey!)
+        let r = try redisInstanceModel.getClient().hdel(redisKeyModel.key, field: selectField!)
         if r > 0 {
-            hashMap.removeValue(forKey: selectKey!)
+            hashMap.removeValue(forKey: selectField!)
         }
     }
     func onQueryField() throws -> Void {
@@ -145,54 +146,5 @@ struct KeyValueRowEditorView_Previews: PreviewProvider {
     static var redisKeyModel:RedisKeyModel = RedisKeyModel(key: "tes", type: "string")
     static var previews: some View {
         KeyValueRowEditorView(redisKeyModel: redisKeyModel)
-    }
-}
-
-
-
-struct EdgeBorder: Shape {
-    
-    var width: CGFloat
-    var edges: [Edge]
-    
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        for edge in edges {
-            var x: CGFloat {
-                switch edge {
-                case .top, .bottom, .leading: return rect.minX
-                case .trailing: return rect.maxX - width
-                }
-            }
-            
-            var y: CGFloat {
-                switch edge {
-                case .top, .leading, .trailing: return rect.minY
-                case .bottom: return rect.maxY - width
-                }
-            }
-            
-            var w: CGFloat {
-                switch edge {
-                case .top, .bottom: return rect.width
-                case .leading, .trailing: return self.width
-                }
-            }
-            
-            var h: CGFloat {
-                switch edge {
-                case .top, .bottom: return self.width
-                case .leading, .trailing: return rect.height
-                }
-            }
-            path.addPath(Path(CGRect(x: x, y: y, width: w, height: h)))
-        }
-        return path
-    }
-}
-
-extension View {
-    func border(width: CGFloat, edges: [Edge], color: Color) -> some View {
-        overlay(EdgeBorder(width: width, edges: edges).foregroundColor(color))
     }
 }

@@ -11,6 +11,10 @@ struct Helps {
     static let PAGE_KEYS = "redis dbsize 命令返回的数量."
     static let SEARCH_PATTERN = "支持redis glob 风格的模式参数, 示例: key*, re?is"
     
-    static let DELETE_CONFIRM_TITLE = "Delete key '%@'?"
-    static let DELETE_CONFIRM_MESSAGE = "Are you sure you want to delete the key '%@'? This operation cannot be undone."
+    static let DELETE_KEY_CONFIRM_TITLE = "Delete key '%@'?"
+    static let DELETE_KEY_CONFIRM_MESSAGE = "Are you sure you want to delete the key '%@'? This operation cannot be undone."
+    
+    static let DELETE_HASH_FIELD_CONFIRM_TITLE = "Delete hash field '%@'?"
+    static let DELETE_HASH_FIELD_CONFIRM_MESSAGE = "Are you sure you want to delete the hash field '%@'? This operation cannot be undone."
+    
 }

@@ -41,8 +41,8 @@ struct RedisKeysListView: View {
                     HStack {
                         IconButton(icon: "plus", name: "Add", action: onAddAction)
                         IconButton(icon: "trash", name: "Delete", disabled: selectedRedisKeyIndex == nil, isConfirm: true,
-                                   confirmTitle: String(format: Helps.DELETE_CONFIRM_TITLE, selectRedisKey ?? ""),
-                                   confirmMessage: String(format:Helps.DELETE_CONFIRM_MESSAGE, selectRedisKey ?? ""),
+                                   confirmTitle: String(format: Helps.DELETE_KEY_CONFIRM_TITLE, selectRedisKey ?? ""),
+                                   confirmMessage: String(format:Helps.DELETE_KEY_CONFIRM_MESSAGE, selectRedisKey ?? ""),
                                    confirmPrimaryButtonText: "Delete",
                                    action: onDeleteAction)
                         

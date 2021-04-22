@@ -17,6 +17,8 @@ struct KeyValueRowEditorView: View {
     @EnvironmentObject var globalContext:GlobalContext
     @ObservedObject var redisKeyModel:RedisKeyModel
     @StateObject var page:Page = Page()
+    @State var focusKey = "14"
+    
     
     var delButtonDisabled:Bool {
         selectField == nil
@@ -30,9 +32,9 @@ struct KeyValueRowEditorView: View {
                 IconButton(icon: "plus", name: "Add", action: onDeleteAction)
                 IconButton(icon: "trash", name: "Delete", disabled:delButtonDisabled,
                            isConfirm: true,
-                                      confirmTitle: String(format: Helps.DELETE_HASH_FIELD_CONFIRM_TITLE, selectField ?? ""),
-                                      confirmMessage: String(format:Helps.DELETE_HASH_FIELD_CONFIRM_MESSAGE, selectField ?? ""),
-                                      confirmPrimaryButtonText: "Delete",
+                           confirmTitle: String(format: Helps.DELETE_HASH_FIELD_CONFIRM_TITLE, selectField ?? ""),
+                           confirmMessage: String(format:Helps.DELETE_HASH_FIELD_CONFIRM_MESSAGE, selectField ?? ""),
+                           confirmPrimaryButtonText: "Delete",
                            action: onDeleteAction)
                 
                 SearchBar(keywords: $page.keywords, placeholder: "Search field...", action: onQueryField)
@@ -42,10 +44,43 @@ struct KeyValueRowEditorView: View {
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
             
+//            GeometryReader { geometry in
+//                let width0 = geometry.size.width/2
+//                let width1 = width0
+//                ScrollView {
+//                    ForEach(Array(hashMap.keys), id:\.self) { key in
+//                        HStack {
+//                            Text(key)
+//
+//                                .font(.body)
+//                                .frame(width: width0, alignment: .leading)
+//                            TextField("Line 1", text: $text)
+//                                .font(.body)
+//                                .multilineTextAlignment(.leading)
+//                                .frame(width: width1, alignment: .leading)
+//                        }
+//                        .background(key == "34" ? Color.blue : nil)
+//                        .border(Color.gray, width: 1)
+//                        .onTapGesture(count: 2) {
+//                            print("on double tap")
+//                        }
+//                        .onTapGesture(count: 1) {
+//                            print("on tap")
+//                        }
+//                    }
+//                }
+//                .background(Color.white)
+//            }
+            
+            TextField("", text: $text)
+                .introspectTextField { textField in
+                    textField.becomeFirstResponder()
+                }
+
             GeometryReader { geometry in
                 let width0 = geometry.size.width/2
                 let width1 = width0
-                
+
                 List(selection: $selectField) {
                     Section(header: HStack {
                         Text("Field")
@@ -55,34 +90,50 @@ struct KeyValueRowEditorView: View {
                             .padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 0))
                             .border(width:1, edges: [.leading], color: Color.gray)
                     }) {
-                        
+
                         ForEach(Array(hashMap.keys), id:\.self) { key in
                             HStack {
                                 Text(key)
+                                    .onTapGesture {
+                                        print("on text tap")
+                                    }
                                     .font(.body)
                                     .frame(width: width0, alignment: .leading)
-                                Text((hashMap[key] ?? "")!)
+                                TextField("Line 1", text: $text)
+                                    .focusable(key == focusKey, onFocusChange: {_ in
+                                        print("focused \(key)")
+                                    })
                                     .font(.body)
                                     .multilineTextAlignment(.leading)
                                     .frame(width: width1, alignment: .leading)
                             }
+                            .contextMenu {
+                                Button(action: {
+                                    // delete item in items array
+                                }){
+                                    Text("Edit")
+                                }
+                                Button(action: {
+                                    // delete item in items array
+                                }){
+                                    Text("Delete")
+                                }
+                            }
                             .padding(EdgeInsets(top: 4, leading: 2, bottom: 4, trailing: 2))
                             .overlay(
-                                           Rectangle()
-                                               .frame(height: 1)
-                                               .foregroundColor(Color.gray.opacity(0.1)),
-                                           alignment: .bottom
-                                   )
+                                Rectangle()
+                                    .frame(height: 1)
+                                    .foregroundColor(Color.gray.opacity(0.1)),
+                                alignment: .bottom
+                            )
                             .listRowInsets(EdgeInsets())
-//                            .border(Color.gray.opacity(0.2), width: 1)
                         }
                     }
                     .collapsible(false)
-                    
+
                 }
                 .listStyle(PlainListStyle())
                 .padding(.all, 0)
-                .border(Color.blue.opacity(0.2), width: 1)
             }
             
             // footer

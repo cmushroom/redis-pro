@@ -44,43 +44,39 @@ struct KeyValueRowEditorView: View {
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
             
-//            GeometryReader { geometry in
-//                let width0 = geometry.size.width/2
-//                let width1 = width0
-//                ScrollView {
-//                    ForEach(Array(hashMap.keys), id:\.self) { key in
-//                        HStack {
-//                            Text(key)
-//
-//                                .font(.body)
-//                                .frame(width: width0, alignment: .leading)
-//                            TextField("Line 1", text: $text)
-//                                .font(.body)
-//                                .multilineTextAlignment(.leading)
-//                                .frame(width: width1, alignment: .leading)
-//                        }
-//                        .background(key == "34" ? Color.blue : nil)
-//                        .border(Color.gray, width: 1)
-//                        .onTapGesture(count: 2) {
-//                            print("on double tap")
-//                        }
-//                        .onTapGesture(count: 1) {
-//                            print("on tap")
-//                        }
-//                    }
-//                }
-//                .background(Color.white)
-//            }
+            //            GeometryReader { geometry in
+            //                let width0 = geometry.size.width/2
+            //                let width1 = width0
+            //                ScrollView {
+            //                    ForEach(Array(hashMap.keys), id:\.self) { key in
+            //                        HStack {
+            //                            Text(key)
+            //
+            //                                .font(.body)
+            //                                .frame(width: width0, alignment: .leading)
+            //                            TextField("Line 1", text: $text)
+            //                                .font(.body)
+            //                                .multilineTextAlignment(.leading)
+            //                                .frame(width: width1, alignment: .leading)
+            //                        }
+            //                        .background(key == "34" ? Color.blue : nil)
+            //                        .border(Color.gray, width: 1)
+            //                        .onTapGesture(count: 2) {
+            //                            print("on double tap")
+            //                        }
+            //                        .onTapGesture(count: 1) {
+            //                            print("on tap")
+            //                        }
+            //                    }
+            //                }
+            //                .background(Color.white)
+            //            }
             
-            TextField("", text: $text)
-                .introspectTextField { textField in
-                    textField.becomeFirstResponder()
-                }
-
+            
             GeometryReader { geometry in
                 let width0 = geometry.size.width/2
                 let width1 = width0
-
+                
                 List(selection: $selectField) {
                     Section(header: HStack {
                         Text("Field")
@@ -90,7 +86,7 @@ struct KeyValueRowEditorView: View {
                             .padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 0))
                             .border(width:1, edges: [.leading], color: Color.gray)
                     }) {
-
+                        
                         ForEach(Array(hashMap.keys), id:\.self) { key in
                             HStack {
                                 Text(key)
@@ -109,12 +105,12 @@ struct KeyValueRowEditorView: View {
                             }
                             .contextMenu {
                                 Button(action: {
-                                    // delete item in items array
+                                    print("sdfdsfsdfd")
                                 }){
                                     Text("Edit")
                                 }
                                 Button(action: {
-                                    // delete item in items array
+                                    onDeleteConfirmAction(field: key)
                                 }){
                                     Text("Delete")
                                 }
@@ -130,7 +126,7 @@ struct KeyValueRowEditorView: View {
                         }
                     }
                     .collapsible(false)
-
+                    
                 }
                 .listStyle(PlainListStyle())
                 .padding(.all, 0)
@@ -154,12 +150,20 @@ struct KeyValueRowEditorView: View {
         }
     }
     
-    func onDeleteAction() throws -> Void {
-        logger.info("hash field delete action...")
-        let r = try redisInstanceModel.getClient().hdel(redisKeyModel.key, field: selectField!)
-        if r > 0 {
-            hashMap.removeValue(forKey: selectField!)
+    func onDeleteConfirmAction(field:String) -> Void {
+        globalContext.alertVisible = true
+        globalContext.showSecondButton = true
+        globalContext.primaryButtonText = "Delete"
+        globalContext.alertTitle = String(format: Helps.DELETE_HASH_FIELD_CONFIRM_TITLE, field)
+        globalContext.alertMessage = String(format:Helps.DELETE_HASH_FIELD_CONFIRM_MESSAGE, field)
+        globalContext.primaryAction = {
+            try deleteField(field)
         }
+        
+    }
+    
+    func onDeleteAction() throws -> Void {
+        try deleteField(selectField!)
     }
     func onQueryField() throws -> Void {
         try queryHashPage(redisKeyModel)
@@ -190,6 +194,14 @@ struct KeyValueRowEditorView: View {
     
     func ttl(_ redisKeyModel:RedisKeyModel) throws -> Void {
         redisKeyModel.ttl = try redisInstanceModel.getClient().ttl(key: redisKeyModel.key)
+    }
+    
+    func deleteField(_ field:String) throws -> Void {
+        logger.info("delete hash field: \(field)")
+        let r = try redisInstanceModel.getClient().hdel(redisKeyModel.key, field: field)
+        if r > 0 {
+            hashMap.removeValue(forKey: field)
+        }
     }
 }
 

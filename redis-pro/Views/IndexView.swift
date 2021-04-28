@@ -24,11 +24,21 @@ struct IndexView: View {
                                 .environmentObject(globalContext)
                         }
                 }
-                .alert(isPresented: $globalContext.alertVisible) {
-                    globalContext.showSecondButton ? Alert(title: Text(globalContext.alertTitle), message: Text(globalContext.alertMessage),
-                                                                   primaryButton: .default(Text(globalContext.primaryButtonText),
-                                                                                           action: doAction), secondaryButton: .cancel(Text(globalContext.secondButtonText))) : Alert(title: Text(globalContext.alertTitle), message: Text(globalContext.alertMessage), dismissButton: .default(Text(globalContext.primaryButtonText)))
-                }
+//                .alert(isPresented: $globalContext.alertVisible) {
+//                    globalContext.showSecondButton ? Alert(title: Text(globalContext.alertTitle), message: Text(globalContext.alertMessage),
+//                                                                   primaryButton: .default(Text(globalContext.primaryButtonText),
+//                                                                                           action: doAction), secondaryButton: .cancel(Text(globalContext.secondButtonText))) : Alert(title: Text(globalContext.alertTitle), message: Text(globalContext.alertMessage), dismissButton: .default(Text(globalContext.primaryButtonText)))
+//                }
+//                .popover(isPresented: $globalContext.alertVisible, arrowEdge: .bottom) {
+//                    Text("popover")
+//                }
+                .sheet(isPresented: $globalContext.alertVisible, onDismiss: {
+                            print("on dismiss")
+                        }) {
+                    ModalView("hehe", action: {}) {
+                        Text("model ....")
+                    }
+                        }
         
 //        ZStack {
 //            LoginView()

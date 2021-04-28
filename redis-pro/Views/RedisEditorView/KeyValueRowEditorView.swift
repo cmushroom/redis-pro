@@ -44,35 +44,6 @@ struct KeyValueRowEditorView: View {
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
             
-            //            GeometryReader { geometry in
-            //                let width0 = geometry.size.width/2
-            //                let width1 = width0
-            //                ScrollView {
-            //                    ForEach(Array(hashMap.keys), id:\.self) { key in
-            //                        HStack {
-            //                            Text(key)
-            //
-            //                                .font(.body)
-            //                                .frame(width: width0, alignment: .leading)
-            //                            TextField("Line 1", text: $text)
-            //                                .font(.body)
-            //                                .multilineTextAlignment(.leading)
-            //                                .frame(width: width1, alignment: .leading)
-            //                        }
-            //                        .background(key == "34" ? Color.blue : nil)
-            //                        .border(Color.gray, width: 1)
-            //                        .onTapGesture(count: 2) {
-            //                            print("on double tap")
-            //                        }
-            //                        .onTapGesture(count: 1) {
-            //                            print("on tap")
-            //                        }
-            //                    }
-            //                }
-            //                .background(Color.white)
-            //            }
-            
-            
             GeometryReader { geometry in
                 let width0 = geometry.size.width/2
                 let width1 = width0
@@ -90,11 +61,14 @@ struct KeyValueRowEditorView: View {
                         ForEach(Array(hashMap.keys), id:\.self) { key in
                             HStack {
                                 Text(key)
-                                    .onTapGesture {
-                                        print("on text tap")
-                                    }
+                                    .onTapGesture(count:2) { //<- Needed to be first!
+                                                        print("doubletap")
+                                                    }.onTapGesture(count:1) {
+                                                        self.selectField = key
+                                                    }
                                     .font(.body)
                                     .frame(width: width0, alignment: .leading)
+                                    
                                 TextField("Line 1", text: $text)
                                     .focusable(key == focusKey, onFocusChange: {_ in
                                         print("focused \(key)")

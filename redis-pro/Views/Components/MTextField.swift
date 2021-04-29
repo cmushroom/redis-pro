@@ -17,7 +17,7 @@ struct MTextField: View {
     var disabled:Bool = false
     @EnvironmentObject var globalContext:GlobalContext
     
-    let logger = Logger(label: "textfield")
+    let logger = Logger(label: "text-field")
     
     var body: some View {
         HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 2) {

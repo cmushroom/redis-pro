@@ -26,6 +26,9 @@
 		431266EE261D517500FB6B69 /* RedisKeyTypePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431266ED261D517500FB6B69 /* RedisKeyTypePicker.swift */; };
 		431266F2261D89E600FB6B69 /* RedisValueEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431266F1261D89E600FB6B69 /* RedisValueEditView.swift */; };
 		431266F5261D912500FB6B69 /* StringEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431266F4261D912500FB6B69 /* StringEditorView.swift */; };
+		4313576B263AB6400077EE46 /* FormItemTextArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4313576A263AB6400077EE46 /* FormItemTextArea.swift */; };
+		4313576D263AB6A20077EE46 /* MTextEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4313576C263AB6A20077EE46 /* MTextEditor.swift */; };
+		4313576F263ABB1C0077EE46 /* FormWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4313576E263ABB1C0077EE46 /* FormWrapper.swift */; };
 		4314A33E2624370E00053FEE /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4314A33D2624370E00053FEE /* SearchBar.swift */; };
 		4314A34126243ED500053FEE /* PageBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4314A34026243ED500053FEE /* PageBar.swift */; };
 		4314A344262546DF00053FEE /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4314A343262546DF00053FEE /* Extensions.swift */; };
@@ -90,6 +93,9 @@
 		431266ED261D517500FB6B69 /* RedisKeyTypePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisKeyTypePicker.swift; sourceTree = "<group>"; };
 		431266F1261D89E600FB6B69 /* RedisValueEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisValueEditView.swift; sourceTree = "<group>"; };
 		431266F4261D912500FB6B69 /* StringEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringEditorView.swift; sourceTree = "<group>"; };
+		4313576A263AB6400077EE46 /* FormItemTextArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormItemTextArea.swift; sourceTree = "<group>"; };
+		4313576C263AB6A20077EE46 /* MTextEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTextEditor.swift; sourceTree = "<group>"; };
+		4313576E263ABB1C0077EE46 /* FormWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormWrapper.swift; sourceTree = "<group>"; };
 		4314A33D2624370E00053FEE /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
 		4314A34026243ED500053FEE /* PageBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageBar.swift; sourceTree = "<group>"; };
 		4314A343262546DF00053FEE /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -153,7 +159,9 @@
 			isa = PBXGroup;
 			children = (
 				430A09E125C1559400B60DFC /* FormLabel.swift */,
+				4313576E263ABB1C0077EE46 /* FormWrapper.swift */,
 				430A09E525C155F800B60DFC /* FormItemText.swift */,
+				4313576A263AB6400077EE46 /* FormItemTextArea.swift */,
 				43DFEF3625C29288006EF535 /* FormItemInt.swift */,
 				4373C4FD25C2DEC8002B700E /* MButton.swift */,
 				43EADB0726200540003B8310 /* IconButton.swift */,
@@ -163,6 +171,7 @@
 				4314A33D2624370E00053FEE /* SearchBar.swift */,
 				4314A34026243ED500053FEE /* PageBar.swift */,
 				4314A3462625484100053FEE /* MTextField.swift */,
+				4313576C263AB6A20077EE46 /* MTextEditor.swift */,
 				4314A343262546DF00053FEE /* Extensions.swift */,
 				43BB012226390BC20039565E /* ModalView.swift */,
 			);
@@ -378,6 +387,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				43EADB052620043F003B8310 /* KeyValueRowEditorView.swift in Sources */,
+				4313576F263ABB1C0077EE46 /* FormWrapper.swift in Sources */,
+				4313576B263AB6400077EE46 /* FormItemTextArea.swift in Sources */,
 				4314A3472625484100053FEE /* MTextField.swift in Sources */,
 				4385D335261FEBA000BA8ED1 /* HashEditorView.swift in Sources */,
 				4373C50525C3F0B6002B700E /* UserDefaultsKeysEnum.swift in Sources */,
@@ -413,6 +424,7 @@
 				43DFEF3725C29288006EF535 /* FormItemInt.swift in Sources */,
 				4320AB2225B681DA00A8E214 /* LandmarkDetail.swift in Sources */,
 				4320AB0525B67A1200A8E214 /* CircleImage.swift in Sources */,
+				4313576D263AB6A20077EE46 /* MTextEditor.swift in Sources */,
 				4320AB0E25B67D1C00A8E214 /* Landmark.swift in Sources */,
 				43481049262D30CE002809ED /* Helps.swift in Sources */,
 				4314A33E2624370E00053FEE /* SearchBar.swift in Sources */,

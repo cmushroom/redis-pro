@@ -12,50 +12,61 @@ struct IndexView: View {
     @StateObject var globalContext:GlobalContext = GlobalContext()
     
     var body: some View {
-                VStack {
-                        if (!redisInstanceModel.isConnect) {
-                            LoginView()
-                                .environmentObject(redisInstanceModel)
-                                .environmentObject(globalContext)
-
-                        } else {
-                            HomeView()
-                                .environmentObject(redisInstanceModel)
-                                .environmentObject(globalContext)
-                        }
+        HStack {
+            VStack {
+                if (!redisInstanceModel.isConnect) {
+                    LoginView()
+                        .environmentObject(redisInstanceModel)
+                        .environmentObject(globalContext)
+                    
+                } else {
+                    HomeView()
+                        .environmentObject(redisInstanceModel)
+                        .environmentObject(globalContext)
                 }
-//                .alert(isPresented: $globalContext.alertVisible) {
-//                    globalContext.showSecondButton ? Alert(title: Text(globalContext.alertTitle), message: Text(globalContext.alertMessage),
-//                                                                   primaryButton: .default(Text(globalContext.primaryButtonText),
-//                                                                                           action: doAction), secondaryButton: .cancel(Text(globalContext.secondButtonText))) : Alert(title: Text(globalContext.alertTitle), message: Text(globalContext.alertMessage), dismissButton: .default(Text(globalContext.primaryButtonText)))
-//                }
-//                .popover(isPresented: $globalContext.alertVisible, arrowEdge: .bottom) {
-//                    Text("popover")
-//                }
-                .sheet(isPresented: $globalContext.alertVisible, onDismiss: {
-                            print("on dismiss")
-                        }) {
-                    ModalView("hehe", action: {}) {
-                        Text("model ....")
-                    }
-                        }
+            }
+        }
+        .alert(isPresented: $globalContext.alertVisible) {
+            globalContext.showSecondButton ? Alert(title: Text(globalContext.alertTitle), message: Text(globalContext.alertMessage),
+                                                   primaryButton: .default(Text(globalContext.primaryButtonText),
+                                                                           action: doAction), secondaryButton: .cancel(Text(globalContext.secondButtonText))) : Alert(title: Text(globalContext.alertTitle), message: Text(globalContext.alertMessage), dismissButton: .default(Text(globalContext.primaryButtonText)))
+        }
+        //                .popover(isPresented: $globalContext.alertVisible, arrowEdge: .bottom) {
+        //                    Text("popover")
+        //                }
+//        .sheet(isPresented: $globalContext.alertVisible, onDismiss: {
+//            print("on dismiss")
+//        }) {
+//            ModalView("hehe", action: {
+//                //                        globalContext.alertVisible.toggle()
+//            }) {
+//                Text("model ....")
+//                Text("model ....")
+//                Text("model ....")
+//                Text("model ....")
+//                Text("model ....")
+//                Text("model ....")
+//                Text("model ....")
+//                Text("model ....")
+//            }
+//        }
         
-//        ZStack {
-//            LoginView()
-//                .environmentObject(redisInstanceModel)
-//                .environmentObject(globalContext)
-//                .opacity(redisInstanceModel.isConnect ? 0 : 1)
-//                .zIndex(redisInstanceModel.isConnect ? 0 : 1)
-//
-//            HomeView()
-//                .environmentObject(redisInstanceModel)
-//                .environmentObject(globalContext)
-//                .opacity(redisInstanceModel.isConnect ? 1 : 0)
-//                .zIndex(redisInstanceModel.isConnect ? 1 : 0)
-//        }
-//        .alert(isPresented: $globalContext.alertVisible) {
-//            globalContext.showSecondButton ? Alert(title: Text("Confirm"), message: Text(globalContext.message), primaryButton: .default(Text(globalContext.primaryButtonText), action: globalContext.primaryAction), secondaryButton: .cancel(Text(globalContext.secondButtonText))) : Alert(title: Text("warnning"), message: Text(globalContext.message), dismissButton: .default(Text(globalContext.primaryButtonText)))
-//        }
+        //        ZStack {
+        //            LoginView()
+        //                .environmentObject(redisInstanceModel)
+        //                .environmentObject(globalContext)
+        //                .opacity(redisInstanceModel.isConnect ? 0 : 1)
+        //                .zIndex(redisInstanceModel.isConnect ? 0 : 1)
+        //
+        //            HomeView()
+        //                .environmentObject(redisInstanceModel)
+        //                .environmentObject(globalContext)
+        //                .opacity(redisInstanceModel.isConnect ? 1 : 0)
+        //                .zIndex(redisInstanceModel.isConnect ? 1 : 0)
+        //        }
+        //        .alert(isPresented: $globalContext.alertVisible) {
+        //            globalContext.showSecondButton ? Alert(title: Text("Confirm"), message: Text(globalContext.message), primaryButton: .default(Text(globalContext.primaryButtonText), action: globalContext.primaryAction), secondaryButton: .cancel(Text(globalContext.secondButtonText))) : Alert(title: Text("warnning"), message: Text(globalContext.message), dismissButton: .default(Text(globalContext.primaryButtonText)))
+        //        }
         
     }
     

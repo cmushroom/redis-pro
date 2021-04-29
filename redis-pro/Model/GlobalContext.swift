@@ -16,6 +16,7 @@ class GlobalContext:ObservableObject {
     var primaryButtonText:String = "Ok"
     var secondButtonText:String = "Cancel"
     var primaryAction:() throws -> Void = {}
+
     
     func showError(_ error:Error) -> Void {
         alertVisible = true
@@ -27,4 +28,5 @@ class GlobalContext:ObservableObject {
             alertMessage = "\(error)"
         }
     }
+
 }

@@ -10,14 +10,17 @@ import Logging
 
 struct KeyValueRowEditorView: View {
     @State var text:String = ""
-    @State var hashMap:[String: String?] = ["testesttesttesttesttesttesttesttesttesttesttestt":"234243242343"]
-    @State var selectField:String?
-    @State var isEditing:Bool = false
+    @State var hashMap:[String: String?] = ["1":"1"]
+    @State private var selectField:String?
+    @State private var isEditing:Bool = false
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @EnvironmentObject var globalContext:GlobalContext
     @ObservedObject var redisKeyModel:RedisKeyModel
-    @StateObject var page:Page = Page()
-    @State var focusKey = "14"
+    @StateObject private var page:Page = Page()
+    
+    @State private var editModalVisible:Bool = false
+    @State private var editField:String = ""
+    @State private var editValue:String = ""
     
     
     var delButtonDisabled:Bool {
@@ -58,28 +61,27 @@ struct KeyValueRowEditorView: View {
                             .border(width:1, edges: [.leading], color: Color.gray)
                     }) {
                         
-                        ForEach(Array(hashMap.keys), id:\.self) { key in
+                        ForEach(hashMap.sorted(by: {$0.0 < $1.0}), id: \.key) { key, value in
                             HStack {
                                 Text(key)
                                     .onTapGesture(count:2) { //<- Needed to be first!
-                                                        print("doubletap")
-                                                    }.onTapGesture(count:1) {
-                                                        self.selectField = key
-                                                    }
+                                        print("doubletap")
+                                    }.onTapGesture(count:1) {
+                                        self.selectField = key
+                                    }
                                     .font(.body)
                                     .frame(width: width0, alignment: .leading)
-                                    
-                                TextField("Line 1", text: $text)
-                                    .focusable(key == focusKey, onFocusChange: {_ in
-                                        print("focused \(key)")
-                                    })
+                                
+                                Text(value ?? "")
                                     .font(.body)
                                     .multilineTextAlignment(.leading)
                                     .frame(width: width1, alignment: .leading)
                             }
                             .contextMenu {
                                 Button(action: {
-                                    print("sdfdsfsdfd")
+                                    editModalVisible = true
+                                    editField = key
+                                    editValue = value ?? ""
                                 }){
                                     Text("Edit")
                                 }
@@ -113,6 +115,19 @@ struct KeyValueRowEditorView: View {
                 IconButton(icon: "checkmark", name: "Submit", confirmPrimaryButtonText: "Submit", action: onSubmitAction)
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
+        }
+        .sheet(isPresented: $editModalVisible, onDismiss: {
+            print("on dismiss")
+        }) {
+            ModalView("Update field", action: {
+                //                        globalContext.alertVisible.toggle()
+            }) {
+                VStack(alignment:.leading, spacing: 8) {
+                    FormItemText(label: "Field", placeholder: "field", value: $editField)
+                    FormItemTextArea(label: "Value", placeholder: "value", value: $editValue)
+                }
+                .frame(width:500, height:400)
+            }
         }
         .onChange(of: redisKeyModel, perform: { value in
             logger.info("redis string value editor view change \(value)")
@@ -178,6 +193,7 @@ struct KeyValueRowEditorView: View {
         }
     }
 }
+
 
 struct KeyValueRowEditorView_Previews: PreviewProvider {
     static var redisKeyModel:RedisKeyModel = RedisKeyModel(key: "tes", type: "string")

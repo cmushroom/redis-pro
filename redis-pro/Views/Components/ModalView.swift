@@ -21,25 +21,32 @@ struct ModalView<Content: View>: View {
     }
     
     var body: some View {
-        VStack {
+        VStack(alignment: .center, spacing: 8) {
+            Text(title)
+                .font(.title3)
             content
-            HStack(alignment: .center, spacing: 4) {
+            HStack(alignment: .center, spacing: 8) {
                 Spacer()
-                MButton(text: "Cancel")
-                MButton(text: "Ok", action: doAction)
+                MButton(text: "Cancel", action: onCancel)
+                MButton(text: "Ok", action: doAction).keyboardShortcut(.defaultAction)
             }
         }
+        .padding(EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8))
     }
     
     func doAction() throws -> Void {
+        presentation.wrappedValue.dismiss()
         try action()
-        presentation.animation()
+    }
+    
+    func onCancel() throws -> Void{
+        presentation.wrappedValue.dismiss()
     }
 }
 
 struct ModalView_Previews: PreviewProvider {
     static var previews: some View {
-        ModalView("modal", action: {print("modal view action")}) {
+        ModalView("title", action: {print("modal view action")}) {
             Text("modal view")
         }
     }

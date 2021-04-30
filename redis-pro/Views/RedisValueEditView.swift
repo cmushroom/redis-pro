@@ -20,7 +20,7 @@ struct RedisValueEditView: View {
             if RedisKeyTypeEnum.STRING.rawValue == redisKeyModel.type {
                 StringEditorView(redisKeyModel: redisKeyModel)
             } else if RedisKeyTypeEnum.HASH.rawValue == redisKeyModel.type {
-                KeyValueRowEditorView(redisKeyModel: redisKeyModel)
+                HashEditorView(redisKeyModel: redisKeyModel)
             }
         }
         .padding(4)

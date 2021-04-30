@@ -9,18 +9,17 @@ import SwiftUI
 import Logging
 
 struct PageBar: View {
+    @EnvironmentObject var globalContext:GlobalContext
     @ObservedObject var page:Page
     var action:() throws -> Void = {}
-    @State private var showAlert = false
-    @State private var msg:String = ""
     
     let logger = Logger(label: "page-bar")
     
     var body: some View {
         HStack(alignment:.center) {
             Spacer()
-            Text("Keys:\(page.total)")
-                .help(Helps.PAGE_KEYS)
+            Text("Total:\(page.total)")
+//                .help(Helps.PAGE_KEYS)
                 .font(.footnote)
                 .padding(.leading, 4.0)
             
@@ -49,9 +48,6 @@ struct PageBar: View {
             .layoutPriority(1)
         }
         .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
-        .alert(isPresented: $showAlert) {
-            Alert(title: Text("warnning"), message: Text(msg), dismissButton: .default(Text("OK")))
-        }
     }
     
     func doAction() -> Void {
@@ -59,8 +55,7 @@ struct PageBar: View {
         do {
             try action()
         } catch {
-            showAlert = true
-            msg = "\(error)"
+            globalContext.showError(error)
         }
     }
 }

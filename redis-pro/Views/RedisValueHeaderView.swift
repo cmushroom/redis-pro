@@ -19,6 +19,7 @@ struct RedisValueHeaderView: View {
             FormItemText(label: "Key", labelWidth: 40, required: true, value: $redisKeyModel.key, disabled: disableEdit)
             RedisKeyTypePicker(label: "Type", value: $redisKeyModel.type, disabled: disableEdit)
             FormItemInt(label: "TTL(s)", value: $redisKeyModel.ttl)
+                .help(Helps.TTL_HELP)
                 .frame(width: 160)
             Spacer()
         }

@@ -175,7 +175,7 @@ struct KeyValueRowEditorView: View {
     
     func onSubmitAction() throws -> Void {
         logger.info("redis hash value editor on submit")
-        try redisInstanceModel.getClient().set(redisKeyModel.key, value: text, ex: redisKeyModel.ttl)
+        let _ = try redisInstanceModel.getClient().expire(redisKeyModel.key, seconds: redisKeyModel.ttl)
     }
     
     func onRefreshAction() throws -> Void {

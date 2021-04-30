@@ -202,6 +202,13 @@ class RediStackClient{
     }
     
     
+    
+    func expire(_ key:String, seconds:Int) throws -> Bool {
+        logger.info("set key expire key:\(key), seconds:\(seconds)")
+        return try getConnection().expire(RedisKey(key), after: TimeAmount.seconds(Int64(seconds))).wait()
+    }
+    
+    
     func ttl(key:String) throws -> Int {
         let r:RedisKeyLifetime = try getConnection().ttl(RedisKey(key)).wait()
         

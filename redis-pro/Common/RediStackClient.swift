@@ -124,8 +124,14 @@ class RediStackClient{
         }
     }
     
+    func hset(_ key:String, field:String, value:String) throws -> Bool {
+        logger.info("redis hash hset key:\(key), field:\(field), value:\(value)")
+        return try getConnection().hset(field, to: value, in: RedisKey(key)).wait()
+    }
+    
     func hdel(_ key:String, field:String) throws -> Int {
-        try getConnection().hdel(field, from: RedisKey(key)).wait()
+        logger.info("redis hash hdel key:\(key), field:\(field)")
+        return try getConnection().hdel(field, from: RedisKey(key)).wait()
     }
     
     func hlen(_ key:String) throws -> Int {

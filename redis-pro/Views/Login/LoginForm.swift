@@ -98,9 +98,8 @@ struct LoginForm: View {
     
     func onTestConnectionAction() throws -> Void {
         logger.info("test connect to redis server: \(redisModel)")
-        redisInstanceModel.redisModel = redisModel
         
-        let ping = try redisInstanceModel.testConnect()
+        let ping = try redisInstanceModel.testConnect(redisModel:redisModel)
         if !ping {
             throw BizError(message: "test connection redis error!")
         }

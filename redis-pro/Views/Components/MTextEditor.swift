@@ -10,6 +10,7 @@ import SwiftUI
 struct MTextEditor: View {
     @Binding var text:String
     @State private var editing:Bool = false
+    @State private var disabled:Bool = false
     
     var body: some View {
         // text editor
@@ -20,10 +21,13 @@ struct MTextEditor: View {
             .lineSpacing(1.5)
             .disableAutocorrection(true)
             .textFieldStyle(RoundedBorderTextFieldStyle())
-            .border(Color.gray.opacity(editing ? 0.6 : 0.3), width: 1)
             .onHover { inside in
                 self.editing = inside
             }
+            .cornerRadius(4)
+            .overlay(
+                RoundedRectangle(cornerRadius: 4).stroke(Color.gray.opacity(!disabled && editing ?  0.4 : 0.2), lineWidth: 1)
+                )
     }
 }
 

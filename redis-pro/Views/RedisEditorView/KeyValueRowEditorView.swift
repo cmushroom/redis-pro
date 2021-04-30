@@ -19,6 +19,7 @@ struct KeyValueRowEditorView: View {
     @StateObject private var page:Page = Page()
     
     @State private var editModalVisible:Bool = false
+    @State private var editNewField:Bool = false
     @State private var editField:String = ""
     @State private var editValue:String = ""
     
@@ -32,7 +33,7 @@ struct KeyValueRowEditorView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .center , spacing: 4) {
-                IconButton(icon: "plus", name: "Add", action: onDeleteAction)
+                IconButton(icon: "plus", name: "Add", action: onAddFieldAction)
                 IconButton(icon: "trash", name: "Delete", disabled:delButtonDisabled,
                            isConfirm: true,
                            confirmTitle: String(format: Helps.DELETE_HASH_FIELD_CONFIRM_TITLE, selectField ?? ""),
@@ -80,6 +81,7 @@ struct KeyValueRowEditorView: View {
                             .contextMenu {
                                 Button(action: {
                                     editModalVisible = true
+                                    editNewField = false
                                     editField = key
                                     editValue = value ?? ""
                                 }){
@@ -119,14 +121,12 @@ struct KeyValueRowEditorView: View {
         .sheet(isPresented: $editModalVisible, onDismiss: {
             print("on dismiss")
         }) {
-            ModalView("Update field", action: {
-                //                        globalContext.alertVisible.toggle()
-            }) {
+            ModalView("Update field", action: onSaveFieldAction) {
                 VStack(alignment:.leading, spacing: 8) {
-                    FormItemText(label: "Field", placeholder: "field", value: $editField)
+                    FormItemText(label: "Field", placeholder: "field", value: $editField, disabled: !editNewField)
                     FormItemTextArea(label: "Value", placeholder: "value", value: $editValue)
                 }
-                .frame(width:500, height:400)
+                .frame(minWidth:500, minHeight:300)
             }
         }
         .onChange(of: redisKeyModel, perform: { value in
@@ -151,6 +151,21 @@ struct KeyValueRowEditorView: View {
         
     }
     
+    
+    func onSaveFieldAction() throws -> Void {
+        let _ = try redisInstanceModel.getClient().hset(redisKeyModel.key, field: editField, value: editValue)
+        logger.info("redis hset success, update field list")
+        hashMap.updateValue(editValue, forKey: editField)
+    }
+    
+    
+    func onAddFieldAction() throws -> Void {
+        editModalVisible = true
+        editNewField = true
+        editField = ""
+        editValue = ""
+    }
+    
     func onDeleteAction() throws -> Void {
         try deleteField(selectField!)
     }
@@ -159,8 +174,8 @@ struct KeyValueRowEditorView: View {
     }
     
     func onSubmitAction() throws -> Void {
-        logger.info("redis string value editor on submit")
-        //        try redisInstanceModel.getClient().set(redisKeyModel.key, value: text, ex: redisKeyModel.ttl)
+        logger.info("redis hash value editor on submit")
+        try redisInstanceModel.getClient().set(redisKeyModel.key, value: text, ex: redisKeyModel.ttl)
     }
     
     func onRefreshAction() throws -> Void {

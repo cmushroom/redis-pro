@@ -52,14 +52,22 @@ class RedisInstanceModel:ObservableObject, Identifiable {
     }
     
     func connect(redisModel:RedisModel) throws -> Void {
-        self.redisModel = redisModel
-        isConnect = try getClient().ping()
-        if !isConnect {
-            throw BizError(message: "connect redis server error")
+        logger.info("connect to redis server: \(redisModel)")
+        do {
+            self.redisModel = redisModel
+            isConnect = try getClient().ping()
+            if !isConnect {
+                throw BizError(message: "connect redis server error")
+            }
+        } catch {
+            close()
+            throw error
         }
     }
     
-    func testConnect() throws -> Bool {
+    func testConnect(redisModel:RedisModel) throws -> Bool {
+        self.redisModel = redisModel
+        
         defer {
             close()
         }

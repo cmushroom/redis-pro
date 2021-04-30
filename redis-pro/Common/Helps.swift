@@ -18,4 +18,8 @@ struct Helps {
     static let DELETE_HASH_FIELD_CONFIRM_TITLE = "Delete hash field '%@'?"
     static let DELETE_HASH_FIELD_CONFIRM_MESSAGE = "Are you sure you want to delete the hash field '%@'? This operation cannot be undone."
     
+    
+    static let DELETE_LIST_ITEM_CONFIRM_TITLE = "Delete list item '%@'?"
+    static let DELETE_LIST_ITEM_CONFIRM_MESSAGE = "Are you sure you want to delete the list item '%@'? This operation cannot be undone."
+    
 }

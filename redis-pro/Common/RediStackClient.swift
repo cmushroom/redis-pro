@@ -124,6 +124,23 @@ class RediStackClient{
         }
     }
     
+    // list operator
+    
+    func hscan(_ key:String, cursor:Int, count:Int? = 1, keywords:String?) throws -> (Int, [String: String?]) {
+        do {
+            logger.debug("redis hash scan, key: \(key) cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
+            
+            return try getConnection().(RedisKey(key), startingFrom: cursor, matching: keywords, count: count, valueType: String.self).wait()
+            
+        } catch {
+            logger.error("redis hash scan key:\(key) error: \(error)")
+            throw error
+        }
+    }
+    
+    
+    // hash operator
+    
     func hset(_ key:String, field:String, value:String) throws -> Bool {
         logger.info("redis hash hset key:\(key), field:\(field), value:\(value)")
         return try getConnection().hset(field, to: value, in: RedisKey(key)).wait()
@@ -164,6 +181,8 @@ class RediStackClient{
             throw error
         }
     }
+    
+    // string operator
     
     func set(_ key:String, value:String, ex:Int?) throws -> Void {
         logger.info("set value, key:\(key), value:\(value), ex:\(ex ?? -1)")

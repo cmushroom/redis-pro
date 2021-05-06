@@ -104,6 +104,25 @@ class RediStackClient{
     }
     
     
+    
+    func pageList(_ key:String, page:Page) throws -> [String?] {
+        do {
+            logger.info("redis list page, key: \(key), page: \(page)")
+            
+            let cursor:Int = page.cursor
+    
+            let total = try llen(key)
+            page.total = total
+            
+            return try lrange(key, start: cursor, stop: cursor + page.size)
+        
+        } catch {
+            logger.error("query redis list page error \(error)")
+            throw error
+        }
+    }
+    
+    
     func toRedisKeyModels(keys:[String]) throws -> [RedisKeyModel] {
         if keys.isEmpty {
             return [RedisKeyModel]()
@@ -126,14 +145,27 @@ class RediStackClient{
     
     // list operator
     
-    func hscan(_ key:String, cursor:Int, count:Int? = 1, keywords:String?) throws -> (Int, [String: String?]) {
+    func lrange(_ key:String, start:Int, stop:Int) throws -> [String?] {
         do {
-            logger.debug("redis hash scan, key: \(key) cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
+            logger.debug("redis list range, key: \(key)")
             
-            return try getConnection().(RedisKey(key), startingFrom: cursor, matching: keywords, count: count, valueType: String.self).wait()
+            return try getConnection().lrange(from: RedisKey(key), firstIndex: start, lastIndex: stop, as: String.self).wait()
             
         } catch {
-            logger.error("redis hash scan key:\(key) error: \(error)")
+            logger.error("redis list range key:\(key) error: \(error)")
+            throw error
+        }
+    }
+    
+    
+    func llen(_ key:String) throws -> Int {
+        do {
+            logger.debug("redis list length, key: \(key)")
+            
+            return try getConnection().llen(of: RedisKey(key)).wait()
+            
+        } catch {
+            logger.error("redis list length key:\(key) error: \(error)")
             throw error
         }
     }

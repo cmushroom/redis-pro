@@ -296,19 +296,21 @@ class RediStackClient{
     func expire(_ key:String, seconds:Int) throws -> Bool {
         logger.info("set key expire key:\(key), seconds:\(seconds)")
         if seconds < 0 {
-            getConnection().
+            let _ = try getConnection().send(command: "PERSIST", with: [RESPValue(from: key)]).wait()
+            return  true
+        } else {
+            return try getConnection().expire(RedisKey(key), after: TimeAmount.seconds(Int64(seconds))).wait()
         }
-        return try getConnection().expire(RedisKey(key), after: TimeAmount.seconds(Int64(seconds))).wait()
     }
     
     
     func ttl(key:String) throws -> Int {
-        let r:RedisKeyLifetime = try getConnection().ttl(RedisKey(key)).wait()
+        let r:RedisKey.Lifetime = try getConnection().ttl(RedisKey(key)).wait()
         
         logger.info("query redis key ttl, key: \(key), r:\(r)")
-        if r == RedisKeyLifetime.keyDoesNotExist {
+        if r == RedisKey.Lifetime.keyDoesNotExist {
             throw BizError(message: "redis key: \(key) does not exist!")
-        } else if r == RedisKeyLifetime.unlimited {
+        } else if r == RedisKey.Lifetime.unlimited {
             return -1
         } else {
             return Int(r.timeAmount!.nanoseconds / 1000000000)

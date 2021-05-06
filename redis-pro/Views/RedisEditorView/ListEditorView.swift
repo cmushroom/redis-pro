@@ -132,27 +132,6 @@ struct ListEditorView: View {
         
     }
     
-    
-    func onUpdateItemAction() throws -> Void {
-        if editIndex == -1 {
-            let r = try redisInstanceModel.getClient().lpush(redisKeyModel.key, value: editValue)
-            if r > 0 {
-                list.insert(editValue, at: 0)
-            }
-        } else if editIndex == -2 {
-            let r = try redisInstanceModel.getClient().rpush(redisKeyModel.key, value: editValue)
-            
-            if r > 0 && (page.cursor + page.size) >= page.total{
-                list.append(editValue)
-            }
-        } else {
-            try redisInstanceModel.getClient().lset(redisKeyModel.key, index: editIndex + page.cursor, value: editValue)
-            logger.info("redis list set success, update list")
-            list[editIndex] = editValue
-        }
-    }
-    
-    
     func onLPushAction() throws -> Void {
         editModalVisible = true
         editNewField = true
@@ -165,6 +144,20 @@ struct ListEditorView: View {
         editNewField = true
         editIndex = -2
         editValue = ""
+    }
+    
+    func onUpdateItemAction() throws -> Void {
+        if editIndex == -1 {
+            let _ = try redisInstanceModel.getClient().lpush(redisKeyModel.key, value: editValue)
+            try onRefreshAction()
+        } else if editIndex == -2 {
+            let _ = try redisInstanceModel.getClient().rpush(redisKeyModel.key, value: editValue)
+            try onRefreshAction()
+        } else {
+            try redisInstanceModel.getClient().lset(redisKeyModel.key, index: editIndex + page.cursor, value: editValue)
+            logger.info("redis list set success, update list")
+            list[editIndex] = editValue
+        }
     }
     
     func onDeleteAction() throws -> Void {

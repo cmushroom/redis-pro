@@ -25,6 +25,7 @@ struct PageBar: View {
             
             //            Spacer()
             Picker("", selection: $page.size) {
+                Text("10").tag(10)
                 Text("50").tag(50)
                 Text("100").tag(100)
                 Text("200").tag(200)
@@ -37,17 +38,27 @@ struct PageBar: View {
             .font(/*@START_MENU_TOKEN@*/.footnote/*@END_MENU_TOKEN@*/)
             .frame(width: 70)
             HStack(alignment:.center) {
-                MIcon(icon: "chevron.left", action: doAction).disabled(!page.hasPrevPage)
+                MIcon(icon: "chevron.left", action: onPrevPageAction).disabled(!page.hasPrevPage)
                 Text("\(page.current)/\(page.totalPage)")
                     .font(.footnote)
                     .multilineTextAlignment(.center)
                     .lineLimit(1)
                 //                    .layoutPriority(1)
-                MIcon(icon: "chevron.right", action: doAction).disabled(!page.hasNextPage)
+                MIcon(icon: "chevron.right", action: onNextPageAction).disabled(!page.hasNextPage)
             }
             .layoutPriority(1)
         }
         .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
+    }
+    
+    func onNextPageAction() -> Void {
+        page.nextPage()
+        doAction()
+    }
+    
+    func onPrevPageAction() -> Void {
+        page.prevPage()
+        doAction()
     }
     
     func doAction() -> Void {

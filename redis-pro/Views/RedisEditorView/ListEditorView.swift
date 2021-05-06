@@ -10,7 +10,7 @@ import Logging
 
 struct ListEditorView: View {
     @State var text:String = ""
-    @State var list:[String] = [String]()
+    @State var list:[String?] = [String?]()
     @State private var selectIndex:Int?
     @State private var isEditing:Bool = false
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
@@ -37,7 +37,8 @@ struct ListEditorView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .center , spacing: 4) {
-                IconButton(icon: "plus", name: "Add", action: onAddFieldAction)
+                IconButton(icon: "plus", name: "Add head", action: onLPushAction)
+                IconButton(icon: "plus", name: "Add tail", action: onRPushAction)
                 IconButton(icon: "trash", name: "Delete", disabled:delButtonDisabled,
                            isConfirm: true,
                            confirmTitle: String(format: Helps.DELETE_LIST_ITEM_CONFIRM_TITLE, selectValue ?? ""),
@@ -45,32 +46,31 @@ struct ListEditorView: View {
                            confirmPrimaryButtonText: "Delete",
                            action: onDeleteAction)
                 
-                SearchBar(keywords: $page.keywords, placeholder: "Search field...", action: onQueryField)
-                
                 Spacer()
-                PageBar(page:page)
+                PageBar(page:page, action: onPageAction)
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
             
             List(selection: $selectIndex) {
-                ForEach(0..<list.count) { index in
+                ForEach(0..<list.count, id: \.self) { index in
                     HStack {
-                        Text(list[index])
+                        Text(list[index] ?? "")
                             .font(.body)
                             .multilineTextAlignment(.leading)
                             .frame(alignment: .leading)
+                        Spacer()
                     }
                     .contextMenu {
                         Button(action: {
                             editModalVisible = true
                             editNewField = false
                             editIndex = index
-                            editValue = list[index]
+                            editValue = list[index] ?? ""
                         }){
                             Text("Edit")
                         }
                         Button(action: {
-                            onDeleteConfirmAction(field: "")
+                            onDeleteConfirmAction(index)
                         }){
                             Text("Delete")
                         }
@@ -100,7 +100,7 @@ struct ListEditorView: View {
         .sheet(isPresented: $editModalVisible, onDismiss: {
             print("on dismiss")
         }) {
-            ModalView("Update field", action: onSaveFieldAction) {
+            ModalView("Update field", action: onUpdateItemAction) {
                 VStack(alignment:.leading, spacing: 8) {
                     FormItemTextArea(label: "", placeholder: "value", value: $editValue)
                 }
@@ -118,39 +118,58 @@ struct ListEditorView: View {
     }
     
     
-    func onDeleteConfirmAction(field:String) -> Void {
+    func onDeleteConfirmAction(_ index:Int) -> Void {
         globalContext.alertVisible = true
         globalContext.showSecondButton = true
         globalContext.primaryButtonText = "Delete"
-        globalContext.alertTitle = String(format: Helps.DELETE_LIST_ITEM_CONFIRM_TITLE, field)
-        globalContext.alertMessage = String(format:Helps.DELETE_LIST_ITEM_CONFIRM_MESSAGE, field)
+        
+        let item = list[index] ?? "''"
+        globalContext.alertTitle = String(format: Helps.DELETE_LIST_ITEM_CONFIRM_TITLE, item)
+        globalContext.alertMessage = String(format:Helps.DELETE_LIST_ITEM_CONFIRM_MESSAGE, item)
         globalContext.primaryAction = {
-            try deleteField(field)
+            try deleteField(index)
         }
         
     }
     
     
-    func onSaveFieldAction() throws -> Void {
-//        let _ = try redisInstanceModel.getClient().hset(redisKeyModel.key, field: editField, value: editValue)
-        logger.info("redis hset success, update field list")
-//        hashMap.updateValue(editValue, forKey: editField)
+    func onUpdateItemAction() throws -> Void {
+        if editIndex == -1 {
+            let r = try redisInstanceModel.getClient().lpush(redisKeyModel.key, value: editValue)
+            if r > 0 {
+                list.insert(editValue, at: 0)
+            }
+        } else if editIndex == -2 {
+            let r = try redisInstanceModel.getClient().rpush(redisKeyModel.key, value: editValue)
+            
+            if r > 0 && (page.cursor + page.size) >= page.total{
+                list.append(editValue)
+            }
+        } else {
+            try redisInstanceModel.getClient().lset(redisKeyModel.key, index: editIndex + page.cursor, value: editValue)
+            logger.info("redis list set success, update list")
+            list[editIndex] = editValue
+        }
     }
     
     
-    func onAddFieldAction() throws -> Void {
+    func onLPushAction() throws -> Void {
         editModalVisible = true
         editNewField = true
         editIndex = -1
         editValue = ""
     }
     
-    func onDeleteAction() throws -> Void {
-//        try deleteField(selectField!)
+    func onRPushAction() throws -> Void {
+        editModalVisible = true
+        editNewField = true
+        editIndex = -2
+        editValue = ""
     }
     
-    func onQueryField() throws -> Void {
-        try queryHashPage(redisKeyModel)
+    func onDeleteAction() throws -> Void {
+        try deleteField(selectIndex!)
+        try onRefreshAction()
     }
     
     func onSubmitAction() throws -> Void {
@@ -159,33 +178,38 @@ struct ListEditorView: View {
     }
     
     func onRefreshAction() throws -> Void {
-        try queryHashPage(redisKeyModel)
+        page.firstPage()
+        try queryPage(redisKeyModel)
         try ttl(redisKeyModel)
     }
     
     
+    func onPageAction() throws -> Void {
+        try queryPage(redisKeyModel)
+    }
+    
     func onLoad(_ redisKeyModel:RedisKeyModel) -> Void {
         do {
-            try queryHashPage(redisKeyModel)
+            try queryPage(redisKeyModel)
         } catch {
             logger.error("on string editor view load query redis hash error:\(error)")
             globalContext.showError(error)
         }
     }
     
-    func queryHashPage(_ redisKeyModel:RedisKeyModel) throws -> Void {
-//        hashMap = try redisInstanceModel.getClient().pageHashEntry(redisKeyModel.key, page: page)
+    func queryPage(_ redisKeyModel:RedisKeyModel) throws -> Void {
+        list = try redisInstanceModel.getClient().pageList(redisKeyModel.key, page: page)
     }
     
     func ttl(_ redisKeyModel:RedisKeyModel) throws -> Void {
         redisKeyModel.ttl = try redisInstanceModel.getClient().ttl(key: redisKeyModel.key)
     }
     
-    func deleteField(_ field:String) throws -> Void {
-        logger.info("delete hash field: \(field)")
-        let r = try redisInstanceModel.getClient().hdel(redisKeyModel.key, field: field)
+    func deleteField(_ index:Int) throws -> Void {
+        logger.info("delete list item, index: \(index)")
+        let r = try redisInstanceModel.getClient().ldel(redisKeyModel.key, index: index)
         if r > 0 {
-//            hashMap.removeValue(forKey: field)
+            list.remove(at: index)
         }
     }
 }

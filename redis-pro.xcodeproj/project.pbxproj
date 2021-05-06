@@ -60,6 +60,7 @@
 		4373C50925C3F218002B700E /* RedisModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4373C50825C3F218002B700E /* RedisModel.swift */; };
 		4373C50C25C3FC81002B700E /* LoginForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4373C50B25C3FC81002B700E /* LoginForm.swift */; };
 		4385D32E261ED26200BA8ED1 /* IndexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4385D32D261ED26200BA8ED1 /* IndexView.swift */; };
+		4397288C2643E43800803BE9 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4397288B2643E43800803BE9 /* Constants.swift */; };
 		43BB012326390BC20039565E /* ModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BB012226390BC20039565E /* ModalView.swift */; };
 		43DFEF3725C29288006EF535 /* FormItemInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DFEF3625C29288006EF535 /* FormItemInt.swift */; };
 		43EADB052620043F003B8310 /* HashEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EADB042620043F003B8310 /* HashEditorView.swift */; };
@@ -129,6 +130,7 @@
 		4373C50825C3F218002B700E /* RedisModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisModel.swift; sourceTree = "<group>"; };
 		4373C50B25C3FC81002B700E /* LoginForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginForm.swift; sourceTree = "<group>"; };
 		4385D32D261ED26200BA8ED1 /* IndexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexView.swift; sourceTree = "<group>"; };
+		4397288B2643E43800803BE9 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		43BB012226390BC20039565E /* ModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalView.swift; sourceTree = "<group>"; };
 		43DFEF3625C29288006EF535 /* FormItemInt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormItemInt.swift; sourceTree = "<group>"; };
 		43EADB042620043F003B8310 /* HashEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashEditorView.swift; sourceTree = "<group>"; };
@@ -279,6 +281,7 @@
 				4373C50025C2E75B002B700E /* BizError.swift */,
 				4314A34E2625B46E00053FEE /* RediStackClient.swift */,
 				43481048262D30CE002809ED /* Helps.swift */,
+				4397288B2643E43800803BE9 /* Constants.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -391,6 +394,7 @@
 				4313576B263AB6400077EE46 /* FormItemTextArea.swift in Sources */,
 				4314A3472625484100053FEE /* MTextField.swift in Sources */,
 				4373C50525C3F0B6002B700E /* UserDefaultsKeysEnum.swift in Sources */,
+				4397288C2643E43800803BE9 /* Constants.swift in Sources */,
 				4314A34C26258A4300053FEE /* Page.swift in Sources */,
 				4320AAF625B6740900A8E214 /* ContentView.swift in Sources */,
 				431266D8261C66E100FB6B69 /* MTheme.swift in Sources */,

@@ -158,6 +158,45 @@ class RediStackClient{
     }
     
     
+    func lrem(_ key:String, value:String) throws -> Int {
+        do {
+            logger.debug("redis list lrem, key: \(key)")
+            
+            return try getConnection().lrem(value, from: RedisKey(key), count: 1).wait()
+            
+        } catch {
+            logger.error("redis list lrem key:\(key) error: \(error)")
+            throw error
+        }
+    }
+    
+    
+    func ldel(_ key:String, index:Int) throws -> Int {
+        do {
+            logger.debug("redis list delete, key: \(key), index:\(index)")
+            
+            try lset(key, index: index, value: Constants.LIST_VALUE_DELETE_MARK)
+            
+            return try getConnection().lrem(Constants.LIST_VALUE_DELETE_MARK, from: RedisKey(key), count: 0).wait()
+            
+        } catch {
+            logger.error("redis list lrem key:\(key) error: \(error)")
+            throw error
+        }
+    }
+    
+    func lset(_ key:String, index:Int, value:String) throws -> Void {
+        try getConnection().lset(index: index, to: value, in: RedisKey(key)).wait()
+    }
+    
+    func lpush(_ key:String, value:String) throws -> Int {
+        return try getConnection().lpush(value, into: RedisKey(key)).wait()
+    }
+    
+    func rpush(_ key:String, value:String) throws -> Int {
+        return try getConnection().rpush(value, into: RedisKey(key)).wait()
+    }
+    
     func llen(_ key:String) throws -> Int {
         do {
             logger.debug("redis list length, key: \(key)")
@@ -256,6 +295,9 @@ class RediStackClient{
     
     func expire(_ key:String, seconds:Int) throws -> Bool {
         logger.info("set key expire key:\(key), seconds:\(seconds)")
+        if seconds < 0 {
+            getConnection().
+        }
         return try getConnection().expire(RedisKey(key), after: TimeAmount.seconds(Int64(seconds))).wait()
     }
     

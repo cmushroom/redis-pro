@@ -28,4 +28,26 @@ class Page:ObservableObject, CustomStringConvertible {
     var description: String {
         return "Page:[cursor:\(cursor), size:\(size), total:\(total)]"
     }
+    
+    func firstPage() {
+        self.cursor = 0
+        self.current = 1
+    }
+    
+    func nextPage() -> Void {
+        self.current += 1
+        self.cursor += self.size
+    }
+    
+    func prevPage() -> Void {
+        self.current -= 1
+        self.cursor -= self.size
+        
+        if self.current < 1 {
+            self.current = 1
+        }
+        if self.cursor < 0 {
+            self.cursor = 0
+        }
+    }
 }

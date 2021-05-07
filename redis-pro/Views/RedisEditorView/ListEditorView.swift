@@ -100,7 +100,7 @@ struct ListEditorView: View {
         .sheet(isPresented: $editModalVisible, onDismiss: {
             print("on dismiss")
         }) {
-            ModalView("Update field", action: onUpdateItemAction) {
+            ModalView("Edit item", action: onUpdateItemAction) {
                 VStack(alignment:.leading, spacing: 8) {
                     FormItemTextArea(label: "", placeholder: "value", value: $editValue)
                 }

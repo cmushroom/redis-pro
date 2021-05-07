@@ -80,6 +80,73 @@ class RediStackClient{
         }
     }
     
+    // zset operator
+    
+    func pageZSet(_ key:String, page:Page) throws -> [(String, Double)?] {
+        do {
+            logger.info("redis set page, key: \(key), page: \(page)")
+            
+            let match = page.keywords.isEmpty ? nil : page.keywords
+            
+            var set:[(String, Double)?] = [(String, Double)?]()
+            var cursor:Int = page.cursor
+            
+            let res:(Int, [(String, Double)?]) = try zscan(key, cursor: cursor, count: page.size, keywords: match)
+            
+            cursor = res.0
+            
+            set = res.1
+            
+            // 如果取出数量不够 page.size, 继续迭带补满
+            if cursor != 0 && set.count < page.size {
+                while true {
+                    let moreRes:(Int, [(String, Double)?]) = try zscan(key, cursor:cursor, count: 1, keywords: match)
+                
+                    set.append(contentsOf: moreRes.1)
+                    cursor = moreRes.0
+                    page.cursor = cursor
+                    if cursor == 0 || set.count == page.size {
+                        break
+                    }
+                }
+            }
+            
+            let total = try getConnection().zcard(of: RedisKey(key)).wait()
+            page.total = total
+            
+            return set
+        
+        } catch {
+            logger.error("query redis set page error \(error)")
+            throw error
+        }
+    }
+    
+    func zscan(_ key:String, cursor:Int, count:Int? = 1, keywords:String?) throws -> (Int, [(String, Double)?]) {
+        do {
+            logger.debug("redis set scan, key: \(key) cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
+            
+            return try getConnection().zscan(RedisKey(key), startingFrom: cursor, matching: keywords, count: count, valueType: String.self).wait()
+            
+        } catch {
+            logger.error("redis set scan key:\(key) error: \(error)")
+            throw error
+        }
+    }
+    
+    func zupdate(_ key:String, from:String, to:String, score:Double) throws -> Bool {
+        let _ = try zrem(key, ele: from)
+        return try zadd(key, score: score, ele: to)
+    }
+    
+    func zadd(_ key:String, score:Double, ele:String) throws -> Bool {
+        return try getConnection().zadd((element: ele, score: score), to: RedisKey(key)).wait()
+    }
+    
+    func zrem(_ key:String, ele:String) throws -> Int {
+        return try getConnection().zrem(ele, from: RedisKey(key)).wait()
+    }
+    
     // set operator
     
     func pageSet(_ key:String, page:Page) throws -> [String?] {

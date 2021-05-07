@@ -98,7 +98,7 @@ struct SetEditorView: View {
         .sheet(isPresented: $editModalVisible, onDismiss: {
             print("on dismiss")
         }) {
-            ModalView("Update field", action: onUpdateItemAction) {
+            ModalView("Edit element", action: onUpdateItemAction) {
                 VStack(alignment:.leading, spacing: 8) {
                     FormItemTextArea(label: "", placeholder: "value", value: $editValue)
                 }
@@ -106,11 +106,11 @@ struct SetEditorView: View {
             }
         }
         .onChange(of: redisKeyModel, perform: { value in
-            logger.info("redis string value editor view change \(value)")
+            logger.info("redis set value editor view change \(value)")
             onLoad(value)
         })
         .onAppear {
-            logger.info("redis string value editor view init...")
+            logger.info("redis set value editor view init...")
             onLoad(redisKeyModel)
         }
     }

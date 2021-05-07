@@ -25,6 +25,8 @@ struct RedisValueEditView: View {
                 ListEditorView(redisKeyModel: redisKeyModel)
             } else if RedisKeyTypeEnum.SET.rawValue == redisKeyModel.type {
                 SetEditorView(redisKeyModel: redisKeyModel)
+            } else if RedisKeyTypeEnum.ZSET.rawValue == redisKeyModel.type {
+                ZSetEditorView(redisKeyModel: redisKeyModel)
             }
         }
         .padding(4)

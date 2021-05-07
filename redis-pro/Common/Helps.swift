@@ -22,4 +22,7 @@ struct Helps {
     static let DELETE_LIST_ITEM_CONFIRM_TITLE = "Delete list item '%@'?"
     static let DELETE_LIST_ITEM_CONFIRM_MESSAGE = "Are you sure you want to delete the list item '%@'? This operation cannot be undone."
     
+    static let KEY_NOT_EXIST = "Not exist key: '%@'!"
+    static let SET_ELE_NOT_EXIST = "Not exist key: '%@', element: '%@'!"
+    
 }

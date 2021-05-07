@@ -22,8 +22,11 @@ struct ModalView<Content: View>: View {
     
     var body: some View {
         VStack(alignment: .center, spacing: 8) {
-            Text(title)
-                .font(.title3)
+            HStack {
+                Text(title)
+                    .font(.title3)
+                Spacer()
+            }
             content
             HStack(alignment: .center, spacing: 8) {
                 Spacer()

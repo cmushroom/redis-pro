@@ -8,7 +8,7 @@
 import SwiftUI
 import Logging
 
-struct ListEditorView: View {
+struct SetEditorView: View {
     @State var text:String = ""
     @State var list:[String?] = [String?]()
     @State private var selectIndex:Int?
@@ -27,25 +27,23 @@ struct ListEditorView: View {
     var delButtonDisabled:Bool {
         selectIndex == nil
     }
-    
-    var selectValue:String? {
+    var selectItem:String? {
         selectIndex == nil || selectIndex! >= list.count ? nil : list[selectIndex!]
     }
     
-    let logger = Logger(label: "redis-list-editor")
+    let logger = Logger(label: "redis-set-editor")
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .center , spacing: 4) {
-                IconButton(icon: "plus", name: "Add head", action: onLPushAction)
-                IconButton(icon: "plus", name: "Add tail", action: onRPushAction)
+                IconButton(icon: "plus", name: "Add", action: onAddAction)
                 IconButton(icon: "trash", name: "Delete", disabled:delButtonDisabled,
                            isConfirm: true,
-                           confirmTitle: String(format: Helps.DELETE_LIST_ITEM_CONFIRM_TITLE, selectValue ?? ""),
-                           confirmMessage: String(format:Helps.DELETE_LIST_ITEM_CONFIRM_MESSAGE, selectValue ?? ""),
+                           confirmTitle: String(format: Helps.DELETE_LIST_ITEM_CONFIRM_TITLE, selectItem ?? ""),
+                           confirmMessage: String(format:Helps.DELETE_LIST_ITEM_CONFIRM_MESSAGE, selectItem ?? ""),
                            confirmPrimaryButtonText: "Delete",
                            action: onDeleteAction)
-                
+                SearchBar(keywords: $page.keywords, placeholder: "Search set...", action: onQueryField)
                 Spacer()
                 PageBar(page:page, action: onPageAction)
             }
@@ -127,41 +125,31 @@ struct ListEditorView: View {
         globalContext.alertTitle = String(format: Helps.DELETE_LIST_ITEM_CONFIRM_TITLE, item)
         globalContext.alertMessage = String(format:Helps.DELETE_LIST_ITEM_CONFIRM_MESSAGE, item)
         globalContext.primaryAction = {
-            try deleteField(index)
+            try deleteEle(index)
         }
         
     }
     
-    func onLPushAction() throws -> Void {
+    func onAddAction() throws -> Void {
         editModalVisible = true
         editNewField = true
         editIndex = -1
         editValue = ""
     }
     
-    func onRPushAction() throws -> Void {
-        editModalVisible = true
-        editNewField = true
-        editIndex = -2
-        editValue = ""
-    }
-    
     func onUpdateItemAction() throws -> Void {
         if editIndex == -1 {
-            let _ = try redisInstanceModel.getClient().lpush(redisKeyModel.key, value: editValue)
-            try onRefreshAction()
-        } else if editIndex == -2 {
-            let _ = try redisInstanceModel.getClient().rpush(redisKeyModel.key, value: editValue)
+            let _ = try redisInstanceModel.getClient().sadd(redisKeyModel.key, ele: editValue)
             try onRefreshAction()
         } else {
-            try redisInstanceModel.getClient().lset(redisKeyModel.key, index: editIndex + page.cursor, value: editValue)
-            logger.info("redis list set success, update list")
+            let _ = try redisInstanceModel.getClient().supdate(redisKeyModel.key, from: list[editIndex] ?? "", to: editValue )
+            logger.info("redis set update success, update list")
             list[editIndex] = editValue
         }
     }
     
     func onDeleteAction() throws -> Void {
-        try deleteField(selectIndex!)
+        try deleteEle(selectIndex!)
         try onRefreshAction()
     }
     
@@ -176,6 +164,9 @@ struct ListEditorView: View {
         try ttl(redisKeyModel)
     }
     
+    func onQueryField() throws -> Void {
+        try queryPage(redisKeyModel)
+    }
     
     func onPageAction() throws -> Void {
         try queryPage(redisKeyModel)
@@ -191,25 +182,26 @@ struct ListEditorView: View {
     }
     
     func queryPage(_ redisKeyModel:RedisKeyModel) throws -> Void {
-        list = try redisInstanceModel.getClient().pageList(redisKeyModel.key, page: page)
+        list = try redisInstanceModel.getClient().pageSet(redisKeyModel.key, page: page)
     }
     
     func ttl(_ redisKeyModel:RedisKeyModel) throws -> Void {
         redisKeyModel.ttl = try redisInstanceModel.getClient().ttl(key: redisKeyModel.key)
     }
     
-    func deleteField(_ index:Int) throws -> Void {
-        logger.info("delete list item, index: \(index)")
-        let r = try redisInstanceModel.getClient().ldel(redisKeyModel.key, index: index)
+    func deleteEle(_ index:Int) throws -> Void {
+        logger.info("delete set item, index: \(index)")
+        let ele = list[index] ?? ""
+        let r = try redisInstanceModel.getClient().srem(redisKeyModel.key, ele: ele)
         if r > 0 {
             list.remove(at: index)
         }
     }
 }
 
-struct ListEditorView_Previews: PreviewProvider {
+struct SetEditorView_Previews: PreviewProvider {
     static var redisKeyModel:RedisKeyModel = RedisKeyModel(key: "tes", type: "string")
     static var previews: some View {
-        ListEditorView(redisKeyModel: redisKeyModel)
+        SetEditorView(redisKeyModel: redisKeyModel)
     }
 }

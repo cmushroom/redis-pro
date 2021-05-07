@@ -23,6 +23,8 @@ struct RedisValueEditView: View {
                 HashEditorView(redisKeyModel: redisKeyModel)
             } else if RedisKeyTypeEnum.LIST.rawValue == redisKeyModel.type {
                 ListEditorView(redisKeyModel: redisKeyModel)
+            } else if RedisKeyTypeEnum.SET.rawValue == redisKeyModel.type {
+                SetEditorView(redisKeyModel: redisKeyModel)
             }
         }
         .padding(4)

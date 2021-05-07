@@ -194,7 +194,7 @@ struct HashEditorView: View {
     }
     
     func queryHashPage(_ redisKeyModel:RedisKeyModel) throws -> Void {
-        hashMap = try redisInstanceModel.getClient().pageHashEntry(redisKeyModel.key, page: page)
+        hashMap = try redisInstanceModel.getClient().pageHash(redisKeyModel.key, page: page)
     }
     
     func ttl(_ redisKeyModel:RedisKeyModel) throws -> Void {

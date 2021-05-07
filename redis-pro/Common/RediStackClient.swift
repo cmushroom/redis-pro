@@ -60,69 +60,6 @@ class RediStackClient{
         }
     }
     
-    
-    func pageHashEntry(_ key:String, page:Page) throws -> [String:String?] {
-        do {
-            logger.info("redis hash field page scan, key: \(key), page: \(page)")
-            
-            let match = page.keywords.isEmpty ? nil : page.keywords
-            
-            var entries:[String:String?] = [String:String?]()
-            var cursor:Int = page.cursor
-            
-            let res:(Int, [String:String?]) = try hscan(key, cursor: cursor, count: page.size, keywords: match)
-            
-            cursor = res.0
-            
-            entries = res.1
-            
-            // 如果取出数量不够 page.size, 继续迭带补满
-            if cursor != 0 && entries.count < page.size {
-                while true {
-                    let moreRes:(cursor:Int, [String:String?]) = try hscan(key, cursor:cursor, count: 1, keywords: match)
-                    
-                    entries = entries.merging(moreRes.1) { (first, _) -> String? in
-                        first
-                    }
-                    
-                    cursor = moreRes.0
-                    page.cursor = cursor
-                    if cursor == 0 || entries.count == page.size {
-                        break
-                    }
-                }
-            }
-            
-            let total = try hlen(key)
-            page.total = total
-            
-            return entries
-        } catch {
-            logger.error("query redis hash entry page error \(error)")
-            throw error
-        }
-    }
-    
-    
-    
-    func pageList(_ key:String, page:Page) throws -> [String?] {
-        do {
-            logger.info("redis list page, key: \(key), page: \(page)")
-            
-            let cursor:Int = page.cursor
-    
-            let total = try llen(key)
-            page.total = total
-            
-            return try lrange(key, start: cursor, stop: cursor + page.size)
-        
-        } catch {
-            logger.error("query redis list page error \(error)")
-            throw error
-        }
-    }
-    
-    
     func toRedisKeyModels(keys:[String]) throws -> [RedisKeyModel] {
         if keys.isEmpty {
             return [RedisKeyModel]()
@@ -143,7 +80,91 @@ class RediStackClient{
         }
     }
     
+    // set operator
+    
+    func pageSet(_ key:String, page:Page) throws -> [String?] {
+        do {
+            logger.info("redis set page, key: \(key), page: \(page)")
+            
+            let match = page.keywords.isEmpty ? nil : page.keywords
+            
+            var set:[String?] = [String?]()
+            var cursor:Int = page.cursor
+            
+            let res:(Int, [String?]) = try sscan(key, cursor: cursor, count: page.size, keywords: match)
+            
+            cursor = res.0
+            
+            set = res.1
+            
+            // 如果取出数量不够 page.size, 继续迭带补满
+            if cursor != 0 && set.count < page.size {
+                while true {
+                    let moreRes:(Int, [String?]) = try sscan(key, cursor:cursor, count: 1, keywords: match)
+                
+                    set.append(contentsOf: moreRes.1)
+                    cursor = moreRes.0
+                    page.cursor = cursor
+                    if cursor == 0 || set.count == page.size {
+                        break
+                    }
+                }
+            }
+            
+            let total = try getConnection().scard(of: RedisKey(key)).wait()
+            page.total = total
+            
+            return set
+        
+        } catch {
+            logger.error("query redis set page error \(error)")
+            throw error
+        }
+    }
+    
+    func sscan(_ key:String, cursor:Int, count:Int? = 1, keywords:String?) throws -> (Int, [String?]) {
+        do {
+            logger.debug("redis set scan, key: \(key) cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
+            
+            return try getConnection().sscan(RedisKey(key), startingFrom: cursor, matching: keywords, count: count, valueType: String.self).wait()
+            
+        } catch {
+            logger.error("redis set scan key:\(key) error: \(error)")
+            throw error
+        }
+    }
+    
+    func srem(_ key:String, ele:String) throws -> Int {
+        return try getConnection().srem(ele, from: RedisKey(key)).wait()
+    }
+    
+    func supdate(_ key:String, from:String, to:String) throws -> Int {
+        var r = try srem(key, ele: from)
+        r += try sadd(key, ele: to)
+        return r
+    }
+    func sadd(_ key:String, ele:String) throws -> Int {
+        return try getConnection().sadd(ele, to: RedisKey(key)).wait()
+    }
+    
     // list operator
+    
+    func pageList(_ key:String, page:Page) throws -> [String?] {
+        do {
+            logger.info("redis list page, key: \(key), page: \(page)")
+            
+            let cursor:Int = page.cursor
+    
+            let total = try llen(key)
+            page.total = total
+            
+            return try lrange(key, start: cursor, stop: cursor + page.size)
+        
+        } catch {
+            logger.error("query redis list page error \(error)")
+            throw error
+        }
+    }
     
     func lrange(_ key:String, start:Int, stop:Int) throws -> [String?] {
         do {
@@ -211,6 +232,48 @@ class RediStackClient{
     
     
     // hash operator
+    
+    func pageHash(_ key:String, page:Page) throws -> [String:String?] {
+        do {
+            logger.info("redis hash field page scan, key: \(key), page: \(page)")
+            
+            let match = page.keywords.isEmpty ? nil : page.keywords
+            
+            var entries:[String:String?] = [String:String?]()
+            var cursor:Int = page.cursor
+            
+            let res:(Int, [String:String?]) = try hscan(key, cursor: cursor, count: page.size, keywords: match)
+            
+            cursor = res.0
+            
+            entries = res.1
+            
+            // 如果取出数量不够 page.size, 继续迭带补满
+            if cursor != 0 && entries.count < page.size {
+                while true {
+                    let moreRes:(cursor:Int, [String:String?]) = try hscan(key, cursor:cursor, count: 1, keywords: match)
+                    
+                    entries = entries.merging(moreRes.1) { (first, _) -> String? in
+                        first
+                    }
+                    
+                    cursor = moreRes.0
+                    page.cursor = cursor
+                    if cursor == 0 || entries.count == page.size {
+                        break
+                    }
+                }
+            }
+            
+            let total = try hlen(key)
+            page.total = total
+            
+            return entries
+        } catch {
+            logger.error("query redis hash entry page error \(error)")
+            throw error
+        }
+    }
     
     func hset(_ key:String, field:String, value:String) throws -> Bool {
         logger.info("redis hash hset key:\(key), field:\(field), value:\(value)")

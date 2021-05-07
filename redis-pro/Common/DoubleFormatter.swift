@@ -13,8 +13,9 @@ public class DoubleFormatter: Formatter {
         var retVal: String?
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
-        formatter.groupingSeparator = ""
-        formatter.maximumIntegerDigits = 30
+        formatter.hasThousandSeparators = false
+        formatter.maximumIntegerDigits = 50
+        formatter.minimumFractionDigits = 0
         formatter.maximumFractionDigits = 8
 
         if let dbl = obj as? Double {

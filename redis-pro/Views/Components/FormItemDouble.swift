@@ -13,13 +13,24 @@ struct FormItemDouble: View {
     var labelWidth:CGFloat = 80
     var placeholder:String?
     @Binding var value:Double
+    var formatter = DoubleFormatter()
     
     var body: some View {
+        let valueProxy = Binding<String>(
+            get: { formatter.string(for: self.value) ?? "" },
+            set: {
+                if let value = NumberFormatter().number(from: $0) {
+                    self.value = value.doubleValue
+                }
+            }
+        )
+        
         HStack(alignment: .center) {
             if !label.isEmpty {
                 FormLabel(label: label, width: labelWidth)
             }
-            MDoubleField(value: $value, placeholder: placeholder)
+//            MDoubleField(value: valueProxy, placeholder: placeholder)
+            MTextField(value: valueProxy)
         }
     }
 }

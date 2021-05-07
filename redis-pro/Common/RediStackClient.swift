@@ -135,6 +135,7 @@ class RediStackClient{
     }
     
     func zupdate(_ key:String, from:String, to:String, score:Double) throws -> Bool {
+        logger.info("update zset element key: \(key), from:\(from), to:\(to), score:\(score)")
         let _ = try zrem(key, ele: from)
         return try zadd(key, score: score, ele: to)
     }

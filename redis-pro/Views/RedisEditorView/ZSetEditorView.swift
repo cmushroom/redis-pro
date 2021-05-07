@@ -24,7 +24,6 @@ struct ZSetEditorView: View {
     @State private var editValue:String = ""
     @State private var editScore:Double = 0
     
-    
     var delButtonDisabled:Bool {
         selectIndex == nil
     }
@@ -121,6 +120,7 @@ struct ZSetEditorView: View {
         }) {
             ModalView("Edit element", action: onUpdateItemAction) {
                 VStack(alignment:.leading, spacing: 8) {
+//                    TextField("", value: $editScore, formatter: NumberFormatter())
                     FormItemDouble(label: "Score", placeholder: "score", value: $editScore)
                     FormItemTextArea(label: "Value", placeholder: "value", value: $editValue)
                 }

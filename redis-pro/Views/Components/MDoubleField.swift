@@ -8,7 +8,11 @@
 import SwiftUI
 
 struct MDoubleField: View {
-    @Binding var value:Double
+    @Binding var value:Double {
+        didSet {
+            print("did set double \(value)")
+        }
+    }
     var placeholder:String?
     @State private var isEditing = false
     var onCommit:() throws -> Void = {}
@@ -16,12 +20,12 @@ struct MDoubleField: View {
     var formatter:Formatter = DoubleFormatter()
     
     var body: some View {
-        TextField(placeholder ?? "", value: $value, formatter:formatter, onEditingChanged: { isEditing in
+        TextField(placeholder ?? "", value: $value, formatter: NumberFormatter(), onEditingChanged: { isEditing in
             self.isEditing = isEditing
+            print("double field status: \(isEditing), \(value)")
         }, onCommit: doAction)
         .disabled(disabled)
         .font(/*@START_MENU_TOKEN@*/.body/*@END_MENU_TOKEN@*/)
-        .disableAutocorrection(true)
         .textFieldStyle(PlainTextFieldStyle())
         .padding(EdgeInsets(top: 3, leading: 4, bottom: 3, trailing: 4))
         .onHover { inside in
@@ -30,7 +34,7 @@ struct MDoubleField: View {
         .cornerRadius(4)
         .overlay(
             RoundedRectangle(cornerRadius: 4).stroke(Color.gray.opacity(!disabled && isEditing ?  0.4 : 0.2), lineWidth: 1)
-            )
+        )
     }
     
     
@@ -40,7 +44,14 @@ struct MDoubleField: View {
 
 struct MDoubleField_Previews: PreviewProvider {
     @State static var v:Double = 0
+    @State static var text:String = "0"
+    
     static var previews: some View {
-        MDoubleField(value: $v)
+        VStack {
+            TextField("sfsfdfdf", text: $text)
+            MDoubleField(value: $v)
+            Text(String(v))
+            Text(text)
+        }
     }
 }

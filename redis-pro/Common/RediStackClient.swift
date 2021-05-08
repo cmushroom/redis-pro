@@ -470,6 +470,14 @@ class RediStackClient{
         }
     }
     
+    func databases() throws -> Int {
+        let res:RESPValue = try getConnection().send(command: "CONFIG", with: [RESPValue(from: "GET"), RESPValue(from: "databases")]).wait()
+        let dbs = res.array
+        logger.info("get config databases: \(String(describing: dbs))")
+        
+        return NumberHelper.toInt(dbs?[1], defaultValue: 16)
+    }
+    
     func dbsize() throws -> Int {
         do {
             let res:RESPValue = try getConnection().send(command: "dbsize").wait()

@@ -68,7 +68,8 @@
 		437BC2452645272E00E2C84D /* DoubleFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BC2442645272E00E2C84D /* DoubleFormatter.swift */; };
 		437BC24726452AE400E2C84D /* StringFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BC24626452AE400E2C84D /* StringFormatter.swift */; };
 		437BC2492645413000E2C84D /* MDoubleField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BC2482645413000E2C84D /* MDoubleField.swift */; };
-		437BC24E26461E2100E2C84D /* NumberFormatHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BC24D26461E2100E2C84D /* NumberFormatHelper.swift */; };
+		437BC24E26461E2100E2C84D /* NumberHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BC24D26461E2100E2C84D /* NumberHelper.swift */; };
+		437BC25126467A3D00E2C84D /* SidebarFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BC25026467A3D00E2C84D /* SidebarFooter.swift */; };
 		4385D32E261ED26200BA8ED1 /* IndexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4385D32D261ED26200BA8ED1 /* IndexView.swift */; };
 		4397288C2643E43800803BE9 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4397288B2643E43800803BE9 /* Constants.swift */; };
 		43BB012326390BC20039565E /* ModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BB012226390BC20039565E /* ModalView.swift */; };
@@ -145,7 +146,8 @@
 		437BC2442645272E00E2C84D /* DoubleFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubleFormatter.swift; sourceTree = "<group>"; };
 		437BC24626452AE400E2C84D /* StringFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringFormatter.swift; sourceTree = "<group>"; };
 		437BC2482645413000E2C84D /* MDoubleField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDoubleField.swift; sourceTree = "<group>"; };
-		437BC24D26461E2100E2C84D /* NumberFormatHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberFormatHelper.swift; sourceTree = "<group>"; };
+		437BC24D26461E2100E2C84D /* NumberHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberHelper.swift; sourceTree = "<group>"; };
+		437BC25026467A3D00E2C84D /* SidebarFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarFooter.swift; sourceTree = "<group>"; };
 		4385D32D261ED26200BA8ED1 /* IndexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexView.swift; sourceTree = "<group>"; };
 		4397288B2643E43800803BE9 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		43BB012226390BC20039565E /* ModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalView.swift; sourceTree = "<group>"; };
@@ -258,11 +260,9 @@
 				430A09E025C1557900B60DFC /* Components */,
 				62CB3D6F2619ADB60061E8C3 /* Login */,
 				4385D337261FF6E900BA8ED1 /* RedisEditorView */,
+				437BC24F264678FB00E2C84D /* Sidebar */,
 				4385D32D261ED26200BA8ED1 /* IndexView.swift */,
 				62CB3D712619AE050061E8C3 /* HomeView.swift */,
-				62CB3D742619AEC20061E8C3 /* RedisKeysListView.swift */,
-				431266CE261C4E0900FB6B69 /* RedisKeySearchRowView.swift */,
-				62CB3D782619AEEB0061E8C3 /* RedisKeyRowView.swift */,
 				431266E4261D4E2700FB6B69 /* RedisValueView.swift */,
 				431266F1261D89E600FB6B69 /* RedisValueEditView.swift */,
 				431266E7261D4E4100FB6B69 /* RedisValueHeaderView.swift */,
@@ -306,9 +306,20 @@
 				4397288B2643E43800803BE9 /* Constants.swift */,
 				437BC2442645272E00E2C84D /* DoubleFormatter.swift */,
 				437BC24626452AE400E2C84D /* StringFormatter.swift */,
-				437BC24D26461E2100E2C84D /* NumberFormatHelper.swift */,
+				437BC24D26461E2100E2C84D /* NumberHelper.swift */,
 			);
 			path = Common;
+			sourceTree = "<group>";
+		};
+		437BC24F264678FB00E2C84D /* Sidebar */ = {
+			isa = PBXGroup;
+			children = (
+				62CB3D742619AEC20061E8C3 /* RedisKeysListView.swift */,
+				431266CE261C4E0900FB6B69 /* RedisKeySearchRowView.swift */,
+				62CB3D782619AEEB0061E8C3 /* RedisKeyRowView.swift */,
+				437BC25026467A3D00E2C84D /* SidebarFooter.swift */,
+			);
+			path = Sidebar;
 			sourceTree = "<group>";
 		};
 		4385D337261FF6E900BA8ED1 /* RedisEditorView */ = {
@@ -448,12 +459,13 @@
 				4385D32E261ED26200BA8ED1 /* IndexView.swift in Sources */,
 				4320AAF425B6740900A8E214 /* redis_proApp.swift in Sources */,
 				430A09DC25BEAD2700B60DFC /* RedisInsanceModel.swift in Sources */,
-				437BC24E26461E2100E2C84D /* NumberFormatHelper.swift in Sources */,
+				437BC24E26461E2100E2C84D /* NumberHelper.swift in Sources */,
 				431266F5261D912500FB6B69 /* StringEditorView.swift in Sources */,
 				431266CF261C4E0900FB6B69 /* RedisKeySearchRowView.swift in Sources */,
 				4320AB1F25B6802E00A8E214 /* LandmarkList.swift in Sources */,
 				4314A34126243ED500053FEE /* PageBar.swift in Sources */,
 				62CB3D7D2619AF990061E8C3 /* RedisKeyModel.swift in Sources */,
+				437BC25126467A3D00E2C84D /* SidebarFooter.swift in Sources */,
 				4314A34F2625B46E00053FEE /* RediStackClient.swift in Sources */,
 				431266CC261C450300FB6B69 /* Tag.swift in Sources */,
 				4373C50C25C3FC81002B700E /* LoginForm.swift in Sources */,

@@ -16,14 +16,13 @@ struct PageBar: View {
     let logger = Logger(label: "page-bar")
     
     var body: some View {
-        HStack(alignment:.center) {
+        HStack(alignment:.center, spacing: 4) {
             Spacer()
-            Text("Total:\(page.total)")
-//                .help(Helps.PAGE_KEYS)
+            Text("Total: \(page.total)")
                 .font(.footnote)
-                .padding(.leading, 4.0)
+                .lineLimit(1)
+                .multilineTextAlignment(.trailing)
             
-            //            Spacer()
             Picker("", selection: $page.size) {
                 Text("10").tag(10)
                 Text("50").tag(50)
@@ -35,20 +34,19 @@ struct PageBar: View {
                 logger.info("on page size change: \(value)")
                 doAction()
             })
-            .font(/*@START_MENU_TOKEN@*/.footnote/*@END_MENU_TOKEN@*/)
-            .frame(width: 70)
+            .font(.footnote)
+            .frame(width: 60)
+            
             HStack(alignment:.center) {
                 MIcon(icon: "chevron.left", action: onPrevPageAction).disabled(!page.hasPrevPage)
                 Text("\(page.current)/\(page.totalPage)")
                     .font(.footnote)
                     .multilineTextAlignment(.center)
                     .lineLimit(1)
-                //                    .layoutPriority(1)
                 MIcon(icon: "chevron.right", action: onNextPageAction).disabled(!page.hasNextPage)
             }
             .layoutPriority(1)
         }
-        .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
     }
     
     func onNextPageAction() -> Void {

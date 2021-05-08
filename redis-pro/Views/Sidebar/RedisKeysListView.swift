@@ -56,9 +56,6 @@ struct RedisKeysListView: View {
                 List(selection: $selectedRedisKeyIndex) {
                     ForEach(filteredRedisKeyModel.indices, id:\.self) { index in
                         RedisKeyRowView(index: index, redisKeyModel: filteredRedisKeyModel[index])
-                            //                            .listRowBackground((index  % 2 == 0) ? Color(.systemGray) : Color(.white))
-                            //                            .background(index % 2 == 0 ? Color.gray.opacity(0.2) : Color.clear)
-                            //                            .border(Color.blue, width: /*@START_MENU_TOKEN@*/1/*@END_MENU_TOKEN@*/)
                             .listRowInsets(EdgeInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0)))
                     }
                     
@@ -69,8 +66,9 @@ struct RedisKeysListView: View {
                 .padding(.all, 0)
                 
                 // footer
-                PageBar(page: page, action: onQueryKeyPageAction)
-                    .padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 6))
+                SidebarFooter(page: page, pageAction: onQueryKeyPageAction)
+//                PageBar(page: page, action: onQueryKeyPageAction)
+//                    .padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 6))
             }
             .padding(0)
             .frame(minWidth:240, idealWidth: 240, maxWidth: .infinity)
@@ -80,6 +78,7 @@ struct RedisKeysListView: View {
                 RedisValueView(redisKeyModel: selectRedisKeyModel)
                 Spacer()
             }
+            // 这里会影响splitView 的自适应宽度, 必须加上
             .frame(minWidth: 600, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
             .layoutPriority(1)
         }

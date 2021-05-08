@@ -12,7 +12,7 @@ struct MIcon: View {
     var name:String?
     var fontSize:CGFloat = 10.0
     var disabled:Bool = false
-    var action: () ->Void = {print("on icon action...")}
+    var action: () -> Void = {}
     
     var body: some View {
         Button(action: action) {

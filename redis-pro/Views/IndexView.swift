@@ -34,22 +34,22 @@ struct IndexView: View {
         //                .popover(isPresented: $globalContext.alertVisible, arrowEdge: .bottom) {
         //                    Text("popover")
         //                }
-//        .sheet(isPresented: $globalContext.alertVisible, onDismiss: {
-//            print("on dismiss")
-//        }) {
-//            ModalView("hehe", action: {
-//                //                        globalContext.alertVisible.toggle()
-//            }) {
-//                Text("model ....")
-//                Text("model ....")
-//                Text("model ....")
-//                Text("model ....")
-//                Text("model ....")
-//                Text("model ....")
-//                Text("model ....")
-//                Text("model ....")
-//            }
-//        }
+        //        .sheet(isPresented: $globalContext.alertVisible, onDismiss: {
+        //            print("on dismiss")
+        //        }) {
+        //            ModalView("hehe", action: {
+        //                //                        globalContext.alertVisible.toggle()
+        //            }) {
+        //                Text("model ....")
+        //                Text("model ....")
+        //                Text("model ....")
+        //                Text("model ....")
+        //                Text("model ....")
+        //                Text("model ....")
+        //                Text("model ....")
+        //                Text("model ....")
+        //            }
+        //        }
         
         //        ZStack {
         //            LoginView()

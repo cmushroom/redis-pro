@@ -11,7 +11,6 @@ import Logging
 struct RedisValueEditView: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @ObservedObject var redisKeyModel:RedisKeyModel
-    var value:Any = "sdf242314324132"
     
     let logger = Logger(label: "redis-value-edit-view")
     
@@ -27,6 +26,8 @@ struct RedisValueEditView: View {
                 SetEditorView(redisKeyModel: redisKeyModel)
             } else if RedisKeyTypeEnum.ZSET.rawValue == redisKeyModel.type {
                 ZSetEditorView(redisKeyModel: redisKeyModel)
+            } else {
+                EmptyView()
             }
         }
         .padding(4)
@@ -54,6 +55,6 @@ struct RedisValueEditView: View {
 
 struct RedisValueEditView_Previews: PreviewProvider {
     static var previews: some View {
-        RedisValueEditView(redisKeyModel: RedisKeyModel(key: "user_session:1234", type: RedisKeyTypeEnum.STRING.rawValue), value: "123456")
+        RedisValueEditView(redisKeyModel: RedisKeyModel(key: "user_session:1234", type: RedisKeyTypeEnum.STRING.rawValue))
     }
 }

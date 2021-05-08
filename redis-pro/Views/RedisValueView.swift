@@ -18,7 +18,7 @@ struct RedisValueView: View {
                 Rectangle().frame(height: 1)
                     .padding(.horizontal, 0).foregroundColor(Color.gray.opacity(0.1))
                 
-                RedisValueEditView(redisKeyModel: redisKeyModel!, value: "12342412")
+                RedisValueEditView(redisKeyModel: redisKeyModel!)
             } else {
                 EmptyView()
             }

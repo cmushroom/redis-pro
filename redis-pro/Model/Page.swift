@@ -29,6 +29,13 @@ class Page:ObservableObject, CustomStringConvertible {
         return "Page:[cursor:\(cursor), size:\(size), total:\(total)]"
     }
     
+    
+    func reset() {
+        self.cursor = 0
+        self.current = 1
+        self.keywords = ""
+    }
+    
     func firstPage() {
         self.cursor = 0
         self.current = 1

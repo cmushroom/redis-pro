@@ -71,7 +71,7 @@ struct ZSetEditorView: View {
                                     .multilineTextAlignment(.leading)
                                     .frame(width: width0, alignment: .leading)
                                 
-                                Text(NumberFormatHelper.formatDouble(list[index]?.1))
+                                Text(NumberHelper.formatDouble(list[index]?.1))
                                     .font(.body)
                                     .multilineTextAlignment(.leading)
                                     .frame(width: width1, alignment: .leading)
@@ -82,7 +82,7 @@ struct ZSetEditorView: View {
                                     editNewField = false
                                     editIndex = index
                                     editValue = list[index]?.0 ?? ""
-                                    editScore = NumberFormatHelper.formatDouble(list[index]?.1)
+                                    editScore = NumberHelper.formatDouble(list[index]?.1)
                                 }){
                                     Text("Edit")
                                 }

@@ -8,7 +8,7 @@
 import Foundation
 import Logging
 
-class NumberFormatHelper {
+class NumberHelper {
     static let logger = Logger(label: "redis-set-editor")
     
     static var formatter:NumberFormatter = {
@@ -35,6 +35,19 @@ class NumberFormatHelper {
         
         if r == nil {
             return defaultValue ?? "-"
+        }
+        return r!
+    }
+    
+    static func toInt(_ value:Any?, defaultValue:Int? = 0) -> Int {
+        if value == nil {
+            return defaultValue!
+        }
+        
+        let r = formatter.number(from: String(describing: value))?.intValue
+        
+        if r == nil {
+            return defaultValue!
         }
         return r!
     }

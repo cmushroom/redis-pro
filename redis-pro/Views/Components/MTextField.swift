@@ -23,7 +23,6 @@ struct MTextField: View {
         HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 2) {
             TextField(placeholder ?? "", text: $value, onEditingChanged: { isEditing in
                 self.isEditing = isEditing
-                logger.info("textfield status: \(isEditing)")
             }, onCommit: doAction)
             .disabled(disabled)
             .font(/*@START_MENU_TOKEN@*/.body/*@END_MENU_TOKEN@*/)

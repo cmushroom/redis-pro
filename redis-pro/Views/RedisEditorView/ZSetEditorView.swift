@@ -22,7 +22,7 @@ struct ZSetEditorView: View {
     @State private var editNewField:Bool = false
     @State private var editIndex:Int = 0
     @State private var editValue:String = ""
-    @State private var editScore:Double = 0
+    @State private var editScore:String = "0"
     
     var delButtonDisabled:Bool {
         selectIndex == nil
@@ -71,7 +71,7 @@ struct ZSetEditorView: View {
                                     .multilineTextAlignment(.leading)
                                     .frame(width: width0, alignment: .leading)
                                 
-                                Text(list[index]?.1.description ?? "0")
+                                Text(NumberFormatHelper.formatDouble(list[index]?.1))
                                     .font(.body)
                                     .multilineTextAlignment(.leading)
                                     .frame(width: width1, alignment: .leading)
@@ -82,7 +82,7 @@ struct ZSetEditorView: View {
                                     editNewField = false
                                     editIndex = index
                                     editValue = list[index]?.0 ?? ""
-                                    editScore = list[index]?.1 ?? 0
+                                    editScore = NumberFormatHelper.formatDouble(list[index]?.1)
                                 }){
                                     Text("Edit")
                                 }
@@ -121,7 +121,7 @@ struct ZSetEditorView: View {
             ModalView("Edit element", action: onUpdateItemAction) {
                 VStack(alignment:.leading, spacing: 8) {
 //                    TextField("", value: $editScore, formatter: NumberFormatter())
-                    FormItemDouble(label: "Score", placeholder: "score", value: $editScore)
+                    FormItemNumber(label: "Score", placeholder: "score", value: $editScore)
                     FormItemTextArea(label: "Value", placeholder: "value", value: $editValue)
                 }
                 .frame(minWidth:500, minHeight:300)
@@ -157,18 +157,19 @@ struct ZSetEditorView: View {
         editNewField = true
         editIndex = -1
         editValue = ""
-        editScore = 0
+        editScore = "0"
     }
     
     func onUpdateItemAction() throws -> Void {
+        let score:Double = Double(editScore) ?? 0
         if editIndex == -1 {
-            let _ = try redisInstanceModel.getClient().zadd(redisKeyModel.key, score: editScore, ele: editValue)
+            let _ = try redisInstanceModel.getClient().zadd(redisKeyModel.key, score: score, ele: editValue)
             try onRefreshAction()
         } else {
             let editEle = list[editIndex] ?? ("", 0)
-            let _ = try redisInstanceModel.getClient().zupdate(redisKeyModel.key, from: editEle.0, to: editValue, score: editScore )
+            let _ = try redisInstanceModel.getClient().zupdate(redisKeyModel.key, from: editEle.0, to: editValue, score: score )
             logger.info("redis zset update success, update list")
-            list[editIndex] = (editValue, editScore)
+            list[editIndex] = (editValue, score)
         }
     }
     

@@ -8,19 +8,27 @@
 import SwiftUI
 
 
-struct FormItemDouble: View {
+struct FormItemNumber: View {
     var label:String
     var labelWidth:CGFloat = 80
     var placeholder:String?
-    @Binding var value:Double
-    var formatter = DoubleFormatter()
+    @Binding var value:String
+    
+    let reg = #"^\d+(\.\d+)?$"#
     
     var body: some View {
         let valueProxy = Binding<String>(
-            get: { formatter.string(for: self.value) ?? "" },
+            get: { self.value },
             set: {
-                if let value = NumberFormatter().number(from: $0) {
-                    self.value = value.doubleValue
+                let result = $0.range(
+                    of: reg,
+                    options: .regularExpression
+                )
+
+                if result != nil {
+                    self.value = $0
+                } else {
+                    self.value = "0"
                 }
             }
         )
@@ -29,16 +37,16 @@ struct FormItemDouble: View {
             if !label.isEmpty {
                 FormLabel(label: label, width: labelWidth)
             }
-//            MDoubleField(value: valueProxy, placeholder: placeholder)
+            //            MDoubleField(value: valueProxy, placeholder: placeholder)
             MTextField(value: valueProxy)
         }
     }
 }
 
 struct FormItemNumber_Previews: PreviewProvider {
-    @State static var v:Double = 0
+    @State static var v:String = "0"
     
     static var previews: some View {
-        FormItemDouble(label: "name", value: $v)
+        FormItemNumber(label: "name", value: $v)
     }
 }

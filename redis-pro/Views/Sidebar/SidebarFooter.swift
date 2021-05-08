@@ -11,8 +11,6 @@ import Logging
 struct RedBorderMenuStyle : MenuStyle {
     func makeBody(configuration: Configuration) -> some View {
         Menu(configuration)
-            
-            .labelStyle(IconOnlyLabelStyle())
     }
 }
 
@@ -28,35 +26,22 @@ struct SidebarFooter: View {
     
     var body: some View {
         HStack(alignment: .center, spacing: 4) {
-            Menu(content: {
+            MenuButton(label:
+                        Label("", systemImage: "ellipsis.circle")
+                        .labelStyle(IconOnlyLabelStyle())
+            ){
                 Button("Order Now", action: onRefreshAction)
-                Menu("Advanced") {
-                    Button("Rename", action: onRefreshAction)
+                Menu("Database") {
+                    ForEach(0 ..< databases) { item in
+                        Button("\(item)", action: {onSelectDatabaseAction(item)})
+                    }
                 }
-                Button("Cancel", action: onRefreshAction)
             }
-            , label: {
-                Label("Create", systemImage: "plus.circle")
-            })
-            .menuStyle(RedBorderMenuStyle())
-//            Label("", systemImage: "arrow.clockwise")
-//                .contextMenu {
-//                    Button("Order Now", action: onRefreshAction)
-//                                   Menu("Advanced") {
-//                                       Button("Rename", action: onRefreshAction)
-//                                   }
-//                }
-            
-            //            Menu("Options") {ig
-//                        Button("Order Now", action: onRefreshAction)
-//                        Menu("Advanced") {
-//                            Button("Rename", action: onRefreshAction)
-//                        }
-//                        Button("Cancel", action: onRefreshAction)
-//            }
-            
+            .frame(width:30)
+            .menuButtonStyle(BorderlessPullDownMenuButtonStyle())
             
             MIcon(icon: "arrow.clockwise", fontSize: 12, action: onRefreshAction)
+                .help(Helps.REFRESH)
             //            Picker("DB:", selection: $selectDB) {
             //                ForEach(0 ..< databases) { item in
             //                    Text(String(item)).tag(item)
@@ -71,10 +56,14 @@ struct SidebarFooter: View {
             PageBar(page: page, action: pageAction)
         }
         .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 6))
-   
+        
         .onAppear{
             queryDBList()
         }
+    }
+    
+    func onSelectDatabaseAction(_ database:Int) -> Void {
+        print("select database \(database)")
     }
     
     func queryDBList() -> Void {

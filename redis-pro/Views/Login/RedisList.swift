@@ -55,9 +55,9 @@ struct RedisList: View {
                 // footer
                 HStack(alignment: .center) {
                     MIcon(icon: "plus", fontSize: 13, action: onAddAction)
-                    MIcon(name: "􀅽", fontSize: 13, disabled: selectedRedisModelId == nil, action: onDelAction)
+                    MIcon(icon: "minus", fontSize: 13, disabled: selectedRedisModelId == nil, action: onDelAction)
                 }
-                .padding(EdgeInsets(top: 2, leading: 8, bottom: 2, trailing: 8))
+                .padding(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
             }
             .padding(0)
             .frame(minWidth:180, idealWidth: 180, maxWidth: .infinity)

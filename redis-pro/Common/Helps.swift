@@ -25,4 +25,6 @@ struct Helps {
     static let KEY_NOT_EXIST = "Not exist key: '%@'!"
     static let SET_ELE_NOT_EXIST = "Not exist key: '%@', element: '%@'!"
     
+    static let REFRESH = "Refresh"
+    
 }

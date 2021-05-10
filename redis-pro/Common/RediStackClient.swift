@@ -470,6 +470,12 @@ class RediStackClient{
         }
     }
     
+    
+    func selectDB(_ database: Int) throws -> Void {
+        try getConnection().select(database: database).wait()
+        logger.info("select redis database: \(database)")
+    }
+    
     func databases() throws -> Int {
         let res:RESPValue = try getConnection().send(command: "CONFIG", with: [RESPValue(from: "GET"), RESPValue(from: "databases")]).wait()
         let dbs = res.array

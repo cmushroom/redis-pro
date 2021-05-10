@@ -70,6 +70,8 @@
 		437BC2492645413000E2C84D /* MDoubleField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BC2482645413000E2C84D /* MDoubleField.swift */; };
 		437BC24E26461E2100E2C84D /* NumberHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BC24D26461E2100E2C84D /* NumberHelper.swift */; };
 		437BC25126467A3D00E2C84D /* SidebarFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BC25026467A3D00E2C84D /* SidebarFooter.swift */; };
+		437C09352649039000F1904C /* DatabasePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437C09342649039000F1904C /* DatabasePicker.swift */; };
+		437C0937264952B300F1904C /* MTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437C0936264952B300F1904C /* MTabView.swift */; };
 		4385D32E261ED26200BA8ED1 /* IndexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4385D32D261ED26200BA8ED1 /* IndexView.swift */; };
 		4397288C2643E43800803BE9 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4397288B2643E43800803BE9 /* Constants.swift */; };
 		43BB012326390BC20039565E /* ModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BB012226390BC20039565E /* ModalView.swift */; };
@@ -148,6 +150,8 @@
 		437BC2482645413000E2C84D /* MDoubleField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDoubleField.swift; sourceTree = "<group>"; };
 		437BC24D26461E2100E2C84D /* NumberHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberHelper.swift; sourceTree = "<group>"; };
 		437BC25026467A3D00E2C84D /* SidebarFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarFooter.swift; sourceTree = "<group>"; };
+		437C09342649039000F1904C /* DatabasePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabasePicker.swift; sourceTree = "<group>"; };
+		437C0936264952B300F1904C /* MTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTabView.swift; sourceTree = "<group>"; };
 		4385D32D261ED26200BA8ED1 /* IndexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexView.swift; sourceTree = "<group>"; };
 		4397288B2643E43800803BE9 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		43BB012226390BC20039565E /* ModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalView.swift; sourceTree = "<group>"; };
@@ -200,6 +204,7 @@
 				4313576C263AB6A20077EE46 /* MTextEditor.swift */,
 				4314A343262546DF00053FEE /* Extensions.swift */,
 				43BB012226390BC20039565E /* ModalView.swift */,
+				437C0936264952B300F1904C /* MTabView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -318,6 +323,7 @@
 				431266CE261C4E0900FB6B69 /* RedisKeySearchRowView.swift */,
 				62CB3D782619AEEB0061E8C3 /* RedisKeyRowView.swift */,
 				437BC25026467A3D00E2C84D /* SidebarFooter.swift */,
+				437C09342649039000F1904C /* DatabasePicker.swift */,
 			);
 			path = Sidebar;
 			sourceTree = "<group>";
@@ -444,6 +450,7 @@
 				4320AAF625B6740900A8E214 /* ContentView.swift in Sources */,
 				431266D8261C66E100FB6B69 /* MTheme.swift in Sources */,
 				431266C82617080D00FB6B69 /* RedisQuickRow.swift in Sources */,
+				437C0937264952B300F1904C /* MTabView.swift in Sources */,
 				62CB3D722619AE050061E8C3 /* HomeView.swift in Sources */,
 				431266E8261D4E4100FB6B69 /* RedisValueHeaderView.swift in Sources */,
 				43EADB0826200540003B8310 /* IconButton.swift in Sources */,
@@ -481,6 +488,7 @@
 				43481049262D30CE002809ED /* Helps.swift in Sources */,
 				4314A33E2624370E00053FEE /* SearchBar.swift in Sources */,
 				431266DE261D45C500FB6B69 /* MIcon.swift in Sources */,
+				437C09352649039000F1904C /* DatabasePicker.swift in Sources */,
 				4320AB1B25B67E6800A8E214 /* LandmarkRow.swift in Sources */,
 				430A09E225C1559400B60DFC /* FormLabel.swift in Sources */,
 				43BB012326390BC20039565E /* ModalView.swift in Sources */,

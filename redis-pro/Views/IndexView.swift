@@ -23,6 +23,7 @@ struct IndexView: View {
                     HomeView()
                         .environmentObject(redisInstanceModel)
                         .environmentObject(globalContext)
+                        .navigationTitle(redisInstanceModel.redisModel.name)
                 }
             }
         }

@@ -47,6 +47,7 @@ struct RedisKeysListView: View {
                                    action: onDeleteAction)
                         
                         Spacer()
+                        DatabasePicker(database: redisInstanceModel.redisModel.database, action: onRefreshAction)
                     }
                 }
                 .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
@@ -60,10 +61,12 @@ struct RedisKeysListView: View {
                     }
                     
                 }
-                
                 .listStyle(PlainListStyle())
                 .frame(minWidth:150)
                 .padding(.all, 0)
+//                .onChange(of: selectRedisKey) {
+//                    print("change ..... \($0)")
+//                }
                 
                 // footer
                 SidebarFooter(page: page, pageAction: onQueryKeyPageAction)
@@ -75,7 +78,14 @@ struct RedisKeysListView: View {
             .layoutPriority(0)
             
             VStack(alignment: .leading, spacing: 0){
-                RedisValueView(redisKeyModel: selectRedisKeyModel)
+                TabView {
+                    RedisValueView(redisKeyModel: selectRedisKeyModel)
+                    .tabItem {
+                        Text(selectRedisKeyModel?.key ?? "")
+                    }
+                }
+                .tabViewStyle(DefaultTabViewStyle())
+                
                 Spacer()
             }
             // 这里会影响splitView 的自适应宽度, 必须加上
@@ -100,6 +110,11 @@ struct RedisKeysListView: View {
                 redisKeyModels.remove(at: index)
             }
         }
+    }
+    
+    func onRefreshAction() -> Void {
+        page.firstPage()
+        try? onQueryKeyPageAction()
     }
     
     func onQueryKeyPageAction() throws -> Void {

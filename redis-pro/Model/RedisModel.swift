@@ -13,7 +13,11 @@ class RedisModel:ObservableObject, Identifiable, CustomStringConvertible {
     @Published var name: String = "New Favorite"
     @Published var host: String = "127.0.0.1"
     @Published var port: Int = 6379
-    @Published var database: Int = 0
+    @Published var database: Int = 0 {
+        didSet {
+            print("redis model database set")
+        }
+    }
     @Published var password: String = ""
     @Published var isFavorite: Bool = false
     @Published var ping: Bool = false

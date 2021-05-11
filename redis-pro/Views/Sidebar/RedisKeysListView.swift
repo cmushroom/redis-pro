@@ -21,7 +21,19 @@ struct RedisKeysListView: View {
         redisKeyModels
     }
     var selectRedisKeyModel:RedisKeyModel? {
-        (selectedRedisKeyIndex == nil || redisKeyModels.isEmpty || redisKeyModels.count <= selectedRedisKeyIndex!) ? nil : redisKeyModels[selectedRedisKeyIndex ?? 0]
+        get {
+            if selectedRedisKeyIndex == nil {
+                return nil
+            }
+            if selectedRedisKeyIndex == -1 {
+                return RedisKeyModel(key: "", type: RedisKeyTypeEnum.STRING.rawValue, isNew: true)
+            }
+            
+            return (selectedRedisKeyIndex == nil || redisKeyModels.isEmpty || redisKeyModels.count <= selectedRedisKeyIndex!) ? nil : redisKeyModels[selectedRedisKeyIndex ?? 0]
+        }
+        set {
+            selectedRedisKeyIndex = -1
+        }
     }
     
     var selectRedisKey:String? {
@@ -78,13 +90,7 @@ struct RedisKeysListView: View {
             .layoutPriority(0)
             
             VStack(alignment: .leading, spacing: 0){
-                TabView {
-                    RedisValueView(redisKeyModel: selectRedisKeyModel)
-                    .tabItem {
-                        Text(selectRedisKeyModel?.key ?? "")
-                    }
-                }
-                .tabViewStyle(DefaultTabViewStyle())
+                RedisValueView(redisKeyModel: selectRedisKeyModel)
                 
                 Spacer()
             }
@@ -99,6 +105,7 @@ struct RedisKeysListView: View {
     
     func onAddAction() -> Void {
         logger.info("on add redis key index: \(selectedRedisKeyIndex ?? -1)")
+        selectedRedisKeyIndex = -1
     }
     func onDeleteAction() throws -> Void {
         logger.info("on delete redis key: \(selectRedisKey!)")

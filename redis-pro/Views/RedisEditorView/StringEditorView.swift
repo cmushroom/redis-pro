@@ -54,6 +54,9 @@ struct StringEditorView: View {
     }
     
     func onLoad(_ redisKeyModel:RedisKeyModel) -> Void {
+        if redisKeyModel.isNew {
+            return
+        }
         do {
             try getValue(redisKeyModel)
         } catch {
@@ -67,7 +70,9 @@ struct StringEditorView: View {
     }
     
     func ttl(_ redisKeyModel:RedisKeyModel) throws -> Void {
+        
         redisKeyModel.ttl = try redisInstanceModel.getClient().ttl(key: redisKeyModel.key)
+        
     }
 }
 struct StringEditView_Previews: PreviewProvider {

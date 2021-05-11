@@ -11,6 +11,7 @@ class RedisKeyModel:ObservableObject, Identifiable, Equatable, CustomStringConve
     @Published var key: String
     @Published var type: String
     @Published var ttl: Int = -1
+    @Published var isNew: Bool = false
     
     var id:String {
         key
@@ -19,6 +20,12 @@ class RedisKeyModel:ObservableObject, Identifiable, Equatable, CustomStringConve
     init(key:String, type:String) {
         self.key = key
         self.type = type
+    }
+    
+    init(key:String, type:String, isNew:Bool) {
+        self.key = key
+        self.type = type
+        self.isNew = isNew
     }
     
     public static func == (lhs: RedisKeyModel, rhs: RedisKeyModel) -> Bool {

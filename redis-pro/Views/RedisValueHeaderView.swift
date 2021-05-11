@@ -11,7 +11,7 @@ struct RedisValueHeaderView: View {
     @ObservedObject var redisKeyModel:RedisKeyModel
     
     var disableEdit:Bool {
-        !redisKeyModel.key.isEmpty
+        !redisKeyModel.isNew
     }
     
     var body: some View {

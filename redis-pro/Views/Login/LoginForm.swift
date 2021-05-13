@@ -134,6 +134,7 @@ struct LoginForm: View {
     
     func onConnect() throws -> Void {
         try redisInstanceModel.connect(redisModel:redisModel)
+        redisFavoriteModel.saveLast(redisModel: redisModel)
         logger.info("on connect to redis server: \(redisModel)")
     }
     

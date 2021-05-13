@@ -10,4 +10,5 @@ import Foundation
 
 enum UserDefaulsKeysEnum: String {
     case RedisFavoriteListKey = "RedisFavoriteListKey"
+    case RedisLastUseIdKey = "RedisLastUseIdKey"
 }

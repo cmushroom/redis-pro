@@ -11,6 +11,8 @@ import Logging
 
 class RedisFavoriteModel:ObservableObject {
     @Published var redisModels: [RedisModel] = [RedisModel](repeating: RedisModel(), count: 0)
+    var lastRedisModelId:String?
+    
     let userDefaults = UserDefaults.standard
     
     let logger = Logger(label: "redis-favorite-model")
@@ -35,6 +37,11 @@ class RedisFavoriteModel:ObservableObject {
             redisModels.append(RedisModel())
         }
         
+        self.lastRedisModelId = userDefaults.string(forKey: UserDefaulsKeysEnum.RedisLastUseIdKey.rawValue)
+    }
+    
+    func saveLast(redisModel:RedisModel) -> Void {
+        userDefaults.setValue(redisModel.id, forKey: UserDefaulsKeysEnum.RedisLastUseIdKey.rawValue)
     }
     
     func save(redisModel:RedisModel) -> Void {

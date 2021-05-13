@@ -35,6 +35,7 @@ struct ModalView<Content: View>: View {
             }
         }
         .padding(EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8))
+        .animation(.easeOut(duration: 1))
     }
     
     func doAction() throws -> Void {

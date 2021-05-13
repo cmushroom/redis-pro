@@ -13,6 +13,8 @@ func onAppear() {
 }
 
 struct RedisList: View {
+    @EnvironmentObject var redisInstanceModel:RedisInstanceModel
+    @EnvironmentObject var globalContext:GlobalContext
     @StateObject var redisFavoriteModel: RedisFavoriteModel = RedisFavoriteModel()
     @State private var showFavoritesOnly = false
     @State var selectedRedisModelId: String?
@@ -33,7 +35,7 @@ struct RedisList: View {
         HSplitView {
             VStack(alignment: .leading,
                    spacing: 0) {
-
+                
                 List(selection: $selectedRedisModelId) {
                     ForEach(quickRedisModel) { redisModel in
                         RedisQuickRow(redisModel: redisModel)
@@ -43,6 +45,21 @@ struct RedisList: View {
                     Section(header: Text("FAVORITES")) {
                         ForEach(filteredRedisModel) { redisModel in
                             RedisRow(redisModel: redisModel)
+                                .tag(redisModel.id)
+                                //                                .onTapGesture(count: 1) {
+                                //                                    print("single click....")
+                                //                                    self.selectedRedisModelId = redisModel.id
+                                //                                    print("single click \(redisModel.id)")
+                                //                                }
+                                //                                .onTapGesture(count: 2) {
+                                //                                    print("double click \(redisModel.id)")
+                                //                                }
+                                .gesture(TapGesture(count: 2).onEnded {
+                                    onConnect()
+                                })
+                                .simultaneousGesture(TapGesture().onEnded {
+                                    self.selectedRedisModelId = redisModel.id
+                                })
                         }
                     }
                     .collapsible(false)
@@ -65,6 +82,7 @@ struct RedisList: View {
             .onAppear{
                 logger.info("load all redis favorite list")
                 redisFavoriteModel.loadAll()
+                selectFavoriteRedisModel()
             }
             
             VStack{
@@ -81,6 +99,10 @@ struct RedisList: View {
         }
     }
     
+    func selectFavoriteRedisModel() -> Void {
+        selectedRedisModelId = redisFavoriteModel.lastRedisModelId
+    }
+    
     func onAddAction() -> Void {
         logger.info("add new redis favorite action")
         redisFavoriteModel.save(redisModel: RedisModel())
@@ -90,9 +112,19 @@ struct RedisList: View {
         if selectedRedisModelId == nil {
             return
         }
-
+        
         let nextId:String? = redisFavoriteModel.delete(id: selectedRedisModelId!)
         selectedRedisModelId = nextId
+    }
+    
+    func onConnect() -> Void {
+        do {
+            try redisInstanceModel.connect(redisModel:selectRedisModel)
+            redisFavoriteModel.saveLast(redisModel: selectRedisModel)
+            logger.info("on connect to redis server: \(selectRedisModel)")
+        } catch {
+            globalContext.showError(error)
+        }
     }
 }
 

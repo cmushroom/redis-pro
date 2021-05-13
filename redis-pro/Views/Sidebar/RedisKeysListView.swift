@@ -14,6 +14,7 @@ struct RedisKeysListView: View {
     @State var selectedRedisKeyIndex:Int?
     @State var keywords:String = ""
     @StateObject var page:Page = Page()
+    @State var addKeyModalVisible:Bool = false
     
     let logger = Logger(label: "redis-key-list-view")
     
@@ -40,31 +41,37 @@ struct RedisKeysListView: View {
         selectRedisKeyModel?.id
     }
     
+    private var header: some View {
+        VStack(alignment: .center, spacing: 0) {
+            VStack(alignment: .center, spacing: 2) {
+                // redis search ...
+                SearchBar(keywords: $keywords, showFuzzy: false, placeholder: "Search keys...", action: onQueryKeyPageAction)
+                    .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
+                
+                // redis key operate ...
+                HStack {
+                    IconButton(icon: "plus", name: "Add", action: onAddAction)
+                    IconButton(icon: "trash", name: "Delete", disabled: selectedRedisKeyIndex == nil, isConfirm: true,
+                               confirmTitle: String(format: Helps.DELETE_KEY_CONFIRM_TITLE, selectRedisKey ?? ""),
+                               confirmMessage: String(format:Helps.DELETE_KEY_CONFIRM_MESSAGE, selectRedisKey ?? ""),
+                               confirmPrimaryButtonText: "Delete",
+                               action: onDeleteAction)
+                    
+                    Spacer()
+                    DatabasePicker(database: redisInstanceModel.redisModel.database, action: onRefreshAction)
+                }
+            }
+            .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
+            Rectangle().frame(height: 1)
+                .padding(.horizontal, 0).foregroundColor(Color.gray.opacity(0.6))
+        }
+    }
+    
     var body: some View {
         HSplitView {
             VStack(alignment: .leading, spacing: 0) {
                 // header area
-                VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 2) {
-                    // redis search ...
-                    SearchBar(keywords: $keywords, showFuzzy: false, placeholder: "Search keys...", action: onQueryKeyPageAction)
-                        .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
-                    
-                    // redis key operate ...
-                    HStack {
-                        IconButton(icon: "plus", name: "Add", action: onAddAction)
-                        IconButton(icon: "trash", name: "Delete", disabled: selectedRedisKeyIndex == nil, isConfirm: true,
-                                   confirmTitle: String(format: Helps.DELETE_KEY_CONFIRM_TITLE, selectRedisKey ?? ""),
-                                   confirmMessage: String(format:Helps.DELETE_KEY_CONFIRM_MESSAGE, selectRedisKey ?? ""),
-                                   confirmPrimaryButtonText: "Delete",
-                                   action: onDeleteAction)
-                        
-                        Spacer()
-                        DatabasePicker(database: redisInstanceModel.redisModel.database, action: onRefreshAction)
-                    }
-                }
-                .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
-                Rectangle().frame(height: 1)
-                    .padding(.horizontal, 0).foregroundColor(Color.gray)
+                header
                 
                 List(selection: $selectedRedisKeyIndex) {
                     ForEach(filteredRedisKeyModel.indices, id:\.self) { index in
@@ -76,14 +83,10 @@ struct RedisKeysListView: View {
                 .listStyle(PlainListStyle())
                 .frame(minWidth:150)
                 .padding(.all, 0)
-//                .onChange(of: selectRedisKey) {
-//                    print("change ..... \($0)")
-//                }
                 
                 // footer
                 SidebarFooter(page: page, pageAction: onQueryKeyPageAction)
-//                PageBar(page: page, action: onQueryKeyPageAction)
-//                    .padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 6))
+                
             }
             .padding(0)
             .frame(minWidth:240, idealWidth: 240, maxWidth: .infinity)
@@ -97,6 +100,14 @@ struct RedisKeysListView: View {
             // 这里会影响splitView 的自适应宽度, 必须加上
             .frame(minWidth: 600, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
             .layoutPriority(1)
+        }
+        .sheet(isPresented: $addKeyModalVisible, onDismiss: {
+            logger.info("add key modal dismiss...")
+        }) {
+            ModalView("Add new key", action: onAddAction) {
+                RedisValueView(redisKeyModel: RedisKeyModel(key: "", type: RedisKeyTypeEnum.STRING.rawValue))
+                    .frame(minWidth:600, minHeight:400)
+            }
         }
         .onAppear{
             try? onQueryKeyPageAction()
@@ -138,13 +149,6 @@ struct RedisKeysListView: View {
 
 func testData() -> [RedisKeyModel] {
     let redisKeys:[RedisKeyModel] = [RedisKeyModel](repeating: RedisKeyModel(key: UUID().uuidString.lowercased(), type: "string"), count: 0)
-//    redisKeys.append(RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.HASH.rawValue))
-//    redisKeys.append(RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.LIST.rawValue))
-//    redisKeys.append(RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.SET.rawValue))
-//    redisKeys.append(RedisKeyModel(id: UUID().uuidString, type: RedisKeyTypeEnum.ZSET.rawValue))
-    
-    
-    
     return redisKeys
 }
 

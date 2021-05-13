@@ -15,6 +15,7 @@ struct RedisKeysListView: View {
     @State var keywords:String = ""
     @StateObject var page:Page = Page()
     @State var addKeyModalVisible:Bool = false
+    @State var newRedisKeyModel:RedisKeyModel = RedisKeyModel(key: "", type: RedisKeyTypeEnum.STRING.rawValue)
     
     let logger = Logger(label: "redis-key-list-view")
     
@@ -104,9 +105,12 @@ struct RedisKeysListView: View {
         .sheet(isPresented: $addKeyModalVisible, onDismiss: {
             logger.info("add key modal dismiss...")
         }) {
-            ModalView("Add new key", action: onAddAction) {
-                RedisValueView(redisKeyModel: RedisKeyModel(key: "", type: RedisKeyTypeEnum.STRING.rawValue))
-                    .frame(minWidth:600, minHeight:400)
+            ModalView("Add new key", action: onDoAddAction) {
+                VStack(alignment:.leading, spacing: 8) {
+                    FormItemText(label: "Key", placeholder: "New key", required: true, value: $newRedisKeyModel.key)
+                    RedisKeyTypePicker(label: "Type", value: $newRedisKeyModel.type)
+                }
+                .frame(minWidth:400, minHeight:100)
             }
         }
         .onAppear{
@@ -115,9 +119,20 @@ struct RedisKeysListView: View {
     }
     
     func onAddAction() -> Void {
-        logger.info("on add redis key index: \(selectedRedisKeyIndex ?? -1)")
-        selectedRedisKeyIndex = -1
+        self.addKeyModalVisible = true
+        self.newRedisKeyModel = RedisKeyModel(key: "", type: RedisKeyTypeEnum.STRING.rawValue)
+//        logger.info("on add redis key index: \(selectedRedisKeyIndex ?? -1)")
+//        selectedRedisKeyIndex = -1
     }
+    
+    func onDoAddAction() -> Void {
+        logger.info("on do add new key action: \(newRedisKeyModel)")
+//        self.addKeyModalVisible = true
+//        self.newRedisKeyModel = RedisKeyModel(key: "", type: RedisKeyTypeEnum.STRING.rawValue)
+//        logger.info("on add redis key index: \(selectedRedisKeyIndex ?? -1)")
+//        selectedRedisKeyIndex = -1
+    }
+    
     func onDeleteAction() throws -> Void {
         logger.info("on delete redis key: \(selectRedisKey!)")
         let r:Int = try redisInstanceModel.getClient().del(key: selectRedisKey!)

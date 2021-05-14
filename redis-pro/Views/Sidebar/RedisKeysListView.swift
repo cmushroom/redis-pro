@@ -107,8 +107,9 @@ struct RedisKeysListView: View {
         }) {
             ModalView("Add new key", action: onDoAddAction) {
                 VStack(alignment:.leading, spacing: 8) {
-                    FormItemText(label: "Key", placeholder: "New key", required: true, value: $newRedisKeyModel.key)
+                    FormItemText(label: "Key", labelWidth: 40, placeholder: "New key", required: true, value: $newRedisKeyModel.key)
                     RedisKeyTypePicker(label: "Type", value: $newRedisKeyModel.type)
+                        .padding(EdgeInsets(top: 0, leading: 6, bottom: 0, trailing: 0))
                 }
                 .frame(minWidth:400, minHeight:100)
             }

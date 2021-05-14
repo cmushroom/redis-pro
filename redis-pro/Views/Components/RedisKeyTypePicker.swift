@@ -14,7 +14,7 @@ struct RedisKeyTypePicker: View {
     
     var body: some View {
         Picker("\(label):", selection: $value) {
-            ForEach(RedisKeyTypeEnum.allCases, id: \.self) { item in
+            ForEach(RedisKeyTypeEnum.allCases.filter{$0 != RedisKeyTypeEnum.NONE}, id: \.self) { item in
                 Text(item.rawValue).tag(item.rawValue)
             }
         }

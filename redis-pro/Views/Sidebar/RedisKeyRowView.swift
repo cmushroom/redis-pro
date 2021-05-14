@@ -9,7 +9,7 @@ import SwiftUI
 
 struct RedisKeyRowView: View {
     var index:Int = 0
-    var redisKeyModel:RedisKeyModel
+    @ObservedObject var redisKeyModel:RedisKeyModel
     
     var body: some View {
         VStack(spacing: 0){
@@ -21,11 +21,6 @@ struct RedisKeyRowView: View {
                 Tag(name: redisKeyModel.type)
                     .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                     .frame(width: 40, alignment: .leading)
-                //            Text(redisKeyModel.type).foregroundColor(.orange)
-                //                .multilineTextAlignment(.leading)
-                //                .lineLimit(1)
-                //                .font(.system(size: 12))
-                //                .padding(0.0)
                 
                 Text(redisKeyModel.id)
                     .multilineTextAlignment(.leading)
@@ -33,6 +28,8 @@ struct RedisKeyRowView: View {
                     .font(.system(size: 12))
                     .padding(0.0)
                 Spacer()
+                
+                redisKeyModel.isNew ? Text("*") : nil
             }
             .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
             

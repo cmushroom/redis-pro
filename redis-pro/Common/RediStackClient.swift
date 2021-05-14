@@ -434,6 +434,13 @@ class RediStackClient{
         }
     }
     
+    func ttl(_ redisKeyModel:RedisKeyModel) throws -> Void {
+        if redisKeyModel.isNew {
+            return
+        }
+        try redisKeyModel.ttl = ttl(key: redisKeyModel.key)
+    }
+    
     
     func ttl(key:String) throws -> Int {
         let r:RedisKey.Lifetime = try getConnection().ttl(RedisKey(key)).wait()

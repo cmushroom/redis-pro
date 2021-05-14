@@ -19,9 +19,6 @@ struct RedisKeysListView: View {
     
     let logger = Logger(label: "redis-key-list-view")
     
-    var filteredRedisKeyModel: [RedisKeyModel] {
-        redisKeyModels
-    }
     var selectRedisKeyModel:RedisKeyModel? {
         get {
             if selectedRedisKeyIndex == nil {
@@ -74,10 +71,11 @@ struct RedisKeysListView: View {
                 // header area
                 header
                 
+                // list
                 List(selection: $selectedRedisKeyIndex) {
-                    ForEach(filteredRedisKeyModel.indices, id:\.self) { index in
-                        RedisKeyRowView(index: index, redisKeyModel: filteredRedisKeyModel[index])
-                            .listRowInsets(EdgeInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0)))
+                    ForEach(redisKeyModels.indices, id:\.self) { index in
+                        RedisKeyRowView(index: index, redisKeyModel: redisKeyModels[index])
+                            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                     }
                     
                 }
@@ -120,8 +118,10 @@ struct RedisKeysListView: View {
     }
     
     func onAddAction() -> Void {
-        self.addKeyModalVisible = true
-        self.newRedisKeyModel = RedisKeyModel(key: "", type: RedisKeyTypeEnum.STRING.rawValue)
+//        self.addKeyModalVisible = true
+//        self.newRedisKeyModel = RedisKeyModel(key: "", type: RedisKeyTypeEnum.STRING.rawValue)
+        self.redisKeyModels.insert(RedisKeyModel(key: "", type: RedisKeyTypeEnum.STRING.rawValue, isNew: true), at: 0)
+        self.selectedRedisKeyIndex = 0
 //        logger.info("on add redis key index: \(selectedRedisKeyIndex ?? -1)")
 //        selectedRedisKeyIndex = -1
     }

@@ -130,10 +130,21 @@ struct HashEditorView: View {
         }) {
             ModalView("Edit field", action: onSaveFieldAction) {
                 VStack(alignment:.leading, spacing: 8) {
-                    FormItemText(label: "Field", placeholder: "Field", value: $editField, disabled: !redisKeyModel.isNew && !editNewField)
+                    FormItemText(label: "Field", placeholder: "Field", value: $editField, disabled: !editNewField)
                     FormItemTextArea(label: "Value", placeholder: "Value", value: $editValue)
+                    
+                    Button("test") {
+                        editNewField.toggle()
+                    }
                 }
                 .frame(minWidth:500, minHeight:300)
+            }
+            .onAppear {
+                // 弹窗弹出后再次触发是否可以编辑，才能正常生效
+                if self.editNewField {
+                    self.editNewField.toggle()
+                    self.editNewField.toggle()
+                }
             }
         }
     }

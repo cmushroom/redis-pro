@@ -14,10 +14,6 @@ struct RedisValueHeaderView: View {
     
     let logger = Logger(label: "redis-value-header")
     
-    var disableEdit:Bool {
-        !redisKeyModel.isNew
-    }
-    
     private var ttl: some View {
         HStack(alignment:.center, spacing: 0) {
             FormItemInt(label: "TTL(s)", value: $redisKeyModel.ttl, suffix: "square.and.pencil", onCommit: onTTLCommit)
@@ -28,8 +24,8 @@ struct RedisValueHeaderView: View {
     
     var body: some View {
         HStack(alignment: .center, spacing: 6) {
-            FormItemText(label: "Key", labelWidth: 40, required: true, value: $redisKeyModel.key, disabled: disableEdit)
-            RedisKeyTypePicker(label: "Type", value: $redisKeyModel.type, disabled: disableEdit)
+            FormItemText(label: "Key", labelWidth: 40, required: true, value: $redisKeyModel.key, disabled: !redisKeyModel.isNew)
+            RedisKeyTypePicker(label: "Type", value: $redisKeyModel.type, disabled: !redisKeyModel.isNew)
             ttl
 //            FormItemInt(label: "TTL(s)", value: $redisKeyModel.ttl)
 //                .help(Helps.TTL_HELP)

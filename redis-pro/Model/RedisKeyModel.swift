@@ -11,15 +11,14 @@ class RedisKeyModel:ObservableObject, Identifiable, Equatable, CustomStringConve
     @Published var key: String
     @Published var type: String
     @Published var ttl: Int = -1
-    @Published var isNew: Bool = false
+    @Published var isNew: Bool
     
     var id:String {
         key
     }
     
-    init(key:String, type:String) {
-        self.key = key
-        self.type = type
+    convenience init(key:String, type:String) {
+        self.init(key: key, type: type, isNew: false)
     }
     
     init(key:String, type:String, isNew:Bool) {

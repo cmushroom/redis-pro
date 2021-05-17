@@ -14,24 +14,12 @@ struct RedisKeysListView: View {
     @State var selectedRedisKeyIndex:Int?
     @State var keywords:String = ""
     @StateObject var page:Page = Page()
-    @State var addKeyModalVisible:Bool = false
-    @State var newRedisKeyModel:RedisKeyModel = RedisKeyModel(key: "", type: RedisKeyTypeEnum.STRING.rawValue)
     
     let logger = Logger(label: "redis-key-list-view")
     
     var selectRedisKeyModel:RedisKeyModel? {
         get {
-            if selectedRedisKeyIndex == nil {
-                return nil
-            }
-            if selectedRedisKeyIndex == -1 {
-                return RedisKeyModel(key: "", type: RedisKeyTypeEnum.STRING.rawValue, isNew: true)
-            }
-            
-            return (selectedRedisKeyIndex == nil || redisKeyModels.isEmpty || redisKeyModels.count <= selectedRedisKeyIndex!) ? nil : redisKeyModels[selectedRedisKeyIndex ?? 0]
-        }
-        set {
-            selectedRedisKeyIndex = -1
+            return (selectedRedisKeyIndex == nil || redisKeyModels.isEmpty || redisKeyModels.count <= selectedRedisKeyIndex!) ? nil : redisKeyModels[selectedRedisKeyIndex!]
         }
     }
     
@@ -92,25 +80,16 @@ struct RedisKeysListView: View {
             .layoutPriority(0)
             
             VStack(alignment: .leading, spacing: 0){
-                RedisValueView(redisKeyModel: selectRedisKeyModel)
-                
+                if selectRedisKeyModel == nil {
+                    EmptyView()
+                } else {
+                    RedisValueView(redisKeyModel: selectRedisKeyModel!)
+                }
                 Spacer()
             }
             // 这里会影响splitView 的自适应宽度, 必须加上
             .frame(minWidth: 600, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
             .layoutPriority(1)
-        }
-        .sheet(isPresented: $addKeyModalVisible, onDismiss: {
-            logger.info("add key modal dismiss...")
-        }) {
-            ModalView("Add new key", action: onDoAddAction) {
-                VStack(alignment:.leading, spacing: 8) {
-                    FormItemText(label: "Key", labelWidth: 40, placeholder: "New key", required: true, value: $newRedisKeyModel.key)
-                    RedisKeyTypePicker(label: "Type", value: $newRedisKeyModel.type)
-                        .padding(EdgeInsets(top: 0, leading: 6, bottom: 0, trailing: 0))
-                }
-                .frame(minWidth:400, minHeight:100)
-            }
         }
         .onAppear{
             try? onQueryKeyPageAction()
@@ -118,20 +97,12 @@ struct RedisKeysListView: View {
     }
     
     func onAddAction() -> Void {
-//        self.addKeyModalVisible = true
-//        self.newRedisKeyModel = RedisKeyModel(key: "", type: RedisKeyTypeEnum.STRING.rawValue)
-        self.redisKeyModels.insert(RedisKeyModel(key: "", type: RedisKeyTypeEnum.STRING.rawValue, isNew: true), at: 0)
+        let newRedisKeyModel = RedisKeyModel(key: "", type: RedisKeyTypeEnum.STRING.rawValue, isNew: true)
+        
+        self.redisKeyModels.insert(newRedisKeyModel, at: 0)
         self.selectedRedisKeyIndex = 0
-//        logger.info("on add redis key index: \(selectedRedisKeyIndex ?? -1)")
-//        selectedRedisKeyIndex = -1
-    }
-    
-    func onDoAddAction() -> Void {
-        logger.info("on do add new key action: \(newRedisKeyModel)")
-//        self.addKeyModalVisible = true
-//        self.newRedisKeyModel = RedisKeyModel(key: "", type: RedisKeyTypeEnum.STRING.rawValue)
-//        logger.info("on add redis key index: \(selectedRedisKeyIndex ?? -1)")
-//        selectedRedisKeyIndex = -1
+        
+        redisKeyModels[0].key = "aaa \(Date())"
     }
     
     func onDeleteAction() throws -> Void {

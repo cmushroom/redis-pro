@@ -91,7 +91,7 @@ struct SetEditorView: View {
             HStack(alignment: .center, spacing: 4) {
                 Spacer()
                 IconButton(icon: "arrow.clockwise", name: "Refresh", action: onRefreshAction)
-                IconButton(icon: "checkmark", name: "Submit", confirmPrimaryButtonText: "Submit", action: onSubmitAction)
+//                IconButton(icon: "checkmark", name: "Submit", confirmPrimaryButtonText: "Submit", action: onSubmitAction)
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
         }
@@ -146,6 +146,10 @@ struct SetEditorView: View {
             logger.info("redis set update success, update list")
             list[editIndex] = editValue
         }
+        
+        if self.redisKeyModel.isNew {
+            redisKeyModel.isNew = false
+        }
     }
     
     func onDeleteAction() throws -> Void {
@@ -182,7 +186,7 @@ struct SetEditorView: View {
     }
     
     func queryPage(_ redisKeyModel:RedisKeyModel) throws -> Void {
-        list = try redisInstanceModel.getClient().pageSet(redisKeyModel.key, page: page)
+        list = try redisInstanceModel.getClient().pageSet(redisKeyModel, page: page)
     }
     
     func ttl(_ redisKeyModel:RedisKeyModel) throws -> Void {

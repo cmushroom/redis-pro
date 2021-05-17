@@ -6,24 +6,64 @@
 //
 
 import SwiftUI
+import Logging
 
 struct RedisValueHeaderView: View {
     @ObservedObject var redisKeyModel:RedisKeyModel
+    @EnvironmentObject var redisInstanceModel:RedisInstanceModel
+    
+    let logger = Logger(label: "redis-value-header")
     
     var disableEdit:Bool {
         !redisKeyModel.isNew
+    }
+    
+    private var ttl: some View {
+        HStack(alignment:.center, spacing: 0) {
+            FormItemInt(label: "TTL(s)", value: $redisKeyModel.ttl, suffix: "square.and.pencil", onCommit: onTTLCommit)
+                .help(Helps.TTL_HELP)
+                .frame(width: 160)
+        }
     }
     
     var body: some View {
         HStack(alignment: .center, spacing: 6) {
             FormItemText(label: "Key", labelWidth: 40, required: true, value: $redisKeyModel.key, disabled: disableEdit)
             RedisKeyTypePicker(label: "Type", value: $redisKeyModel.type, disabled: disableEdit)
-            FormItemInt(label: "TTL(s)", value: $redisKeyModel.ttl)
-                .help(Helps.TTL_HELP)
-                .frame(width: 160)
+            ttl
+//            FormItemInt(label: "TTL(s)", value: $redisKeyModel.ttl)
+//                .help(Helps.TTL_HELP)
+//                .frame(width: 160)
             Spacer()
         }
+        .onChange(of: redisKeyModel, perform: { value in
+            logger.info("redis value header key model change \(value)")
+            ttl(value)
+        })
+        .onAppear {
+            logger.info("redis value header view init...")
+            ttl(redisKeyModel)
+        }
     }
+    
+    func onTTLCommit() throws -> Void {
+        if redisKeyModel.isNew {
+            return
+        }
+        logger.info("update redis key ttl: \(redisKeyModel)")
+        let _ = try redisInstanceModel.getClient().expire(redisKeyModel.key, seconds: redisKeyModel.ttl)
+    }
+    
+    func ttl(_ redisKeyModel:RedisKeyModel) -> Void {
+        do {
+            let key:String = redisKeyModel.key
+            let ttl = try redisInstanceModel.getClient().ttl(key: key)
+            redisKeyModel.ttl = ttl
+        } catch {
+            logger.error("\(error)")
+        }
+    }
+    
 }
 
 struct RedisValueHeaderView_Previews: PreviewProvider {

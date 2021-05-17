@@ -81,6 +81,12 @@ class RediStackClient{
     }
     
     // zset operator
+    func pageZSet(_ redisKeyModel:RedisKeyModel, page:Page) throws -> [(String, Double)?] {
+        if redisKeyModel.isNew {
+            return [(String, Double)?]()
+        }
+        return try pageZSet(redisKeyModel.key, page: page)
+    }
     
     func pageZSet(_ key:String, page:Page) throws -> [(String, Double)?] {
         do {
@@ -149,6 +155,12 @@ class RediStackClient{
     }
     
     // set operator
+    func pageSet(_ redisKeyModel:RedisKeyModel, page:Page) throws -> [String?] {
+        if redisKeyModel.isNew {
+            return [String?]()
+        }
+        return try pageSet(redisKeyModel.key, page: page)
+    }
     
     func pageSet(_ key:String, page:Page) throws -> [String?] {
         do {
@@ -217,7 +229,15 @@ class RediStackClient{
     
     // list operator
     
+    func pageList(_ redisKeyModel:RedisKeyModel, page:Page) throws -> [String?] {
+        if redisKeyModel.isNew {
+            return [String?]()
+        }
+        return try pageList(redisKeyModel.key, page: page)
+    }
+    
     func pageList(_ key:String, page:Page) throws -> [String?] {
+        
         do {
             logger.info("redis list page, key: \(key), page: \(page)")
             
@@ -300,6 +320,14 @@ class RediStackClient{
     
     
     // hash operator
+    
+    func pageHash(_ redisKeyModel:RedisKeyModel, page:Page) throws -> [String:String?] {
+        if redisKeyModel.isNew {
+            return [String:String?]()
+        }
+        
+        return try pageHash(redisKeyModel.key, page: page)
+    }
     
     func pageHash(_ key:String, page:Page) throws -> [String:String?] {
         do {

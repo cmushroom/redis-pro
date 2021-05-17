@@ -12,6 +12,8 @@ struct FormItemInt: View {
     var labelWidth:CGFloat = 80
     var placeholder:String?
     @Binding var value:Int
+    var suffix:String?
+    var onCommit:() throws -> Void = {}
     
     var body: some View {
         let valueProxy = Binding<String>(
@@ -27,8 +29,7 @@ struct FormItemInt: View {
             if !label.isEmpty {
                 FormLabel(label: label, width: labelWidth)
             }
-            MTextField(value: valueProxy, placeholder: placeholder ?? label)
-//            TextField(placeholder ?? label, text: valueProxy)
+            MTextField(value: valueProxy, placeholder: placeholder ?? label, suffix: suffix, onCommit: onCommit)
         }
     }
 }

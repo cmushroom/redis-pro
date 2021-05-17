@@ -114,20 +114,9 @@ struct HashEditorView: View {
             HStack(alignment: .center, spacing: 4) {
                 Spacer()
                 IconButton(icon: "arrow.clockwise", name: "Refresh", action: onRefreshAction)
-                IconButton(icon: "checkmark", name: "Submit", confirmPrimaryButtonText: "Submit", action: onSubmitAction)
+//                IconButton(icon: "checkmark", name: "Submit", confirmPrimaryButtonText: "Submit", action: onSubmitAction)
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
-        }
-        .sheet(isPresented: $editModalVisible, onDismiss: {
-            print("on dismiss")
-        }) {
-            ModalView("Edit field", action: onSaveFieldAction) {
-                VStack(alignment:.leading, spacing: 8) {
-                    FormItemText(label: "Field", placeholder: "field", value: $editField, disabled: !editNewField)
-                    FormItemTextArea(label: "Value", placeholder: "value", value: $editValue)
-                }
-                .frame(minWidth:500, minHeight:300)
-            }
         }
         .onChange(of: redisKeyModel, perform: { value in
             logger.info("redis string value editor view change \(value)")
@@ -136,6 +125,16 @@ struct HashEditorView: View {
         .onAppear {
             logger.info("redis string value editor view init...")
             onLoad(redisKeyModel)
+        }
+        .sheet(isPresented: $editModalVisible, onDismiss: {
+        }) {
+            ModalView("Edit field", action: onSaveFieldAction) {
+                VStack(alignment:.leading, spacing: 8) {
+                    FormItemText(label: "Field", placeholder: "Field", value: $editField, disabled: !redisKeyModel.isNew && !editNewField)
+                    FormItemTextArea(label: "Value", placeholder: "Value", value: $editValue)
+                }
+                .frame(minWidth:500, minHeight:300)
+            }
         }
     }
     
@@ -156,6 +155,10 @@ struct HashEditorView: View {
         let _ = try redisInstanceModel.getClient().hset(redisKeyModel.key, field: editField, value: editValue)
         logger.info("redis hset success, update field list")
         hashMap.updateValue(editValue, forKey: editField)
+        
+        if self.redisKeyModel.isNew {
+            redisKeyModel.isNew = false
+        }
     }
     
     
@@ -194,7 +197,7 @@ struct HashEditorView: View {
     }
     
     func queryHashPage(_ redisKeyModel:RedisKeyModel) throws -> Void {
-        hashMap = try redisInstanceModel.getClient().pageHash(redisKeyModel.key, page: page)
+        hashMap = try redisInstanceModel.getClient().pageHash(redisKeyModel, page: page)
     }
     
     func ttl(_ redisKeyModel:RedisKeyModel) throws -> Void {

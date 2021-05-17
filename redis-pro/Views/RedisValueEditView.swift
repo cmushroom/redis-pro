@@ -31,25 +31,25 @@ struct RedisValueEditView: View {
             }
         }
         .padding(4)
-        .onChange(of: redisKeyModel, perform: { value in
-            logger.info("redis key change \(value)")
-            ttl(value)
-        })
-        .onAppear {
-            logger.info("redis value edit view init...")
-            ttl(redisKeyModel)
-        }
+//        .onChange(of: redisKeyModel, perform: { value in
+//            logger.info("redis key change \(value)")
+//            ttl(value)
+//        })
+//        .onAppear {
+//            logger.info("redis value edit view init...")
+//            ttl(redisKeyModel)
+//        }
     }
     
-    func ttl(_ redisKeyModel:RedisKeyModel) -> Void {
-        do {
-            let key:String = redisKeyModel.key
-            let ttl = try redisInstanceModel.getClient().ttl(key: key)
-            redisKeyModel.ttl = ttl
-        } catch {
-            logger.error("\(error)")
-        }
-    }
+//    func ttl(_ redisKeyModel:RedisKeyModel) -> Void {
+//        do {
+//            let key:String = redisKeyModel.key
+//            let ttl = try redisInstanceModel.getClient().ttl(key: key)
+//            redisKeyModel.ttl = ttl
+//        } catch {
+//            logger.error("\(error)")
+//        }
+//    }
     
 }
 

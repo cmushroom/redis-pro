@@ -22,14 +22,12 @@ struct PageBar: View {
                 .font(.footnote)
                 .lineLimit(1)
                 .multilineTextAlignment(.trailing)
-                .help(Helps.PAGE_KEYS)
             
             Picker("", selection: $page.size) {
                 Text("10").tag(10)
                 Text("50").tag(50)
                 Text("100").tag(100)
                 Text("200").tag(200)
-                Text("500").tag(500)
             }
             .help(Helps.PAGE_SIZE)
             .onChange(of: page.size, perform: { value in

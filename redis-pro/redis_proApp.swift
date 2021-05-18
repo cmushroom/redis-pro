@@ -38,4 +38,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationWillTerminate(_ notification: Notification)  {
         logger.info("redis pro will close...")
     }
+    
+    func didFinishLaunchingWithOptions(_ notification: Notification)  {
+        logger.info("redis didFinishLaunchingWithOptions...")
+    }
 }

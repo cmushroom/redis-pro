@@ -132,10 +132,6 @@ struct HashEditorView: View {
                 VStack(alignment:.leading, spacing: 8) {
                     FormItemText(label: "Field", placeholder: "Field", value: $editField, disabled: !editNewField)
                     FormItemTextArea(label: "Value", placeholder: "Value", value: $editValue)
-                    
-                    Button("test") {
-                        editNewField.toggle()
-                    }
                 }
                 .frame(minWidth:500, minHeight:300)
             }
@@ -165,11 +161,12 @@ struct HashEditorView: View {
     func onSaveFieldAction() throws -> Void {
         let _ = try redisInstanceModel.getClient().hset(redisKeyModel.key, field: editField, value: editValue)
         logger.info("redis hset success, update field list")
-        hashMap.updateValue(editValue, forKey: editField)
+//        hashMap.updateValue(editValue, forKey: editField)
         
         if self.redisKeyModel.isNew {
             redisKeyModel.isNew = false
         }
+        onLoad(redisKeyModel)
     }
     
     
@@ -184,6 +181,7 @@ struct HashEditorView: View {
         try deleteField(selectField!)
     }
     func onQueryField() throws -> Void {
+        page.firstPage()
         try queryHashPage(redisKeyModel)
     }
     

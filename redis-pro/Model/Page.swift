@@ -13,9 +13,16 @@ class Page:ObservableObject, CustomStringConvertible {
     @Published var size:Int = 50
     @Published var total:Int = 0
     @Published var keywords:String = ""
+    private var cursorHistory:[Int] = [Int]()
+    var hasNext:Bool = true
     
     var totalPage:Int {
-        total < 1 ? 0 : (total % size == 0 ? total / size : total / size + 1)
+        get {
+            if !hasNext {
+                return current
+            }
+            return total < 1 ? 1 : (total % size == 0 ? total / size : total / size + 1)
+        }
     }
     
     var hasPrevPage:Bool {
@@ -43,18 +50,20 @@ class Page:ObservableObject, CustomStringConvertible {
     
     func nextPage() -> Void {
         self.current += 1
-        self.cursor += self.size
+        cursorHistory.append(self.cursor)
     }
     
+    
+    // 0 - 18 - 5
     func prevPage() -> Void {
         self.current -= 1
-        self.cursor -= self.size
-        
-        if self.current < 1 {
+        if self.current <= 1 {
             self.current = 1
+            cursorHistory.removeAll()
         }
-        if self.cursor < 0 {
-            self.cursor = 0
-        }
+        
+        let index = self.current - 1
+        self.cursor = index == 0 || cursorHistory.count == 0 ? 0 : cursorHistory[index - 1]
+        cursorHistory.removeSubrange(index...)
     }
 }

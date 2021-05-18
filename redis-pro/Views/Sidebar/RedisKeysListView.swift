@@ -12,7 +12,6 @@ struct RedisKeysListView: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @State var redisKeyModels:[RedisKeyModel] = testData()
     @State var selectedRedisKeyIndex:Int?
-    @State var keywords:String = ""
     @StateObject var page:Page = Page()
     
     let logger = Logger(label: "redis-key-list-view")
@@ -31,7 +30,7 @@ struct RedisKeysListView: View {
         VStack(alignment: .center, spacing: 0) {
             VStack(alignment: .center, spacing: 2) {
                 // redis search ...
-                SearchBar(keywords: $keywords, showFuzzy: false, placeholder: "Search keys...", action: onQueryKeyPageAction)
+                SearchBar(keywords: $page.keywords, showFuzzy: false, placeholder: "Search keys...", action: onSearchKeyAction)
                     .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
                 
                 // redis key operate ...
@@ -92,17 +91,17 @@ struct RedisKeysListView: View {
             .layoutPriority(1)
         }
         .onAppear{
-            try? onQueryKeyPageAction()
+            onRefreshAction()
         }
     }
     
     func onAddAction() -> Void {
-        let newRedisKeyModel = RedisKeyModel(key: "", type: RedisKeyTypeEnum.STRING.rawValue, isNew: true)
+        let timeInterval = Date().timeIntervalSince1970
+        let millisecond = CLongLong(round(timeInterval * 1000))
+        let newRedisKeyModel = RedisKeyModel(key: "NEW_KEY_\(millisecond)", type: RedisKeyTypeEnum.STRING.rawValue, isNew: true)
         
         self.redisKeyModels.insert(newRedisKeyModel, at: 0)
         self.selectedRedisKeyIndex = 0
-        
-        redisKeyModels[0].key = "aaa \(Date())"
     }
     
     func onDeleteAction() throws -> Void {
@@ -122,11 +121,16 @@ struct RedisKeysListView: View {
         try? onQueryKeyPageAction()
     }
     
+    func onSearchKeyAction() throws -> Void {
+        page.firstPage()
+        try onQueryKeyPageAction()
+    }
+    
     func onQueryKeyPageAction() throws -> Void {
         if !redisInstanceModel.isConnect {
             return
         }
-        let keysPage = try redisInstanceModel.getClient().pageKeys(page: page, keywords: keywords)
+        let keysPage = try redisInstanceModel.getClient().pageKeys(page: page)
         logger.info("query keys page, keys: \(keysPage), page: \(String(describing: page))")
         redisKeyModels = keysPage
     }

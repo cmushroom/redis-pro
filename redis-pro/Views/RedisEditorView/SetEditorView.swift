@@ -169,6 +169,7 @@ struct SetEditorView: View {
     }
     
     func onQueryField() throws -> Void {
+        page.firstPage()
         try queryPage(redisKeyModel)
     }
     

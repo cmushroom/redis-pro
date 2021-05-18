@@ -48,13 +48,6 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         return rediStackClient!
     }
     
-    
-    func queryKeyPage(page:Page, keywords:String) throws -> Void{
-        let v2 = try getClient().pageKeys(page: page, keywords: keywords)
-        logger.info("query key page : \(v2)")
-        
-    }
-    
     func connect(redisModel:RedisModel) throws -> Void {
         logger.info("connect to redis server: \(redisModel)")
         do {

@@ -20,11 +20,11 @@ class RediStackClient{
         self.redisModel = redisModel
     }
     
-    func pageKeys(page:Page, keywords:String?) throws -> [RedisKeyModel] {
+    func pageKeys(page:Page) throws -> [RedisKeyModel] {
         do {
-            logger.info("redis keys page scan, page: \(page), keywords: \(String(describing: keywords))")
+            logger.info("redis keys page scan, page: \(page)")
             
-            let match = (keywords == nil || keywords!.isEmpty) ? nil : keywords
+            let match = page.keywords.isEmpty ? nil : page.keywords
             
             var keys:[String] = [String]()
             var cursor:Int = page.cursor
@@ -43,7 +43,6 @@ class RediStackClient{
                     keys.append(contentsOf: moreRes.1)
                     
                     cursor = moreRes.0
-                    page.cursor = cursor
                     if cursor == 0 || keys.count == page.size {
                         break
                     }
@@ -52,6 +51,8 @@ class RediStackClient{
             
             let total = try dbsize()
             page.total = total
+            page.hasNext = cursor != 0
+            page.cursor = cursor
             
             return try toRedisKeyModels(keys: keys)
         } catch {
@@ -119,6 +120,8 @@ class RediStackClient{
             
             let total = try getConnection().zcard(of: RedisKey(key)).wait()
             page.total = total
+            page.hasNext = cursor != 0
+            page.cursor = cursor
             
             return set
         
@@ -193,6 +196,8 @@ class RediStackClient{
             
             let total = try getConnection().scard(of: RedisKey(key)).wait()
             page.total = total
+            page.hasNext = cursor != 0
+            page.cursor = cursor
             
             return set
         
@@ -241,12 +246,12 @@ class RediStackClient{
         do {
             logger.info("redis list page, key: \(key), page: \(page)")
             
-            let cursor:Int = page.cursor
+            let cursor:Int = (page.current - 1) * page.size
     
             let total = try llen(key)
             page.total = total
             
-            return try lrange(key, start: cursor, stop: cursor + page.size)
+            return try lrange(key, start: cursor, stop: cursor + page.size - 1)
         
         } catch {
             logger.error("query redis list page error \(error)")
@@ -363,6 +368,8 @@ class RediStackClient{
             
             let total = try hlen(key)
             page.total = total
+            page.hasNext = cursor != 0
+            page.cursor = cursor
             
             return entries
         } catch {

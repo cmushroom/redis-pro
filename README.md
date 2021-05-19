@@ -15,5 +15,5 @@ macos >= 10.15
 
 
 ## 应用截图
-![登录]<img alt="" src="https://raw.githubusercontent.com/cmushroom/redis-pro/resource/login.png" align="center" height="200">
-![首页]<img alt="" src="https://raw.githubusercontent.com/cmushroom/redis-pro/resource/index.png" align="center" height="200">
+![登录](https://raw.githubusercontent.com/cmushroom/redis-pro/resource/login.png)
+![首页](https://raw.githubusercontent.com/cmushroom/redis-pro/resource/index.png)

@@ -15,5 +15,8 @@ macos >= 10.15
 
 
 ## 应用截图
+登录页
 ![登录](https://raw.githubusercontent.com/cmushroom/redis-pro/resource/login.png)
+
+首页
 ![首页](https://raw.githubusercontent.com/cmushroom/redis-pro/resource/index.png)

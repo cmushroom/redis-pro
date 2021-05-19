@@ -54,3 +54,19 @@ extension View {
         overlay(EdgeBorder(width: width, edges: edges).foregroundColor(color))
     }
 }
+
+
+extension Date {
+
+    /// 获取当前 秒级 时间戳 - 10位
+    var timestamp : Int {
+        let timeInterval: TimeInterval = self.timeIntervalSince1970
+        return Int(timeInterval)
+    }
+
+    /// 获取当前 毫秒级 时间戳 - 13位
+    var millis : Int64 {
+        let timeInterval: TimeInterval = self.timeIntervalSince1970
+        return CLongLong(round(timeInterval*1000))
+    }
+}

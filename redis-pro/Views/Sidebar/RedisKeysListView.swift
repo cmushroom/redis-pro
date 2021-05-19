@@ -96,9 +96,7 @@ struct RedisKeysListView: View {
     }
     
     func onAddAction() -> Void {
-        let timeInterval = Date().timeIntervalSince1970
-        let millisecond = CLongLong(round(timeInterval * 1000))
-        let newRedisKeyModel = RedisKeyModel(key: "NEW_KEY_\(millisecond)", type: RedisKeyTypeEnum.STRING.rawValue, isNew: true)
+        let newRedisKeyModel = RedisKeyModel(key: "NEW_KEY_\(Date().millis)", type: RedisKeyTypeEnum.STRING.rawValue, isNew: true)
         
         self.redisKeyModels.insert(newRedisKeyModel, at: 0)
         self.selectedRedisKeyIndex = 0

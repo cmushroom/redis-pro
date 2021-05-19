@@ -7,6 +7,9 @@
 
 import SwiftUI
 import Logging
+import AppCenter
+import AppCenterAnalytics
+import AppCenterCrashes
 
 @main
 struct redis_proApp: App {
@@ -33,6 +36,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         logger.info("redis pro launch complete")
+        AppCenter.start(withAppSecret: "310d1d33-2570-46f9-a60d-8a862cdef6c7", services:[
+          Analytics.self,
+            Crashes.self
+        ])
     }
     
     func applicationWillTerminate(_ notification: Notification)  {

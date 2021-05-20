@@ -13,6 +13,7 @@ struct StringEditorView: View {
     @ObservedObject var redisKeyModel:RedisKeyModel
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @EnvironmentObject var globalContext:GlobalContext
+    @Environment(\.colorScheme) var colorScheme
     
     let logger = Logger(label: "redis-string-editor")
     
@@ -22,7 +23,7 @@ struct StringEditorView: View {
                 // text editor
                 MTextEditor(text: $text)
             }
-            .background(Color.white)
+            .background(colorScheme == .dark ? Color.clear : Color.white)
             
             // footer
             HStack(alignment: .center, spacing: 4) {

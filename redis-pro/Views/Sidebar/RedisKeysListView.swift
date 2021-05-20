@@ -66,7 +66,6 @@ struct RedisKeysListView: View {
                 List(selection: $selectedRedisKeyIndex) {
                     ForEach(redisKeyModels.indices, id:\.self) { index in
                         RedisKeyRowView(index: index, redisKeyModel: redisKeyModels[index])
-                            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                             .contextMenu {
                                 Button("Rename", action: {
                                     self.oldKeyIndex = index
@@ -74,6 +73,7 @@ struct RedisKeysListView: View {
                                 })
                                 MButton(text: "Delete Key", action: {try onDeleteConfirmAction(index)})
                             }
+                            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                     }
                     
                 }

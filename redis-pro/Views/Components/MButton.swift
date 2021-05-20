@@ -16,10 +16,11 @@ struct MButton: View {
     var confirmTitle:String?
     var confirmMessage:String?
     var confirmPrimaryButtonText:String?
-    
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         Button(text, action: doAction)
+            .foregroundColor(colorScheme == .dark ? Color.white.opacity(disabled ? 0.4 : 0.9) : nil)
             .disabled(disabled)
             .onHover { inside in
                     if !disabled && inside {

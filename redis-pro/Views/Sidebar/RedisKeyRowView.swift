@@ -14,10 +14,6 @@ struct RedisKeyRowView: View {
     var body: some View {
         VStack(spacing: 0){
             HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 2) {
-                //            Text("\(index)")
-                //                .multilineTextAlignment(.leading)
-                //                .lineLimit(1)
-                //                .font(.caption)
                 Tag(name: redisKeyModel.type)
                     .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                     .frame(width: 40, alignment: .leading)

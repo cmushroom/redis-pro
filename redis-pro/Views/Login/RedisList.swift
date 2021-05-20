@@ -46,14 +46,7 @@ struct RedisList: View {
                         ForEach(filteredRedisModel) { redisModel in
                             RedisRow(redisModel: redisModel)
                                 .tag(redisModel.id)
-                                //                                .onTapGesture(count: 1) {
-                                //                                    print("single click....")
-                                //                                    self.selectedRedisModelId = redisModel.id
-                                //                                    print("single click \(redisModel.id)")
-                                //                                }
-                                //                                .onTapGesture(count: 2) {
-                                //                                    print("double click \(redisModel.id)")
-                                //                                }
+                                .contentShape(Rectangle())
                                 .gesture(TapGesture(count: 2).onEnded {
                                     onConnect()
                                 })

@@ -26,7 +26,8 @@ struct MTextField: View {
                 self.isEditing = isEditing
             }, onCommit: doAction)
             .disabled(disabled)
-            .font(/*@START_MENU_TOKEN@*/.body/*@END_MENU_TOKEN@*/)
+            .lineLimit(1)
+            .font(.body)
             .disableAutocorrection(true)
             .textFieldStyle(PlainTextFieldStyle())
             .onHover { inside in

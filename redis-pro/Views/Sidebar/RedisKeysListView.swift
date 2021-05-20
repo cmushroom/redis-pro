@@ -147,12 +147,10 @@ struct RedisKeysListView: View {
     }
     
     func deleteKey(_ index:Int) throws -> Void {
-        logger.info("on delete redis key: \(index)")
         let redisKeyModel = self.redisKeyModels[index]
         let r:Int = try redisInstanceModel.getClient().del(key: redisKeyModel.key)
-        if r > 0 {
-            redisKeyModels.remove(at: index)
-        }
+        logger.info("on delete redis key: \(index), r:\(r)")
+        redisKeyModels.remove(at: index)
     }
     
     func onRefreshAction() -> Void {

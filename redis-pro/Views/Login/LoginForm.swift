@@ -14,7 +14,7 @@ struct LoginForm: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @EnvironmentObject var globalContext:GlobalContext
     
-    @State private var loading:Bool = false
+    @State private var loading:Bool = true
     
     @ObservedObject var redisFavoriteModel: RedisFavoriteModel
     @ObservedObject var redisModel:RedisModel
@@ -53,24 +53,21 @@ struct LoginForm: View {
                         }
                         .buttonStyle(PlainButtonStyle())
                         
-                        if (loading) {
-                            ProgressView().progressViewStyle(CircularProgressViewStyle()).scaleEffect(CGSize(width: 0.5, height: 0.5))
-                        }
-                        
-                        Text(redisModel.ping ? "Connect successed!" : " ")
-                            .font(.body)
-                            .multilineTextAlignment(.leading)
-                            .lineLimit(1)
-                            .frame(height: 10.0)
+                        //                        Text(redisModel.ping ? "Connect successed!" : " ")
+                        //                            .font(.body)
+                        //                            .frame(height: 10.0)
+                        MLoading(text: redisModel.ping ? "Connect successed!" : " ",
+                                 loadingText: "Connecting...",
+                                 loading: loading)
                         
                         Spacer()
-
+                        
                         MButton(text: "Connect", action: onConnect)
                             .buttonStyle(BorderedButtonStyle())
                             .keyboardShortcut(.defaultAction)
                         
                     }
-//                    .frame(height: 40.0)
+                    //                    .frame(height: 40.0)
                     HStack(alignment: .center){
                         MButton(text: "Add to Favorites", action: onAddRedisInstanceAction)
                         Spacer()
@@ -98,6 +95,16 @@ struct LoginForm: View {
     
     func onTestConnectionAction() throws -> Void {
         logger.info("test connect to redis server: \(redisModel)")
+        
+        self.loading =  true
+        
+        defer {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                self.loading =  false
+                // Put your code which should be executed with a delay here
+            }
+            
+        }
         
         let ping = try redisInstanceModel.testConnect(redisModel:redisModel)
         if !ping {
@@ -133,6 +140,12 @@ struct LoginForm: View {
     }
     
     func onConnect() throws -> Void {
+        self.loading =  true
+        
+        defer {
+            self.loading =  false
+        }
+        
         try redisInstanceModel.connect(redisModel:redisModel)
         redisFavoriteModel.saveLast(redisModel: redisModel)
         logger.info("on connect to redis server: \(redisModel)")

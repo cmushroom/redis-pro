@@ -14,7 +14,7 @@ struct LoginForm: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @EnvironmentObject var globalContext:GlobalContext
     
-    @State private var loading:Bool = true
+    @State private var loading:Bool = false
     
     @ObservedObject var redisFavoriteModel: RedisFavoriteModel
     @ObservedObject var redisModel:RedisModel
@@ -43,19 +43,18 @@ struct LoginForm: View {
                     Divider()
                         .padding(.vertical, 8)
                     HStack(alignment: .center){
-                        Button(action: {
-                            if let url = URL(string: "https://github.com/cmushroom/redis-pro") {
-                                NSWorkspace.shared.open(url)
+                        if !loading {
+                            Button(action: {
+                                if let url = URL(string: "https://github.com/cmushroom/redis-pro") {
+                                    NSWorkspace.shared.open(url)
+                                }
+                            }) {
+                                Image(systemName: "questionmark.circle")
+                                    .font(.system(size: 18.0))
                             }
-                        }) {
-                            Image(systemName: "questionmark.circle")
-                                .font(.system(size: 18.0))
+                            .buttonStyle(PlainButtonStyle())
                         }
-                        .buttonStyle(PlainButtonStyle())
                         
-                        //                        Text(redisModel.ping ? "Connect successed!" : " ")
-                        //                            .font(.body)
-                        //                            .frame(height: 10.0)
                         MLoading(text: redisModel.ping ? "Connect successed!" : " ",
                                  loadingText: "Connecting...",
                                  loading: loading)
@@ -99,11 +98,9 @@ struct LoginForm: View {
         self.loading =  true
         
         defer {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 self.loading =  false
-                // Put your code which should be executed with a delay here
             }
-            
         }
         
         let ping = try redisInstanceModel.testConnect(redisModel:redisModel)

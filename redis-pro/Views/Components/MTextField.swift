@@ -33,7 +33,7 @@ struct MTextField: View {
             }
             
             if suffix != nil {
-                MIcon(icon: suffix, fontSize: 14, action: doAction)
+                MIcon(icon: suffix!, fontSize: 14, action: doAction)
                     .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
             }
         }

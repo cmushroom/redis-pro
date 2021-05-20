@@ -512,6 +512,11 @@ class RediStackClient{
         }
     }
     
+    func rename(_ oldKey:String, newKey:String) throws -> Bool {
+        let res:RESPValue = try getConnection().send(command: "RENAME", with: [RESPValue(from: oldKey), RESPValue(from: newKey)]).wait()
+        logger.info("rename key, old key:\(oldKey), new key: \(newKey)")
+        return res.string == "OK"
+    }
     
     func selectDB(_ database: Int) throws -> Void {
         try getConnection().select(database: database).wait()

@@ -51,8 +51,8 @@
         "repositoryURL": "https://gitee.com/mirrors_apple/swift-nio.git",
         "state": {
           "branch": null,
-          "revision": "3be4e0980075de10a4bc8dee07491d49175cfd7a",
-          "version": "2.27.0"
+          "revision": "d161bf658780b209c185994528e7e24376cf7283",
+          "version": "2.29.0"
         }
       },
       {

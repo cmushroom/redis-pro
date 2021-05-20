@@ -73,6 +73,7 @@ struct RedisList: View {
                 HStack(alignment: .center) {
                     MIcon(icon: "plus", fontSize: 13, action: onAddAction)
                     MIcon(icon: "minus", fontSize: 13, disabled: selectedRedisModelId == nil, action: onDelAction)
+                    
                 }
                 .padding(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
             }
@@ -100,7 +101,10 @@ struct RedisList: View {
     }
     
     func selectFavoriteRedisModel() -> Void {
-        selectedRedisModelId = redisFavoriteModel.lastRedisModelId
+        DispatchQueue.main.async {
+            selectedRedisModelId = redisFavoriteModel.lastRedisModelId
+        }
+        
     }
     
     func onAddAction() -> Void {

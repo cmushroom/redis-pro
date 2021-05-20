@@ -10,9 +10,13 @@ import Logging
 
 struct RedisKeysListView: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
+    @EnvironmentObject var globalContext:GlobalContext
     @State var redisKeyModels:[RedisKeyModel] = testData()
     @State var selectedRedisKeyIndex:Int?
     @StateObject var page:Page = Page()
+    @State private var renameModalVisible:Bool = false
+    @State private var oldKeyIndex:Int?
+    @State private var newKeyName:String = ""
     
     let logger = Logger(label: "redis-key-list-view")
     
@@ -63,6 +67,13 @@ struct RedisKeysListView: View {
                     ForEach(redisKeyModels.indices, id:\.self) { index in
                         RedisKeyRowView(index: index, redisKeyModel: redisKeyModels[index])
                             .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                            .contextMenu {
+                                Button("Rename", action: {
+                                    self.oldKeyIndex = index
+                                    self.renameModalVisible = true
+                                })
+                                MButton(text: "Delete Key", action: {try onDeleteConfirmAction(index)})
+                            }
                     }
                     
                 }
@@ -93,6 +104,14 @@ struct RedisKeysListView: View {
         .onAppear{
             onRefreshAction()
         }
+        .sheet(isPresented: $renameModalVisible) {
+            ModalView("Rename", action: onRenameAction) {
+                VStack(alignment:.leading, spacing: 8) {
+                    FormItemText(label: "New name", placeholder: "New key name", value: $newKeyName)
+                }
+                .frame(minWidth:400, minHeight:50)
+            }
+        }
     }
     
     func onAddAction() -> Void {
@@ -102,15 +121,37 @@ struct RedisKeysListView: View {
         self.selectedRedisKeyIndex = 0
     }
     
+    func onRenameAction() throws -> Void {
+        let renameKeyModel = redisKeyModels[oldKeyIndex!]
+        let r = try redisInstanceModel.getClient().rename(renameKeyModel.key, newKey: newKeyName)
+        if r {
+            renameKeyModel.key = newKeyName
+        }
+    }
+    
     func onDeleteAction() throws -> Void {
-        logger.info("on delete redis key: \(selectRedisKey!)")
-        let r:Int = try redisInstanceModel.getClient().del(key: selectRedisKey!)
+        try deleteKey(selectedRedisKeyIndex!)
+    }
+    
+    func onDeleteConfirmAction(_ index:Int) throws -> Void {
+        globalContext.alertVisible = true
+        globalContext.showSecondButton = true
+        globalContext.primaryButtonText = "Delete"
+        
+        let item = redisKeyModels[index].key
+        globalContext.alertTitle = String(format: Helps.DELETE_LIST_ITEM_CONFIRM_TITLE, item)
+        globalContext.alertMessage = String(format:Helps.DELETE_LIST_ITEM_CONFIRM_MESSAGE, item)
+        globalContext.primaryAction = {
+            try deleteKey(index)
+        }
+    }
+    
+    func deleteKey(_ index:Int) throws -> Void {
+        logger.info("on delete redis key: \(index)")
+        let redisKeyModel = self.redisKeyModels[index]
+        let r:Int = try redisInstanceModel.getClient().del(key: redisKeyModel.key)
         if r > 0 {
-            if let index = redisKeyModels.firstIndex(where: { (e) -> Bool in
-                return e.id == selectRedisKey
-            }) {
-                redisKeyModels.remove(at: index)
-            }
+            redisKeyModels.remove(at: index)
         }
     }
     

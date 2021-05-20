@@ -21,20 +21,29 @@ struct ModalView<Content: View>: View {
     }
     
     var body: some View {
-        VStack(alignment: .center, spacing: 8) {
+        VStack(alignment: .center, spacing: 0) {
             HStack {
                 Text(title)
                     .font(.title3)
                 Spacer()
             }
-            content
-            HStack(alignment: .center, spacing: 8) {
+            .padding(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
+            Rectangle().frame(height: 1)
+                .padding(.horizontal, 0).foregroundColor(Color.gray.opacity(0.2))
+            
+            VStack(alignment: .leading, spacing: 0) {
+                content
+            }
+            .padding(8)
+            
+            HStack(alignment: .center, spacing: 6) {
                 Spacer()
                 MButton(text: "Cancel", action: onCancel).keyboardShortcut(.cancelAction)
                 MButton(text: "Ok", action: doAction).keyboardShortcut(.defaultAction)
             }
+            .padding(EdgeInsets(top: 0, leading: 8, bottom: 6, trailing: 8))
         }
-        .padding(EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8))
+        .padding(0)
     }
     
     func doAction() throws -> Void {

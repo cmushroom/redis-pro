@@ -11,9 +11,11 @@ struct MButton: View {
     @EnvironmentObject var globalContext:GlobalContext
     var text:String
     var action: () throws -> Void = {}
-    var isConfirm:Bool = false
     var disabled:Bool = false
-    var type:String = ButtonTypeEnum.DEFAULT.rawValue
+    var isConfirm:Bool = false
+    var confirmTitle:String?
+    var confirmMessage:String?
+    var confirmPrimaryButtonText:String?
     
     
     var body: some View {
@@ -33,9 +35,19 @@ struct MButton: View {
     }
     
     func doAction() -> Void {
-        print("m button do action...")
         do {
-            try action()
+            if !isConfirm {
+                try action()
+            } else {
+                globalContext.alertVisible = true
+                globalContext.showSecondButton = true
+                globalContext.alertTitle = confirmTitle ?? ""
+                globalContext.alertMessage = confirmMessage ?? ""
+                globalContext.primaryAction = action
+                if confirmPrimaryButtonText != nil {
+                    globalContext.primaryButtonText = confirmPrimaryButtonText!
+                }
+            }
         } catch {
             globalContext.showError(error)
         }
@@ -44,8 +56,7 @@ struct MButton: View {
     
     struct MButton_Previews: PreviewProvider {
         static var previews: some View {
-            MButton(text: "button ", action: {
-            })
+            MButton(text: "button ", action: {})
         }
     }
 }

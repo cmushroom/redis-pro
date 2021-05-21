@@ -15,7 +15,7 @@
 * redis: 3.x¹ ... 6.x
 
 ## 下载地址
-![下载地址](https://github.com/cmushroom/redis-pro/releases)
+[下载地址](https://github.com/cmushroom/redis-pro/releases)
 
 
 ## 应用截图

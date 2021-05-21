@@ -11,28 +11,30 @@ import Foundation
 
 struct MSpin: View {
     var loading:Bool = false
+    @Environment(\.colorScheme) var colorScheme
     
     var spin: some View {
         loading ?
-                HStack(alignment:.center, spacing: 8) {
+                VStack(alignment:.center, spacing: 8) {
                     ProgressView()
                     Text("Loading...")
                 }
                 .padding(EdgeInsets(top: 0, leading: 12, bottom: 0, trailing: 12))
-                .frame(width: 200, height: 60)
-                .background(Color.black.opacity(0.5))
-                .cornerRadius(4)
+                .frame(width: 140, height: 120)
+                .background(Color.black.opacity(0.4))
+                .cornerRadius(8)
                 .shadow(color: .black.opacity(0.6), radius: 8, x: 4, y: 4)
+                .colorScheme(.dark)
             : nil
     }
     
     var body: some View {
         spin
-        //            .sheet(isPresented: $loading) {
-        //                ProgressView()
-        //                    .background(Color.clear.opacity(0.1))
-        //                    .progressViewStyle(CircularProgressViewStyle())
-        //            }
+//                    .sheet(isPresented: $loading) {
+//                        ProgressView()
+//                            .background(Color.clear.opacity(0.1))
+//                            .progressViewStyle(CircularProgressViewStyle())
+//                    }
     }
 }
 

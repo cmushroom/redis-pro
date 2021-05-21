@@ -27,7 +27,22 @@ struct IndexView: View {
                 }
             }
         }
+        .onReceive(globalContext.objectWillChange, perform: {
+            print("global on recieve... \($0)")
+        })
         .overlay(MSpin(loading: globalContext.loading))
+//        .sheet(isPresented: $globalContext.loading) {
+//            HStack(alignment:.center, spacing: 8) {
+//                ProgressView()
+//                Text("Loading...")
+//            }
+//            .padding(EdgeInsets(top: 0, leading: 12, bottom: 0, trailing: 12))
+//            .frame(width: 200, height: 60)
+//            .background(Color.black.opacity(0.5))
+//            .cornerRadius(4)
+//            .shadow(color: .black.opacity(0.6), radius: 8, x: 4, y: 4)
+//            .colorScheme(.dark)
+//        }
         .alert(isPresented: $globalContext.alertVisible) {
             globalContext.showSecondButton ? Alert(title: Text(globalContext.alertTitle), message: Text(globalContext.alertMessage),
                                                    primaryButton: .default(Text(globalContext.primaryButtonText),
@@ -74,7 +89,6 @@ struct IndexView: View {
     
     
     func doAction() -> Void {
-        print("m button do action...")
         do {
             try globalContext.primaryAction()
         } catch {

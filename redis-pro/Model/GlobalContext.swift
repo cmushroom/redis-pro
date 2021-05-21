@@ -17,7 +17,11 @@ class GlobalContext:ObservableObject {
     var secondButtonText:String = "Cancel"
     var primaryAction:() throws -> Void = {}
     
-    @Published var loading:Bool = false
+    @Published var loading:Bool = false {
+        didSet {
+            print("loading value change...")
+        }
+    }
 
     
     func showError(_ error:Error) -> Void {

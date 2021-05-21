@@ -61,7 +61,7 @@ struct LoginForm: View {
                         
                         Spacer()
                         
-                        MButton(text: "Connect", action: onConnect)
+                        MButton(text: "Connect", action: onConnect, disabled: loading)
                             .buttonStyle(BorderedButtonStyle())
                             .keyboardShortcut(.defaultAction)
                         
@@ -72,7 +72,7 @@ struct LoginForm: View {
                         Spacer()
                         MButton(text: "Save changes", action: onSaveRedisInstanceAction)
                         Spacer()
-                        MButton(text: "Test connection", action: onTestConnectionAction)
+                        MButton(text: "Test connection", action: onTestConnectionAction, disabled: loading)
                     }
                 }
             }

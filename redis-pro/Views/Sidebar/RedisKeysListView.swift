@@ -14,7 +14,6 @@ struct RedisKeysListView: View {
     @State var redisKeyModels:[RedisKeyModel] = testData()
     @State var selectedRedisKeyIndex:Int?
     @StateObject var page:Page = Page()
-    @State private var loading:Bool = true
     @State private var renameModalVisible:Bool = false
     @State private var oldKeyIndex:Int?
     @State private var newKeyName:String = ""
@@ -171,21 +170,20 @@ struct RedisKeysListView: View {
     }
     
     func onQueryKeyPageAction() throws -> Void {
-        if !redisInstanceModel.isConnect {
+        if !redisInstanceModel.isConnect || globalContext.loading {
             return
         }
-        
-        self.globalContext.loading =  true
+        self.globalContext.loading = true
         defer {
-            self.globalContext.loading =  false
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-//                self.globalContext.loading =  false
-//            }
+//            self.globalContext.loading =  false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+                self.globalContext.loading =  false
+            }
         }
         
         let keysPage = try redisInstanceModel.getClient().pageKeys(page: page)
-        logger.info("query keys page, keys: \(keysPage), page: \(String(describing: page))")
-        redisKeyModels = keysPage
+//        logger.debug("query keys page, keys: \(keysPage.count), page: \(String(describing: page))")
+//        redisKeyModels = keysPage
     }
 }
 

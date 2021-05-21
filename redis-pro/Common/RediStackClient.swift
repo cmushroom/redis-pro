@@ -505,7 +505,7 @@ class RediStackClient{
     func scan(cursor:Int, keywords:String?, count:Int? = 1) throws -> (cursor:Int, keys:[String]) {
         do {
             logger.debug("redis keys scan, cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
-            return try getConnection().scan(startingFrom: cursor, matching: keywords, count: count).wait()
+            return try getConnection().scan(startingFrom: cursor, matching: keywords, count: count).whensucess
         } catch {
             logger.error("redis keys scan error \(error)")
             throw error

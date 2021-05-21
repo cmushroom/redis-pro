@@ -18,7 +18,7 @@ struct RedisValueHeaderView: View {
         HStack(alignment:.center, spacing: 0) {
             FormItemInt(label: "TTL(s)", value: $redisKeyModel.ttl, suffix: "square.and.pencil", onCommit: onTTLCommit)
                 .help(Helps.TTL_HELP)
-                .frame(width: 160)
+                .frame(width: 200)
         }
     }
     
@@ -26,11 +26,9 @@ struct RedisValueHeaderView: View {
         HStack(alignment: .center, spacing: 6) {
             FormItemText(label: "Key", labelWidth: 40, required: true, value: $redisKeyModel.key, disabled: !redisKeyModel.isNew)
             RedisKeyTypePicker(label: "Type", value: $redisKeyModel.type, disabled: !redisKeyModel.isNew)
-            ttl
-//            FormItemInt(label: "TTL(s)", value: $redisKeyModel.ttl)
-//                .help(Helps.TTL_HELP)
-//                .frame(width: 160)
             Spacer()
+            
+            ttl
         }
         .onChange(of: redisKeyModel, perform: { value in
             logger.info("redis value header key model change \(value)")

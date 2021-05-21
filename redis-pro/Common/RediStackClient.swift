@@ -9,6 +9,7 @@ import Foundation
 import NIO
 import RediStack
 import Logging
+import Combine
 
 class RediStackClient{
     var redisModel:RedisModel
@@ -505,7 +506,8 @@ class RediStackClient{
     func scan(cursor:Int, keywords:String?, count:Int? = 1) throws -> (cursor:Int, keys:[String]) {
         do {
             logger.debug("redis keys scan, cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
-            return try getConnection().scan(startingFrom: cursor, matching: keywords, count: count).whensucess
+     
+            return try getConnection().scan(startingFrom: cursor, matching: keywords, count: count).wait()
         } catch {
             logger.error("redis keys scan error \(error)")
             throw error

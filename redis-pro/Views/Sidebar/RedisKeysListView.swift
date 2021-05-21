@@ -14,6 +14,7 @@ struct RedisKeysListView: View {
     @State var redisKeyModels:[RedisKeyModel] = testData()
     @State var selectedRedisKeyIndex:Int?
     @StateObject var page:Page = Page()
+    @State private var loading:Bool = true
     @State private var renameModalVisible:Bool = false
     @State private var oldKeyIndex:Int?
     @State private var newKeyName:String = ""
@@ -30,7 +31,7 @@ struct RedisKeysListView: View {
         selectRedisKeyModel?.id
     }
     
-    private var header: some View {
+    private var sidebarHeader: some View {
         VStack(alignment: .center, spacing: 0) {
             VStack(alignment: .center, spacing: 2) {
                 // redis search ...
@@ -56,39 +57,45 @@ struct RedisKeysListView: View {
         }
     }
     
-    var body: some View {
-        HSplitView {
-            VStack(alignment: .leading, spacing: 0) {
-                // header area
-                header
-                
-                // list
-                List(selection: $selectedRedisKeyIndex) {
-                    ForEach(redisKeyModels.indices, id:\.self) { index in
-                        RedisKeyRowView(index: index, redisKeyModel: redisKeyModels[index])
-                            .contextMenu {
-                                Button("Rename", action: {
-                                    self.oldKeyIndex = index
-                                    self.renameModalVisible = true
-                                })
-                                MButton(text: "Delete Key", action: {try onDeleteConfirmAction(index)})
-                            }
-                            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                    }
-                    
+    private var sidebar: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            // header area
+            sidebarHeader
+            
+            // list
+            List(selection: $selectedRedisKeyIndex) {
+                ForEach(redisKeyModels.indices, id:\.self) { index in
+                    RedisKeyRowView(index: index, redisKeyModel: redisKeyModels[index])
+                        .contextMenu {
+                            Button("Rename", action: {
+                                self.oldKeyIndex = index
+                                self.renameModalVisible = true
+                            })
+                            MButton(text: "Delete Key", action: {try onDeleteConfirmAction(index)})
+                        }
+                        .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                 }
-                .listStyle(PlainListStyle())
-                .frame(minWidth:150)
-                .padding(.all, 0)
-                
-                // footer
-                SidebarFooter(page: page, pageAction: onQueryKeyPageAction)
                 
             }
+            .listStyle(PlainListStyle())
+            .frame(minWidth:150)
+            .padding(.all, 0)
+            
+            // footer
+            SidebarFooter(page: page, pageAction: onQueryKeyPageAction)
+            
+        }
+    }
+    
+    var body: some View {
+        HSplitView {
+            // sidebar
+            sidebar
             .padding(0)
             .frame(minWidth:240, idealWidth: 240, maxWidth: .infinity)
             .layoutPriority(0)
             
+            // content
             VStack(alignment: .leading, spacing: 0){
                 if selectRedisKeyModel == nil {
                     EmptyView()
@@ -167,6 +174,15 @@ struct RedisKeysListView: View {
         if !redisInstanceModel.isConnect {
             return
         }
+        
+        self.globalContext.loading =  true
+        defer {
+            self.globalContext.loading =  false
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+//                self.globalContext.loading =  false
+//            }
+        }
+        
         let keysPage = try redisInstanceModel.getClient().pageKeys(page: page)
         logger.info("query keys page, keys: \(keysPage), page: \(String(describing: page))")
         redisKeyModels = keysPage

@@ -45,7 +45,7 @@ struct LoginForm: View {
                     HStack(alignment: .center){
                         if !loading {
                             Button(action: {
-                                if let url = URL(string: "https://github.com/cmushroom/redis-pro") {
+                                if let url = URL(string: Constants.REPO_URL) {
                                     NSWorkspace.shared.open(url)
                                 }
                             }) {
@@ -98,9 +98,10 @@ struct LoginForm: View {
         self.loading =  true
         
         defer {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                self.loading =  false
-            }
+            self.loading =  false
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+//                self.loading =  false
+//            }
         }
         
         let ping = try redisInstanceModel.testConnect(redisModel:redisModel)

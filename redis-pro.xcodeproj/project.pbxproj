@@ -65,6 +65,8 @@
 		4382202D265504D900DA7F9E /* AppCenterCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = 4382202C265504D900DA7F9E /* AppCenterCrashes */; };
 		4382202F265504D900DA7F9E /* AppCenterAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 4382202E265504D900DA7F9E /* AppCenterAnalytics */; };
 		4382203E265668CC00DA7F9E /* MLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4382203D265668CC00DA7F9E /* MLoading.swift */; };
+		4382204026574E3F00DA7F9E /* MSpin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4382203F26574E3F00DA7F9E /* MSpin.swift */; };
+		43822042265763D400DA7F9E /* RedisProCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43822041265763D400DA7F9E /* RedisProCommands.swift */; };
 		4385D32E261ED26200BA8ED1 /* IndexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4385D32D261ED26200BA8ED1 /* IndexView.swift */; };
 		438BBEB52655015D00B458BF /* CrashReporter in Frameworks */ = {isa = PBXBuildFile; productRef = 438BBEB42655015D00B458BF /* CrashReporter */; };
 		4397288C2643E43800803BE9 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4397288B2643E43800803BE9 /* Constants.swift */; };
@@ -138,6 +140,8 @@
 		437C0936264952B300F1904C /* MTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTabView.swift; sourceTree = "<group>"; };
 		4382203C26564D6900DA7F9E /* redis-proRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "redis-proRelease.entitlements"; sourceTree = "<group>"; };
 		4382203D265668CC00DA7F9E /* MLoading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLoading.swift; sourceTree = "<group>"; };
+		4382203F26574E3F00DA7F9E /* MSpin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSpin.swift; sourceTree = "<group>"; };
+		43822041265763D400DA7F9E /* RedisProCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisProCommands.swift; sourceTree = "<group>"; };
 		4385D32D261ED26200BA8ED1 /* IndexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexView.swift; sourceTree = "<group>"; };
 		4397288B2643E43800803BE9 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		43BB012226390BC20039565E /* ModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalView.swift; sourceTree = "<group>"; };
@@ -194,6 +198,7 @@
 				43BB012226390BC20039565E /* ModalView.swift */,
 				437C0936264952B300F1904C /* MTabView.swift */,
 				4382203D265668CC00DA7F9E /* MLoading.swift */,
+				4382203F26574E3F00DA7F9E /* MSpin.swift */,
 				4314A343262546DF00053FEE /* Extensions.swift */,
 			);
 			path = Components;
@@ -225,6 +230,7 @@
 				4320AB1725B67E2C00A8E214 /* Model */,
 				4320AB1625B67E2400A8E214 /* Views */,
 				4320AB1525B67E1A00A8E214 /* Resources */,
+				43822041265763D400DA7F9E /* RedisProCommands.swift */,
 				4320AAF325B6740900A8E214 /* redis_proApp.swift */,
 				4320AAF725B6740A00A8E214 /* Assets.xcassets */,
 				4320AAFC25B6740A00A8E214 /* Info.plist */,
@@ -446,6 +452,7 @@
 				62CB3D722619AE050061E8C3 /* HomeView.swift in Sources */,
 				431266E8261D4E4100FB6B69 /* RedisValueHeaderView.swift in Sources */,
 				43EADB0826200540003B8310 /* IconButton.swift in Sources */,
+				4382204026574E3F00DA7F9E /* MSpin.swift in Sources */,
 				431266D5261C5C9000FB6B69 /* ButtonTypeEnum.swift in Sources */,
 				4370534E262812EE00D8F1B7 /* GlobalContext.swift in Sources */,
 				431266EB261D4EED00FB6B69 /* RedisKeyValueModel.swift in Sources */,
@@ -489,6 +496,7 @@
 				437BC2452645272E00E2C84D /* DoubleFormatter.swift in Sources */,
 				43135771263BB1560077EE46 /* ListEditorView.swift in Sources */,
 				4373C4FE25C2DEC8002B700E /* MButton.swift in Sources */,
+				43822042265763D400DA7F9E /* RedisProCommands.swift in Sources */,
 				430A09E625C155F800B60DFC /* FormItemText.swift in Sources */,
 				4314A3642626B98700053FEE /* AlertContext.swift in Sources */,
 			);

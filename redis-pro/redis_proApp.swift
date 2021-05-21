@@ -20,10 +20,9 @@ struct redis_proApp: App {
     var body: some Scene {
         WindowGroup {
             IndexView()
-            //            ContentView()
         }
         .commands {
-            //            LandmarkCommands()
+            RedisProCommands()
         }
         
         

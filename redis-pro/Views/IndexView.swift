@@ -27,6 +27,7 @@ struct IndexView: View {
                 }
             }
         }
+        .overlay(MSpin(loading: globalContext.loading))
         .alert(isPresented: $globalContext.alertVisible) {
             globalContext.showSecondButton ? Alert(title: Text(globalContext.alertTitle), message: Text(globalContext.alertMessage),
                                                    primaryButton: .default(Text(globalContext.primaryButtonText),

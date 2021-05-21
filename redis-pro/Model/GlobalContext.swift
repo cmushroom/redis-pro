@@ -16,6 +16,8 @@ class GlobalContext:ObservableObject {
     var primaryButtonText:String = "Ok"
     var secondButtonText:String = "Cancel"
     var primaryAction:() throws -> Void = {}
+    
+    @Published var loading:Bool = false
 
     
     func showError(_ error:Error) -> Void {

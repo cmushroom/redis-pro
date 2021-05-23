@@ -502,11 +502,10 @@ class RediStackClient{
         }
     }
     
-    
     func scan(cursor:Int, keywords:String?, count:Int? = 1) throws -> (cursor:Int, keys:[String]) {
         do {
             logger.debug("redis keys scan, cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
-     
+            
             return try getConnection().scan(startingFrom: cursor, matching: keywords, count: count).wait()
         } catch {
             logger.error("redis keys scan error \(error)")
@@ -542,6 +541,16 @@ class RediStackClient{
         } catch {
             logger.info("query redis dbsize error: \(error)")
             throw error
+        }
+    }
+    
+    func pingAsyn() -> Future<Bool, Never> {
+        print("ping async ...")
+    
+        return Future { promise in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+                promise(.success(true))
+            }
         }
     }
     

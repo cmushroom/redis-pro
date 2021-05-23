@@ -104,10 +104,17 @@ struct LoginForm: View {
 //            }
         }
         
-        let ping = try redisInstanceModel.testConnect(redisModel:redisModel)
-        if !ping {
-            throw BizError(message: "test connection redis error!")
-        }
+        let _ = redisInstanceModel.getClient().pingAsyn()
+            .print()
+            .sink(receiveValue: {value in
+            print("async sink .... \(value)")
+        })
+        print("over......")
+        
+//        let ping = try redisInstanceModel.testConnect(redisModel:redisModel)
+//        if !ping {
+//            throw BizError(message: "test connection redis error!")
+//        }
     }
     
     func onAddRedisInstanceAction()  throws -> Void {

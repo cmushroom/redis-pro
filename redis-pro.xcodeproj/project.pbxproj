@@ -43,9 +43,6 @@
 		43481049262D30CE002809ED /* Helps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43481048262D30CE002809ED /* Helps.swift */; };
 		436BB68726440584008B4866 /* CoreMetrics in Frameworks */ = {isa = PBXBuildFile; productRef = 436BB68626440584008B4866 /* CoreMetrics */; };
 		436BB68926440584008B4866 /* Metrics in Frameworks */ = {isa = PBXBuildFile; productRef = 436BB68826440584008B4866 /* Metrics */; };
-		436BB68C264405B3008B4866 /* ServiceDiscovery in Frameworks */ = {isa = PBXBuildFile; productRef = 436BB68B264405B3008B4866 /* ServiceDiscovery */; };
-		436BB68F264405DE008B4866 /* RediStack in Frameworks */ = {isa = PBXBuildFile; productRef = 436BB68E264405DE008B4866 /* RediStack */; };
-		436BB691264405DE008B4866 /* RedisTypes in Frameworks */ = {isa = PBXBuildFile; productRef = 436BB690264405DE008B4866 /* RedisTypes */; };
 		436BB6932644D126008B4866 /* SetEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436BB6922644D126008B4866 /* SetEditorView.swift */; };
 		436BB6952644E8D6008B4866 /* ZSetEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436BB6942644E8D6008B4866 /* ZSetEditorView.swift */; };
 		436BB6972644EED8008B4866 /* FormItemNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436BB6962644EED8008B4866 /* FormItemNumber.swift */; };
@@ -62,8 +59,6 @@
 		437BC25126467A3D00E2C84D /* SidebarFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BC25026467A3D00E2C84D /* SidebarFooter.swift */; };
 		437C09352649039000F1904C /* DatabasePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437C09342649039000F1904C /* DatabasePicker.swift */; };
 		437C0937264952B300F1904C /* MTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437C0936264952B300F1904C /* MTabView.swift */; };
-		4382202D265504D900DA7F9E /* AppCenterCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = 4382202C265504D900DA7F9E /* AppCenterCrashes */; };
-		4382202F265504D900DA7F9E /* AppCenterAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 4382202E265504D900DA7F9E /* AppCenterAnalytics */; };
 		4382203E265668CC00DA7F9E /* MLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4382203D265668CC00DA7F9E /* MLoading.swift */; };
 		4382204026574E3F00DA7F9E /* MSpin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4382203F26574E3F00DA7F9E /* MSpin.swift */; };
 		43822042265763D400DA7F9E /* RedisProCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43822041265763D400DA7F9E /* RedisProCommands.swift */; };
@@ -74,8 +69,13 @@
 		43DFEF3725C29288006EF535 /* FormItemInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DFEF3625C29288006EF535 /* FormItemInt.swift */; };
 		43EADB052620043F003B8310 /* HashEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EADB042620043F003B8310 /* HashEditorView.swift */; };
 		43EADB0826200540003B8310 /* IconButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EADB0726200540003B8310 /* IconButton.swift */; };
-		6262F4172619A27700C66E4D /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 6262F4162619A27700C66E4D /* Logging */; };
-		6262F41B2619A7BF00C66E4D /* NIO in Frameworks */ = {isa = PBXBuildFile; productRef = 6262F41A2619A7BF00C66E4D /* NIO */; };
+		623704F5265A27760084CCA8 /* AppCenterCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = 623704F4265A27760084CCA8 /* AppCenterCrashes */; };
+		623704F7265A27760084CCA8 /* AppCenterAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 623704F6265A27760084CCA8 /* AppCenterAnalytics */; };
+		623704FA265A27970084CCA8 /* RediStack in Frameworks */ = {isa = PBXBuildFile; productRef = 623704F9265A27970084CCA8 /* RediStack */; };
+		623704FC265A27970084CCA8 /* RedisTypes in Frameworks */ = {isa = PBXBuildFile; productRef = 623704FB265A27970084CCA8 /* RedisTypes */; };
+		62C48932265A138D00D68D06 /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 62C48931265A138D00D68D06 /* Logging */; };
+		62C48935265A13BB00D68D06 /* ServiceDiscovery in Frameworks */ = {isa = PBXBuildFile; productRef = 62C48934265A13BB00D68D06 /* ServiceDiscovery */; };
+		62C48938265A13E500D68D06 /* NIO in Frameworks */ = {isa = PBXBuildFile; productRef = 62C48937265A13E500D68D06 /* NIO */; };
 		62CB3D722619AE050061E8C3 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62CB3D712619AE050061E8C3 /* HomeView.swift */; };
 		62CB3D752619AEC20061E8C3 /* RedisKeysListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62CB3D742619AEC20061E8C3 /* RedisKeysListView.swift */; };
 		62CB3D792619AEEB0061E8C3 /* RedisKeyRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62CB3D782619AEEB0061E8C3 /* RedisKeyRowView.swift */; };
@@ -148,6 +148,7 @@
 		43DFEF3625C29288006EF535 /* FormItemInt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormItemInt.swift; sourceTree = "<group>"; };
 		43EADB042620043F003B8310 /* HashEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashEditorView.swift; sourceTree = "<group>"; };
 		43EADB0726200540003B8310 /* IconButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconButton.swift; sourceTree = "<group>"; };
+		62C4892F265A0F2000D68D06 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		62CB3D712619AE050061E8C3 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		62CB3D742619AEC20061E8C3 /* RedisKeysListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisKeysListView.swift; sourceTree = "<group>"; };
 		62CB3D782619AEEB0061E8C3 /* RedisKeyRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisKeyRowView.swift; sourceTree = "<group>"; };
@@ -160,16 +161,16 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6262F4172619A27700C66E4D /* Logging in Frameworks */,
-				4382202D265504D900DA7F9E /* AppCenterCrashes in Frameworks */,
 				438BBEB52655015D00B458BF /* CrashReporter in Frameworks */,
+				623704F5265A27760084CCA8 /* AppCenterCrashes in Frameworks */,
 				436BB68726440584008B4866 /* CoreMetrics in Frameworks */,
-				436BB691264405DE008B4866 /* RedisTypes in Frameworks */,
+				62C48932265A138D00D68D06 /* Logging in Frameworks */,
+				62C48938265A13E500D68D06 /* NIO in Frameworks */,
 				436BB68926440584008B4866 /* Metrics in Frameworks */,
-				6262F41B2619A7BF00C66E4D /* NIO in Frameworks */,
-				436BB68C264405B3008B4866 /* ServiceDiscovery in Frameworks */,
-				4382202F265504D900DA7F9E /* AppCenterAnalytics in Frameworks */,
-				436BB68F264405DE008B4866 /* RediStack in Frameworks */,
+				623704F7265A27760084CCA8 /* AppCenterAnalytics in Frameworks */,
+				62C48935265A13BB00D68D06 /* ServiceDiscovery in Frameworks */,
+				623704FC265A27970084CCA8 /* RedisTypes in Frameworks */,
+				623704FA265A27970084CCA8 /* RediStack in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -211,6 +212,7 @@
 				4320AAF125B6740900A8E214 /* Products */,
 				438BBEA82654DD3200B458BF /* Frameworks */,
 				4370534B2626E65D00D8F1B7 /* README.md */,
+				62C4892F265A0F2000D68D06 /* Package.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -364,16 +366,16 @@
 			);
 			name = "redis-pro";
 			packageProductDependencies = (
-				6262F4162619A27700C66E4D /* Logging */,
-				6262F41A2619A7BF00C66E4D /* NIO */,
 				436BB68626440584008B4866 /* CoreMetrics */,
 				436BB68826440584008B4866 /* Metrics */,
-				436BB68B264405B3008B4866 /* ServiceDiscovery */,
-				436BB68E264405DE008B4866 /* RediStack */,
-				436BB690264405DE008B4866 /* RedisTypes */,
 				438BBEB42655015D00B458BF /* CrashReporter */,
-				4382202C265504D900DA7F9E /* AppCenterCrashes */,
-				4382202E265504D900DA7F9E /* AppCenterAnalytics */,
+				62C48931265A138D00D68D06 /* Logging */,
+				62C48934265A13BB00D68D06 /* ServiceDiscovery */,
+				62C48937265A13E500D68D06 /* NIO */,
+				623704F4265A27760084CCA8 /* AppCenterCrashes */,
+				623704F6265A27760084CCA8 /* AppCenterAnalytics */,
+				623704F9265A27970084CCA8 /* RediStack */,
+				623704FB265A27970084CCA8 /* RedisTypes */,
 			);
 			productName = "redis-pro";
 			productReference = 4320AAF025B6740900A8E214 /* redis-pro.app */;
@@ -403,13 +405,13 @@
 			);
 			mainGroup = 4320AAE725B6740900A8E214;
 			packageReferences = (
-				6262F4152619A27700C66E4D /* XCRemoteSwiftPackageReference "swift-log" */,
-				6262F4192619A7BF00C66E4D /* XCRemoteSwiftPackageReference "swift-nio" */,
 				436BB68526440584008B4866 /* XCRemoteSwiftPackageReference "swift-metrics" */,
-				436BB68A264405B3008B4866 /* XCRemoteSwiftPackageReference "swift-service-discovery" */,
-				436BB68D264405DE008B4866 /* XCRemoteSwiftPackageReference "RediStack" */,
 				438BBEB32655015D00B458BF /* XCRemoteSwiftPackageReference "plcrashreporter" */,
-				4382202B265504D900DA7F9E /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */,
+				62C48930265A138D00D68D06 /* XCRemoteSwiftPackageReference "swift-log" */,
+				62C48933265A13BB00D68D06 /* XCRemoteSwiftPackageReference "swift-service-discovery" */,
+				62C48936265A13E500D68D06 /* XCRemoteSwiftPackageReference "swift-nio" */,
+				623704F3265A27760084CCA8 /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */,
+				623704F8265A27970084CCA8 /* XCRemoteSwiftPackageReference "RediStack" */,
 			);
 			productRefGroup = 4320AAF125B6740900A8E214 /* Products */;
 			projectDirPath = "";
@@ -556,7 +558,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 11.1;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -611,7 +613,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 11.1;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
@@ -702,30 +704,6 @@
 				minimumVersion = 2.1.1;
 			};
 		};
-		436BB68A264405B3008B4866 /* XCRemoteSwiftPackageReference "swift-service-discovery" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://gitee.com/mirrors_apple/swift-service-discovery.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
-		436BB68D264405DE008B4866 /* XCRemoteSwiftPackageReference "RediStack" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://gitee.com/chengpan168_admin/RediStack.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.1.2;
-			};
-		};
-		4382202B265504D900DA7F9E /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://gitee.com/chengpan168_admin/appcenter-sdk-apple.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 4.1.1;
-			};
-		};
 		438BBEB32655015D00B458BF /* XCRemoteSwiftPackageReference "plcrashreporter" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://gitee.com/chengpan168_admin/plcrashreporter.git";
@@ -734,7 +712,23 @@
 				minimumVersion = 1.8.1;
 			};
 		};
-		6262F4152619A27700C66E4D /* XCRemoteSwiftPackageReference "swift-log" */ = {
+		623704F3265A27760084CCA8 /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://gitee.com/chengpan168_admin/appcenter-sdk-apple.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.1.1;
+			};
+		};
+		623704F8265A27970084CCA8 /* XCRemoteSwiftPackageReference "RediStack" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://gitee.com/chengpan168_admin/RediStack.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.2;
+			};
+		};
+		62C48930265A138D00D68D06 /* XCRemoteSwiftPackageReference "swift-log" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://gitee.com/mirrors_apple/swift-log.git";
 			requirement = {
@@ -742,12 +736,20 @@
 				minimumVersion = 1.4.2;
 			};
 		};
-		6262F4192619A7BF00C66E4D /* XCRemoteSwiftPackageReference "swift-nio" */ = {
+		62C48933265A13BB00D68D06 /* XCRemoteSwiftPackageReference "swift-service-discovery" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://gitee.com/mirrors_apple/swift-service-discovery.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+		62C48936265A13E500D68D06 /* XCRemoteSwiftPackageReference "swift-nio" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://gitee.com/mirrors_apple/swift-nio.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 2.27.0;
+				minimumVersion = 2.29.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -763,44 +765,44 @@
 			package = 436BB68526440584008B4866 /* XCRemoteSwiftPackageReference "swift-metrics" */;
 			productName = Metrics;
 		};
-		436BB68B264405B3008B4866 /* ServiceDiscovery */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 436BB68A264405B3008B4866 /* XCRemoteSwiftPackageReference "swift-service-discovery" */;
-			productName = ServiceDiscovery;
-		};
-		436BB68E264405DE008B4866 /* RediStack */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 436BB68D264405DE008B4866 /* XCRemoteSwiftPackageReference "RediStack" */;
-			productName = RediStack;
-		};
-		436BB690264405DE008B4866 /* RedisTypes */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 436BB68D264405DE008B4866 /* XCRemoteSwiftPackageReference "RediStack" */;
-			productName = RedisTypes;
-		};
-		4382202C265504D900DA7F9E /* AppCenterCrashes */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 4382202B265504D900DA7F9E /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
-			productName = AppCenterCrashes;
-		};
-		4382202E265504D900DA7F9E /* AppCenterAnalytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 4382202B265504D900DA7F9E /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
-			productName = AppCenterAnalytics;
-		};
 		438BBEB42655015D00B458BF /* CrashReporter */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 438BBEB32655015D00B458BF /* XCRemoteSwiftPackageReference "plcrashreporter" */;
 			productName = CrashReporter;
 		};
-		6262F4162619A27700C66E4D /* Logging */ = {
+		623704F4265A27760084CCA8 /* AppCenterCrashes */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 6262F4152619A27700C66E4D /* XCRemoteSwiftPackageReference "swift-log" */;
+			package = 623704F3265A27760084CCA8 /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
+			productName = AppCenterCrashes;
+		};
+		623704F6265A27760084CCA8 /* AppCenterAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 623704F3265A27760084CCA8 /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
+			productName = AppCenterAnalytics;
+		};
+		623704F9265A27970084CCA8 /* RediStack */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 623704F8265A27970084CCA8 /* XCRemoteSwiftPackageReference "RediStack" */;
+			productName = RediStack;
+		};
+		623704FB265A27970084CCA8 /* RedisTypes */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 623704F8265A27970084CCA8 /* XCRemoteSwiftPackageReference "RediStack" */;
+			productName = RedisTypes;
+		};
+		62C48931265A138D00D68D06 /* Logging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 62C48930265A138D00D68D06 /* XCRemoteSwiftPackageReference "swift-log" */;
 			productName = Logging;
 		};
-		6262F41A2619A7BF00C66E4D /* NIO */ = {
+		62C48934265A13BB00D68D06 /* ServiceDiscovery */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 6262F4192619A7BF00C66E4D /* XCRemoteSwiftPackageReference "swift-nio" */;
+			package = 62C48933265A13BB00D68D06 /* XCRemoteSwiftPackageReference "swift-service-discovery" */;
+			productName = ServiceDiscovery;
+		};
+		62C48937265A13E500D68D06 /* NIO */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 62C48936265A13E500D68D06 /* XCRemoteSwiftPackageReference "swift-nio" */;
 			productName = NIO;
 		};
 /* End XCSwiftPackageProductDependency section */

@@ -40,6 +40,7 @@
 		4320AAF825B6740A00A8E214 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4320AAF725B6740A00A8E214 /* Assets.xcassets */; };
 		4320AAFB25B6740A00A8E214 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4320AAFA25B6740A00A8E214 /* Preview Assets.xcassets */; };
 		434047FA2611C828001519F9 /* RedisFavoriteModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434047F92611C828001519F9 /* RedisFavoriteModel.swift */; };
+		4340E2B52662152B00F51F19 /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4340E2B42662152B00F51F19 /* PromiseKit */; };
 		43481049262D30CE002809ED /* Helps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43481048262D30CE002809ED /* Helps.swift */; };
 		436BB68726440584008B4866 /* CoreMetrics in Frameworks */ = {isa = PBXBuildFile; productRef = 436BB68626440584008B4866 /* CoreMetrics */; };
 		436BB68926440584008B4866 /* Metrics in Frameworks */ = {isa = PBXBuildFile; productRef = 436BB68826440584008B4866 /* Metrics */; };
@@ -164,6 +165,7 @@
 				438BBEB52655015D00B458BF /* CrashReporter in Frameworks */,
 				623704F5265A27760084CCA8 /* AppCenterCrashes in Frameworks */,
 				436BB68726440584008B4866 /* CoreMetrics in Frameworks */,
+				4340E2B52662152B00F51F19 /* PromiseKit in Frameworks */,
 				62C48932265A138D00D68D06 /* Logging in Frameworks */,
 				62C48938265A13E500D68D06 /* NIO in Frameworks */,
 				436BB68926440584008B4866 /* Metrics in Frameworks */,
@@ -376,6 +378,7 @@
 				623704F6265A27760084CCA8 /* AppCenterAnalytics */,
 				623704F9265A27970084CCA8 /* RediStack */,
 				623704FB265A27970084CCA8 /* RedisTypes */,
+				4340E2B42662152B00F51F19 /* PromiseKit */,
 			);
 			productName = "redis-pro";
 			productReference = 4320AAF025B6740900A8E214 /* redis-pro.app */;
@@ -412,6 +415,7 @@
 				62C48936265A13E500D68D06 /* XCRemoteSwiftPackageReference "swift-nio" */,
 				623704F3265A27760084CCA8 /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */,
 				623704F8265A27970084CCA8 /* XCRemoteSwiftPackageReference "RediStack" */,
+				4340E2B32662152B00F51F19 /* XCRemoteSwiftPackageReference "PromiseKit" */,
 			);
 			productRefGroup = 4320AAF125B6740900A8E214 /* Products */;
 			projectDirPath = "";
@@ -696,6 +700,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		4340E2B32662152B00F51F19 /* XCRemoteSwiftPackageReference "PromiseKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://gitee.com/chengpan168_admin/PromiseKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.15.3;
+			};
+		};
 		436BB68526440584008B4866 /* XCRemoteSwiftPackageReference "swift-metrics" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://gitee.com/mirrors_apple/swift-metrics.git";
@@ -755,6 +767,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		4340E2B42662152B00F51F19 /* PromiseKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4340E2B32662152B00F51F19 /* XCRemoteSwiftPackageReference "PromiseKit" */;
+			productName = PromiseKit;
+		};
 		436BB68626440584008B4866 /* CoreMetrics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 436BB68526440584008B4866 /* XCRemoteSwiftPackageReference "swift-metrics" */;

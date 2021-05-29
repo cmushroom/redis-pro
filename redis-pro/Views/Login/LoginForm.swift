@@ -9,6 +9,7 @@ import SwiftUI
 import NIO
 import RediStack
 import Logging
+import Combine
 
 struct LoginForm: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
@@ -43,7 +44,7 @@ struct LoginForm: View {
                     Divider()
                         .padding(.vertical, 8)
                     HStack(alignment: .center){
-                        if !loading {
+                        if !redisModel.loading {
                             Button(action: {
                                 if let url = URL(string: Constants.REPO_URL) {
                                     NSWorkspace.shared.open(url)
@@ -57,7 +58,7 @@ struct LoginForm: View {
                         
                         MLoading(text: redisModel.ping ? "Connect successed!" : " ",
                                  loadingText: "Connecting...",
-                                 loading: loading)
+                                 loading: redisModel.loading)
                         
                         Spacer()
                         
@@ -95,26 +96,15 @@ struct LoginForm: View {
     func onTestConnectionAction() throws -> Void {
         logger.info("test connect to redis server: \(redisModel)")
         
-        self.loading =  true
-        
-        defer {
-            self.loading =  false
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-//                self.loading =  false
-//            }
+        let _ = self.redisInstanceModel.testConnectAsync(redisModel).done { r in
+            print("test connection.... \(r)")
         }
-        
-        let _ = redisInstanceModel.getClient().pingAsyn()
-            .print()
-            .sink(receiveValue: {value in
-            print("async sink .... \(value)")
-        })
-        print("over......")
-        
-//        let ping = try redisInstanceModel.testConnect(redisModel:redisModel)
-//        if !ping {
-//            throw BizError(message: "test connection redis error!")
-//        }
+        .catch { error in
+            print("test connection error \(error)")
+        }
+        .finally {
+            self.redisInstanceModel.close()
+        }
     }
     
     func onAddRedisInstanceAction()  throws -> Void {

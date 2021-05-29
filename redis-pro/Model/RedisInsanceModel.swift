@@ -10,6 +10,7 @@ import Foundation
 import NIO
 import RediStack
 import Logging
+import PromiseKit
 
 
 class RedisInstanceModel:ObservableObject, Identifiable {
@@ -66,6 +67,18 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         }
         
         return try getClient().ping()
+    }
+    
+    func testConnectAsync(_ redisModel:RedisModel) -> Promise<Bool> {
+        self.redisModel = redisModel
+        
+        return getClient().pingAsync()
+            .catch { error in
+                print("test connection error \(error)")
+            }
+            .finally {
+                self.redisInstanceModel.close()
+            }
     }
     
     func close() -> Void {

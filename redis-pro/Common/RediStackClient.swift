@@ -10,6 +10,7 @@ import NIO
 import RediStack
 import Logging
 import Combine
+import PromiseKit
 
 class RediStackClient{
     var redisModel:RedisModel
@@ -109,7 +110,7 @@ class RediStackClient{
             if cursor != 0 && set.count < page.size {
                 while true {
                     let moreRes:(Int, [(String, Double)?]) = try zscan(key, cursor:cursor, count: 1, keywords: match)
-                
+                    
                     set.append(contentsOf: moreRes.1)
                     cursor = moreRes.0
                     page.cursor = cursor
@@ -125,7 +126,7 @@ class RediStackClient{
             page.cursor = cursor
             
             return set
-        
+            
         } catch {
             logger.error("query redis set page error \(error)")
             throw error
@@ -185,7 +186,7 @@ class RediStackClient{
             if cursor != 0 && set.count < page.size {
                 while true {
                     let moreRes:(Int, [String?]) = try sscan(key, cursor:cursor, count: 1, keywords: match)
-                
+                    
                     set.append(contentsOf: moreRes.1)
                     cursor = moreRes.0
                     page.cursor = cursor
@@ -201,7 +202,7 @@ class RediStackClient{
             page.cursor = cursor
             
             return set
-        
+            
         } catch {
             logger.error("query redis set page error \(error)")
             throw error
@@ -248,12 +249,12 @@ class RediStackClient{
             logger.info("redis list page, key: \(key), page: \(page)")
             
             let cursor:Int = (page.current - 1) * page.size
-    
+            
             let total = try llen(key)
             page.total = total
             
             return try lrange(key, start: cursor, stop: cursor + page.size - 1)
-        
+            
         } catch {
             logger.error("query redis list page error \(error)")
             throw error
@@ -544,14 +545,24 @@ class RediStackClient{
         }
     }
     
-    func pingAsyn() -> Future<Bool, Never> {
-        print("ping async ...")
-    
-        return Future { promise in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
-                promise(.success(true))
-            }
-        }
+    func pingAsync() -> Promise<Bool> {
+        self.redisModel.loading = true
+        return self.getConnectionAsync()
+            .then({ connection in
+                Promise<Bool> { resolver in
+                    connection.ping()
+                        .whenComplete({completion in
+                            if case .success(let pong) = completion {
+                                self.redisModel.loading = false
+                                resolver.fulfill("PONG".caseInsensitiveCompare(pong) == .orderedSame)
+                            }
+                            else if case .failure(let error) = completion {
+                                self.redisModel.loading = false
+                                resolver.reject(error)
+                            }
+                        })
+                }
+            })
     }
     
     func ping() throws -> Bool {
@@ -574,20 +585,60 @@ class RediStackClient{
         }
     }
     
+    func getConnectionAsync() -> Promise<RedisConnection> {
+        return Promise<RedisConnection>{ resolver in
+            if self.connection != nil {
+                self.logger.debug("get redis exist connection...")
+                resolver.fulfill(self.connection!)
+            }
+            
+            self.logger.debug("start get new redis connection...")
+            let eventLoop = MultiThreadedEventLoopGroup(numberOfThreads: 1).next()
+            var configuration: RedisConnection.Configuration
+            do {
+                if (self.redisModel.password.isEmpty) {
+                    configuration = try RedisConnection.Configuration(hostname: self.redisModel.host, port: self.redisModel.port, initialDatabase: self.redisModel.database)
+                } else {
+                    configuration = try RedisConnection.Configuration(hostname: self.redisModel.host, port: self.redisModel.port, password: self.redisModel.password, initialDatabase: self.redisModel.database)
+                }
+                
+                
+                let future = RedisConnection.make(
+                    configuration: configuration
+                    , boundEventLoop: eventLoop
+                )
+                
+                future.whenSuccess({ redisConnection in
+                    self.connection = redisConnection
+                    resolver.fulfill(redisConnection)
+                    self.logger.info("get new redis connection success")
+                })
+                future.whenFailure({ error in
+                    self.logger.info("get new redis connection error: \(error)")
+                    resolver.reject(error)
+                })
+                
+            } catch {
+                self.logger.error("get new redis connection error \(error)")
+                resolver.reject(error)
+            }
+        }
+    }
+    
     func getConnection() throws -> RedisConnection{
-        if connection != nil {
+        if self.connection != nil {
             logger.debug("get redis exist connection...")
-            return connection!
+            return self.connection!
         }
         
         logger.debug("start get new redis connection...")
         let eventLoop = MultiThreadedEventLoopGroup(numberOfThreads: 1).next()
         var configuration: RedisConnection.Configuration
         do {
-            if (redisModel.password.isEmpty) {
-                configuration = try RedisConnection.Configuration(hostname: redisModel.host, port: redisModel.port, initialDatabase: redisModel.database)
+            if (self.redisModel.password.isEmpty) {
+                configuration = try RedisConnection.Configuration(hostname: self.redisModel.host, port: self.redisModel.port, initialDatabase: self.redisModel.database)
             } else {
-                configuration = try RedisConnection.Configuration(hostname: redisModel.host, port: redisModel.port, password: redisModel.password, initialDatabase: redisModel.database)
+                configuration = try RedisConnection.Configuration(hostname: self.redisModel.host, port: self.redisModel.port, password: self.redisModel.password, initialDatabase: self.redisModel.database)
             }
             
             self.connection = try RedisConnection.make(
@@ -595,14 +646,14 @@ class RediStackClient{
                 , boundEventLoop: eventLoop
             ).wait()
             
-            logger.info("get new redis connection success")
+            self.logger.info("get new redis connection success")
             
         } catch {
-            logger.error("get new redis connection error \(error)")
+            self.logger.error("get new redis connection error \(error)")
             throw error
         }
         
-        return connection!
+        return self.connection!
     }
     
     func close() -> Void {

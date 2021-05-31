@@ -18,6 +18,7 @@ class RedisInstanceModel:ObservableObject, Identifiable {
     @Published var isConnect:Bool = false
     @Published var redisModel:RedisModel
     private var rediStackClient:RediStackClient?
+    var globalContext:GlobalContext?
     
     let logger = Logger(label: "redis-instance")
     
@@ -35,6 +36,10 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         )
     }
     
+    func setUp(_ globalContext:GlobalContext) -> Void {
+        self.globalContext = globalContext
+    }
+    
     func getClient() -> RediStackClient {
         if rediStackClient != nil {
             return rediStackClient!
@@ -42,6 +47,7 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         
         logger.info("get new redis client ...")
         rediStackClient = RediStackClient(redisModel:redisModel)
+        rediStackClient?.setUp(self.globalContext!)
         return rediStackClient!
     }
     
@@ -72,13 +78,15 @@ class RedisInstanceModel:ObservableObject, Identifiable {
     func testConnectAsync(_ redisModel:RedisModel) -> Promise<Bool> {
         self.redisModel = redisModel
         
-        return getClient().pingAsync()
-            .catch { error in
-                print("test connection error \(error)")
-            }
+        let promise = getClient().pingAsync()
+        
+        promise
+            .catch({_ in
+            })
             .finally {
-                self.redisInstanceModel.close()
+                self.close()
             }
+        return promise
     }
     
     func close() -> Void {

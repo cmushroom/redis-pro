@@ -9,7 +9,7 @@ import SwiftUI
 
 struct IndexView: View {
     @StateObject var redisInstanceModel:RedisInstanceModel = RedisInstanceModel(redisModel: RedisModel())
-    @StateObject var globalContext:GlobalContext = GlobalContext()
+    @EnvironmentObject var globalContext:GlobalContext
     
     var body: some View {
         HStack {
@@ -17,18 +17,18 @@ struct IndexView: View {
                 if (!redisInstanceModel.isConnect) {
                     LoginView()
                         .environmentObject(redisInstanceModel)
-                        .environmentObject(globalContext)
                     
                 } else {
                     HomeView()
                         .environmentObject(redisInstanceModel)
-                        .environmentObject(globalContext)
                         .navigationTitle(redisInstanceModel.redisModel.name)
                 }
             }
         }
+        .onAppear {
+            redisInstanceModel.setUp(globalContext)
+        }
         .onReceive(globalContext.objectWillChange, perform: {
-            print("global on recieve... \($0)")
         })
         .overlay(MSpin(loading: globalContext.loading))
 //        .sheet(isPresented: $globalContext.loading) {

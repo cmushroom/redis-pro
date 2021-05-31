@@ -9,17 +9,21 @@ import Foundation
 import NIO
 import RediStack
 import Logging
-import Combine
 import PromiseKit
 
 class RediStackClient{
     var redisModel:RedisModel
     var connection:RedisConnection?
+    var globalContext:GlobalContext?
     
     let logger = Logger(label: "redis-client")
     
     init(redisModel:RedisModel) {
         self.redisModel = redisModel
+    }
+    
+    func setUp(_ globalContext:GlobalContext) -> Void {
+        self.globalContext = globalContext
     }
     
     func pageKeys(page:Page) throws -> [RedisKeyModel] {
@@ -547,22 +551,41 @@ class RediStackClient{
     
     func pingAsync() -> Promise<Bool> {
         self.redisModel.loading = true
-        return self.getConnectionAsync()
+        
+        
+        let promise = self.getConnectionAsync()
             .then({ connection in
                 Promise<Bool> { resolver in
                     connection.ping()
                         .whenComplete({completion in
                             if case .success(let pong) = completion {
-                                self.redisModel.loading = false
                                 resolver.fulfill("PONG".caseInsensitiveCompare(pong) == .orderedSame)
                             }
                             else if case .failure(let error) = completion {
-                                self.redisModel.loading = false
                                 resolver.reject(error)
                             }
                         })
                 }
             })
+        
+        promise
+            .get({ pong in
+                DispatchQueue.main.async {
+                    self.redisModel.ping = pong
+                }
+            })
+            .catch({ error in
+                self.logger.info("promise reject ....")
+                self.globalContext?.showError(error)
+            })
+            .finally {
+                self.logger.info("ping finally exec...")
+                DispatchQueue.main.async {
+                    self.redisModel.loading = false
+                }
+            }
+        
+        return promise
     }
     
     func ping() throws -> Bool {
@@ -615,11 +638,17 @@ class RediStackClient{
                 })
                 future.whenFailure({ error in
                     self.logger.info("get new redis connection error: \(error)")
+                    
+                    DispatchQueue.main.async {
+                        self.globalContext?.showError(error)
+                    }
+                    
                     resolver.reject(error)
                 })
                 
             } catch {
                 self.logger.error("get new redis connection error \(error)")
+                self.globalContext?.showError(error)
                 resolver.reject(error)
             }
         }

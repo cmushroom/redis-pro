@@ -23,11 +23,11 @@ struct MButton: View {
             .foregroundColor(colorScheme == .dark ? Color.white.opacity(disabled ? 0.4 : 0.9) : nil)
             .disabled(disabled)
             .onHover { inside in
-                    if !disabled && inside {
-                        NSCursor.pointingHand.push()
-                    } else {
-                        NSCursor.pop()
-                    }
+                if !disabled && inside {
+                    NSCursor.pointingHand.push()
+                } else {
+                    NSCursor.pop()
+                }
             }
     }
     

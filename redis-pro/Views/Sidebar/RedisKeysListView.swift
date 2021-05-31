@@ -182,8 +182,8 @@ struct RedisKeysListView: View {
         }
         
         let keysPage = try redisInstanceModel.getClient().pageKeys(page: page)
-//        logger.debug("query keys page, keys: \(keysPage.count), page: \(String(describing: page))")
-//        redisKeyModels = keysPage
+        logger.debug("query keys page, keys: \(keysPage.count), page: \(String(describing: page))")
+        redisKeyModels = keysPage
     }
 }
 

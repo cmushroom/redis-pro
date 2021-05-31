@@ -13,6 +13,8 @@ import AppCenterCrashes
 
 @main
 struct redis_proApp: App {
+    @StateObject var globalContext:GlobalContext = GlobalContext()
+    
     let logger = Logger(label: "redis-app")
     
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
@@ -20,6 +22,7 @@ struct redis_proApp: App {
     var body: some Scene {
         WindowGroup {
             IndexView()
+                .environmentObject(globalContext)
         }
         .commands {
             RedisProCommands()

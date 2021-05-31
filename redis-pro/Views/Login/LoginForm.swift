@@ -9,7 +9,7 @@ import SwiftUI
 import NIO
 import RediStack
 import Logging
-import Combine
+import PromiseKit
 
 struct LoginForm: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
@@ -73,7 +73,7 @@ struct LoginForm: View {
                         Spacer()
                         MButton(text: "Save changes", action: onSaveRedisInstanceAction)
                         Spacer()
-                        MButton(text: "Test connection", action: onTestConnectionAction, disabled: loading)
+                        MButton(text: "Test connection", action: onTestConnectionAction, disabled: self.redisModel.loading)
                     }
                 }
             }
@@ -96,15 +96,7 @@ struct LoginForm: View {
     func onTestConnectionAction() throws -> Void {
         logger.info("test connect to redis server: \(redisModel)")
         
-        let _ = self.redisInstanceModel.testConnectAsync(redisModel).done { r in
-            print("test connection.... \(r)")
-        }
-        .catch { error in
-            print("test connection error \(error)")
-        }
-        .finally {
-            self.redisInstanceModel.close()
-        }
+        let _ = self.redisInstanceModel.testConnectAsync(redisModel)
     }
     
     func onAddRedisInstanceAction()  throws -> Void {

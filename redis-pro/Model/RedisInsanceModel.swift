@@ -51,13 +51,15 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         return rediStackClient!
     }
     
-    func connect(redisModel:RedisModel) throws -> Void {
+    func connect(redisModel:RedisModel) -> Promise<Bool> {
         logger.info("connect to redis server: \(redisModel)")
         
         self.globalContext?.loading = true
         
         self.redisModel = redisModel
-        getClient().initConnection().done({ r in
+        let promise = self.getClient().initConnection()
+            
+        promise.done({ r in
             self.globalContext?.loading = false
             self.isConnect = r
         })
@@ -66,7 +68,7 @@ class RedisInstanceModel:ObservableObject, Identifiable {
             self.globalContext?.showError(error)
             self.close()
         })
-        
+        return promise
     }
     
     func testConnect(redisModel:RedisModel) throws -> Bool {

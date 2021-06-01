@@ -17,11 +17,7 @@ class GlobalContext:ObservableObject, CustomStringConvertible {
     var secondButtonText:String = "Cancel"
     var primaryAction:() throws -> Void = {}
     
-    @Published var loading:Bool = false {
-        didSet {
-            print("did set loading.... \(loading)")
-        }
-    }
+    @Published var loading:Bool = false
 
     
     func showError(_ error:Error) -> Void {

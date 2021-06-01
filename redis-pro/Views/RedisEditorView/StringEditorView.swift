@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Logging
+import SwiftyJSON
 
 struct StringEditorView: View {
     @State var text: String = ""
@@ -24,10 +25,11 @@ struct StringEditorView: View {
                 MTextEditor(text: $text)
             }
             .background(colorScheme == .dark ? Color.clear : Color.white)
-            
+
             // footer
             HStack(alignment: .center, spacing: 4) {
                 Spacer()
+                MButton(text: "JSON Format", action: onJsonFormat)
                 IconButton(icon: "arrow.clockwise", name: "Refresh", action: onRefreshAction)
                 IconButton(icon: "checkmark", name: "Submit", isConfirm: false, confirmTitle: "", confirmMessage: "", confirmPrimaryButtonText: "Submit", action: onSubmitAction)
             }
@@ -42,6 +44,19 @@ struct StringEditorView: View {
             onLoad(redisKeyModel)
         }
         
+    }
+    
+    func onJsonFormat() throws -> Void {
+        if text.count < 2 {
+            return
+        }
+        let jsonObj = JSON(parseJSON: text)
+        if jsonObj == JSON.null {
+            throw BizError(message: "Format json error")
+        }
+        if let string = jsonObj.rawString() {
+            self.text = string
+        }
     }
     
     func onSubmitAction() throws -> Void {

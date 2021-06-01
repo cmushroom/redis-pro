@@ -72,6 +72,15 @@
           "revision": "fcf03632e5dc098dc433ffdcf93b42c9b6321968",
           "version": "1.0.0"
         }
+      },
+      {
+        "package": "SwiftyJSON",
+        "repositoryURL": "https://gitee.com/chengpan168_admin/SwiftyJSON.git",
+        "state": {
+          "branch": null,
+          "revision": "b3dcd7dbd0d488e1a7077cb33b00f2083e382f07",
+          "version": "5.0.1"
+        }
       }
     ]
   },

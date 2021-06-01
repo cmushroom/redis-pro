@@ -44,7 +44,7 @@ struct HashEditorView: View {
                 SearchBar(keywords: $page.keywords, placeholder: "Search field...", action: onQueryField)
                 
                 Spacer()
-                PageBar(page:page)
+                PageBar(page:page, action: onPageAction)
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
             
@@ -207,6 +207,10 @@ struct HashEditorView: View {
             logger.error("on string editor view load query redis hash error:\(error)")
             globalContext.showError(error)
         }
+    }
+    
+    func onPageAction() throws -> Void {
+        try queryHashPage(redisKeyModel)
     }
     
     func queryHashPage(_ redisKeyModel:RedisKeyModel) throws -> Void {

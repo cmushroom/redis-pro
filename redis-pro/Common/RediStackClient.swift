@@ -36,7 +36,7 @@ class RediStackClient{
     }
     
     
-    func pageKeys(page:Page) -> Promise<[RedisKeyModel]> {
+    func pageKeys(_ page:ScanModel) -> Promise<[RedisKeyModel]> {
         self.globalContext?.loading = true
         
         logger.info("redis keys page scan, page: \(page)")
@@ -72,12 +72,10 @@ class RediStackClient{
         
         let promise = Promise<[RedisKeyModel]> { resolver in
             let _ = when(fulfilled: dbsizeAsync(),  scanPromise).done({ r1, r2 in
-                print("when result.... \(r1), \(r2)")
                 let total = r1
                 page.total = total
-                page.hasNext = cursor != 0
                 page.cursor = cursor
-                
+            
                 resolver.fulfill(r2)
             })
         }
@@ -1054,15 +1052,15 @@ class RediStackClient{
     }
     
     func getConnectionAsync() -> Promise<RedisConnection> {
+        if self.connection != nil && self.connection!.isConnected{
+            self.logger.info("get redis exist connection...")
+            return Promise<RedisConnection>.value(self.connection!)
+        } else {
+            self.close()
+        }
+        
         return Promise<RedisConnection>{ resolver in
-            if self.connection != nil && self.connection!.isConnected{
-                self.logger.debug("get redis exist connection...")
-                resolver.fulfill(self.connection!)
-            } else {
-                self.close()
-            }
-            
-            self.logger.debug("start get new redis connection...")
+            self.logger.info("start get new redis connection...")
             let eventLoop = MultiThreadedEventLoopGroup(numberOfThreads: 1).next()
             var configuration: RedisConnection.Configuration
             do {

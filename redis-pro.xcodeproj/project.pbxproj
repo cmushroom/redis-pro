@@ -41,6 +41,12 @@
 		4320AAFB25B6740A00A8E214 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4320AAFA25B6740A00A8E214 /* Preview Assets.xcassets */; };
 		434047FA2611C828001519F9 /* RedisFavoriteModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434047F92611C828001519F9 /* RedisFavoriteModel.swift */; };
 		4340E2B52662152B00F51F19 /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4340E2B42662152B00F51F19 /* PromiseKit */; };
+		4340E2BD2666236200F51F19 /* redisProTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4340E2BC2666236200F51F19 /* redisProTests.swift */; };
+		4340E2C52666239F00F51F19 /* JsonPrettyFormatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4340E2C42666239F00F51F19 /* JsonPrettyFormatTests.swift */; };
+		4340E2C82666257500F51F19 /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = 4340E2C72666257500F51F19 /* SwiftyJSON */; };
+		4340E2CA2666494300F51F19 /* ScanModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4340E2C92666494300F51F19 /* ScanModel.swift */; };
+		4340E2CC266649D000F51F19 /* ScanBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4340E2CB266649D000F51F19 /* ScanBar.swift */; };
+		4340E2CE266660FE00F51F19 /* PromiseExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4340E2CD266660FE00F51F19 /* PromiseExt.swift */; };
 		43481049262D30CE002809ED /* Helps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43481048262D30CE002809ED /* Helps.swift */; };
 		436BB68726440584008B4866 /* CoreMetrics in Frameworks */ = {isa = PBXBuildFile; productRef = 436BB68626440584008B4866 /* CoreMetrics */; };
 		436BB68926440584008B4866 /* Metrics in Frameworks */ = {isa = PBXBuildFile; productRef = 436BB68826440584008B4866 /* Metrics */; };
@@ -84,6 +90,16 @@
 		62CB3D802619B09B0061E8C3 /* RedisKeyTypeEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62CB3D7F2619B09B0061E8C3 /* RedisKeyTypeEnum.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		4340E2BF2666236200F51F19 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4320AAE825B6740900A8E214 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4320AAEF25B6740900A8E214;
+			remoteInfo = "redis-pro";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		430A09D225BEA91700B60DFC /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		430A09D525BEA98300B60DFC /* RedisList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisList.swift; sourceTree = "<group>"; };
@@ -121,6 +137,13 @@
 		4320AAFC25B6740A00A8E214 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4320AAFD25B6740A00A8E214 /* redis_pro.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = redis_pro.entitlements; sourceTree = "<group>"; };
 		434047F92611C828001519F9 /* RedisFavoriteModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisFavoriteModel.swift; sourceTree = "<group>"; };
+		4340E2BA2666236200F51F19 /* redisProTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = redisProTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4340E2BC2666236200F51F19 /* redisProTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = redisProTests.swift; sourceTree = "<group>"; };
+		4340E2BE2666236200F51F19 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4340E2C42666239F00F51F19 /* JsonPrettyFormatTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonPrettyFormatTests.swift; sourceTree = "<group>"; };
+		4340E2C92666494300F51F19 /* ScanModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanModel.swift; sourceTree = "<group>"; };
+		4340E2CB266649D000F51F19 /* ScanBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanBar.swift; sourceTree = "<group>"; };
+		4340E2CD266660FE00F51F19 /* PromiseExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromiseExt.swift; sourceTree = "<group>"; };
 		43481048262D30CE002809ED /* Helps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helps.swift; sourceTree = "<group>"; };
 		436BB6922644D126008B4866 /* SetEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetEditorView.swift; sourceTree = "<group>"; };
 		436BB6942644E8D6008B4866 /* ZSetEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZSetEditorView.swift; sourceTree = "<group>"; };
@@ -168,11 +191,19 @@
 				4340E2B52662152B00F51F19 /* PromiseKit in Frameworks */,
 				62C48932265A138D00D68D06 /* Logging in Frameworks */,
 				62C48938265A13E500D68D06 /* NIO in Frameworks */,
+				4340E2C82666257500F51F19 /* SwiftyJSON in Frameworks */,
 				436BB68926440584008B4866 /* Metrics in Frameworks */,
 				623704F7265A27760084CCA8 /* AppCenterAnalytics in Frameworks */,
 				62C48935265A13BB00D68D06 /* ServiceDiscovery in Frameworks */,
 				623704FC265A27970084CCA8 /* RedisTypes in Frameworks */,
 				623704FA265A27970084CCA8 /* RediStack in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4340E2B72666236200F51F19 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -195,6 +226,7 @@
 				431266ED261D517500FB6B69 /* RedisKeyTypePicker.swift */,
 				4314A33D2624370E00053FEE /* SearchBar.swift */,
 				4314A34026243ED500053FEE /* PageBar.swift */,
+				4340E2CB266649D000F51F19 /* ScanBar.swift */,
 				4314A3462625484100053FEE /* MTextField.swift */,
 				437BC2482645413000E2C84D /* MDoubleField.swift */,
 				4313576C263AB6A20077EE46 /* MTextEditor.swift */,
@@ -211,6 +243,7 @@
 			isa = PBXGroup;
 			children = (
 				4320AAF225B6740900A8E214 /* redis-pro */,
+				4340E2BB2666236200F51F19 /* redisProTests */,
 				4320AAF125B6740900A8E214 /* Products */,
 				438BBEA82654DD3200B458BF /* Frameworks */,
 				4370534B2626E65D00D8F1B7 /* README.md */,
@@ -222,6 +255,7 @@
 			isa = PBXGroup;
 			children = (
 				4320AAF025B6740900A8E214 /* redis-pro.app */,
+				4340E2BA2666236200F51F19 /* redisProTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -284,6 +318,7 @@
 				62CB3D7C2619AF990061E8C3 /* RedisKeyModel.swift */,
 				431266EA261D4EED00FB6B69 /* RedisKeyValueModel.swift */,
 				4314A34B26258A4300053FEE /* Page.swift */,
+				4340E2C92666494300F51F19 /* ScanModel.swift */,
 				4314A3632626B98700053FEE /* AlertContext.swift */,
 				4370534D262812EE00D8F1B7 /* GlobalContext.swift */,
 			);
@@ -304,8 +339,19 @@
 				437BC2442645272E00E2C84D /* DoubleFormatter.swift */,
 				437BC24626452AE400E2C84D /* StringFormatter.swift */,
 				437BC24D26461E2100E2C84D /* NumberHelper.swift */,
+				4340E2CD266660FE00F51F19 /* PromiseExt.swift */,
 			);
 			path = Common;
+			sourceTree = "<group>";
+		};
+		4340E2BB2666236200F51F19 /* redisProTests */ = {
+			isa = PBXGroup;
+			children = (
+				4340E2C42666239F00F51F19 /* JsonPrettyFormatTests.swift */,
+				4340E2BC2666236200F51F19 /* redisProTests.swift */,
+				4340E2BE2666236200F51F19 /* Info.plist */,
+			);
+			path = redisProTests;
 			sourceTree = "<group>";
 		};
 		437BC24F264678FB00E2C84D /* Sidebar */ = {
@@ -379,10 +425,29 @@
 				623704F9265A27970084CCA8 /* RediStack */,
 				623704FB265A27970084CCA8 /* RedisTypes */,
 				4340E2B42662152B00F51F19 /* PromiseKit */,
+				4340E2C72666257500F51F19 /* SwiftyJSON */,
 			);
 			productName = "redis-pro";
 			productReference = 4320AAF025B6740900A8E214 /* redis-pro.app */;
 			productType = "com.apple.product-type.application";
+		};
+		4340E2B92666236200F51F19 /* redisProTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4340E2C12666236200F51F19 /* Build configuration list for PBXNativeTarget "redisProTests" */;
+			buildPhases = (
+				4340E2B62666236200F51F19 /* Sources */,
+				4340E2B72666236200F51F19 /* Frameworks */,
+				4340E2B82666236200F51F19 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4340E2C02666236200F51F19 /* PBXTargetDependency */,
+			);
+			name = redisProTests;
+			productName = redisProTests;
+			productReference = 4340E2BA2666236200F51F19 /* redisProTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -390,11 +455,15 @@
 		4320AAE825B6740900A8E214 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1230;
+				LastSwiftUpdateCheck = 1250;
 				LastUpgradeCheck = 1240;
 				TargetAttributes = {
 					4320AAEF25B6740900A8E214 = {
 						CreatedOnToolsVersion = 12.3;
+					};
+					4340E2B92666236200F51F19 = {
+						CreatedOnToolsVersion = 12.5;
+						TestTargetID = 4320AAEF25B6740900A8E214;
 					};
 				};
 			};
@@ -416,12 +485,14 @@
 				623704F3265A27760084CCA8 /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */,
 				623704F8265A27970084CCA8 /* XCRemoteSwiftPackageReference "RediStack" */,
 				4340E2B32662152B00F51F19 /* XCRemoteSwiftPackageReference "PromiseKit" */,
+				4340E2C62666257500F51F19 /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
 			);
 			productRefGroup = 4320AAF125B6740900A8E214 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				4320AAEF25B6740900A8E214 /* redis-pro */,
+				4340E2B92666236200F51F19 /* redisProTests */,
 			);
 		};
 /* End PBXProject section */
@@ -436,6 +507,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		4340E2B82666236200F51F19 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -445,11 +523,13 @@
 			files = (
 				43EADB052620043F003B8310 /* HashEditorView.swift in Sources */,
 				4313576F263ABB1C0077EE46 /* FormWrapper.swift in Sources */,
+				4340E2CC266649D000F51F19 /* ScanBar.swift in Sources */,
 				4313576B263AB6400077EE46 /* FormItemTextArea.swift in Sources */,
 				436BB6952644E8D6008B4866 /* ZSetEditorView.swift in Sources */,
 				4314A3472625484100053FEE /* MTextField.swift in Sources */,
 				436BB6932644D126008B4866 /* SetEditorView.swift in Sources */,
 				4373C50525C3F0B6002B700E /* UserDefaultsKeysEnum.swift in Sources */,
+				4340E2CA2666494300F51F19 /* ScanModel.swift in Sources */,
 				4397288C2643E43800803BE9 /* Constants.swift in Sources */,
 				4314A34C26258A4300053FEE /* Page.swift in Sources */,
 				431266D8261C66E100FB6B69 /* MTheme.swift in Sources */,
@@ -478,6 +558,7 @@
 				437BC25126467A3D00E2C84D /* SidebarFooter.swift in Sources */,
 				4314A34F2625B46E00053FEE /* RediStackClient.swift in Sources */,
 				431266CC261C450300FB6B69 /* Tag.swift in Sources */,
+				4340E2CE266660FE00F51F19 /* PromiseExt.swift in Sources */,
 				4373C50C25C3FC81002B700E /* LoginForm.swift in Sources */,
 				430A09D625BEA98300B60DFC /* RedisList.swift in Sources */,
 				431266E5261D4E2700FB6B69 /* RedisValueView.swift in Sources */,
@@ -508,7 +589,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		4340E2B62666236200F51F19 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4340E2C52666239F00F51F19 /* JsonPrettyFormatTests.swift in Sources */,
+				4340E2BD2666236200F51F19 /* redisProTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4340E2C02666236200F51F19 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4320AAEF25B6740900A8E214 /* redis-pro */;
+			targetProxy = 4340E2BF2666236200F51F19 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		4320AAFE25B6740A00A8E214 /* Debug */ = {
@@ -676,6 +774,46 @@
 			};
 			name = Release;
 		};
+		4340E2C22666236200F51F19 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = redisProTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.3;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cmushroom.redisProTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/redis-pro.app/Contents/MacOS/redis-pro";
+			};
+			name = Debug;
+		};
+		4340E2C32666236200F51F19 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = redisProTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.3;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cmushroom.redisProTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/redis-pro.app/Contents/MacOS/redis-pro";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -697,6 +835,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		4340E2C12666236200F51F19 /* Build configuration list for PBXNativeTarget "redisProTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4340E2C22666236200F51F19 /* Debug */,
+				4340E2C32666236200F51F19 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -706,6 +853,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 6.15.3;
+			};
+		};
+		4340E2C62666257500F51F19 /* XCRemoteSwiftPackageReference "SwiftyJSON" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://gitee.com/chengpan168_admin/SwiftyJSON.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.1;
 			};
 		};
 		436BB68526440584008B4866 /* XCRemoteSwiftPackageReference "swift-metrics" */ = {
@@ -771,6 +926,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4340E2B32662152B00F51F19 /* XCRemoteSwiftPackageReference "PromiseKit" */;
 			productName = PromiseKit;
+		};
+		4340E2C72666257500F51F19 /* SwiftyJSON */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4340E2C62666257500F51F19 /* XCRemoteSwiftPackageReference "SwiftyJSON" */;
+			productName = SwiftyJSON;
 		};
 		436BB68626440584008B4866 /* CoreMetrics */ = {
 			isa = XCSwiftPackageProductDependency;

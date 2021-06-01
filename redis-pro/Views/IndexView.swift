@@ -29,7 +29,6 @@ struct IndexView: View {
             redisInstanceModel.setUp(globalContext)
         }
         .onReceive(globalContext.objectWillChange, perform: { newValue in
-            print("loading value change...\(newValue)")
         })
         .overlay(MSpin(loading: globalContext.loading))
 //        .sheet(isPresented: $globalContext.loading) {

@@ -14,7 +14,8 @@ struct RedisKeysListView: View {
     @EnvironmentObject var globalContext:GlobalContext
     @State var redisKeyModels:[RedisKeyModel] = testData()
     @State var selectedRedisKeyIndex:Int?
-    @StateObject var page:Page = Page()
+//    @StateObject var page:Page = Page()
+    @StateObject var scanModel:ScanModel = ScanModel()
     @State private var renameModalVisible:Bool = false
     @State private var oldKeyIndex:Int?
     @State private var newKeyName:String = ""
@@ -35,7 +36,7 @@ struct RedisKeysListView: View {
         VStack(alignment: .center, spacing: 0) {
             VStack(alignment: .center, spacing: 2) {
                 // redis search ...
-                SearchBar(keywords: $page.keywords, showFuzzy: false, placeholder: "Search keys...", action: onSearchKeyAction)
+                SearchBar(keywords: $scanModel.keywords, showFuzzy: false, placeholder: "Search keys...", action: onSearchKeyAction)
                     .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
                 
                 // redis key operate ...
@@ -54,6 +55,24 @@ struct RedisKeysListView: View {
             .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
             Rectangle().frame(height: 1)
                 .padding(.horizontal, 0).foregroundColor(Color.gray.opacity(0.6))
+        }
+    }
+    
+    private var sidebarFoot: some View {
+        HStack(alignment: .center, spacing: 4) {
+//            MenuButton(label:
+//                        Label("", systemImage: "ellipsis.circle")
+//                        .labelStyle(IconOnlyLabelStyle())
+//            ){
+//                Button("Order Now", action: onRefreshAction)
+//            }
+//            .frame(width:30)
+//            .menuButtonStyle(BorderlessPullDownMenuButtonStyle())
+            
+            MIcon(icon: "arrow.clockwise", fontSize: 12, action: onRefreshAction)
+                .help(Helps.REFRESH)
+            
+            ScanBar(scanModel: scanModel, action: onQueryKeyPageAction)
         }
     }
     
@@ -82,7 +101,9 @@ struct RedisKeysListView: View {
             .padding(.all, 0)
             
             // footer
-            SidebarFooter(page: page, pageAction: onQueryKeyPageAction)
+//            SidebarFooter(page: page, pageAction: onQueryKeyPageAction)
+            sidebarFoot
+                .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 6))
             
         }
     }
@@ -161,33 +182,27 @@ struct RedisKeysListView: View {
     }
     
     func onRefreshAction() -> Void {
-        page.firstPage()
-        try? onQueryKeyPageAction()
+        self.onSearchKeyAction()
     }
     
-    func onSearchKeyAction() throws -> Void {
-        page.firstPage()
-        try onQueryKeyPageAction()
+    func onSearchKeyAction() -> Void {
+        scanModel.resetHead()
+        let _ = onQueryKeyPageAction().done({ _ in
+            scanModel.notifyNextPage()
+        })
     }
     
-    func onQueryKeyPageAction() throws -> Void {
+    func onQueryKeyPageAction() -> Promise<[RedisKeyModel]> {
         if !redisInstanceModel.isConnect || globalContext.loading {
-            return
+            return Promise<[RedisKeyModel]>.reject()
         }
-        
-//        defer {
-//            self.globalContext.loading =  false
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
-//                self.globalContext.loading =  false
-//            }
-//        }
-        
-        let _ = self.redisInstanceModel.getClient().pageKeys(page: page)
-            .done({ keysPage in
-                self.logger.debug("query keys page, keys: \(keysPage.count), page: \(String(describing: page))")
+
+        let promise = self.redisInstanceModel.getClient().pageKeys(scanModel)
+            
+        let _ = promise.done({ keysPage in
                 self.redisKeyModels = keysPage
             })
-        
+        return promise
     }
 }
 

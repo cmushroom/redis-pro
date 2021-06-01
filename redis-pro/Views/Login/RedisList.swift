@@ -115,13 +115,10 @@ struct RedisList: View {
     }
     
     func onConnect() -> Void {
-        do {
-            try redisInstanceModel.connect(redisModel:selectRedisModel)
+        let _ = redisInstanceModel.connect(redisModel:selectRedisModel).done({r in
             redisFavoriteModel.saveLast(redisModel: selectRedisModel)
-            logger.info("on connect to redis server: \(selectRedisModel)")
-        } catch {
-            globalContext.showError(error)
-        }
+            logger.info("on connect to redis server successed: \(selectRedisModel)")
+        })
     }
 }
 

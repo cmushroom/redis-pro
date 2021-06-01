@@ -159,14 +159,18 @@ struct HashEditorView: View {
     
     
     func onSaveFieldAction() throws -> Void {
-        let _ = try redisInstanceModel.getClient().hset(redisKeyModel.key, field: editField, value: editValue)
-        logger.info("redis hset success, update field list")
+        let _ = redisInstanceModel.getClient().hset(redisKeyModel.key, field: editField, value: editValue).done({ _ in
+            
+            if self.redisKeyModel.isNew {
+                self.redisKeyModel.isNew = false
+            }
+            logger.info("redis hset success, update field list")
+            
+            self.onLoad(redisKeyModel)
+        
+        })
 //        hashMap.updateValue(editValue, forKey: editField)
         
-        if self.redisKeyModel.isNew {
-            redisKeyModel.isNew = false
-        }
-        onLoad(redisKeyModel)
     }
     
     
@@ -217,10 +221,11 @@ struct HashEditorView: View {
     
     func deleteField(_ field:String) throws -> Void {
         logger.info("delete hash field: \(field)")
-        let r = try redisInstanceModel.getClient().hdel(redisKeyModel.key, field: field)
-        if r > 0 {
-            hashMap.removeValue(forKey: field)
-        }
+        let _ = redisInstanceModel.getClient().hdel(redisKeyModel.key, field: field).done({r in
+            if r > 0 {
+                self.hashMap.removeValue(forKey: field)
+            }
+        })
     }
 }
 

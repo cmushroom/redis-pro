@@ -461,93 +461,165 @@ class RediStackClient{
     }
     
     // list operator
-    func pageList(_ redisKeyModel:RedisKeyModel, page:Page) throws -> [String?] {
+    func pageList(_ redisKeyModel:RedisKeyModel, page:Page) -> Promise<[String?]> {
         if redisKeyModel.isNew {
-            return [String?]()
+            return Promise<[String?]>.value([String?]())
         }
-        return try pageList(redisKeyModel.key, page: page)
+        return pageList(redisKeyModel.key, page: page)
     }
     
-    func pageList(_ key:String, page:Page) throws -> [String?] {
+    func pageList(_ key:String, page:Page) -> Promise<[String?]> {
         
-        do {
-            logger.info("redis list page, key: \(key), page: \(page)")
-            
-            let cursor:Int = (page.current - 1) * page.size
-            
-            let total = try llen(key)
-            page.total = total
-            
-            return try lrange(key, start: cursor, stop: cursor + page.size - 1)
-            
-        } catch {
-            logger.error("query redis list page error \(error)")
-            throw error
-        }
+        logger.info("redis list page, key: \(key), page: \(page)")
+        self.globalContext?.loading = true
+        
+        let cursor:Int = (page.current - 1) * page.size
+        
+        
+        let promise =
+            Promise<[String?]> {resolver in
+                let _ = when(fulfilled: llen(key), lrange(key, start: cursor, stop: cursor + page.size - 1)).done({ r1, r2 in
+                    let total = r1
+                    page.total = total
+                    resolver.fulfill(r2)
+                })
+                
+            }
+        afterPromise(promise)
+        return promise
     }
     
-    func lrange(_ key:String, start:Int, stop:Int) throws -> [String?] {
-        do {
-            logger.debug("redis list range, key: \(key)")
-            
-            return try getConnection().lrange(from: RedisKey(key), firstIndex: start, lastIndex: stop, as: String.self).wait()
-            
-        } catch {
-            logger.error("redis list range key:\(key) error: \(error)")
-            throw error
-        }
+    private func lrange(_ key:String, start:Int, stop:Int) -> Promise<[String?]> {
+        
+        logger.debug("redis list range, key: \(key)")
+        
+        return getConnectionAsync().then({connection in
+            Promise<[String?]> {resolver in
+                connection.lrange(from: RedisKey(key), firstIndex: start, lastIndex: stop, as: String.self)
+                    .whenComplete({completion in
+                        if case .success(let r) = completion {
+                            resolver.fulfill(r)
+                        }
+                        else if case .failure(let error) = completion {
+                            self.logger.error("redis list lrem error \(error)")
+                            resolver.reject(error)
+                        }
+                    })
+            }
+        })
     }
     
-    
-    func lrem(_ key:String, value:String) throws -> Int {
-        do {
-            logger.debug("redis list lrem, key: \(key)")
-            
-            return try getConnection().lrem(value, from: RedisKey(key), count: 1).wait()
-            
-        } catch {
-            logger.error("redis list lrem key:\(key) error: \(error)")
-            throw error
-        }
+    func ldel(_ key:String, index:Int) -> Promise<Int> {
+        logger.debug("redis list delete, key: \(key), index:\(index)")
+        
+        let promise = lsetInner(key, index: index, value: Constants.LIST_VALUE_DELETE_MARK).then({ _ in
+            self.getConnectionAsync().then({connection in
+                Promise<Int> {resolver in
+                    connection.lrem(Constants.LIST_VALUE_DELETE_MARK, from: RedisKey(key), count: 0)
+                        .whenComplete({completion in
+                            if case .success(let r) = completion {
+                                resolver.fulfill(r)
+                            }
+                            else if case .failure(let error) = completion {
+                                self.logger.error("redis list lrem error \(error)")
+                                resolver.reject(error)
+                            }
+                        })
+                }
+            })
+        })
+        
+        afterPromise(promise)
+        return promise
     }
     
-    
-    func ldel(_ key:String, index:Int) throws -> Int {
-        do {
-            logger.debug("redis list delete, key: \(key), index:\(index)")
-            
-            try lset(key, index: index, value: Constants.LIST_VALUE_DELETE_MARK)
-            
-            return try getConnection().lrem(Constants.LIST_VALUE_DELETE_MARK, from: RedisKey(key), count: 0).wait()
-            
-        } catch {
-            logger.error("redis list lrem key:\(key) error: \(error)")
-            throw error
-        }
+    func lset(_ key:String, index:Int, value:String) -> Promise<Void> {
+        self.globalContext?.loading = true
+        
+        let promise = lsetInner(key, index: index, value: value)
+        afterPromise(promise)
+        return promise
     }
     
-    func lset(_ key:String, index:Int, value:String) throws -> Void {
-        try getConnection().lset(index: index, to: value, in: RedisKey(key)).wait()
+    private func lsetInner(_ key:String, index:Int, value:String) -> Promise<Void> {
+        let promise = getConnectionAsync().then({connection in
+            Promise<Void> {resolver in
+                connection.lset(index: index, to: value, in: RedisKey(key))
+                    .whenComplete({completion in
+                        if case .success(let r) = completion {
+                            resolver.fulfill(r)
+                        }
+                        else if case .failure(let error) = completion {
+                            self.logger.error("redis list lset error \(error)")
+                            resolver.reject(error)
+                        }
+                    })
+            }
+        })
+        
+        return promise
     }
     
-    func lpush(_ key:String, value:String) throws -> Int {
-        return try getConnection().lpush(value, into: RedisKey(key)).wait()
+    func lpush(_ key:String, value:String) -> Promise<Int> {
+        self.globalContext?.loading = true
+        
+        let promise = getConnectionAsync().then({connection in
+            Promise<Int> {resolver in
+                connection.lpush(value, into: RedisKey(key))
+                    .whenComplete({completion in
+                        if case .success(let r) = completion {
+                            resolver.fulfill(r)
+                        }
+                        else if case .failure(let error) = completion {
+                            self.logger.error("redis list lpush error \(error)")
+                            resolver.reject(error)
+                        }
+                    })
+            }
+        })
+        
+        afterPromise(promise)
+        return promise
     }
     
-    func rpush(_ key:String, value:String) throws -> Int {
-        return try getConnection().rpush(value, into: RedisKey(key)).wait()
+    func rpush(_ key:String, value:String) -> Promise<Int> {
+        self.globalContext?.loading = true
+        
+        let promise = getConnectionAsync().then({connection in
+            Promise<Int> {resolver in
+                connection.rpush(value, into: RedisKey(key))
+                    .whenComplete({completion in
+                        if case .success(let r) = completion {
+                            resolver.fulfill(r)
+                        }
+                        else if case .failure(let error) = completion {
+                            self.logger.error("redis list rpush error \(error)")
+                            resolver.reject(error)
+                        }
+                    })
+            }
+        })
+        
+        afterPromise(promise)
+        return promise
     }
     
-    func llen(_ key:String) throws -> Int {
-        do {
-            logger.debug("redis list length, key: \(key)")
-            
-            return try getConnection().llen(of: RedisKey(key)).wait()
-            
-        } catch {
-            logger.error("redis list length key:\(key) error: \(error)")
-            throw error
-        }
+    private func llen(_ key:String) -> Promise<Int> {
+        logger.debug("redis list length, key: \(key)")
+        
+        return getConnectionAsync().then({connection in
+            Promise<Int> {resolver in
+                connection.llen(of: RedisKey(key)).whenComplete({completion in
+                    if case .success(let r) = completion {
+                        resolver.fulfill(r)
+                    }
+                    else if case .failure(let error) = completion {
+                        self.logger.error("redis list llen error \(error)")
+                        resolver.reject(error)
+                    }
+                })
+            }
+        })
     }
     
     
@@ -654,14 +726,53 @@ class RediStackClient{
         //        }
     }
     
-    func hset(_ key:String, field:String, value:String) throws -> Bool {
+    func hset(_ key:String, field:String, value:String) -> Promise<Bool> {
         logger.info("redis hash hset key:\(key), field:\(field), value:\(value)")
-        return try getConnection().hset(field, to: value, in: RedisKey(key)).wait()
+        self.globalContext?.loading = true
+        
+        let promise = getConnectionAsync().then({connection in
+            Promise<Bool> {resolver in
+                connection.hset(field, to: value, in: RedisKey(key))
+                    .whenComplete({completion in
+                        if case .success(let r) = completion {
+                            resolver.fulfill(r)
+                        }
+                        else if case .failure(let error) = completion {
+                            self.logger.error("redis hash set error \(error)")
+                            resolver.reject(error)
+                        }
+                    })
+            }
+        })
+        
+        afterPromise(promise)
+        return promise
+//        return try getConnection().hset(field, to: value, in: RedisKey(key)).wait()
     }
     
-    func hdel(_ key:String, field:String) throws -> Int {
+    func hdel(_ key:String, field:String) -> Promise<Int> {
         logger.info("redis hash hdel key:\(key), field:\(field)")
-        return try getConnection().hdel(field, from: RedisKey(key)).wait()
+        self.globalContext?.loading = true
+        
+        let promise = getConnectionAsync().then({connection in
+            Promise<Int> {resolver in
+                connection.hdel(field, from: RedisKey(key))
+                    .whenComplete({completion in
+                        if case .success(let r) = completion {
+                            resolver.fulfill(r)
+                        }
+                        else if case .failure(let error) = completion {
+                            self.logger.error("redis hash del error \(error)")
+                            resolver.reject(error)
+                        }
+                    })
+            }
+        })
+        
+        afterPromise(promise)
+        return promise
+        
+//        return try getConnection().hdel(field, from: RedisKey(key)).wait()
     }
     
     private func hlen(_ key:String) -> Promise<Int> {

@@ -53,16 +53,20 @@ class RedisInstanceModel:ObservableObject, Identifiable {
     
     func connect(redisModel:RedisModel) throws -> Void {
         logger.info("connect to redis server: \(redisModel)")
-        do {
-            self.redisModel = redisModel
-            isConnect = try getClient().ping()
-            if !isConnect {
-                throw BizError(message: "connect redis server error")
-            }
-        } catch {
-            close()
-            throw error
-        }
+        
+        self.globalContext?.loading = true
+        
+        self.redisModel = redisModel
+        getClient().initConnection().done({ r in
+            self.globalContext?.loading = false
+            self.isConnect = r
+        })
+        .catch({ error in
+            self.globalContext?.loading = false
+            self.globalContext?.showError(error)
+            self.close()
+        })
+        
     }
     
     func testConnect(redisModel:RedisModel) throws -> Bool {
@@ -78,10 +82,13 @@ class RedisInstanceModel:ObservableObject, Identifiable {
     func testConnectAsync(_ redisModel:RedisModel) -> Promise<Bool> {
         self.redisModel = redisModel
         
-        let promise = getClient().pingAsync()
+        let promise = getClient().initConnection().then({ _ in
+            self.getClient().pingAsync()
+        })
         
         promise
-            .catch({_ in
+            .catch({error in
+                self.globalContext?.showError(error)
             })
             .finally {
                 self.close()

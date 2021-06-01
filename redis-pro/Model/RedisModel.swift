@@ -17,7 +17,7 @@ class RedisModel:ObservableObject, Identifiable, CustomStringConvertible {
     @Published var password: String = ""
     @Published var isFavorite: Bool = false
     @Published var ping: Bool = false
-    @Published var loading: Bool = false
+//    @Published var loading: Bool = false
     
     var image:Image  = Image("icon-redis")
     

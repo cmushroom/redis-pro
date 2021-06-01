@@ -18,9 +18,9 @@ class Page:ObservableObject, CustomStringConvertible {
     
     var totalPage:Int {
         get {
-            if !hasNext {
-                return current
-            }
+//            if !hasNext {
+//                return current
+//            }
             return total < 1 ? 1 : (total % size == 0 ? total / size : total / size + 1)
         }
     }

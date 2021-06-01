@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Logging
+import PromiseKit
 
 struct RedisKeysListView: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
@@ -173,17 +174,20 @@ struct RedisKeysListView: View {
         if !redisInstanceModel.isConnect || globalContext.loading {
             return
         }
-        self.globalContext.loading = true
-        defer {
-//            self.globalContext.loading =  false
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
-                self.globalContext.loading =  false
-            }
-        }
         
-        let keysPage = try redisInstanceModel.getClient().pageKeys(page: page)
-        logger.debug("query keys page, keys: \(keysPage.count), page: \(String(describing: page))")
-        redisKeyModels = keysPage
+//        defer {
+//            self.globalContext.loading =  false
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+//                self.globalContext.loading =  false
+//            }
+//        }
+        
+        let _ = self.redisInstanceModel.getClient().pageKeys(page: page)
+            .done({ keysPage in
+                self.logger.debug("query keys page, keys: \(keysPage.count), page: \(String(describing: page))")
+                self.redisKeyModels = keysPage
+            })
+        
     }
 }
 

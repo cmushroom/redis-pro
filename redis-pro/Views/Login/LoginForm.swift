@@ -15,8 +15,6 @@ struct LoginForm: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @EnvironmentObject var globalContext:GlobalContext
     
-    @State private var loading:Bool = false
-    
     @ObservedObject var redisFavoriteModel: RedisFavoriteModel
     @ObservedObject var redisModel:RedisModel
     
@@ -44,7 +42,7 @@ struct LoginForm: View {
                     Divider()
                         .padding(.vertical, 8)
                     HStack(alignment: .center){
-                        if !redisModel.loading {
+                        if !globalContext.loading {
                             Button(action: {
                                 if let url = URL(string: Constants.REPO_URL) {
                                     NSWorkspace.shared.open(url)
@@ -58,11 +56,11 @@ struct LoginForm: View {
                         
                         MLoading(text: redisModel.ping ? "Connect successed!" : " ",
                                  loadingText: "Connecting...",
-                                 loading: redisModel.loading)
+                                 loading: globalContext.loading)
                         
                         Spacer()
                         
-                        MButton(text: "Connect", action: onConnect, disabled: loading)
+                        MButton(text: "Connect", action: onConnect, disabled: self.globalContext.loading)
                             .buttonStyle(BorderedButtonStyle())
                             .keyboardShortcut(.defaultAction)
                         
@@ -73,7 +71,7 @@ struct LoginForm: View {
                         Spacer()
                         MButton(text: "Save changes", action: onSaveRedisInstanceAction)
                         Spacer()
-                        MButton(text: "Test connection", action: onTestConnectionAction, disabled: self.redisModel.loading)
+                        MButton(text: "Test connection", action: onTestConnectionAction, disabled: self.globalContext.loading)
                     }
                 }
             }
@@ -127,12 +125,6 @@ struct LoginForm: View {
     }
     
     func onConnect() throws -> Void {
-        self.loading =  true
-        
-        defer {
-            self.loading =  false
-        }
-        
         try redisInstanceModel.connect(redisModel:redisModel)
         redisFavoriteModel.saveLast(redisModel: redisModel)
         logger.info("on connect to redis server: \(redisModel)")

@@ -8,7 +8,7 @@
 import Foundation
 import RediStack
 
-class GlobalContext:ObservableObject {
+class GlobalContext:ObservableObject, CustomStringConvertible {
     @Published var alertVisible:Bool = false
     var alertTitle:String = ""
     var alertMessage:String = ""
@@ -19,7 +19,7 @@ class GlobalContext:ObservableObject {
     
     @Published var loading:Bool = false {
         didSet {
-            print("loading value change...")
+            print("did set loading.... \(loading)")
         }
     }
 
@@ -35,4 +35,8 @@ class GlobalContext:ObservableObject {
         }
     }
 
+    
+    var description: String {
+        return "GlobalContext:[alertVisible:\(alertVisible), loading:\(loading)]"
+    }
 }

@@ -39,12 +39,12 @@ struct PageBar: View {
             .frame(width: 60)
             
             HStack(alignment:.center) {
-                MIcon(icon: "chevron.left", action: onPrevPageAction).disabled(!page.hasPrevPage)
+                MIcon(icon: "chevron.left", action: onPrevPageAction).disabled(!page.hasPrevPage && !globalContext.loading)
                 Text("\(page.current)/\(page.totalPage)")
                     .font(.footnote)
                     .multilineTextAlignment(.center)
                     .lineLimit(1)
-                MIcon(icon: "chevron.right", action: onNextPageAction).disabled(!page.hasNextPage)
+                MIcon(icon: "chevron.right", action: onNextPageAction).disabled(!page.hasNextPage && !globalContext.loading)
             }
             .layoutPriority(1)
         }

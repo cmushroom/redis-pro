@@ -212,7 +212,9 @@ struct ZSetEditorView: View {
     }
     
     func queryPage(_ redisKeyModel:RedisKeyModel) throws -> Void {
-        list = try redisInstanceModel.getClient().pageZSet(redisKeyModel, page: page)
+        let _ = redisInstanceModel.getClient().pageZSet(redisKeyModel, page: page).done({ res in
+            self.list = res
+        })
     }
     
     func ttl(_ redisKeyModel:RedisKeyModel) throws -> Void {

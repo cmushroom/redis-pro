@@ -139,12 +139,14 @@ struct SetEditorView: View {
     
     func onUpdateItemAction() throws -> Void {
         if editIndex == -1 {
-            let _ = try redisInstanceModel.getClient().sadd(redisKeyModel.key, ele: editValue)
-            try onRefreshAction()
+            let _ = redisInstanceModel.getClient().sadd(redisKeyModel.key, ele: editValue).done({_ in
+                try onRefreshAction()
+            })
         } else {
-            let _ = try redisInstanceModel.getClient().supdate(redisKeyModel.key, from: list[editIndex] ?? "", to: editValue )
-            logger.info("redis set update success, update list")
-            list[editIndex] = editValue
+            let _ = redisInstanceModel.getClient().supdate(redisKeyModel.key, from: list[editIndex] ?? "", to: editValue ).done({ _ in
+                self.logger.info("redis set update success, update list")
+                self.list[editIndex] = editValue
+            })
         }
         
         if self.redisKeyModel.isNew {
@@ -187,7 +189,9 @@ struct SetEditorView: View {
     }
     
     func queryPage(_ redisKeyModel:RedisKeyModel) throws -> Void {
-        list = try redisInstanceModel.getClient().pageSet(redisKeyModel, page: page)
+        let _ = redisInstanceModel.getClient().pageSet(redisKeyModel, page: page).done({res in
+            list = res
+        })
     }
     
     func ttl(_ redisKeyModel:RedisKeyModel) throws -> Void {
@@ -197,10 +201,11 @@ struct SetEditorView: View {
     func deleteEle(_ index:Int) throws -> Void {
         logger.info("delete set item, index: \(index)")
         let ele = list[index] ?? ""
-        let r = try redisInstanceModel.getClient().srem(redisKeyModel.key, ele: ele)
-        if r > 0 {
-            list.remove(at: index)
-        }
+        let _ = redisInstanceModel.getClient().srem(redisKeyModel.key, ele: ele).done({r in
+            if r > 0 {
+                self.list.remove(at: index)
+            }
+        })
     }
 }
 

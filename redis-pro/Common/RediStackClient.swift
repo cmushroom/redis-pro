@@ -70,7 +70,7 @@ class RediStackClient{
             })
         
         
-        return Promise<[RedisKeyModel]> { resolver in
+        let promise = Promise<[RedisKeyModel]> { resolver in
             let _ = when(fulfilled: dbsizeAsync(),  scanPromise).done({ r1, r2 in
                 print("when result.... \(r1), \(r2)")
                 let total = r1
@@ -79,14 +79,10 @@ class RediStackClient{
                 page.cursor = cursor
                 
                 resolver.fulfill(r2)
-            }).catch({ error in
-                self.globalContext?.showError(error)
-            }).finally {
-                DispatchQueue.main.async {
-                    self.globalContext?.loading =  false
-                }
-            }
+            })
         }
+        afterPromise(promise)
+        return promise
     }
     
     func toRedisKeyModels(keys:[String]) throws -> [RedisKeyModel] {
@@ -126,9 +122,7 @@ class RediStackClient{
         var set:[(String, Double)?] = [(String, Double)?]()
         var cursor:Int = page.cursor
         
-        //            let res:(Int, [(String, Double)?]) = try zscan(key, cursor: cursor, count: page.size, keywords: match)
-        
-        let promise = zscanAsync(key, cursor: cursor, keywords: match).then({ res in
+        let scanPromise = zscanAsync(key, cursor: cursor, keywords: match).then({ res in
             Promise<[(String, Double)?]>{ resolver in
                 cursor = res.0
                 set = res.1
@@ -170,8 +164,8 @@ class RediStackClient{
         
         
         
-        return Promise<[(String, Double)?]> { resolver in
-            let _ = when(fulfilled: countPromise,  promise).done({ r1, r2 in
+        let promise = Promise<[(String, Double)?]> { resolver in
+            let _ = when(fulfilled: countPromise,  scanPromise).done({ r1, r2 in
                 let total = r1
                 page.total = total
                 page.hasNext = cursor != 0
@@ -186,31 +180,8 @@ class RediStackClient{
                 }
             }
         }
-        
-        
-        //            cursor = res.0
-        //            set = res.1
-        //
-        //            // 如果取出数量不够 page.size, 继续迭带补满
-        //            if cursor != 0 && set.count < page.size {
-        //                while true {
-        //                    let moreRes:(Int, [(String, Double)?]) = try zscan(key, cursor:cursor, count: 1, keywords: match)
-        //
-        //                    set.append(contentsOf: moreRes.1)
-        //                    cursor = moreRes.0
-        //                    page.cursor = cursor
-        //                    if cursor == 0 || set.count == page.size {
-        //                        break
-        //                    }
-        //                }
-        //            }
-        //
-        //            let total = try getConnection().zcard(of: RedisKey(key)).wait()
-        //            page.total = total
-        //            page.hasNext = cursor != 0
-        //            page.cursor = cursor
-        //
-        //            return set
+        afterPromise(promise)
+        return promise
     }
     
     
@@ -249,68 +220,165 @@ class RediStackClient{
         }
     }
     
-    func zupdate(_ key:String, from:String, to:String, score:Double) throws -> Bool {
+    func zupdate(_ key:String, from:String, to:String, score:Double) throws -> Promise<Bool> {
         logger.info("update zset element key: \(key), from:\(from), to:\(to), score:\(score)")
-        let _ = try zrem(key, ele: from)
-        return try zadd(key, score: score, ele: to)
+        self.globalContext?.loading = true
+        
+        let promise = zremInner(key, ele: from).then({ _ in
+            self.zadd(key, score: score, ele: to)
+        })
+        
+        afterPromise(promise)
+        
+        return promise
     }
     
-    func zadd(_ key:String, score:Double, ele:String) throws -> Bool {
-        return try getConnection().zadd((element: ele, score: score), to: RedisKey(key)).wait()
+    func zadd(_ key:String, score:Double, ele:String) -> Promise<Bool> {
+        self.globalContext?.loading = true
+        
+        let promise = zaddInner(key, score: score, ele: ele)
+        
+        afterPromise(promise)
+        
+        return promise
     }
     
-    func zrem(_ key:String, ele:String) throws -> Int {
-        return try getConnection().zrem(ele, from: RedisKey(key)).wait()
+    private func zaddInner(_ key:String, score:Double, ele:String) -> Promise<Bool> {
+        return getConnectionAsync().then({ connection in
+            Promise<Bool> { resolver in
+                connection.zadd((element: ele, score: score), to: RedisKey(key))
+                    .whenComplete({ completion in
+                        if case .success(let r) = completion {
+                            resolver.fulfill(r)
+                        }
+                        else if case .failure(let error) = completion {
+                            self.logger.error("redis zset zcard key:\(key) error: \(error)")
+                            resolver.reject(error)
+                        }
+                    })
+            }
+        })
+    }
+    
+    func zrem(_ key:String, ele:String) -> Promise<Int> {
+        self.globalContext?.loading = true
+        
+        let promise = zremInner(key, ele: ele)
+        
+        afterPromise(promise)
+        
+        return promise
+    }
+    
+    private func zremInner(_ key:String, ele:String) -> Promise<Int> {
+        return getConnectionAsync().then({ connection in
+            Promise<Int> { resolver in
+                connection.zrem(ele, from: RedisKey(key))
+                    .whenComplete({ completion in
+                        if case .success(let r) = completion {
+                            resolver.fulfill(r)
+                        }
+                        else if case .failure(let error) = completion {
+                            self.logger.error("redis zset zrem key:\(key), ele:\(ele), error: \(error)")
+                            resolver.reject(error)
+                        }
+                    })
+            }
+        })
     }
     
     // set operator
-    func pageSet(_ redisKeyModel:RedisKeyModel, page:Page) throws -> [String?] {
+    func pageSet(_ redisKeyModel:RedisKeyModel, page:Page) -> Promise<[String?]> {
         if redisKeyModel.isNew {
-            return [String?]()
+            return Promise<[String?]>.value([String?]())
         }
-        return try pageSet(redisKeyModel.key, page: page)
+        return pageSet(redisKeyModel.key, page: page)
     }
     
-    func pageSet(_ key:String, page:Page) throws -> [String?] {
-        do {
-            logger.info("redis set page, key: \(key), page: \(page)")
-            
-            let match = page.keywords.isEmpty ? nil : page.keywords
-            
-            var set:[String?] = [String?]()
-            var cursor:Int = page.cursor
-            
-            let res:(Int, [String?]) = try sscan(key, cursor: cursor, count: page.size, keywords: match)
-            
-            cursor = res.0
-            
-            set = res.1
-            
-            // 如果取出数量不够 page.size, 继续迭带补满
-            if cursor != 0 && set.count < page.size {
-                while true {
-                    let moreRes:(Int, [String?]) = try sscan(key, cursor:cursor, count: 1, keywords: match)
-                    
-                    set.append(contentsOf: moreRes.1)
-                    cursor = moreRes.0
-                    page.cursor = cursor
-                    if cursor == 0 || set.count == page.size {
-                        break
+    func pageSet(_ key:String, page:Page) -> Promise<[String?]> {
+        
+        logger.info("redis set page, key: \(key), page: \(page)")
+        
+        self.globalContext?.loading = true
+        
+        let match = page.keywords.isEmpty ? nil : page.keywords
+        
+        var set:[String?] = [String?]()
+        var cursor:Int = page.cursor
+        
+        let scanPromise = sscanAsync(key, cursor: cursor, count: page.size, keywords: match).then({ res in
+            Promise<[String?]>{ resolver in
+                cursor = res.0
+                set = res.1
+                
+                
+                // 如果取出数量不够 page.size, 继续迭带补满
+                if cursor != 0 && set.count < page.size {
+                    while true {
+                        let moreRes:(Int, [String?]) = try self.sscan(key, cursor:cursor, count: 1, keywords: match)
+                        
+                        set.append(contentsOf: moreRes.1)
+                        cursor = moreRes.0
+                        page.cursor = cursor
+                        if cursor == 0 || set.count == page.size {
+                            resolver.fulfill(set)
+                        }
                     }
+                } else {
+                    resolver.fulfill(set)
                 }
             }
-            
-            let total = try getConnection().scard(of: RedisKey(key)).wait()
-            page.total = total
-            page.hasNext = cursor != 0
-            page.cursor = cursor
-            
-            return set
-            
-        } catch {
-            logger.error("query redis set page error \(error)")
-            throw error
+        })
+        
+        
+        let countPromise =
+            getConnectionAsync().then({ connection in
+                Promise<Int> { resolver in
+                    connection.scard(of: RedisKey(key))
+                        .whenComplete({ completion in
+                            if case .success(let r) = completion {
+                                resolver.fulfill(r)
+                            }
+                            else if case .failure(let error) = completion {
+                                self.logger.error("redis set card key:\(key) error: \(error)")
+                                resolver.reject(error)
+                            }
+                        })
+                }
+            })
+        
+        
+        
+        let promise = Promise<[String?]> { resolver in
+            let _ = when(fulfilled: countPromise,  scanPromise).done({ r1, r2 in
+                let total = r1
+                page.total = total
+                page.hasNext = cursor != 0
+                page.cursor = cursor
+                
+                resolver.fulfill(r2)
+            })
         }
+        afterPromise(promise)
+        return promise
+    }
+    
+    func sscanAsync(_ key:String, cursor:Int, count:Int? = 1, keywords:String?) -> Promise<(Int, [String?])> {
+        logger.debug("redis set scan, key: \(key) cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
+        return getConnectionAsync().then({connection in
+            Promise<(Int, [String?])> { resolver in
+                connection.sscan(RedisKey(key), startingFrom: cursor, matching: keywords, count: count, valueType: String.self)
+                    .whenComplete({completion in
+                        if case .success(let r) = completion {
+                            resolver.fulfill(r)
+                        }
+                        else if case .failure(let error) = completion {
+                            self.logger.error("redis set scan key:\(key) error: \(error)")
+                            resolver.reject(error)
+                        }
+                    })
+            }
+        })
     }
     
     func sscan(_ key:String, cursor:Int, count:Int? = 1, keywords:String?) throws -> (Int, [String?]) {
@@ -325,21 +393,74 @@ class RediStackClient{
         }
     }
     
-    func srem(_ key:String, ele:String) throws -> Int {
-        return try getConnection().srem(ele, from: RedisKey(key)).wait()
+    func supdate(_ key:String, from:String, to:String) -> Promise<Int> {
+        self.globalContext?.loading = true
+        logger.info("redis set update, key: \(key), from: \(from), to: \(to)")
+        
+        let promise = sremInner(key, ele: from).then({ _ in
+            self.sadd(key, ele: to)
+        })
+        
+        return promise
     }
     
-    func supdate(_ key:String, from:String, to:String) throws -> Int {
-        var r = try srem(key, ele: from)
-        r += try sadd(key, ele: to)
-        return r
+    func srem(_ key:String, ele:String) -> Promise<Int> {
+        self.globalContext?.loading = true
+        
+        let promise = sremInner(key, ele: ele)
+        
+        afterPromise(promise)
+        
+        return promise
     }
-    func sadd(_ key:String, ele:String) throws -> Int {
-        return try getConnection().sadd(ele, to: RedisKey(key)).wait()
+    
+    private func sremInner(_ key:String, ele:String) -> Promise<Int> {
+        return getConnectionAsync().then({connection in
+            Promise<Int> {resolver in
+                connection.srem(ele, from: RedisKey(key))
+                    .whenComplete({completion in
+                        if case .success(let r) = completion {
+                            resolver.fulfill(r)
+                        }
+                        else if case .failure(let error) = completion {
+                            self.logger.error("redis set srem key:\(key), ele:\(ele), error: \(error)")
+                            resolver.reject(error)
+                        }
+                    })
+            }
+        })
+        
+        //        return try getConnection().srem(ele, from: RedisKey(key)).wait()
+    }
+    
+    func sadd(_ key:String, ele:String) -> Promise<Int> {
+        self.globalContext?.loading = true
+        
+        let promise = saddInner(key, ele: ele)
+        
+        afterPromise(promise)
+        
+        return promise
+    }
+    
+    private func saddInner(_ key:String, ele:String) -> Promise<Int> {
+        return getConnectionAsync().then({connection in
+            Promise<Int> {resolver in
+                connection.sadd(ele, to: RedisKey(key))
+                    .whenComplete({completion in
+                        if case .success(let r) = completion {
+                            resolver.fulfill(r)
+                        }
+                        else if case .failure(let error) = completion {
+                            self.logger.error("redis set add key:\(key), ele:\(ele), error: \(error)")
+                            resolver.reject(error)
+                        }
+                    })
+            }
+        })
     }
     
     // list operator
-    
     func pageList(_ redisKeyModel:RedisKeyModel, page:Page) throws -> [String?] {
         if redisKeyModel.isNew {
             return [String?]()
@@ -432,56 +553,105 @@ class RediStackClient{
     
     // hash operator
     
-    func pageHash(_ redisKeyModel:RedisKeyModel, page:Page) throws -> [String:String?] {
+    func pageHash(_ redisKeyModel:RedisKeyModel, page:Page) -> Promise<[String:String?]> {
         if redisKeyModel.isNew {
-            return [String:String?]()
+            return Promise<[String:String?]>.value([String:String?]())
         }
         
-        return try pageHash(redisKeyModel.key, page: page)
+        return pageHash(redisKeyModel.key, page: page)
     }
     
-    func pageHash(_ key:String, page:Page) throws -> [String:String?] {
-        do {
-            logger.info("redis hash field page scan, key: \(key), page: \(page)")
+    func pageHash(_ key:String, page:Page) -> Promise<[String:String?]> {
+        logger.info("redis hash field page scan, key: \(key), page: \(page)")
+        
+        self.globalContext?.loading = true
+        
+        let match = page.keywords.isEmpty ? nil : page.keywords
+        
+        var entries:[String:String?] = [String:String?]()
+        var cursor:Int = page.cursor
+        
+        let scanPromise = hscanAsync(key, cursor: cursor, count: page.size, keywords: match).then({res in
             
-            let match = page.keywords.isEmpty ? nil : page.keywords
-            
-            var entries:[String:String?] = [String:String?]()
-            var cursor:Int = page.cursor
-            
-            let res:(Int, [String:String?]) = try hscan(key, cursor: cursor, count: page.size, keywords: match)
-            
-            cursor = res.0
-            
-            entries = res.1
-            
-            // 如果取出数量不够 page.size, 继续迭带补满
-            if cursor != 0 && entries.count < page.size {
-                while true {
-                    let moreRes:(cursor:Int, [String:String?]) = try hscan(key, cursor:cursor, count: 1, keywords: match)
-                    
-                    entries = entries.merging(moreRes.1) { (first, _) -> String? in
-                        first
+            Promise<[String:String?]>{ resolver in
+                cursor = res.0
+                entries = res.1
+                
+                // 如果取出数量不够 page.size, 继续迭带补满
+                if cursor != 0 && entries.count < page.size {
+                    while true {
+                        let moreRes:(cursor:Int, [String:String?]) = try self.hscan(key, cursor:cursor, count: 1, keywords: match)
+                        
+                        entries = entries.merging(moreRes.1) { (first, _) -> String? in
+                            first
+                        }
+                        
+                        cursor = moreRes.0
+                        page.cursor = cursor
+                        if cursor == 0 || entries.count == page.size {
+                            resolver.fulfill(entries)
+                        }
                     }
-                    
-                    cursor = moreRes.0
-                    page.cursor = cursor
-                    if cursor == 0 || entries.count == page.size {
-                        break
-                    }
+                } else {
+                    resolver.fulfill(entries)
                 }
             }
-            
-            let total = try hlen(key)
-            page.total = total
-            page.hasNext = cursor != 0
-            page.cursor = cursor
-            
-            return entries
-        } catch {
-            logger.error("query redis hash entry page error \(error)")
-            throw error
+        })
+        
+        let promise = Promise<[String:String?]> { resolver in
+            let _ = when(fulfilled: self.hlen(key),  scanPromise).done({ r1, r2 in
+                let total = r1
+                page.total = total
+                page.hasNext = cursor != 0
+                page.cursor = cursor
+                
+                resolver.fulfill(r2)
+            })
         }
+        afterPromise(promise)
+        return promise
+        
+        //        do {
+        //            logger.info("redis hash field page scan, key: \(key), page: \(page)")
+        //
+        //            let match = page.keywords.isEmpty ? nil : page.keywords
+        //
+        //            var entries:[String:String?] = [String:String?]()
+        //            var cursor:Int = page.cursor
+        //
+        //            let res:(Int, [String:String?]) = try hscan(key, cursor: cursor, count: page.size, keywords: match)
+        //
+        //            cursor = res.0
+        //
+        //            entries = res.1
+        //
+        //            // 如果取出数量不够 page.size, 继续迭带补满
+        //            if cursor != 0 && entries.count < page.size {
+        //                while true {
+        //                    let moreRes:(cursor:Int, [String:String?]) = try hscan(key, cursor:cursor, count: 1, keywords: match)
+        //
+        //                    entries = entries.merging(moreRes.1) { (first, _) -> String? in
+        //                        first
+        //                    }
+        //
+        //                    cursor = moreRes.0
+        //                    page.cursor = cursor
+        //                    if cursor == 0 || entries.count == page.size {
+        //                        break
+        //                    }
+        //                }
+        //            }
+        //
+        //            let total = try hlen(key)
+        //            page.total = total
+        //            page.hasNext = cursor != 0
+        //            page.cursor = cursor
+        //
+        //            return entries
+        //        } catch {
+        //            logger.error("query redis hash entry page error \(error)")
+        //            throw error
+        //        }
     }
     
     func hset(_ key:String, field:String, value:String) throws -> Bool {
@@ -494,11 +664,42 @@ class RediStackClient{
         return try getConnection().hdel(field, from: RedisKey(key)).wait()
     }
     
-    func hlen(_ key:String) throws -> Int {
-        return try getConnection().hlen(of: RedisKey(key)).wait()
+    private func hlen(_ key:String) -> Promise<Int> {
+        return getConnectionAsync().then({connection in
+            Promise<Int> {resolver in
+                connection.hlen(of: RedisKey(key))
+                    .whenComplete({completion in
+                        if case .success(let r) = completion {
+                            resolver.fulfill(r)
+                        }
+                        else if case .failure(let error) = completion {
+                            self.logger.error("redis hash hlen error \(error)")
+                            resolver.reject(error)
+                        }
+                    })
+            }
+        })
     }
     
-    func hscan(_ key:String, cursor:Int, count:Int? = 1, keywords:String?) throws -> (Int, [String: String?]) {
+    private func hscanAsync(_ key:String, cursor:Int, count:Int? = 1, keywords:String?) -> Promise<(Int, [String: String?])> {
+        logger.debug("redis hash scan, key: \(key) cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
+        return getConnectionAsync().then({connection in
+            Promise<(Int, [String: String?])>{ resolver in
+                connection.hscan(RedisKey(key), startingFrom: cursor, matching: keywords, count: count, valueType: String.self)
+                    .whenComplete({completion in
+                        if case .success(let r) = completion {
+                            resolver.fulfill(r)
+                        }
+                        else if case .failure(let error) = completion {
+                            self.logger.error("redis hash scan error \(error)")
+                            resolver.reject(error)
+                        }
+                    })
+            }
+        })
+    }
+    
+    private func hscan(_ key:String, cursor:Int, count:Int? = 1, keywords:String?) throws -> (Int, [String: String?]) {
         do {
             logger.debug("redis hash scan, key: \(key) cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
             
@@ -709,22 +910,14 @@ class RediStackClient{
             })
         
         
-        promise
+        let _ = promise
             .get({ pong in
                 DispatchQueue.main.async {
                     self.redisModel.ping = pong
                 }
             })
-            .catch({ error in
-                self.logger.info("promise reject ....")
-                self.globalContext?.showError(error)
-            })
-            .finally {
-                self.logger.info("ping finally exec...")
-                DispatchQueue.main.async {
-                    self.globalContext?.loading = false
-                }
-            }
+        
+        afterPromise(promise)
         
         return promise
     }
@@ -810,5 +1003,15 @@ class RediStackClient{
         } catch {
             logger.error("redis connection close error: \(error)")
         }
+    }
+    
+    func afterPromise<T:CatchMixin>(_ promise:T) -> Void{
+        promise
+            .catch({error in
+                self.globalContext?.showError(error)
+            })
+            .finally {
+                self.globalContext?.loading = false
+            }
     }
 }

@@ -431,8 +431,6 @@ class RediStackClient{
                     })
             }
         })
-        
-        //        return try getConnection().srem(ele, from: RedisKey(key)).wait()
     }
     
     func sadd(_ key:String, ele:String) -> Promise<Int> {
@@ -779,19 +777,26 @@ class RediStackClient{
         }
     }
     
-    func hget(_ key:String, field:String) throws -> String {
-        do {
-            let v = try getConnection().hget(field, from: RedisKey(key)).wait()
-            logger.info("hget value key: \(key), field: \(field) complete, r: \(v)")
-            
-            if v.isNull {
-                throw BizError(message: "Key `\(key)`, field: `\(field)` is not exist!")
+    func hget(_ key:String, field:String) -> Promise<String> {
+        logger.info("get hash field value, key:\(key), field: \(field)")
+        self.globalContext?.loading = true
+        let promise = getConnectionAsync().then({connection in
+            Promise<String> {resolver in
+                connection.hget(field, from: RedisKey(key)).whenComplete({completion in
+                    if case .success(let r) = completion {
+                        self.logger.info("hget value key: \(key), field: \(field) complete, r: \(r)")
+                        resolver.fulfill(r.string!)
+                    }
+                    else if case .failure(let error) = completion {
+                        self.logger.error("redis hash get field error, key: \(key), field: \(field), error: \(error)")
+                        resolver.reject(error)
+                    }
+                })
             }
-            return v.string!
-        } catch {
-            logger.error("get value key:\(key) error: \(error)")
-            throw error
-        }
+        })
+        
+        afterPromise(promise)
+        return promise
     }
     
     // string operator
@@ -915,25 +920,41 @@ class RediStackClient{
         return promise
     }
     
-    func ttl(_ redisKeyModel:RedisKeyModel) throws -> Void {
+    func ttl(_ redisKeyModel:RedisKeyModel) -> Void {
         if redisKeyModel.isNew {
             return
         }
-        try redisKeyModel.ttl = ttl(key: redisKeyModel.key)
+
+        let _ = ttl(key: redisKeyModel.key).done({r in
+            redisKeyModel.ttl = r
+        })
     }
     
     
-    func ttl(key:String) throws -> Int {
-        let r:RedisKey.Lifetime = try getConnection().ttl(RedisKey(key)).wait()
+    func ttl(key:String) -> Promise<Int> {
+        logger.info("get ttl key: \(key)")
         
-        logger.info("query redis key ttl, key: \(key), r:\(r)")
-        if r == RedisKey.Lifetime.keyDoesNotExist {
-            throw BizError(message: "redis key: \(key) does not exist!")
-        } else if r == RedisKey.Lifetime.unlimited {
-            return -1
-        } else {
-            return Int(r.timeAmount!.nanoseconds / 1000000000)
-        }
+        let promise = getConnectionAsync().then({connection in
+            Promise<Int>{resolver in
+                connection.ttl(RedisKey(key)).whenComplete({completion in
+                    if case .success(let r) = completion {
+                        self.logger.info("query redis key ttl, key: \(key), r:\(r)")
+                        if r == RedisKey.Lifetime.keyDoesNotExist {
+                            resolver.reject(BizError(message: "redis key: \(key) does not exist!"))
+                        } else if r == RedisKey.Lifetime.unlimited {
+                            resolver.fulfill(-1)
+                        } else {
+                            resolver.fulfill(Int(r.timeAmount!.nanoseconds / 1000000000))
+                        }
+                    }
+                    else if case .failure(let error) = completion {
+                        self.logger.error("redis get key type error \(error)")
+                        resolver.reject(error)
+                    }
+                })
+            }
+        })
+        return promise
     }
     
     private func type(_ key:String) -> Promise<String> {

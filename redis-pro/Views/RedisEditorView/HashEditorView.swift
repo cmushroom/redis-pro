@@ -215,7 +215,9 @@ struct HashEditorView: View {
     }
     
     func ttl(_ redisKeyModel:RedisKeyModel) throws -> Void {
-        redisKeyModel.ttl = try redisInstanceModel.getClient().ttl(key: redisKeyModel.key)
+        let _  = redisInstanceModel.getClient().ttl(key: redisKeyModel.key).done({r in
+            redisKeyModel.ttl = r
+        })
     }
     
     func deleteField(_ field:String) throws -> Void {

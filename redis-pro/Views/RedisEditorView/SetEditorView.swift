@@ -167,7 +167,7 @@ struct SetEditorView: View {
     func onRefreshAction() throws -> Void {
         page.resetHead()
         queryPage(redisKeyModel)
-        try ttl(redisKeyModel)
+        ttl(redisKeyModel)
     }
     
     func onQueryField() throws -> Void {
@@ -189,8 +189,10 @@ struct SetEditorView: View {
         })
     }
     
-    func ttl(_ redisKeyModel:RedisKeyModel) throws -> Void {
-        redisKeyModel.ttl = try redisInstanceModel.getClient().ttl(key: redisKeyModel.key)
+    func ttl(_ redisKeyModel:RedisKeyModel) -> Void {
+        let _ = redisInstanceModel.getClient().ttl(key: redisKeyModel.key).done({r in
+            redisKeyModel.ttl = r
+        })
     }
     
     func deleteEle(_ index:Int) throws -> Void {

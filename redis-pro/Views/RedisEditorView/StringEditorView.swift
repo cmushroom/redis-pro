@@ -70,7 +70,7 @@ struct StringEditorView: View {
     
     func onRefreshAction() throws -> Void {
         try getValue(redisKeyModel)
-        try redisInstanceModel.getClient().ttl(redisKeyModel)
+        redisInstanceModel.getClient().ttl(redisKeyModel)
     }
     
     func onLoad(_ redisKeyModel:RedisKeyModel) -> Void {

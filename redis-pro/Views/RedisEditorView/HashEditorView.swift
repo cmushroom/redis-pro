@@ -16,7 +16,7 @@ struct HashEditorView: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @EnvironmentObject var globalContext:GlobalContext
     @ObservedObject var redisKeyModel:RedisKeyModel
-    @StateObject private var page:Page = Page()
+    @StateObject private var page:ScanModel = ScanModel()
     
     @State private var editModalVisible:Bool = false
     @State private var editNewField:Bool = false
@@ -44,7 +44,7 @@ struct HashEditorView: View {
                 SearchBar(keywords: $page.keywords, placeholder: "Search field...", action: onQueryField)
                 
                 Spacer()
-                PageBar(page:page, action: onPageAction)
+                ScanBar(scanModel:page, action: onPageAction)
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
             
@@ -185,35 +185,30 @@ struct HashEditorView: View {
         try deleteField(selectField!)
     }
     func onQueryField() throws -> Void {
-        page.firstPage()
-        try queryHashPage(redisKeyModel)
+        page.resetHead()
+        queryHashPage(redisKeyModel)
     }
     
     func onSubmitAction() throws -> Void {
         logger.info("redis hash value editor on submit")
-        let _ = try redisInstanceModel.getClient().expire(redisKeyModel.key, seconds: redisKeyModel.ttl)
+        let _ = redisInstanceModel.getClient().expire(redisKeyModel.key, seconds: redisKeyModel.ttl)
     }
     
     func onRefreshAction() throws -> Void {
-        try queryHashPage(redisKeyModel)
+        queryHashPage(redisKeyModel)
         try ttl(redisKeyModel)
     }
     
     
     func onLoad(_ redisKeyModel:RedisKeyModel) -> Void {
-        do {
-            try queryHashPage(redisKeyModel)
-        } catch {
-            logger.error("on string editor view load query redis hash error:\(error)")
-            globalContext.showError(error)
-        }
+        queryHashPage(redisKeyModel)
     }
     
-    func onPageAction() throws -> Void {
-        try queryHashPage(redisKeyModel)
+    func onPageAction() -> Void {
+        queryHashPage(redisKeyModel)
     }
     
-    func queryHashPage(_ redisKeyModel:RedisKeyModel) throws -> Void {
+    func queryHashPage(_ redisKeyModel:RedisKeyModel) -> Void {
         let _ = redisInstanceModel.getClient().pageHash(redisKeyModel, page: page).done({res in
             self.hashMap = res
         })

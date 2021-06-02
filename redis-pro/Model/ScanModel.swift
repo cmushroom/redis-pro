@@ -14,7 +14,7 @@ class ScanModel:ObservableObject, CustomStringConvertible {
     @Published var cursor:Int = 0
     @Published var size:Int = 50
     @Published var keywords:String = ""
-    private var cursorHistory:[Int] = [0]
+    private var cursorHistory:[Int] = [Int]()
     
     let logger = Logger(label: "scan-model")
     
@@ -23,36 +23,37 @@ class ScanModel:ObservableObject, CustomStringConvertible {
     }
     
     var hasPrev:Bool {
-        self.cursorHistory.count > 1
+        self.cursorHistory.count > 0
     }
     
     
     var description: String {
-        return "ScanModel:[cursor:\(cursor), size:\(size), keywords:\(keywords), history: \(cursorHistory)]"
+        return "ScanModel:[cursor:\(cursor), size:\(size), keywords:\(keywords), history: \(cursorHistory), current: \(current)]"
     }
     
     func resetHead() -> Void {
+        self.current = 1
         self.cursor = 0
-        self.cursorHistory = [0]
+        self.cursorHistory.removeAll()
     }
     
-    func notifyNextPage() -> Void {
-        if self.cursor == 0 {
-            return
-        }
-        self.cursorHistory.append(self.cursor)
+    func nextPage() -> Void {
         self.current += 1
-        logger.info("scan model notify next page \(self)")
+        self.cursorHistory.append(self.cursor)
     }
     
     // 0 - 18 - 5
     func prevPage() -> Void {
-        if !hasPrev {
-            return
+        self.current -= 1
+        
+        if self.current <= 1 {
+            self.current = 1
+            self.cursor = 0
+            cursorHistory.removeAll()
         }
         
-        logger.info("scan model prev page \(self.cursorHistory)")
-        self.current -= 1
-        self.cursor = self.cursorHistory.popLast() ?? 0
+        let index = self.current - 1
+        self.cursor = (index == 0 || cursorHistory.count == 0) ? 0 : cursorHistory[index - 1]
+        self.cursorHistory.removeSubrange(index...)
     }
 }

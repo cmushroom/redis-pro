@@ -72,7 +72,7 @@ struct RedisKeysListView: View {
             MIcon(icon: "arrow.clockwise", fontSize: 12, action: onRefreshAction)
                 .help(Helps.REFRESH)
             
-            ScanBar(scanModel: scanModel, action: onQueryKeyPageAction)
+            ScanBar(scanModel: scanModel, action: onQueryKeyPageAction, totalLabel: "dbsize")
         }
     }
     
@@ -151,10 +151,11 @@ struct RedisKeysListView: View {
     
     func onRenameAction() throws -> Void {
         let renameKeyModel = redisKeyModels[oldKeyIndex!]
-        let r = try redisInstanceModel.getClient().rename(renameKeyModel.key, newKey: newKeyName)
-        if r {
-            renameKeyModel.key = newKeyName
-        }
+        let _ = redisInstanceModel.getClient().rename(renameKeyModel.key, newKey: newKeyName).done({r in
+            if r {
+                renameKeyModel.key = newKeyName
+            }
+        })
     }
     
     func onDeleteAction() throws -> Void {
@@ -176,9 +177,10 @@ struct RedisKeysListView: View {
     
     func deleteKey(_ index:Int) throws -> Void {
         let redisKeyModel = self.redisKeyModels[index]
-        let r:Int = try redisInstanceModel.getClient().del(key: redisKeyModel.key)
-        logger.info("on delete redis key: \(index), r:\(r)")
-        redisKeyModels.remove(at: index)
+        let _ = redisInstanceModel.getClient().del(key: redisKeyModel.key).done({r in
+            self.logger.info("on delete redis key: \(index), r:\(r)")
+            self.redisKeyModels.remove(at: index)
+        })
     }
     
     func onRefreshAction() -> Void {
@@ -187,14 +189,12 @@ struct RedisKeysListView: View {
     
     func onSearchKeyAction() -> Void {
         scanModel.resetHead()
-        let _ = onQueryKeyPageAction().done({ _ in
-            scanModel.notifyNextPage()
-        })
+        onQueryKeyPageAction()
     }
     
-    func onQueryKeyPageAction() -> Promise<[RedisKeyModel]> {
+    func onQueryKeyPageAction() -> Void {
         if !redisInstanceModel.isConnect || globalContext.loading {
-            return Promise<[RedisKeyModel]>.reject()
+            return
         }
 
         let promise = self.redisInstanceModel.getClient().pageKeys(scanModel)
@@ -202,7 +202,6 @@ struct RedisKeysListView: View {
         let _ = promise.done({ keysPage in
                 self.redisKeyModels = keysPage
             })
-        return promise
     }
 }
 

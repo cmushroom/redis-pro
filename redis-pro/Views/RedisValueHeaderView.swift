@@ -45,7 +45,7 @@ struct RedisValueHeaderView: View {
             return
         }
         logger.info("update redis key ttl: \(redisKeyModel)")
-        let _ = try redisInstanceModel.getClient().expire(redisKeyModel.key, seconds: redisKeyModel.ttl)
+        let _ = redisInstanceModel.getClient().expire(redisKeyModel.key, seconds: redisKeyModel.ttl)
     }
     
     func ttl(_ redisKeyModel:RedisKeyModel) -> Void {

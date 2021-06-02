@@ -10,17 +10,18 @@ import SwiftUI
 import Logging
 import PromiseKit
 
-struct ScanBar<T:Thenable>: View {
+struct ScanBar: View {
     @EnvironmentObject var globalContext:GlobalContext
     @ObservedObject var scanModel:ScanModel
-    var action: (() -> T)?
+    var action: (() throws -> Void)
+    var totalLabel:String = "Total"
     
     let logger = Logger(label: "scan-bar")
     
     var body: some View {
         HStack(alignment:.center, spacing: 4) {
             Spacer()
-            Text("Total: \(scanModel.total)")
+            Text("\(totalLabel): \(scanModel.total)")
                 .font(.footnote)
                 .lineLimit(1)
                 .multilineTextAlignment(.trailing)
@@ -42,10 +43,10 @@ struct ScanBar<T:Thenable>: View {
             
             HStack(alignment:.center) {
                 MIcon(icon: "chevron.left", disabled: !scanModel.hasPrev || globalContext.loading, action: onPrevPageAction)
-//                Text("\(page.current)/\(page.totalPage)")
-//                    .font(.footnote)
-//                    .multilineTextAlignment(.center)
-//                    .lineLimit(1)
+                Text("\(scanModel.current)")
+                    .font(.footnote)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(1)
                 MIcon(icon: "chevron.right", disabled: !scanModel.hasNext || globalContext.loading, action: onNextPageAction)
             }
             .layoutPriority(1)
@@ -53,19 +54,18 @@ struct ScanBar<T:Thenable>: View {
     }
     
     func onNextPageAction() -> Void {
-        let _ = action!().done({_ in
-            self.scanModel.notifyNextPage()
-        })
+        self.scanModel.nextPage()
+        try! action()
     }
     
     func onPrevPageAction() -> Void {
         scanModel.prevPage()
-        let _ = action!()
+        try! action()
     }
     
     func doAction() -> Void {
         logger.info("scan bar on change action, scanModel: \(scanModel)")
         scanModel.resetHead()
-        self.onNextPageAction()
+        try! action()
     }
 }

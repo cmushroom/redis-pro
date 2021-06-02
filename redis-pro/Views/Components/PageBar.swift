@@ -29,7 +29,6 @@ struct PageBar: View {
                 Text("100").tag(100)
                 Text("200").tag(200)
             }
-            .help(Helps.PAGE_SIZE)
             .onChange(of: page.size, perform: { value in
                 logger.info("on page size change: \(value)")
                 page.firstPage()
@@ -40,10 +39,10 @@ struct PageBar: View {
             
             HStack(alignment:.center) {
                 MIcon(icon: "chevron.left", action: onPrevPageAction).disabled(!page.hasPrevPage && !globalContext.loading)
-//                Text("\(page.current)/\(page.totalPage)")
-//                    .font(.footnote)
-//                    .multilineTextAlignment(.center)
-//                    .lineLimit(1)
+                Text("\(page.current)/\(page.totalPage)")
+                    .font(.footnote)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(1)
                 MIcon(icon: "chevron.right", action: onNextPageAction).disabled(!page.hasNextPage && !globalContext.loading)
             }
             .layoutPriority(1)

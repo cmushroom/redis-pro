@@ -156,7 +156,8 @@ struct ListEditorView: View {
                 try onRefreshAction()
             })
         } else {
-            let _ = redisInstanceModel.getClient().lset(redisKeyModel.key, index: editIndex + page.cursor, value: editValue).done({ _ in
+            let index = (page.current - 1) * page.size + editIndex
+            let _ = redisInstanceModel.getClient().lset(redisKeyModel.key, index: index, value: editValue).done({ _ in
                 logger.info("redis list set success, update list")
                 list[editIndex] = editValue
             })
@@ -174,7 +175,7 @@ struct ListEditorView: View {
     
     func onSubmitAction() throws -> Void {
         logger.info("redis hash value editor on submit")
-        let _ = try redisInstanceModel.getClient().expire(redisKeyModel.key, seconds: redisKeyModel.ttl)
+        let _ = redisInstanceModel.getClient().expire(redisKeyModel.key, seconds: redisKeyModel.ttl)
     }
     
     func onRefreshAction() throws -> Void {

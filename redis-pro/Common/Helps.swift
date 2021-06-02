@@ -9,7 +9,6 @@ import Foundation
 
 struct Helps {
     static let PAGE_KEYS = "redis dbsize 命令返回的数量."
-    static let PAGE_SIZE = "redis scan 命令 COUNT 参数, 实际返回数量不一定一致."
     
     static let SCAN_COUNT = "redis scan 命令 COUNT 参数, 实际返回数量不保证一致."
     

@@ -61,7 +61,7 @@ struct StringEditorView: View {
     
     func onSubmitAction() throws -> Void {
         logger.info("redis string value editor on submit")
-        try redisInstanceModel.getClient().set(redisKeyModel.key, value: text, ex: redisKeyModel.ttl)
+        let _ = redisInstanceModel.getClient().set(redisKeyModel.key, value: text, ex: redisKeyModel.ttl)
      
         if self.redisKeyModel.isNew {
             redisKeyModel.isNew = false
@@ -86,7 +86,9 @@ struct StringEditorView: View {
         if redisKeyModel.isNew {
             text = ""
         } else {
-            text = try redisInstanceModel.getClient().get(key: redisKeyModel.key)
+            let _ = redisInstanceModel.getClient().get(key: redisKeyModel.key).done({r in
+                self.text = r
+            })
         }
     }
 }

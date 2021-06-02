@@ -16,7 +16,7 @@ struct SetEditorView: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @EnvironmentObject var globalContext:GlobalContext
     @ObservedObject var redisKeyModel:RedisKeyModel
-    @StateObject private var page:Page = Page()
+    @StateObject private var page:ScanModel = ScanModel()
     
     @State private var editModalVisible:Bool = false
     @State private var editNewField:Bool = false
@@ -45,7 +45,7 @@ struct SetEditorView: View {
                            action: onDeleteAction)
                 SearchBar(keywords: $page.keywords, placeholder: "Search set...", action: onQueryField)
                 Spacer()
-                PageBar(page:page, action: onPageAction)
+                ScanBar(scanModel:page, action: onPageAction)
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
             
@@ -161,34 +161,29 @@ struct SetEditorView: View {
     
     func onSubmitAction() throws -> Void {
         logger.info("redis hash value editor on submit")
-        let _ = try redisInstanceModel.getClient().expire(redisKeyModel.key, seconds: redisKeyModel.ttl)
+        let _ = redisInstanceModel.getClient().expire(redisKeyModel.key, seconds: redisKeyModel.ttl)
     }
     
     func onRefreshAction() throws -> Void {
-        page.firstPage()
-        try queryPage(redisKeyModel)
+        page.resetHead()
+        queryPage(redisKeyModel)
         try ttl(redisKeyModel)
     }
     
     func onQueryField() throws -> Void {
-        page.firstPage()
-        try queryPage(redisKeyModel)
+        page.resetHead()
+        queryPage(redisKeyModel)
     }
     
-    func onPageAction() throws -> Void {
-        try queryPage(redisKeyModel)
+    func onPageAction() -> Void {
+        queryPage(redisKeyModel)
     }
     
     func onLoad(_ redisKeyModel:RedisKeyModel) -> Void {
-        do {
-            try queryPage(redisKeyModel)
-        } catch {
-            logger.error("on string editor view load query redis hash error:\(error)")
-            globalContext.showError(error)
-        }
+        queryPage(redisKeyModel)
     }
     
-    func queryPage(_ redisKeyModel:RedisKeyModel) throws -> Void {
+    func queryPage(_ redisKeyModel:RedisKeyModel) -> Void {
         let _ = redisInstanceModel.getClient().pageSet(redisKeyModel, page: page).done({res in
             list = res
         })

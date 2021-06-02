@@ -14,6 +14,7 @@ struct FormItemInt: View {
     @Binding var value:Int
     var suffix:String?
     var onCommit:() throws -> Void = {}
+    var autoCommit:Bool = true
     
     var body: some View {
         let valueProxy = Binding<String>(
@@ -29,7 +30,7 @@ struct FormItemInt: View {
             if !label.isEmpty {
                 FormLabel(label: label, width: labelWidth)
             }
-            MTextField(value: valueProxy, placeholder: placeholder ?? label, suffix: suffix, onCommit: onCommit)
+            MTextField(value: valueProxy, placeholder: placeholder ?? label, suffix: suffix, onCommit: onCommit, autoCommit: autoCommit)
         }
     }
 }

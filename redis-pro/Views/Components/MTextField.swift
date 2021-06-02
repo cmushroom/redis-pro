@@ -17,6 +17,7 @@ struct MTextField: View {
     var disabled:Bool = false
     @EnvironmentObject var globalContext:GlobalContext
     @Environment(\.colorScheme) var colorScheme
+    var autoCommit:Bool = true
     
     let logger = Logger(label: "text-field")
     
@@ -24,7 +25,7 @@ struct MTextField: View {
         HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 2) {
             TextField(placeholder ?? "", text: $value, onEditingChanged: { isEditing in
                 self.isEditing = isEditing
-            }, onCommit: doAction)
+            }, onCommit: doCommit)
             .disabled(disabled)
             .lineLimit(1)
             .font(.body)
@@ -45,6 +46,12 @@ struct MTextField: View {
         .overlay(
             RoundedRectangle(cornerRadius: 4).stroke(Color.gray.opacity(!disabled && isEditing ?  0.4 : 0.2), lineWidth: 1)
             )
+    }
+    
+    func doCommit() -> Void {
+        if autoCommit {
+            doAction()
+        }
     }
     
     func doAction() -> Void {

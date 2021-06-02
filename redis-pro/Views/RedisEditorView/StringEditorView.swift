@@ -59,7 +59,7 @@ struct StringEditorView: View {
         }
     }
     
-    func onSubmitAction() throws -> Void {
+    func onSubmitAction() -> Void {
         logger.info("redis string value editor on submit")
         let _ = redisInstanceModel.getClient().set(redisKeyModel.key, value: text, ex: redisKeyModel.ttl)
      
@@ -68,21 +68,16 @@ struct StringEditorView: View {
         }
     }
     
-    func onRefreshAction() throws -> Void {
-        try getValue(redisKeyModel)
+    func onRefreshAction() -> Void {
+        getValue(redisKeyModel)
         redisInstanceModel.getClient().ttl(redisKeyModel)
     }
     
     func onLoad(_ redisKeyModel:RedisKeyModel) -> Void {
-        do {
-            try getValue(redisKeyModel)
-        } catch {
-            logger.error("on string editor view load query redis key error:\(error)")
-            globalContext.showError(error)
-        }
+        getValue(redisKeyModel)
     }
     
-    func getValue(_ redisKeyModel:RedisKeyModel) throws -> Void {
+    func getValue(_ redisKeyModel:RedisKeyModel) -> Void {
         if redisKeyModel.isNew {
             text = ""
         } else {

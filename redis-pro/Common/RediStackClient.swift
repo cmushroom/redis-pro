@@ -958,7 +958,7 @@ class RediStackClient{
     }
     
     private func type(_ key:String) -> Promise<String> {
-        self.logger.info("delete key \(key)")
+        self.logger.info("get key type: \(key)")
         
         let promise = getConnectionAsync().then({connection in
             Promise<String>{resolver in

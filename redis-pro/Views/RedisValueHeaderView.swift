@@ -16,7 +16,7 @@ struct RedisValueHeaderView: View {
     
     private var ttl: some View {
         HStack(alignment:.center, spacing: 0) {
-            FormItemInt(label: "TTL(s)", value: $redisKeyModel.ttl, suffix: "square.and.pencil", onCommit: onTTLCommit)
+            FormItemInt(label: "TTL(s)", value: $redisKeyModel.ttl, suffix: "square.and.pencil", onCommit: onTTLCommit, autoCommit: false)
                 .help(Helps.TTL_HELP)
                 .frame(width: 200)
         }

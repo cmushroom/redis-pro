@@ -8,8 +8,8 @@
 import SwiftUI
 import NIO
 import RediStack
-import Logging
 import PromiseKit
+import Logging
 
 struct LoginForm: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
@@ -18,8 +18,8 @@ struct LoginForm: View {
     @ObservedObject var redisFavoriteModel: RedisFavoriteModel
     @ObservedObject var redisModel:RedisModel
     
-    
     let logger = Logger(label: "redis-login")
+    
     
     var saveBtnDisable: Bool {
         !redisModel.isFavorite

@@ -78,6 +78,8 @@
 		43BB012326390BC20039565E /* ModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BB012226390BC20039565E /* ModalView.swift */; };
 		43CD2865266F931900E11876 /* ObjcExceptionBridging in Frameworks */ = {isa = PBXBuildFile; productRef = 43CD2864266F931900E11876 /* ObjcExceptionBridging */; };
 		43CD2867266F931900E11876 /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = 43CD2866266F931900E11876 /* XCGLogger */; };
+		43CD286A2670933F00E11876 /* CheckUpdateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD28692670933F00E11876 /* CheckUpdateTests.swift */; };
+		43CD286E2670A03800E11876 /* VersionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD286D2670A03800E11876 /* VersionManager.swift */; };
 		43DFEF3725C29288006EF535 /* FormItemInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DFEF3625C29288006EF535 /* FormItemInt.swift */; };
 		43EADB052620043F003B8310 /* HashEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EADB042620043F003B8310 /* HashEditorView.swift */; };
 		43EADB0826200540003B8310 /* IconButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EADB0726200540003B8310 /* IconButton.swift */; };
@@ -178,6 +180,8 @@
 		4397288B2643E43800803BE9 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		43BB012226390BC20039565E /* ModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalView.swift; sourceTree = "<group>"; };
 		43CD2868267091B600E11876 /* .version */ = {isa = PBXFileReference; lastKnownFileType = text; path = .version; sourceTree = "<group>"; };
+		43CD28692670933F00E11876 /* CheckUpdateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckUpdateTests.swift; sourceTree = "<group>"; };
+		43CD286D2670A03800E11876 /* VersionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionManager.swift; sourceTree = "<group>"; };
 		43DFEF3625C29288006EF535 /* FormItemInt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormItemInt.swift; sourceTree = "<group>"; };
 		43EADB042620043F003B8310 /* HashEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashEditorView.swift; sourceTree = "<group>"; };
 		43EADB0726200540003B8310 /* IconButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconButton.swift; sourceTree = "<group>"; };
@@ -351,6 +355,7 @@
 				437BC24D26461E2100E2C84D /* NumberHelper.swift */,
 				4340E2CD266660FE00F51F19 /* PromiseExt.swift */,
 				43650AEB26676F0600D11CE7 /* ClassicLogger.swift */,
+				43CD286D2670A03800E11876 /* VersionManager.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -358,6 +363,7 @@
 		4340E2BB2666236200F51F19 /* redisProTests */ = {
 			isa = PBXGroup;
 			children = (
+				43CD28692670933F00E11876 /* CheckUpdateTests.swift */,
 				433FC19D2667B3530091CB32 /* FileManagerTests.swift */,
 				43650AED26677BBC00D11CE7 /* LogTests.swift */,
 				4340E2C42666239F00F51F19 /* JsonPrettyFormatTests.swift */,
@@ -566,6 +572,7 @@
 				4382203E265668CC00DA7F9E /* MLoading.swift in Sources */,
 				4385D32E261ED26200BA8ED1 /* IndexView.swift in Sources */,
 				4320AAF425B6740900A8E214 /* redis_proApp.swift in Sources */,
+				43CD286E2670A03800E11876 /* VersionManager.swift in Sources */,
 				430A09DC25BEAD2700B60DFC /* RedisInsanceModel.swift in Sources */,
 				437BC24E26461E2100E2C84D /* NumberHelper.swift in Sources */,
 				431266F5261D912500FB6B69 /* StringEditorView.swift in Sources */,
@@ -610,6 +617,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				43CD286A2670933F00E11876 /* CheckUpdateTests.swift in Sources */,
 				4340E2C52666239F00F51F19 /* JsonPrettyFormatTests.swift in Sources */,
 				4340E2BD2666236200F51F19 /* redisProTests.swift in Sources */,
 				43650AEE26677BBC00D11CE7 /* LogTests.swift in Sources */,
@@ -752,6 +760,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"redis-pro/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "redis-pro/Info.plist";
@@ -776,6 +785,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"redis-pro/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;

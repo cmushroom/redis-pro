@@ -28,8 +28,9 @@ struct redis_proApp: App {
         LoggingSystem.bootstrap({
             ClassicLogHandler(label: $0, xcgLogger: xcgLogger)
         })
-        
         logger.info("init logger complete...")
+        
+        VersionManager(globalContext: globalContext).checkUpdate()
     }
     
     var body: some Scene {
@@ -54,6 +55,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             Analytics.self,
             Crashes.self
         ])
+        
     }
     
     func applicationWillTerminate(_ notification: Notification)  {
@@ -63,4 +65,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func didFinishLaunchingWithOptions(_ notification: Notification)  {
         logger.info("redis didFinishLaunchingWithOptions...")
     }
+    
+    
 }

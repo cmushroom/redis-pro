@@ -76,6 +76,8 @@
 		438BBEB52655015D00B458BF /* CrashReporter in Frameworks */ = {isa = PBXBuildFile; productRef = 438BBEB42655015D00B458BF /* CrashReporter */; };
 		4397288C2643E43800803BE9 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4397288B2643E43800803BE9 /* Constants.swift */; };
 		43BB012326390BC20039565E /* ModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BB012226390BC20039565E /* ModalView.swift */; };
+		43CD2865266F931900E11876 /* ObjcExceptionBridging in Frameworks */ = {isa = PBXBuildFile; productRef = 43CD2864266F931900E11876 /* ObjcExceptionBridging */; };
+		43CD2867266F931900E11876 /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = 43CD2866266F931900E11876 /* XCGLogger */; };
 		43DFEF3725C29288006EF535 /* FormItemInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DFEF3625C29288006EF535 /* FormItemInt.swift */; };
 		43EADB052620043F003B8310 /* HashEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EADB042620043F003B8310 /* HashEditorView.swift */; };
 		43EADB0826200540003B8310 /* IconButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EADB0726200540003B8310 /* IconButton.swift */; };
@@ -196,9 +198,11 @@
 				436BB68726440584008B4866 /* CoreMetrics in Frameworks */,
 				4340E2B52662152B00F51F19 /* PromiseKit in Frameworks */,
 				62C48932265A138D00D68D06 /* Logging in Frameworks */,
+				43CD2865266F931900E11876 /* ObjcExceptionBridging in Frameworks */,
 				62C48938265A13E500D68D06 /* NIO in Frameworks */,
 				4340E2C82666257500F51F19 /* SwiftyJSON in Frameworks */,
 				436BB68926440584008B4866 /* Metrics in Frameworks */,
+				43CD2867266F931900E11876 /* XCGLogger in Frameworks */,
 				623704F7265A27760084CCA8 /* AppCenterAnalytics in Frameworks */,
 				62C48935265A13BB00D68D06 /* ServiceDiscovery in Frameworks */,
 				623704FC265A27970084CCA8 /* RedisTypes in Frameworks */,
@@ -435,6 +439,8 @@
 				623704FB265A27970084CCA8 /* RedisTypes */,
 				4340E2B42662152B00F51F19 /* PromiseKit */,
 				4340E2C72666257500F51F19 /* SwiftyJSON */,
+				43CD2864266F931900E11876 /* ObjcExceptionBridging */,
+				43CD2866266F931900E11876 /* XCGLogger */,
 			);
 			productName = "redis-pro";
 			productReference = 4320AAF025B6740900A8E214 /* redis-pro.app */;
@@ -495,6 +501,7 @@
 				623704F8265A27970084CCA8 /* XCRemoteSwiftPackageReference "RediStack" */,
 				4340E2B32662152B00F51F19 /* XCRemoteSwiftPackageReference "PromiseKit" */,
 				4340E2C62666257500F51F19 /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
+				43CD2863266F931900E11876 /* XCRemoteSwiftPackageReference "XCGLogger" */,
 			);
 			productRefGroup = 4320AAF125B6740900A8E214 /* Products */;
 			projectDirPath = "";
@@ -891,6 +898,14 @@
 				minimumVersion = 1.8.1;
 			};
 		};
+		43CD2863266F931900E11876 /* XCRemoteSwiftPackageReference "XCGLogger" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://gitee.com/chengpan168_admin/XCGLogger.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.1;
+			};
+		};
 		623704F3265A27760084CCA8 /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://gitee.com/chengpan168_admin/appcenter-sdk-apple.git";
@@ -958,6 +973,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 438BBEB32655015D00B458BF /* XCRemoteSwiftPackageReference "plcrashreporter" */;
 			productName = CrashReporter;
+		};
+		43CD2864266F931900E11876 /* ObjcExceptionBridging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 43CD2863266F931900E11876 /* XCRemoteSwiftPackageReference "XCGLogger" */;
+			productName = ObjcExceptionBridging;
+		};
+		43CD2866266F931900E11876 /* XCGLogger */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 43CD2863266F931900E11876 /* XCRemoteSwiftPackageReference "XCGLogger" */;
+			productName = XCGLogger;
 		};
 		623704F4265A27760084CCA8 /* AppCenterCrashes */ = {
 			isa = XCSwiftPackageProductDependency;

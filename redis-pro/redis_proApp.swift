@@ -10,6 +10,7 @@ import AppCenter
 import AppCenterAnalytics
 import AppCenterCrashes
 import Logging
+import XCGLogger
 
 @main
 struct redis_proApp: App {
@@ -17,14 +18,18 @@ struct redis_proApp: App {
     
     let logger = Logger(label: "redis-app")
     
+    
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     init() {
         // logger
+        let xcgLogger = XCGLogger.default
+        xcgLogger.setup(level: .debug, showLogIdentifier: false, showFunctionName: true, showThreadName: true, showLevel: true, showFileNames: true, showLineNumbers: true, showDate: true, writeToFile: "redis-pro.log", fileLevel: .debug)
         LoggingSystem.bootstrap({
-            ClassicLogHandler(label: $0)
+            ClassicLogHandler(label: $0, xcgLogger: xcgLogger)
         })
-        logger.info("app init start....")
+        
+        logger.info("init logger complete...")
     }
     
     var body: some Scene {
@@ -46,7 +51,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         // appcenter
         AppCenter.start(withAppSecret: "310d1d33-2570-46f9-a60d-8a862cdef6c7", services:[
-          Analytics.self,
+            Analytics.self,
             Crashes.self
         ])
     }

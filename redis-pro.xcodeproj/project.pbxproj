@@ -80,6 +80,8 @@
 		43CD2867266F931900E11876 /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = 43CD2866266F931900E11876 /* XCGLogger */; };
 		43CD286A2670933F00E11876 /* CheckUpdateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD28692670933F00E11876 /* CheckUpdateTests.swift */; };
 		43CD286E2670A03800E11876 /* VersionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD286D2670A03800E11876 /* VersionManager.swift */; };
+		43CD28712670C3DD00E11876 /* ColorSchemeEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD28702670C3DD00E11876 /* ColorSchemeEnum.swift */; };
+		43CD28742670E8BE00E11876 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD28732670E8BE00E11876 /* SettingsView.swift */; };
 		43DFEF3725C29288006EF535 /* FormItemInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DFEF3625C29288006EF535 /* FormItemInt.swift */; };
 		43EADB052620043F003B8310 /* HashEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EADB042620043F003B8310 /* HashEditorView.swift */; };
 		43EADB0826200540003B8310 /* IconButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EADB0726200540003B8310 /* IconButton.swift */; };
@@ -182,6 +184,8 @@
 		43CD2868267091B600E11876 /* .version */ = {isa = PBXFileReference; lastKnownFileType = text; path = .version; sourceTree = "<group>"; };
 		43CD28692670933F00E11876 /* CheckUpdateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckUpdateTests.swift; sourceTree = "<group>"; };
 		43CD286D2670A03800E11876 /* VersionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionManager.swift; sourceTree = "<group>"; };
+		43CD28702670C3DD00E11876 /* ColorSchemeEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSchemeEnum.swift; sourceTree = "<group>"; };
+		43CD28732670E8BE00E11876 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		43DFEF3625C29288006EF535 /* FormItemInt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormItemInt.swift; sourceTree = "<group>"; };
 		43EADB042620043F003B8310 /* HashEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashEditorView.swift; sourceTree = "<group>"; };
 		43EADB0726200540003B8310 /* IconButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconButton.swift; sourceTree = "<group>"; };
@@ -310,6 +314,7 @@
 		4320AB1625B67E2400A8E214 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				43CD28722670E89B00E11876 /* Settings */,
 				430A09E025C1557900B60DFC /* Components */,
 				62CB3D6F2619ADB60061E8C3 /* Login */,
 				4385D337261FF6E900BA8ED1 /* RedisEditorView */,
@@ -342,6 +347,7 @@
 		434047F72611C1D5001519F9 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				43CD286F2670C3BC00E11876 /* Settings */,
 				4373C50425C3F0B6002B700E /* UserDefaultsKeysEnum.swift */,
 				62CB3D7F2619B09B0061E8C3 /* RedisKeyTypeEnum.swift */,
 				431266D4261C5C9000FB6B69 /* ButtonTypeEnum.swift */,
@@ -402,6 +408,22 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		43CD286F2670C3BC00E11876 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				43CD28702670C3DD00E11876 /* ColorSchemeEnum.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		43CD28722670E89B00E11876 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				43CD28732670E8BE00E11876 /* SettingsView.swift */,
+			);
+			path = Settings;
 			sourceTree = "<group>";
 		};
 		62CB3D6F2619ADB60061E8C3 /* Login */ = {
@@ -567,6 +589,7 @@
 				431266EB261D4EED00FB6B69 /* RedisKeyValueModel.swift in Sources */,
 				430A09D925BEA9A700B60DFC /* RedisRow.swift in Sources */,
 				431266F2261D89E600FB6B69 /* RedisValueEditView.swift in Sources */,
+				43CD28742670E8BE00E11876 /* SettingsView.swift in Sources */,
 				437BC24726452AE400E2C84D /* StringFormatter.swift in Sources */,
 				430A09D325BEA91700B60DFC /* LoginView.swift in Sources */,
 				4382203E265668CC00DA7F9E /* MLoading.swift in Sources */,
@@ -596,6 +619,7 @@
 				437C09352649039000F1904C /* DatabasePicker.swift in Sources */,
 				430A09E225C1559400B60DFC /* FormLabel.swift in Sources */,
 				43BB012326390BC20039565E /* ModalView.swift in Sources */,
+				43CD28712670C3DD00E11876 /* ColorSchemeEnum.swift in Sources */,
 				434047FA2611C828001519F9 /* RedisFavoriteModel.swift in Sources */,
 				4373C50925C3F218002B700E /* RedisModel.swift in Sources */,
 				4373C50125C2E75B002B700E /* BizError.swift in Sources */,

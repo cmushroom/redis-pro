@@ -1218,7 +1218,7 @@ class RediStackClient{
         })
     }
     
-    func afterPromise<T:CatchMixin>(_ promise:T) -> Void{
+    func afterPromise<T:CatchMixin>(_ promise:T) -> Void {
         promise
             .catch({error in
                 self.globalContext?.showError(error)

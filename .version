@@ -1,5 +1,6 @@
 {
-    "currentVersion": 1,
+    "latestVersionNum": 1,
+    "latestVersion": "1.0.1",
     "updateType": "hint",
     "releaseNotes": "1. a \n2. b \n3.c"
 }

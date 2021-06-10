@@ -15,11 +15,12 @@ struct VersionManager {
     
     let logger = Logger(label: "version-manager")
     
-    func checkUpdate() -> Void {
-        let version = Bundle.main.infoDictionary?["CFBundleVersion"]
-        logger.info("check app update start, current version: \(String(describing: version))")
+    func checkUpdate(isNoUpgradeHint:Bool = false) -> Void {
+        let currentVersionNum = Bundle.main.infoDictionary?["CFBundleVersion"]
+        let currentVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"]
+        logger.info("check app update start, current version num: \(currentVersionNum ?? ""), version: \(currentVersion ?? "")")
         
-        if version == nil {
+        if currentVersionNum == nil {
             return
         }
         
@@ -32,19 +33,38 @@ struct VersionManager {
                 }
                 
                 let jsonObj = JSON(parseJSON: contents)
-                let latestVersion = jsonObj["currentVersion"]
+                let latestVersionNum = jsonObj["latestVersionNum"]
+                let latestVersion = String(describing: jsonObj["latestVersion"])
                 let updateType = String(describing: jsonObj["updateType"])
+                let releaseNotes = String(describing: jsonObj["releaseNotes"])
                 
-                if Int("\(latestVersion)") ?? 0 > Int("\(String(describing: version))") ?? 0 {
+                let currentVersionInt = Int("\(currentVersionNum ?? 0)") ?? 0
+                let latestVersionInt = Int("\(latestVersionNum)") ?? 0
+                logger.info("compare latest version, latest version: \(latestVersionInt), current version: \(currentVersionInt)")
+                if latestVersionInt > currentVersionInt {
                     logger.info("get new version success, please update!")
                     
                     // 提示升级
                     if updateType == "hint" {
-                        
+                        globalContext.alertVisible = true
+                        globalContext.alertTitle = "New version \(latestVersion) is available"
+                        globalContext.alertMessage = releaseNotes
+                        globalContext.primaryButtonText = "Upgrade"
+                        globalContext.showSecondButton = true
+                        globalContext.primaryAction = {
+                            if let url = URL(string: Constants.RELEASE_URL) {
+                                NSWorkspace.shared.open(url)
+                            }
+                        }
                     }
                     // 强制升级
                     else if updateType == "force" {
                         
+                    }
+                } else {
+                    if isNoUpgradeHint {
+                        globalContext.alertVisible = true
+                        globalContext.alertTitle = "Current version \(currentVersion ?? "") is latest!"
                     }
                 }
                 

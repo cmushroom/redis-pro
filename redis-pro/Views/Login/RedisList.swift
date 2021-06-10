@@ -17,7 +17,13 @@ struct RedisList: View {
     @EnvironmentObject var globalContext:GlobalContext
     @StateObject var redisFavoriteModel: RedisFavoriteModel = RedisFavoriteModel()
     @State private var showFavoritesOnly = false
-    @State var selectedRedisModelId: String?
+    @State private var selectedRedisModelId: String? {
+        didSet {
+            print("selectedRedisModelId did set \(selectedRedisModelId)")
+        }
+    }
+    @AppStorage("User.defaultFavorite")
+    private var defaultFavorite:String = "last"
     
     let logger = Logger(label: "redis-login")
     
@@ -94,10 +100,13 @@ struct RedisList: View {
     }
     
     func selectFavoriteRedisModel() -> Void {
-        DispatchQueue.main.async {
-            selectedRedisModelId = redisFavoriteModel.lastRedisModelId
+        if defaultFavorite == "last" {
+            DispatchQueue.main.async {
+                self.selectedRedisModelId = self.redisFavoriteModel.lastRedisModelId
+            }
+        } else {
+            self.selectedRedisModelId = defaultFavorite
         }
-        
     }
     
     func onAddAction() -> Void {

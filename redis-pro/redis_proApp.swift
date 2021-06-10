@@ -5,6 +5,7 @@
 //  Created by chengpanwang on 2021/1/19.
 //
 
+import Foundation
 import SwiftUI
 import AppCenter
 import AppCenterAnalytics
@@ -15,6 +16,8 @@ import XCGLogger
 @main
 struct redis_proApp: App {
     @StateObject var globalContext:GlobalContext = GlobalContext()
+    @AppStorage("User.colorSchemeValue")
+    private var colorSchemeValue:String = ColorSchemeEnum.AUTO.rawValue
     
     let logger = Logger(label: "redis-app")
     
@@ -29,17 +32,24 @@ struct redis_proApp: App {
             ClassicLogHandler(label: $0, xcgLogger: xcgLogger)
         })
         logger.info("init logger complete...")
-        
-        VersionManager(globalContext: globalContext).checkUpdate()
     }
     
     var body: some Scene {
         WindowGroup {
             IndexView()
+                .preferredColorScheme(ColorSchemeEnum.getColorScheme(colorSchemeValue))
                 .environmentObject(globalContext)
+                .onAppear {
+                    VersionManager(globalContext: globalContext).checkUpdate()
+                }
         }
         .commands {
-            RedisProCommands()
+            RedisProCommands(globalContext: globalContext)
+        }
+        
+        Settings {
+            SettingsView()
+                .preferredColorScheme(ColorSchemeEnum.getColorScheme(colorSchemeValue))
         }
     }
 }

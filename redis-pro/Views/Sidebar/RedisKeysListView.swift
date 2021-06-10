@@ -8,6 +8,7 @@
 import SwiftUI
 import Logging
 import PromiseKit
+import AppKit
 
 struct RedisKeysListView: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
@@ -60,14 +61,14 @@ struct RedisKeysListView: View {
     
     private var sidebarFoot: some View {
         HStack(alignment: .center, spacing: 4) {
-//            MenuButton(label:
-//                        Label("", systemImage: "ellipsis.circle")
-//                        .labelStyle(IconOnlyLabelStyle())
-//            ){
-//                Button("Order Now", action: onRefreshAction)
-//            }
-//            .frame(width:30)
-//            .menuButtonStyle(BorderlessPullDownMenuButtonStyle())
+            MenuButton(label:
+                        Label("", systemImage: "ellipsis.circle")
+                        .labelStyle(IconOnlyLabelStyle())
+            ){
+                Button("Redis Info", action: onRedisInfoAction)
+            }
+            .frame(width:30)
+            .menuButtonStyle(BorderlessPullDownMenuButtonStyle())
             
             MIcon(icon: "arrow.clockwise", fontSize: 12, action: onRefreshAction)
                 .help(Helps.REFRESH)
@@ -185,6 +186,24 @@ struct RedisKeysListView: View {
     
     func onRefreshAction() -> Void {
         self.onSearchKeyAction()
+    }
+    
+    func onRedisInfoAction() -> Void {
+        let _ = redisInstanceModel.getClient().info()
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 800, height: 600),
+            styleMask: [.titled, .closable, .resizable],
+               backing: .buffered,
+               defer: false
+        )
+        window.center()
+        window.setFrameAutosaveName("Redis Info")
+        window.title = "Redis Info"
+        window.toolbarStyle = .unifiedCompact
+        window.isReleasedWhenClosed = true
+        window.contentView = NSHostingView(rootView: Text("sss").frame(width: 400, height: 600, alignment: .center))
+        window.makeKeyAndOrderFront(nil)
+    
     }
     
     func onSearchKeyAction() -> Void {

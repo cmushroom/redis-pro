@@ -17,11 +17,7 @@ struct RedisList: View {
     @EnvironmentObject var globalContext:GlobalContext
     @StateObject var redisFavoriteModel: RedisFavoriteModel = RedisFavoriteModel()
     @State private var showFavoritesOnly = false
-    @State private var selectedRedisModelId: String? {
-        didSet {
-            print("selectedRedisModelId did set \(selectedRedisModelId)")
-        }
-    }
+    @State private var selectedRedisModelId: String?
     @AppStorage("User.defaultFavorite")
     private var defaultFavorite:String = "last"
     

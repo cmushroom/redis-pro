@@ -82,6 +82,8 @@
 		43CD286E2670A03800E11876 /* VersionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD286D2670A03800E11876 /* VersionManager.swift */; };
 		43CD28712670C3DD00E11876 /* ColorSchemeEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD28702670C3DD00E11876 /* ColorSchemeEnum.swift */; };
 		43CD28742670E8BE00E11876 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD28732670E8BE00E11876 /* SettingsView.swift */; };
+		43CD28782671FA2A00E11876 /* RedisInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD28772671FA2A00E11876 /* RedisInfoModel.swift */; };
+		43CD287A267209D900E11876 /* RedisInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD2879267209D900E11876 /* RedisInfoView.swift */; };
 		43DFEF3725C29288006EF535 /* FormItemInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DFEF3625C29288006EF535 /* FormItemInt.swift */; };
 		43EADB052620043F003B8310 /* HashEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EADB042620043F003B8310 /* HashEditorView.swift */; };
 		43EADB0826200540003B8310 /* IconButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EADB0726200540003B8310 /* IconButton.swift */; };
@@ -186,6 +188,8 @@
 		43CD286D2670A03800E11876 /* VersionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionManager.swift; sourceTree = "<group>"; };
 		43CD28702670C3DD00E11876 /* ColorSchemeEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSchemeEnum.swift; sourceTree = "<group>"; };
 		43CD28732670E8BE00E11876 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		43CD28772671FA2A00E11876 /* RedisInfoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisInfoModel.swift; sourceTree = "<group>"; };
+		43CD2879267209D900E11876 /* RedisInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisInfoView.swift; sourceTree = "<group>"; };
 		43DFEF3625C29288006EF535 /* FormItemInt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormItemInt.swift; sourceTree = "<group>"; };
 		43EADB042620043F003B8310 /* HashEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashEditorView.swift; sourceTree = "<group>"; };
 		43EADB0726200540003B8310 /* IconButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconButton.swift; sourceTree = "<group>"; };
@@ -324,6 +328,7 @@
 				431266E4261D4E2700FB6B69 /* RedisValueView.swift */,
 				431266F1261D89E600FB6B69 /* RedisValueEditView.swift */,
 				431266E7261D4E4100FB6B69 /* RedisValueHeaderView.swift */,
+				43CD2879267209D900E11876 /* RedisInfoView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -340,6 +345,7 @@
 				4340E2C92666494300F51F19 /* ScanModel.swift */,
 				4314A3632626B98700053FEE /* AlertContext.swift */,
 				4370534D262812EE00D8F1B7 /* GlobalContext.swift */,
+				43CD28772671FA2A00E11876 /* RedisInfoModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -585,6 +591,7 @@
 				43EADB0826200540003B8310 /* IconButton.swift in Sources */,
 				4382204026574E3F00DA7F9E /* MSpin.swift in Sources */,
 				431266D5261C5C9000FB6B69 /* ButtonTypeEnum.swift in Sources */,
+				43CD287A267209D900E11876 /* RedisInfoView.swift in Sources */,
 				4370534E262812EE00D8F1B7 /* GlobalContext.swift in Sources */,
 				431266EB261D4EED00FB6B69 /* RedisKeyValueModel.swift in Sources */,
 				430A09D925BEA9A700B60DFC /* RedisRow.swift in Sources */,
@@ -626,6 +633,7 @@
 				431266EE261D517500FB6B69 /* RedisKeyTypePicker.swift in Sources */,
 				62CB3D792619AEEB0061E8C3 /* RedisKeyRowView.swift in Sources */,
 				4314A344262546DF00053FEE /* Extensions.swift in Sources */,
+				43CD28782671FA2A00E11876 /* RedisInfoModel.swift in Sources */,
 				437BC2492645413000E2C84D /* MDoubleField.swift in Sources */,
 				62CB3D802619B09B0061E8C3 /* RedisKeyTypeEnum.swift in Sources */,
 				437BC2452645272E00E2C84D /* DoubleFormatter.swift in Sources */,

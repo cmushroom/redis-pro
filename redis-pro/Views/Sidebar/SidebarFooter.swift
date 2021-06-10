@@ -18,14 +18,14 @@ struct SidebarFooter: View {
     
     var body: some View {
         HStack(alignment: .center, spacing: 4) {
-//            MenuButton(label:
-//                        Label("", systemImage: "ellipsis.circle")
-//                        .labelStyle(IconOnlyLabelStyle())
-//            ){
-//                Button("Order Now", action: onRefreshAction)
-//            }
-//            .frame(width:30)
-//            .menuButtonStyle(BorderlessPullDownMenuButtonStyle())
+            MenuButton(label:
+                        Label("", systemImage: "ellipsis.circle")
+                        .labelStyle(IconOnlyLabelStyle())
+            ){
+                Button("Redis Info", action: onRedisInfoAction)
+            }
+            .frame(width:30)
+            .menuButtonStyle(BorderlessPullDownMenuButtonStyle())
             
             MIcon(icon: "arrow.clockwise", fontSize: 12, action: onRefreshAction)
                 .help(Helps.REFRESH)
@@ -42,6 +42,10 @@ struct SidebarFooter: View {
         } catch {
             globalContext.showError(error)
         }
+    }
+    
+    func onRedisInfoAction() -> Void {
+        let _ = redisInstanceModel.getClient().info()
     }
     
 }

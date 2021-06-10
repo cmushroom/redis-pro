@@ -958,8 +958,6 @@ class RediStackClient{
     }
     
     private func type(_ key:String) -> Promise<String> {
-        self.logger.info("get key type: \(key)")
-        
         let promise = getConnectionAsync().then({connection in
             Promise<String>{resolver in
                 connection.send(command: "type", with: [RESPValue.init(from: key)]).whenComplete({completion in
@@ -968,7 +966,6 @@ class RediStackClient{
                     }
                     else if case .failure(let error) = completion {
                         self.logger.error("redis get key type error \(error)")
-//                        resolver.reject(error)
                         resolver.fulfill(RedisKeyTypeEnum.NONE.rawValue)
                     }
                 })
@@ -1093,6 +1090,46 @@ class RediStackClient{
             })
         
         
+        return promise
+    }
+    
+    func info() -> Promise<[RedisInfoModel]> {
+        let promise =
+            getConnectionAsync().then({connection in
+                Promise<[RedisInfoModel]> { resolver in
+                    connection.send(command: "info")
+                        .whenComplete{ completion in
+                            if case .success(let res) = completion {
+                                self.logger.info("query redis server info success: \(res.string ?? "")")
+                                let infoStr = res.string ?? ""
+                                let lines = infoStr.components(separatedBy: "\n")
+                                
+                                var redisInfoModels = [RedisInfoModel]()
+                                var item:RedisInfoModel?
+                                
+                                lines.forEach({ line in
+                                    if line.starts(with: "#") {
+                                        if item != nil {
+                                            redisInfoModels.append(item!)
+                                        }
+                                        
+                                        item = RedisInfoModel(section: line, infos: [(String, String)]())
+                                    }
+                                    if line.contains(":") {
+                                        let infoArr = line.components(separatedBy: ":")
+                                        item?.infos.append((infoArr[0], infoArr[1]))
+                                    }
+                                })
+                                resolver.fulfill(redisInfoModels)
+                            }
+                            else if case .failure(let error) = completion {
+                                resolver.reject(error)
+                            }
+                        }
+                }
+            })
+        
+        afterPromise(promise)
         return promise
     }
     

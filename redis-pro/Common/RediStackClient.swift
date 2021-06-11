@@ -1094,6 +1094,8 @@ class RediStackClient{
     }
     
     func info() -> Promise<[RedisInfoModel]> {
+        self.globalContext?.loading = true
+        
         let promise =
             getConnectionAsync().then({connection in
                 Promise<[RedisInfoModel]> { resolver in
@@ -1112,12 +1114,13 @@ class RediStackClient{
                                         if item != nil {
                                             redisInfoModels.append(item!)
                                         }
-                                        
-                                        item = RedisInfoModel(section: line, infos: [(String, String)]())
+
+                                        let section = line.replacingOccurrences(of: "#", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
+                                        item = RedisInfoModel(section: section)
                                     }
                                     if line.contains(":") {
                                         let infoArr = line.components(separatedBy: ":")
-                                        item?.infos.append((infoArr[0], infoArr[1]))
+                                        item?.infos.append((infoArr[0].trimmingCharacters(in: .whitespacesAndNewlines), infoArr[1].trimmingCharacters(in: .whitespacesAndNewlines)))
                                     }
                                 })
                                 resolver.fulfill(redisInfoModels)

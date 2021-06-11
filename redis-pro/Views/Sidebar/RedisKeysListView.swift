@@ -13,13 +13,14 @@ import AppKit
 struct RedisKeysListView: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @EnvironmentObject var globalContext:GlobalContext
-    @State var redisKeyModels:[RedisKeyModel] = testData()
+    @State var redisKeyModels:[RedisKeyModel] = [RedisKeyModel]()
     @State var selectedRedisKeyIndex:Int?
 //    @StateObject var page:Page = Page()
     @StateObject var scanModel:ScanModel = ScanModel()
     @State private var renameModalVisible:Bool = false
     @State private var oldKeyIndex:Int?
     @State private var newKeyName:String = ""
+    @State private var redisInfoVisible:Bool = false
     
     let logger = Logger(label: "redis-key-list-view")
     
@@ -109,6 +110,26 @@ struct RedisKeysListView: View {
         }
     }
     
+    private var rightMainView: some View {
+        VStack(alignment: .leading, spacing: 0){
+            if selectRedisKeyModel == nil {
+                if redisInfoVisible {
+                    RedisInfoView()
+                        .onDisappear {
+                            self.redisInfoVisible = false
+                        }
+                } else {
+                    EmptyView()
+                }
+            } else {
+                RedisValueView(redisKeyModel: selectRedisKeyModel!)
+            }
+            Spacer()
+        }
+        .frame(minWidth: 600, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
+        .layoutPriority(1)
+    }
+    
     var body: some View {
         HSplitView {
             // sidebar
@@ -118,17 +139,7 @@ struct RedisKeysListView: View {
             .layoutPriority(0)
             
             // content
-            VStack(alignment: .leading, spacing: 0){
-                if selectRedisKeyModel == nil {
-                    EmptyView()
-                } else {
-                    RedisValueView(redisKeyModel: selectRedisKeyModel!)
-                }
-                Spacer()
-            }
-            // 这里会影响splitView 的自适应宽度, 必须加上
-            .frame(minWidth: 600, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
-            .layoutPriority(1)
+            rightMainView
         }
         .onAppear{
             onRefreshAction()
@@ -189,21 +200,23 @@ struct RedisKeysListView: View {
     }
     
     func onRedisInfoAction() -> Void {
-        let _ = redisInstanceModel.getClient().info()
-        let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 800, height: 600),
-            styleMask: [.titled, .closable, .resizable],
-               backing: .buffered,
-               defer: false
-        )
-        window.center()
-        window.setFrameAutosaveName("Redis Info")
-        window.title = "Redis Info"
-        window.toolbarStyle = .unifiedCompact
-        window.isReleasedWhenClosed = true
-        window.contentView = NSHostingView(rootView: Text("sss").frame(width: 400, height: 600, alignment: .center))
-        window.makeKeyAndOrderFront(nil)
+//        let _ = redisInstanceModel.getClient().info()
+//        let window = NSWindow(
+//            contentRect: NSRect(x: 0, y: 0, width: 800, height: 600),
+//            styleMask: [.titled, .closable, .resizable],
+//               backing: .buffered,
+//               defer: false
+//        )
+//        window.center()
+//        window.setFrameAutosaveName("Redis Info")
+//        window.title = "Redis Info"
+//        window.toolbarStyle = .unifiedCompact
+//        window.isReleasedWhenClosed = true
+//        window.contentView = NSHostingView(rootView: RedisInfoView(redisInstanceModel: redisInstanceModel).frame(minWidth: 500, minHeight: 600))
+//        window.makeKeyAndOrderFront(nil)
     
+        self.selectedRedisKeyIndex = nil
+        self.redisInfoVisible = true
     }
     
     func onSearchKeyAction() -> Void {

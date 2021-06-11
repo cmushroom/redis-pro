@@ -7,7 +7,7 @@
 * 欢迎大家一起共建！
 
 ## 平台
-目前只支持 macos 平台, 依赖swift ui
+目前只支持 macos (Intel, Apple Silicon) 平台, 依赖swift ui的支持情况
     
 
 ## 版本要求

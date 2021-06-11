@@ -4,10 +4,10 @@
 //
 //  Created by chengpanwang on 2021/6/10.
 //
-
 import Foundation
 
-struct RedisInfoModel {
+struct RedisInfoModel:Identifiable {
+    var id = UUID()
     var section:String
-    var infos:[(String, String)]
+    var infos:[(String, String)] = [(String, String)]()
 }

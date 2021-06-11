@@ -79,24 +79,28 @@ struct MButton: View {
     
     struct MButton_Previews: PreviewProvider {
         static var previews: some View {
-            VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 8) {
-                MButton(text: "custom ", action: {})
-                
-                MButton(text: "SmallButton ", action: {}).buttonStyle(SmallButtonStyle())
-                
-                Button("default", action: {})
-                
-                Button("BorderedButtonStyle", action: {})
-                    .scaleEffect(0.6)
-                
-                Button("BorderlessButtonStyle", action: {}).buttonStyle(BorderlessButtonStyle())
-                
-                Button("LinkButtonStyle", action: {}).buttonStyle(LinkButtonStyle())
-                
-                Button("PlainButtonStyle", action: {}).preferredColorScheme(.dark).environment(\.sizeCategory, .small).buttonStyle(PlainButtonStyle())
+            Group {
+                VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 8) {
+                    Text(NSLocalizedString("hello", comment: "hello"))
+                    Text(LocalizedStringKey("hello"))
+                    Text("hello")
+                    MButton(text: "Hello", action: {})
+                    
+                    MButton(text: "SmallButton ", action: {}).buttonStyle(SmallButtonStyle())
+                    
+                    Button("default", action: {})
+                    
+                    Button("BorderedButtonStyle", action: {})
+                    
+                    Button("BorderlessButtonStyle", action: {}).buttonStyle(BorderlessButtonStyle())
+                    
+                    Button("LinkButtonStyle", action: {}).buttonStyle(LinkButtonStyle())
+                    
+                    Button("PlainButtonStyle", action: {}).preferredColorScheme(.dark).environment(\.sizeCategory, .small).buttonStyle(PlainButtonStyle())
+                }
+                .preferredColorScheme(.dark)
+                .padding(20)
             }
-            .preferredColorScheme(.dark)
-            .padding(20)
         }
     }
 }

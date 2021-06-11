@@ -1,0 +1,230 @@
+/* 
+  Localizable.strings
+  redis-pro
+
+  Created by chengpanwang on 2021/6/11.
+  
+*/
+"hello"="哈喽";
+"REDIS_INFO_SERVER" = "一般 Redis 服务器信息";
+"REDIS_INFO_SERVER_REDIS_VERSION" = "Redis 服务器版本";
+"REDIS_INFO_SERVER_REDIS_GIT_SHA1" = "Git SHA1";
+"REDIS_INFO_SERVER_REDIS_GIT_DIRTY" = "Git dirty flag";
+"REDIS_INFO_SERVER_REDIS_BUILD_ID" = "构建ID";
+"REDIS_INFO_SERVER_REDIS_MODE" = "服务器模式（standalone，sentinel或者cluster）";
+"REDIS_INFO_SERVER_OS" = "Redis 服务器的宿主操作系统";
+"REDIS_INFO_SERVER_ARCH_BITS" = "架构（32 或 64 位）";
+"REDIS_INFO_SERVER_MULTIPLEXING_API" = "Redis 所使用的事件处理机制";
+"REDIS_INFO_SERVER_ATOMICVAR_API" = "Redis使用的Atomicvar API";
+"REDIS_INFO_SERVER_GCC_VERSION" = "编译 Redis 时所使用的 GCC 版本";
+"REDIS_INFO_SERVER_PROCESS_ID" = "服务器进程的 PID";
+"REDIS_INFO_SERVER_PROCESS_SUPERVISED" = "";
+"REDIS_INFO_SERVER_SERVER_TIME_USEC" = "";
+"REDIS_INFO_SERVER_RUN_ID" = "Redis 服务器的随机标识符（用于 Sentinel 和集群）";
+"REDIS_INFO_SERVER_TCP_PORT" = "TCP/IP 监听端口";
+"REDIS_INFO_SERVER_UPTIME_IN_SECONDS" = "自 Redis 服务器启动以来，经过的秒数";
+"REDIS_INFO_SERVER_UPTIME_IN_DAYS" = "自 Redis 服务器启动以来，经过的天数";
+"REDIS_INFO_SERVER_HZ" = "服务器的频率设置";
+"REDIS_INFO_SERVER_CONFIGURED_HZ" = "The server's configured frequency setting";
+"REDIS_INFO_SERVER_LRU_CLOCK" = "以分钟为单位进行自增的时钟，用于 LRU 管理";
+"REDIS_INFO_SERVER_EXECUTABLE" = "服务器的可执行文件路径";
+"REDIS_INFO_SERVER_CONFIG_FILE" = "配置文件路径";
+"REDIS_INFO_SERVER_IO_THREADS_ACTIVE" = "Flag indicating if I/O threads are active";
+
+// clients
+"REDIS_INFO_CLIENTS" = "客户端的连接部分";
+"REDIS_INFO_CLIENTS_CONNECTED_CLIENTS" = "已连接客户端的数量（不包括通过从属服务器连接的客户端）";
+"REDIS_INFO_CLIENTS_CLUSTER_CONNECTIONS" = "An approximation of the number of sockets used by the cluster's bus";
+"REDIS_INFO_CLIENTS_MAXCLIENTS" = "The value of the maxclients configuration directive. This is the upper limit for the sum of connected_clients, connected_slaves and cluster_connections.";
+"REDIS_INFO_CLIENTS_CLIENT_RECENT_MAX_INPUT_BUFFER" = "";
+"REDIS_INFO_CLIENTS_CLIENT_RECENT_MAX_OUTPUT_BUFFER" = "";
+"REDIS_INFO_CLIENTS_CLIENT_LONGEST_OUTPUT_LIST" = "当前连接的客户端当中，最长的输出列表";
+"REDIS_INFO_CLIENTS_CLIENT_BIGGEST_INPUT_BUF" = "当前连接的客户端当中，最大输入缓存";
+"REDIS_INFO_CLIENTS_BLOCKED_CLIENTS" = "正在等待阻塞命令（BLPOP、BRPOP、BRPOPLPUSH）的客户端的数量";
+"REDIS_INFO_CLIENTS_TRACKING_CLIENTS" = "Number of clients being tracked";
+"REDIS_INFO_CLIENTS_CLIENTS_IN_TIMEOUT_TABLE" = "Number of clients in the clients timeout table";
+
+// memory
+"REDIS_INFO_MEMORY" = "客户端的连接部分";
+"REDIS_INFO_MEMORY_USED_MEMORY" = "由 Redis 分配器分配的内存总量，以字节（byte）为单位";
+"REDIS_INFO_MEMORY_USED_MEMORY_HUMAN" = "以人类可读的格式返回 Redis 分配的内存总量";
+"REDIS_INFO_MEMORY_USED_MEMORY_RSS" = "从操作系统的角度，返回 Redis 已分配的内存总量（俗称常驻集大小）。这个值和 top 、 ps 等命令的输出一致。";
+"REDIS_INFO_MEMORY_USED_MEMORY_RSS_HUMAN" = "Human readable representation of previous value";
+"REDIS_INFO_MEMORY_USED_MEMORY_PEAK" = "Redis 的内存消耗峰值（以字节为单位）";
+"REDIS_INFO_MEMORY_USED_MEMORY_PEAK_HUMAN" = "以人类可读的格式返回 Redis 的内存消耗峰值";
+"REDIS_INFO_MEMORY_USED_MEMORY_PEAK_PERC" = "使用内存占峰值内存的百分比";
+"REDIS_INFO_MEMORY_USED_MEMORY_OVERHEAD" = "服务器为管理其内部数据结构而分配的所有开销的总和（以字节为单位）";
+"REDIS_INFO_MEMORY_USED_MEMORY_STARTUP" = "Redis在启动时消耗的初始内存大小（以字节为单位）";
+"REDIS_INFO_MEMORY_USED_MEMORY_DATASET" = "以字节为单位的数据集大小（used_memory减去used_memory_overhead）";
+"REDIS_INFO_MEMORY_USED_MEMORY_DATASET_PERC" = "used_memory_dataset占净内存使用量的百分比（used_memory减去used_memory_startup）";
+"REDIS_INFO_MEMORY_ALLOCATOR_ALLOCATED" = "";
+"REDIS_INFO_MEMORY_ALLOCATOR_ACTIVE" = "";
+"REDIS_INFO_MEMORY_ALLOCATOR_RESIDENT" = "";
+"REDIS_INFO_MEMORY_TOTAL_SYSTEM_MEMORY" = "Redis主机具有的内存总量";
+"REDIS_INFO_MEMORY_TOTAL_SYSTEM_MEMORY_HUMAN" = "以人类可读的格式返回 Redis主机具有的内存总量";
+"REDIS_INFO_MEMORY_USED_MEMORY_LUA" = "Lua 引擎所使用的内存大小（以字节为单位）";
+"REDIS_INFO_MEMORY_USED_MEMORY_LUA_HUMAN" = "以人类可读的格式返回 Lua 引擎所使用的内存大小";
+"REDIS_INFO_MEMORY_USED_MEMORY_SCRIPTS" = "Number of bytes used by cached Lua scripts";
+"REDIS_INFO_MEMORY_USED_MEMORY_SCRIPTS_HUMAN" = "Human readable representation of previous value";
+"REDIS_INFO_MEMORY_NUMBER_OF_CACHED_SCRIPTS" = "";
+"REDIS_INFO_MEMORY_MAXMEMORY" = "maxmemory配置指令的值";
+"REDIS_INFO_MEMORY_MAXMEMORY_HUMAN" = "以人类可读的格式返回 maxmemory配置指令的值";
+"REDIS_INFO_MEMORY_MAXMEMORY_POLICY" = "maxmemory-policy配置指令的值";
+"REDIS_INFO_MEMORY_ALLOCATOR_FRAG_RATIO" = "";
+"REDIS_INFO_MEMORY_ALLOCATOR_FRAG_BYTES" = "";
+"REDIS_INFO_MEMORY_ALLOCATOR_RSS_RATIO" = "";
+"REDIS_INFO_MEMORY_ALLOCATOR_RSS_BYTES" = "";
+"REDIS_INFO_MEMORY_RSS_OVERHEAD_RATIO" = "";
+"REDIS_INFO_MEMORY_RSS_OVERHEAD_BYTES" = "";
+"REDIS_INFO_MEMORY_MEM_FRAGMENTATION_RATIO" = "used_memory_rss 和 used_memory 之间的比率";
+"REDIS_INFO_MEMORY_MEM_FRAGMENTATION_BYTES" = "";
+"REDIS_INFO_MEMORY_MEM_NOT_COUNTED_FOR_EVICT" = "";
+"REDIS_INFO_MEMORY_MEM_REPLICATION_BACKLOG" = "";
+"REDIS_INFO_MEMORY_MEM_CLIENTS_SLAVES" = "";
+"REDIS_INFO_MEMORY_MEM_CLIENTS_NORMAL" = "";
+"REDIS_INFO_MEMORY_MEM_AOF_BUFFER" = "";
+"REDIS_INFO_MEMORY_MEM_ALLOCATOR" = "在编译时指定的， Redis 所使用的内存分配器。可以是 libc 、 jemalloc 或者 tcmalloc 。";
+"REDIS_INFO_MEMORY_ACTIVE_DEFRAG_RUNNING" = "指示活动碎片整理是否处于活动状态的标志";
+"REDIS_INFO_MEMORY_LAZYFREE_PENDING_OBJECTS" = "等待释放的对象数（由于使用ASYNC选项调用UNLINK或FLUSHDB和FLUSHALL）";
+"REDIS_INFO_MEMORY_LAZYFREED_OBJECTS" = "";
+
+// persistence
+"REDIS_INFO_PERSISTENCE" = "RDB和AOF相关信息";
+"REDIS_INFO_PERSISTENCE_LOADING" = "指示转储文件（dump）的加载是否正在进行的标志";
+"REDIS_INFO_PERSISTENCE_CURRENT_COW_SIZE" = "The size in bytes of copy-on-write memory while a child fork is running";
+"REDIS_INFO_PERSISTENCE_CURRENT_FORK_PERC" = "The percentage of progress of the current fork process. For AOF and RDB forks it is the percentage of current_save_keys_processed out of current_save_keys_total.";
+"REDIS_INFO_PERSISTENCE_CURRENT_SAVE_KEYS_PROCESSED" = "Number of keys processed by the current save operation";
+"REDIS_INFO_PERSISTENCE_CURRENT_SAVE_KEYS_TOTAL" = "Number of keys at the beginning of the current save operation";
+"REDIS_INFO_PERSISTENCE_RDB_CHANGES_SINCE_LAST_SAVE" = "自上次转储以来的更改次数";
+"REDIS_INFO_PERSISTENCE_RDB_BGSAVE_IN_PROGRESS" = "指示RDB文件是否正在保存的标志";
+"REDIS_INFO_PERSISTENCE_RDB_LAST_SAVE_TIME" = "上次成功保存RDB的基于纪年的时间戳";
+"REDIS_INFO_PERSISTENCE_RDB_LAST_BGSAVE_STATUS" = "上次RDB保存操作的状态";
+"REDIS_INFO_PERSISTENCE_RDB_LAST_BGSAVE_TIME_SEC" = "上次RDB保存操作的持续时间（以秒为单位）";
+"REDIS_INFO_PERSISTENCE_RDB_CURRENT_BGSAVE_TIME_SEC" = "正在进行的RDB保存操作的持续时间（如果有）";
+"REDIS_INFO_PERSISTENCE_RDB_LAST_COW_SIZE" = "上次RDB保存操作期间copy-on-write分配的字节大小";
+"REDIS_INFO_PERSISTENCE_AOF_ENABLED" = "表示AOF记录已激活的标志";
+"REDIS_INFO_PERSISTENCE_AOF_REWRITE_IN_PROGRESS" = "表示AOF重写操作正在进行的标志";
+"REDIS_INFO_PERSISTENCE_AOF_REWRITE_SCHEDULED" = "表示一旦进行中的RDB保存操作完成，就会安排进行AOF重写操作的标志";
+"REDIS_INFO_PERSISTENCE_AOF_LAST_REWRITE_TIME_SEC" = "上次AOF重写操作的持续时间，以秒为单位";
+"REDIS_INFO_PERSISTENCE_AOF_CURRENT_REWRITE_TIME_SEC" = "正在进行的AOF重写操作的持续时间（如果有）";
+"REDIS_INFO_PERSISTENCE_AOF_LAST_BGREWRITE_STATUS" = "上次AOF重写操作的状态";
+"REDIS_INFO_PERSISTENCE_AOF_LAST_WRITE_STATUS" = "上一次AOF写入操作的状态";
+"REDIS_INFO_PERSISTENCE_AOF_LAST_COW_SIZE" = "上次AOF重写操作期间copy-on-write分配的字节大小";
+"REDIS_INFO_PERSISTENCE_MODULE_FORK_IN_PROGRESS" = "Flag indicating a module fork is on-going";
+"REDIS_INFO_PERSISTENCE_MODULE_FORK_LAST_COW_SIZE" = "The size in bytes of copy-on-write memory during the last module fork operation";
+
+// 如果启用了AOF，则会添加以下这些额外的字段
+"REDIS_INFO_PERSISTENCE_AOF_CURRENT_SIZE" = "当前的AOF文件大小";
+"REDIS_INFO_PERSISTENCE_AOF_BASE_SIZE" = "上次启动或重写时的AOF文件大小";
+"REDIS_INFO_PERSISTENCE_AOF_PENDING_REWRITE" = "指示AOF重写操作是否会在当前RDB保存操作完成后立即执行的标志。";
+"REDIS_INFO_PERSISTENCE_AOF_BUFFER_LENGTH" = "AOF缓冲区大小";
+"REDIS_INFO_PERSISTENCE_AOF_REWRITE_BUFFER_LENGTH" = "AOF重写缓冲区大小";
+"REDIS_INFO_PERSISTENCE_AOF_PENDING_BIO_FSYNC" = "在后台IO队列中等待fsync处理的任务数";
+"REDIS_INFO_PERSISTENCE_AOF_DELAYED_FSYNC" = "延迟fsync计数器";
+
+// 如果正在执行加载操作，将会添加这些额外的字段
+"REDIS_INFO_PERSISTENCE_LOADING_START_TIME" = "加载操作的开始时间（基于纪元的时间戳）";
+"REDIS_INFO_PERSISTENCE_LOADING_TOTAL_BYTES" = "文件总大小";
+"REDIS_INFO_PERSISTENCE_LOADING_LOADED_BYTES" = "已经加载的字节数";
+"REDIS_INFO_PERSISTENCE_LOADING_LOADED_PERC" = "已经加载的百分比";
+"REDIS_INFO_PERSISTENCE_LOADING_ETA_SECONDS" = "预计加载完成所需的剩余秒数";
+
+// stats
+"REDIS_INFO_STATS" = "一般统计";
+"REDIS_INFO_STATS_TOTAL_CONNECTIONS_RECEIVED" = "服务器接受的连接总数";
+"REDIS_INFO_STATS_TOTAL_COMMANDS_PROCESSED" = "服务器处理的命令总数";
+"REDIS_INFO_STATS_INSTANTANEOUS_OPS_PER_SEC" = "每秒处理的命令数";
+"REDIS_INFO_STATS_TOTAL_NET_INPUT_BYTES" = "The total number of bytes read from the network";
+"REDIS_INFO_STATS_TOTAL_NET_OUTPUT_BYTES" = "The total number of bytes written to the network";
+"REDIS_INFO_STATS_INSTANTANEOUS_INPUT_KBPS" = "The network's read rate per second in KB/sec";
+"REDIS_INFO_STATS_INSTANTANEOUS_OUTPUT_KBPS" = "The network's write rate per second in KB/sec";
+"REDIS_INFO_STATS_REJECTED_CONNECTIONS" = "由于maxclients限制而拒绝的连接数";
+
+"REDIS_INFO_STATS_SYNC_FULL" = "The number of full resyncs with replicas";
+"REDIS_INFO_STATS_SYNC_PARTIAL_OK" = "The number of accepted partial resync requests";
+"REDIS_INFO_STATS_SYNC_PARTIAL_ERR" = "The number of denied partial resync requests";
+
+"REDIS_INFO_STATS_EXPIRED_KEYS" = "key到期事件的总数";
+
+"REDIS_INFO_STATS_EXPIRED_STALE_PERC" = "The percentage of keys probably expired";
+"REDIS_INFO_STATS_EXPIRED_TIME_CAP_REACHED_COUNT" = "The count of times that active expiry cycles have stopped early";
+"REDIS_INFO_STATS_EXPIRE_CYCLE_CPU_MILLISECONDS" = "The cumulative amount of time spend on active expiry cycles";
+
+"REDIS_INFO_STATS_EVICTED_KEYS" = "由于maxmemory限制而导致被驱逐的key的数量";
+"REDIS_INFO_STATS_KEYSPACE_HITS" = "在主字典中成功查找到key的次数";
+"REDIS_INFO_STATS_KEYSPACE_MISSES" = "在主字典中查找key失败的次数";
+"REDIS_INFO_STATS_PUBSUB_CHANNELS" = "拥有客户端订阅的全局pub/sub通道数";
+"REDIS_INFO_STATS_PUBSUB_PATTERNS" = "拥有客户端订阅的全局pub/sub模式数";
+"REDIS_INFO_STATS_LATEST_FORK_USEC" = "最新fork操作的持续时间，以微秒为单位";
+
+"REDIS_INFO_STATS_TOTAL_FORKS" = "Total number of fork operations since the server start";
+"REDIS_INFO_STATS_MIGRATE_CACHED_SOCKETS" = "The number of sockets open for MIGRATE purposes";
+"REDIS_INFO_STATS_SLAVE_EXPIRES_TRACKED_KEYS" = "The number of keys tracked for expiry purposes (applicable only to writable replicas)";
+"REDIS_INFO_STATS_ACTIVE_DEFRAG_HITS" = "Number of value reallocations performed by active the defragmentation process";
+"REDIS_INFO_STATS_ACTIVE_DEFRAG_MISSES" = "Number of aborted value reallocations started by the active defragmentation process";
+"REDIS_INFO_STATS_ACTIVE_DEFRAG_KEY_HITS" = "Number of keys that were actively defragmented";
+"REDIS_INFO_STATS_ACTIVE_DEFRAG_KEY_MISSES" = "Number of keys that were skipped by the active defragmentation process";
+"REDIS_INFO_STATS_TRACKING_TOTAL_KEYS" = "Number of keys being tracked by the server";
+"REDIS_INFO_STATS_TRACKING_TOTAL_ITEMS" = "Number of items, that is the sum of clients number for each key, that are being tracked";
+"REDIS_INFO_STATS_TRACKING_TOTAL_PREFIXES" = "Number of tracked prefixes in server's prefix table (only applicable for broadcast mode)";
+"REDIS_INFO_STATS_UNEXPECTED_ERROR_REPLIES" = "Number of unexpected error replies, that are types of errors from an AOF load or replication";
+"REDIS_INFO_STATS_TOTAL_ERROR_REPLIES" = "Total number of issued error replies, that is the sum of rejected commands (errors prior command execution) and failed commands (errors within the command execution)";
+"REDIS_INFO_STATS_TOTAL_READS_PROCESSED" = "Total number of read events processed";
+"REDIS_INFO_STATS_TOTAL_WRITES_PROCESSED" = "Total number of write events processed";
+"REDIS_INFO_STATS_IO_THREADED_READS_PROCESSED" = "Number of read events processed by the main and I/O threads";
+"REDIS_INFO_STATS_IO_THREADED_WRITES_PROCESSED" = "Number of write events processed by the main and I/O threads";
+
+// replication
+"REDIS_INFO_REPLICATION" = "主/从复制信息";
+"REDIS_INFO_REPLICATION_ROLE" = "如果实例不是任何节点的从节点，则值是”master”，如果实例从某个节点同步数据，则是”slave”。 请注意，一个从节点可以是另一个从节点的主节点（菊花链）。";
+// 如果实例是从节点，则会提供以下这些额外字段：
+
+"REDIS_INFO_REPLICATION_MASTER_HOST" = "主节点的Host名称或IP地址";
+"REDIS_INFO_REPLICATION_MASTER_PORT" = "主节点监听的TCP端口";
+"REDIS_INFO_REPLICATION_MASTER_LINK_STATUS" = "连接状态（up或者down）";
+"REDIS_INFO_REPLICATION_MASTER_LAST_IO_SECONDS_AGO" = "自上次与主节点交互以来，经过的秒数";
+"REDIS_INFO_REPLICATION_MASTER_SYNC_IN_PROGRESS" = "指示主节点正在与从节点同步";
+// 如果SYNC操作正在进行，则会提供以下这些字段：
+
+"REDIS_INFO_REPLICATION_MASTER_SYNC_LEFT_BYTES" = "同步完成前剩余的字节数";
+"REDIS_INFO_REPLICATION_MASTER_SYNC_LAST_IO_SECONDS_AGO" = "在SYNC操作期间自上次传输IO以来的秒数";
+//如果主从节点之间的连接断开了，则会提供一个额外的字段：
+"REDIS_INFO_REPLICATION_MASTER_LINK_DOWN_SINCE_SECONDS" = "自连接断开以来，经过的秒数";
+//以下字段将始终提供：
+"REDIS_INFO_REPLICATION_CONNECTED_SLAVES" = "已连接的从节点数";
+//对每个从节点，将会添加以下行：
+"REDIS_INFO_REPLICATION_SLAVEXXX" = "id，地址，端口号，状态";
+
+"REDIS_INFO_REPLICATION_MASTER_FAILOVER_STATE" = "The state of an ongoing failover, if any.";
+"REDIS_INFO_REPLICATION_MASTER_REPLID" = "The replication ID of the Redis server.";
+"REDIS_INFO_REPLICATION_MASTER_REPLID2" = "The secondary replication ID, used for PSYNC after a failover.";
+"REDIS_INFO_REPLICATION_MASTER_REPL_OFFSET" = "The server's current replication offset";
+"REDIS_INFO_REPLICATION_SECOND_REPL_OFFSET" = "The offset up to which replication IDs are accepted";
+"REDIS_INFO_REPLICATION_REPL_BACKLOG_ACTIVE" = "Flag indicating replication backlog is active";
+"REDIS_INFO_REPLICATION_REPL_BACKLOG_SIZE" = "Total size in bytes of the replication backlog buffer";
+"REDIS_INFO_REPLICATION_REPL_BACKLOG_FIRST_BYTE_OFFSET" = "The master offset of the replication backlog buffer";
+"REDIS_INFO_REPLICATION_REPL_BACKLOG_HISTLEN" = "Size in bytes of the data in the replication backlog buffer";
+
+
+// cpu
+"REDIS_INFO_CPU" = "统计CPU的消耗";
+"REDIS_INFO_CPU_USED_CPU_SYS" = "由Redis服务器消耗的系统CPU";
+"REDIS_INFO_CPU_USED_CPU_USER" = "由Redis服务器消耗的用户CPU";
+"REDIS_INFO_CPU_USED_CPU_SYS_CHILDREN" = "由后台进程消耗的系统CPU";
+"REDIS_INFO_CPU_USED_CPU_USER_CHILDREN" = "由后台进程消耗的用户CPU";
+
+// commandstats
+"REDIS_INFO_commandstats" = "Redis命令统计";
+
+//Errorstats
+"REDIS_INFO_ERRORSTATS" = "";
+"REDIS_INFO_ERRORSTATS_ERRORSTAT_ERR" = "";
+"REDIS_INFO_ERRORSTATS_ERRORSTAT_WRONGTYPE" = "";
+"REDIS_INFO_ERRORSTATS_ERRORSTAT_NOAUTH" = "";
+
+// cluster
+"REDIS_INFO_CLUSTER" = "Redis集群信息";
+"REDIS_INFO_CLUSTER_CLUSTER_ENABLED" = "表示已启用Redis集群";
+
+// keyspace
+"REDIS_INFO_KEYSPACE" = "数据库相关的统计信息";

@@ -84,6 +84,7 @@
 		43CD28742670E8BE00E11876 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD28732670E8BE00E11876 /* SettingsView.swift */; };
 		43CD28782671FA2A00E11876 /* RedisInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD28772671FA2A00E11876 /* RedisInfoModel.swift */; };
 		43CD287A267209D900E11876 /* RedisInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD2879267209D900E11876 /* RedisInfoView.swift */; };
+		43CD289E26732F4C00E11876 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 43CD28A026732F4C00E11876 /* Localizable.strings */; };
 		43DFEF3725C29288006EF535 /* FormItemInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DFEF3625C29288006EF535 /* FormItemInt.swift */; };
 		43EADB052620043F003B8310 /* HashEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EADB042620043F003B8310 /* HashEditorView.swift */; };
 		43EADB0826200540003B8310 /* IconButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EADB0726200540003B8310 /* IconButton.swift */; };
@@ -190,6 +191,8 @@
 		43CD28732670E8BE00E11876 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		43CD28772671FA2A00E11876 /* RedisInfoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisInfoModel.swift; sourceTree = "<group>"; };
 		43CD2879267209D900E11876 /* RedisInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisInfoView.swift; sourceTree = "<group>"; };
+		43CD289F26732F4C00E11876 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		43CD28A126732F5000E11876 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		43DFEF3625C29288006EF535 /* FormItemInt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormItemInt.swift; sourceTree = "<group>"; };
 		43EADB042620043F003B8310 /* HashEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashEditorView.swift; sourceTree = "<group>"; };
 		43EADB0726200540003B8310 /* IconButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconButton.swift; sourceTree = "<group>"; };
@@ -285,7 +288,6 @@
 		4320AAF225B6740900A8E214 /* redis-pro */ = {
 			isa = PBXGroup;
 			children = (
-				4382203C26564D6900DA7F9E /* redis-proRelease.entitlements */,
 				434047F72611C1D5001519F9 /* Common */,
 				4320AB1725B67E2C00A8E214 /* Model */,
 				4320AB1625B67E2400A8E214 /* Views */,
@@ -295,7 +297,9 @@
 				4320AAF725B6740A00A8E214 /* Assets.xcassets */,
 				4320AAFC25B6740A00A8E214 /* Info.plist */,
 				4320AAFD25B6740A00A8E214 /* redis_pro.entitlements */,
+				4382203C26564D6900DA7F9E /* redis-proRelease.entitlements */,
 				4320AAF925B6740A00A8E214 /* Preview Content */,
+				43CD28A026732F4C00E11876 /* Localizable.strings */,
 			);
 			path = "redis-pro";
 			sourceTree = "<group>";
@@ -323,12 +327,12 @@
 				62CB3D6F2619ADB60061E8C3 /* Login */,
 				4385D337261FF6E900BA8ED1 /* RedisEditorView */,
 				437BC24F264678FB00E2C84D /* Sidebar */,
+				43CD28A22673368E00E11876 /* RedisInfo */,
 				4385D32D261ED26200BA8ED1 /* IndexView.swift */,
 				62CB3D712619AE050061E8C3 /* HomeView.swift */,
 				431266E4261D4E2700FB6B69 /* RedisValueView.swift */,
 				431266F1261D89E600FB6B69 /* RedisValueEditView.swift */,
 				431266E7261D4E4100FB6B69 /* RedisValueHeaderView.swift */,
-				43CD2879267209D900E11876 /* RedisInfoView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -432,6 +436,14 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
+		43CD28A22673368E00E11876 /* RedisInfo */ = {
+			isa = PBXGroup;
+			children = (
+				43CD2879267209D900E11876 /* RedisInfoView.swift */,
+			);
+			path = RedisInfo;
+			sourceTree = "<group>";
+		};
 		62CB3D6F2619ADB60061E8C3 /* Login */ = {
 			isa = PBXGroup;
 			children = (
@@ -522,7 +534,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
-				Base,
+				"zh-Hans",
 			);
 			mainGroup = 4320AAE725B6740900A8E214;
 			packageReferences = (
@@ -553,6 +565,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4320AAFB25B6740A00A8E214 /* Preview Assets.xcassets in Resources */,
+				43CD289E26732F4C00E11876 /* Localizable.strings in Resources */,
 				4320AAF825B6740A00A8E214 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -667,11 +680,24 @@
 		};
 /* End PBXTargetDependency section */
 
+/* Begin PBXVariantGroup section */
+		43CD28A026732F4C00E11876 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				43CD289F26732F4C00E11876 /* zh-Hans */,
+				43CD28A126732F5000E11876 /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
 		4320AAFE25B6740A00A8E214 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -733,6 +759,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -801,7 +828,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = "1.0.0-beta";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.cmushroom.redis-pro";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -827,7 +854,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = "1.0.0-beta";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.cmushroom.redis-pro";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

@@ -39,6 +39,10 @@ class RedisModel:ObservableObject, Identifiable, CustomStringConvertible {
         self.name = name
     }
     
+    init(password: String) {
+        self.password = password
+    }
+    
     init(dictionary: [String: Any]) {
         self.id = dictionary["id"] as! String
         self.name = dictionary["name"] as! String

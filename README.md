@@ -24,3 +24,12 @@
 
 首页
 ![首页](https://raw.githubusercontent.com/cmushroom/redis-pro/resource/index.png)
+
+设置
+![设置](https://raw.githubusercontent.com/cmushroom/redis-pro/resource/settings.png)
+
+Info
+![设置](https://raw.githubusercontent.com/cmushroom/redis-pro/resource/info.png)
+
+暗黑模式
+![设置](https://raw.githubusercontent.com/cmushroom/redis-pro/resource/dark.png)

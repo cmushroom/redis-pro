@@ -7,11 +7,15 @@
 * 欢迎大家一起共建！
 
 ## 平台
-目前只支持 macos 平台, 依赖swift ui
+目前只支持 macos (Intel, Apple Silicon) 平台, 依赖swift ui的支持情况
     
 
 ## 版本要求
-macos >= 10.15
+* macos:  >= 11.0
+* redis: 3.x¹ ... 6.x
+
+## 下载地址
+[下载地址](https://github.com/cmushroom/redis-pro/releases)
 
 
 ## 应用截图
@@ -20,3 +24,12 @@ macos >= 10.15
 
 首页
 ![首页](https://raw.githubusercontent.com/cmushroom/redis-pro/resource/index.png)
+
+设置
+![设置](https://raw.githubusercontent.com/cmushroom/redis-pro/resource/settings.png)
+
+Info
+![设置](https://raw.githubusercontent.com/cmushroom/redis-pro/resource/info.png)
+
+暗黑模式
+![设置](https://raw.githubusercontent.com/cmushroom/redis-pro/resource/dark.png)

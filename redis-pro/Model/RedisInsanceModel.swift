@@ -10,17 +10,15 @@ import Foundation
 import NIO
 import RediStack
 import Logging
+import PromiseKit
 
 
 class RedisInstanceModel:ObservableObject, Identifiable {
     @Published var loading:Bool = false
     @Published var isConnect:Bool = false
-    @Published var redisModel:RedisModel {
-        didSet {
-            print("redis model did set")
-        }
-    }
+    @Published var redisModel:RedisModel
     private var rediStackClient:RediStackClient?
+    var globalContext:GlobalContext?
     
     let logger = Logger(label: "redis-instance")
     
@@ -38,6 +36,10 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         )
     }
     
+    func setUp(_ globalContext:GlobalContext) -> Void {
+        self.globalContext = globalContext
+    }
+    
     func getClient() -> RediStackClient {
         if rediStackClient != nil {
             return rediStackClient!
@@ -45,21 +47,28 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         
         logger.info("get new redis client ...")
         rediStackClient = RediStackClient(redisModel:redisModel)
+        rediStackClient?.setUp(self.globalContext!)
         return rediStackClient!
     }
     
-    func connect(redisModel:RedisModel) throws -> Void {
+    func connect(redisModel:RedisModel) -> Promise<Bool> {
         logger.info("connect to redis server: \(redisModel)")
-        do {
-            self.redisModel = redisModel
-            isConnect = try getClient().ping()
-            if !isConnect {
-                throw BizError(message: "connect redis server error")
-            }
-        } catch {
-            close()
-            throw error
-        }
+        
+        self.globalContext?.loading = true
+        
+        self.redisModel = redisModel
+        let promise = self.getClient().initConnection()
+            
+        promise.done({ r in
+            self.globalContext?.loading = false
+            self.isConnect = r
+        })
+        .catch({ error in
+            self.globalContext?.loading = false
+            self.globalContext?.showError(error)
+            self.close()
+        })
+        return promise
     }
     
     func testConnect(redisModel:RedisModel) throws -> Bool {
@@ -70,6 +79,23 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         }
         
         return try getClient().ping()
+    }
+    
+    func testConnectAsync(_ redisModel:RedisModel) -> Promise<Bool> {
+        self.redisModel = redisModel
+        
+        let promise = getClient().initConnection().then({ _ in
+            self.getClient().pingAsync()
+        })
+        
+        promise
+            .catch({error in
+                self.globalContext?.showError(error)
+            })
+            .finally {
+                self.close()
+            }
+        return promise
     }
     
     func close() -> Void {

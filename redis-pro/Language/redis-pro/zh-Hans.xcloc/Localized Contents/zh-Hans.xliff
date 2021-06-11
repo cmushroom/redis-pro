@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 http://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd">
+  <file original="redis-pro/en.lproj/InfoPlist.strings" datatype="plaintext" source-language="en" target-language="zh-Hans">
+    <header>
+      <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="12.5" build-num="12E262"/>
+    </header>
+    <body>
+      <trans-unit id="CFBundleName" xml:space="preserve">
+        <source>redis-pro</source>
+        <note>Bundle name</note>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="redis-pro/en.lproj/Localizable.strings" datatype="plaintext" source-language="en" target-language="zh-Hans">
+    <header>
+      <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="12.5" build-num="12E262"/>
+    </header>
+    <body>
+      <trans-unit id="%@" xml:space="preserve">
+        <source>%@</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="%@%@:" xml:space="preserve">
+        <source>%1$@%2$@:</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="%@/%@" xml:space="preserve">
+        <source>%1$@/%2$@</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="%@:" xml:space="preserve">
+        <source>%@:</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="%@: %@" xml:space="preserve">
+        <source>%1$@: %2$@</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="*" xml:space="preserve">
+        <source>*</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="10" xml:space="preserve">
+        <source>10</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="50" xml:space="preserve">
+        <source>50</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="100" xml:space="preserve">
+        <source>100</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="200" xml:space="preserve">
+        <source>200</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Another Tab" xml:space="preserve">
+        <source>Another Tab</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Appearance:" xml:space="preserve">
+        <source>Appearance:</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Blue" xml:space="preserve">
+        <source>Blue</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Confirm" xml:space="preserve">
+        <source>Confirm</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="DB%@" xml:space="preserve">
+        <source>DB%@</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Default Favorite:" xml:space="preserve">
+        <source>Default Favorite:</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Delete" xml:space="preserve">
+        <source>Delete</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Edit" xml:space="preserve">
+        <source>Edit</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="FAVORITES" xml:space="preserve">
+        <source>FAVORITES</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Favorite Color" xml:space="preserve">
+        <source>Favorite Color</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Field" xml:space="preserve">
+        <source>Field</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Green" xml:space="preserve">
+        <source>Green</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Hello, World!" xml:space="preserve">
+        <source>Hello, World!</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Key" xml:space="preserve">
+        <source>Key</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Last Used" xml:space="preserve">
+        <source>Last Used</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Loading..." xml:space="preserve">
+        <source>Loading...</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Other" xml:space="preserve">
+        <source>Other</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Please input keywords" xml:space="preserve">
+        <source>Please input keywords</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="REDIS_INFO_SERVER" xml:space="preserve">
+        <source>REDIS_INFO_SERVER</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Red" xml:space="preserve">
+        <source>Red</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Remark" xml:space="preserve">
+        <source>Remark</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Score" xml:space="preserve">
+        <source>Score</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Second" xml:space="preserve">
+        <source>Second</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Total: %@" xml:space="preserve">
+        <source>Total: %@</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="Value" xml:space="preserve">
+        <source>Value</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="hello" xml:space="preserve">
+        <source>hello</source>
+        <note>hello</note>
+      </trans-unit>
+      <trans-unit id="modal view" xml:space="preserve">
+        <source>modal view</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="model ...." xml:space="preserve">
+        <source>model ....</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="popover" xml:space="preserve">
+        <source>popover</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="sfsfdfdf" xml:space="preserve">
+        <source>sfsfdfdf</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="warnning" xml:space="preserve">
+        <source>warnning</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+      <trans-unit id="􀡓 DB%@" xml:space="preserve">
+        <source>􀡓 DB%@</source>
+        <note>No comment provided by engineer.</note>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="redis-pro/Language/en.lproj/Localizble.strings" source-language="en" target-language="zh-Hans" datatype="plaintext">
+    <header>
+      <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="12.5" build-num="12E262"/>
+    </header>
+    <body>
+      <trans-unit id="hello" xml:space="preserve">
+        <source>HELLO</source>
+        <target>哈喽</target>
+        <note>Localizble.strings
+  redis-pro
+
+  Created by chengpanwang on 2021/6/11.</note>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

@@ -1,0 +1,59 @@
+//
+//  ScanModel.swift
+//  redis-pro
+//
+//  Created by chengpanwang on 2021/6/1.
+//
+
+import Foundation
+import Logging
+
+class ScanModel:ObservableObject, CustomStringConvertible {
+    var current:Int = 1
+    @Published var total:Int = 0
+    @Published var cursor:Int = 0
+    @Published var size:Int = 50
+    @Published var keywords:String = ""
+    private var cursorHistory:[Int] = [Int]()
+    
+    let logger = Logger(label: "scan-model")
+    
+    var hasNext:Bool {
+        self.cursor != 0
+    }
+    
+    var hasPrev:Bool {
+        self.cursorHistory.count > 0
+    }
+    
+    
+    var description: String {
+        return "ScanModel:[cursor:\(cursor), size:\(size), keywords:\(keywords), history: \(cursorHistory), current: \(current)]"
+    }
+    
+    func resetHead() -> Void {
+        self.current = 1
+        self.cursor = 0
+        self.cursorHistory.removeAll()
+    }
+    
+    func nextPage() -> Void {
+        self.current += 1
+        self.cursorHistory.append(self.cursor)
+    }
+    
+    // 0 - 18 - 5
+    func prevPage() -> Void {
+        self.current -= 1
+        
+        if self.current <= 1 {
+            self.current = 1
+            self.cursor = 0
+            cursorHistory.removeAll()
+        }
+        
+        let index = self.current - 1
+        self.cursor = (index == 0 || cursorHistory.count == 0) ? 0 : cursorHistory[index - 1]
+        self.cursorHistory.removeSubrange(index...)
+    }
+}

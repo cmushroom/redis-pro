@@ -7,12 +7,20 @@
 
 import SwiftUI
 import Logging
+import PromiseKit
+import AppKit
 
 struct RedisKeysListView: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
-    @State var redisKeyModels:[RedisKeyModel] = testData()
+    @EnvironmentObject var globalContext:GlobalContext
+    @State var redisKeyModels:[RedisKeyModel] = [RedisKeyModel]()
     @State var selectedRedisKeyIndex:Int?
-    @StateObject var page:Page = Page()
+//    @StateObject var page:Page = Page()
+    @StateObject var scanModel:ScanModel = ScanModel()
+    @State private var renameModalVisible:Bool = false
+    @State private var oldKeyIndex:Int?
+    @State private var newKeyName:String = ""
+    @State private var redisInfoVisible:Bool = false
     
     let logger = Logger(label: "redis-key-list-view")
     
@@ -26,11 +34,11 @@ struct RedisKeysListView: View {
         selectRedisKeyModel?.id
     }
     
-    private var header: some View {
+    private var sidebarHeader: some View {
         VStack(alignment: .center, spacing: 0) {
             VStack(alignment: .center, spacing: 2) {
                 // redis search ...
-                SearchBar(keywords: $page.keywords, showFuzzy: false, placeholder: "Search keys...", action: onSearchKeyAction)
+                SearchBar(keywords: $scanModel.keywords, showFuzzy: false, placeholder: "Search keys...", action: onSearchKeyAction)
                     .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
                 
                 // redis key operate ...
@@ -52,46 +60,97 @@ struct RedisKeysListView: View {
         }
     }
     
-    var body: some View {
-        HSplitView {
-            VStack(alignment: .leading, spacing: 0) {
-                // header area
-                header
-                
-                // list
-                List(selection: $selectedRedisKeyIndex) {
-                    ForEach(redisKeyModels.indices, id:\.self) { index in
-                        RedisKeyRowView(index: index, redisKeyModel: redisKeyModels[index])
-                            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                    }
-                    
+    private var sidebarFoot: some View {
+        HStack(alignment: .center, spacing: 4) {
+            MenuButton(label:
+                        Label("", systemImage: "ellipsis.circle")
+                        .labelStyle(IconOnlyLabelStyle())
+            ){
+                Button("Redis Info", action: onRedisInfoAction)
+            }
+            .frame(width:30)
+            .menuButtonStyle(BorderlessPullDownMenuButtonStyle())
+            
+            MIcon(icon: "arrow.clockwise", fontSize: 12, action: onRefreshAction)
+                .help(Helps.REFRESH)
+            
+            ScanBar(scanModel: scanModel, action: onQueryKeyPageAction, totalLabel: "dbsize")
+        }
+    }
+    
+    private var sidebar: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            // header area
+            sidebarHeader
+            
+            // list
+            List(selection: $selectedRedisKeyIndex) {
+                ForEach(redisKeyModels.indices, id:\.self) { index in
+                    RedisKeyRowView(index: index, redisKeyModel: redisKeyModels[index])
+                        .contextMenu {
+                            Button("Rename", action: {
+                                self.oldKeyIndex = index
+                                self.renameModalVisible = true
+                            })
+                            MButton(text: "Delete Key", action: {try onDeleteConfirmAction(index)})
+                        }
+                        .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                 }
-                .listStyle(PlainListStyle())
-                .frame(minWidth:150)
-                .padding(.all, 0)
-                
-                // footer
-                SidebarFooter(page: page, pageAction: onQueryKeyPageAction)
                 
             }
+            .listStyle(PlainListStyle())
+            .frame(minWidth:150)
+            .padding(.all, 0)
+            
+            // footer
+//            SidebarFooter(page: page, pageAction: onQueryKeyPageAction)
+            sidebarFoot
+                .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 6))
+            
+        }
+    }
+    
+    private var rightMainView: some View {
+        VStack(alignment: .leading, spacing: 0){
+            if selectRedisKeyModel == nil {
+                if redisInfoVisible {
+                    RedisInfoView()
+                        .onDisappear {
+                            self.redisInfoVisible = false
+                        }
+                } else {
+                    EmptyView()
+                }
+            } else {
+                RedisValueView(redisKeyModel: selectRedisKeyModel!)
+            }
+            Spacer()
+        }
+        .frame(minWidth: 600, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
+        .layoutPriority(1)
+    }
+    
+    var body: some View {
+        HSplitView {
+            // sidebar
+            sidebar
             .padding(0)
             .frame(minWidth:240, idealWidth: 240, maxWidth: .infinity)
             .layoutPriority(0)
             
-            VStack(alignment: .leading, spacing: 0){
-                if selectRedisKeyModel == nil {
-                    EmptyView()
-                } else {
-                    RedisValueView(redisKeyModel: selectRedisKeyModel!)
-                }
-                Spacer()
-            }
-            // 这里会影响splitView 的自适应宽度, 必须加上
-            .frame(minWidth: 600, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
-            .layoutPriority(1)
+            // content
+            rightMainView
         }
         .onAppear{
             onRefreshAction()
+        }
+        .sheet(isPresented: $renameModalVisible) {
+            ModalView("Rename", action: onRenameAction) {
+                VStack(alignment:.leading, spacing: 8) {
+                    FormItemText(label: "New name", placeholder: "New key name", value: $newKeyName)
+                }
+                .frame(minWidth:400, minHeight:50)
+            }
         }
     }
     
@@ -102,35 +161,79 @@ struct RedisKeysListView: View {
         self.selectedRedisKeyIndex = 0
     }
     
-    func onDeleteAction() throws -> Void {
-        logger.info("on delete redis key: \(selectRedisKey!)")
-        let r:Int = try redisInstanceModel.getClient().del(key: selectRedisKey!)
-        if r > 0 {
-            if let index = redisKeyModels.firstIndex(where: { (e) -> Bool in
-                return e.id == selectRedisKey
-            }) {
-                redisKeyModels.remove(at: index)
+    func onRenameAction() throws -> Void {
+        let renameKeyModel = redisKeyModels[oldKeyIndex!]
+        let _ = redisInstanceModel.getClient().rename(renameKeyModel.key, newKey: newKeyName).done({r in
+            if r {
+                renameKeyModel.key = newKeyName
             }
+        })
+    }
+    
+    func onDeleteAction() throws -> Void {
+        try deleteKey(selectedRedisKeyIndex!)
+    }
+    
+    func onDeleteConfirmAction(_ index:Int) throws -> Void {
+        globalContext.alertVisible = true
+        globalContext.showSecondButton = true
+        globalContext.primaryButtonText = "Delete"
+        
+        let item = redisKeyModels[index].key
+        globalContext.alertTitle = String(format: Helps.DELETE_LIST_ITEM_CONFIRM_TITLE, item)
+        globalContext.alertMessage = String(format:Helps.DELETE_LIST_ITEM_CONFIRM_MESSAGE, item)
+        globalContext.primaryAction = {
+            try deleteKey(index)
         }
+    }
+    
+    func deleteKey(_ index:Int) throws -> Void {
+        let redisKeyModel = self.redisKeyModels[index]
+        let _ = redisInstanceModel.getClient().del(key: redisKeyModel.key).done({r in
+            self.logger.info("on delete redis key: \(index), r:\(r)")
+            self.redisKeyModels.remove(at: index)
+        })
     }
     
     func onRefreshAction() -> Void {
-        page.firstPage()
-        try? onQueryKeyPageAction()
+        self.onSearchKeyAction()
     }
     
-    func onSearchKeyAction() throws -> Void {
-        page.firstPage()
-        try onQueryKeyPageAction()
+    func onRedisInfoAction() -> Void {
+//        let _ = redisInstanceModel.getClient().info()
+//        let window = NSWindow(
+//            contentRect: NSRect(x: 0, y: 0, width: 800, height: 600),
+//            styleMask: [.titled, .closable, .resizable],
+//               backing: .buffered,
+//               defer: false
+//        )
+//        window.center()
+//        window.setFrameAutosaveName("Redis Info")
+//        window.title = "Redis Info"
+//        window.toolbarStyle = .unifiedCompact
+//        window.isReleasedWhenClosed = true
+//        window.contentView = NSHostingView(rootView: RedisInfoView(redisInstanceModel: redisInstanceModel).frame(minWidth: 500, minHeight: 600))
+//        window.makeKeyAndOrderFront(nil)
+    
+        self.selectedRedisKeyIndex = nil
+        self.redisInfoVisible = true
     }
     
-    func onQueryKeyPageAction() throws -> Void {
-        if !redisInstanceModel.isConnect {
+    func onSearchKeyAction() -> Void {
+        scanModel.resetHead()
+        onQueryKeyPageAction()
+    }
+    
+    func onQueryKeyPageAction() -> Void {
+        if !redisInstanceModel.isConnect || globalContext.loading {
             return
         }
-        let keysPage = try redisInstanceModel.getClient().pageKeys(page: page)
-        logger.info("query keys page, keys: \(keysPage), page: \(String(describing: page))")
-        redisKeyModels = keysPage
+
+        let promise = self.redisInstanceModel.getClient().pageKeys(scanModel)
+            
+        let _ = promise.done({ keysPage in
+                self.redisKeyModels = keysPage
+            })
     }
 }
 

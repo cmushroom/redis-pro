@@ -9,7 +9,7 @@ import SwiftUI
 
 struct IndexView: View {
     @StateObject var redisInstanceModel:RedisInstanceModel = RedisInstanceModel(redisModel: RedisModel())
-    @StateObject var globalContext:GlobalContext = GlobalContext()
+    @EnvironmentObject var globalContext:GlobalContext
     
     var body: some View {
         HStack {
@@ -17,16 +17,32 @@ struct IndexView: View {
                 if (!redisInstanceModel.isConnect) {
                     LoginView()
                         .environmentObject(redisInstanceModel)
-                        .environmentObject(globalContext)
                     
                 } else {
                     HomeView()
                         .environmentObject(redisInstanceModel)
-                        .environmentObject(globalContext)
                         .navigationTitle(redisInstanceModel.redisModel.name)
                 }
             }
         }
+        .onAppear {
+            redisInstanceModel.setUp(globalContext)
+        }
+        .onReceive(globalContext.objectWillChange, perform: { newValue in
+        })
+        .overlay(MSpin(loading: globalContext.loading))
+//        .sheet(isPresented: $globalContext.loading) {
+//            HStack(alignment:.center, spacing: 8) {
+//                ProgressView()
+//                Text("Loading...")
+//            }
+//            .padding(EdgeInsets(top: 0, leading: 12, bottom: 0, trailing: 12))
+//            .frame(width: 200, height: 60)
+//            .background(Color.black.opacity(0.5))
+//            .cornerRadius(4)
+//            .shadow(color: .black.opacity(0.6), radius: 8, x: 4, y: 4)
+//            .colorScheme(.dark)
+//        }
         .alert(isPresented: $globalContext.alertVisible) {
             globalContext.showSecondButton ? Alert(title: Text(globalContext.alertTitle), message: Text(globalContext.alertMessage),
                                                    primaryButton: .default(Text(globalContext.primaryButtonText),
@@ -73,7 +89,6 @@ struct IndexView: View {
     
     
     func doAction() -> Void {
-        print("m button do action...")
         do {
             try globalContext.primaryAction()
         } catch {

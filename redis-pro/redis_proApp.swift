@@ -5,41 +5,67 @@
 //  Created by chengpanwang on 2021/1/19.
 //
 
+import Foundation
 import SwiftUI
-import Logging
 import AppCenter
 import AppCenterAnalytics
 import AppCenterCrashes
+import Logging
+import XCGLogger
 
 @main
 struct redis_proApp: App {
+    @StateObject var globalContext:GlobalContext = GlobalContext()
+    @AppStorage("User.colorSchemeValue")
+    private var colorSchemeValue:String = ColorSchemeEnum.AUTO.rawValue
+    
     let logger = Logger(label: "redis-app")
     
+    
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    
+    init() {
+        // logger
+        let xcgLogger = XCGLogger.default
+        xcgLogger.setup(level: .debug, showLogIdentifier: false, showFunctionName: true, showThreadName: true, showLevel: true, showFileNames: true, showLineNumbers: true, showDate: true, writeToFile: "redis-pro.log", fileLevel: .debug)
+        LoggingSystem.bootstrap({
+            ClassicLogHandler(label: $0, xcgLogger: xcgLogger)
+        })
+        logger.info("init logger complete...")
+    }
     
     var body: some Scene {
         WindowGroup {
             IndexView()
-            //            ContentView()
+                .preferredColorScheme(ColorSchemeEnum.getColorScheme(colorSchemeValue))
+                .environmentObject(globalContext)
+                .onAppear {
+                    VersionManager(globalContext: globalContext).checkUpdate()
+                }
         }
         .commands {
-            //            LandmarkCommands()
+            RedisProCommands(globalContext: globalContext)
         }
         
-        
+        Settings {
+            SettingsView()
+                .preferredColorScheme(ColorSchemeEnum.getColorScheme(colorSchemeValue))
+        }
     }
 }
-
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     let logger = Logger(label: "redis-app")
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         logger.info("redis pro launch complete")
+        
+        // appcenter
         AppCenter.start(withAppSecret: "310d1d33-2570-46f9-a60d-8a862cdef6c7", services:[
-          Analytics.self,
+            Analytics.self,
             Crashes.self
         ])
+        
     }
     
     func applicationWillTerminate(_ notification: Notification)  {
@@ -49,4 +75,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func didFinishLaunchingWithOptions(_ notification: Notification)  {
         logger.info("redis didFinishLaunchingWithOptions...")
     }
+    
+    
 }

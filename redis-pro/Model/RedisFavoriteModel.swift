@@ -38,6 +38,7 @@ class RedisFavoriteModel:ObservableObject {
         }
         
         self.lastRedisModelId = userDefaults.string(forKey: UserDefaulsKeysEnum.RedisLastUseIdKey.rawValue)
+        logger.info("last select redis model id: \(String(describing: lastRedisModelId))")
     }
     
     func saveLast(redisModel:RedisModel) -> Void {

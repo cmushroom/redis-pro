@@ -9,7 +9,8 @@ import Foundation
 
 struct Helps {
     static let PAGE_KEYS = "redis dbsize 命令返回的数量."
-    static let PAGE_SIZE = "redis scan 命令 COUNT 参数, 实际返回数量不一定一致."
+    
+    static let SCAN_COUNT = "redis scan 命令 COUNT 参数, 实际返回数量不保证一致."
     
     static let SEARCH_PATTERN = "支持redis glob 风格的模式参数, 示例: key*, re?is"
     static let TTL_HELP = "单位(秒), -1表示永不过期"

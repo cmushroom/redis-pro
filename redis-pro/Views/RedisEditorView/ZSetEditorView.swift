@@ -16,7 +16,7 @@ struct ZSetEditorView: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @EnvironmentObject var globalContext:GlobalContext
     @ObservedObject var redisKeyModel:RedisKeyModel
-    @StateObject private var page:Page = Page()
+    @StateObject private var page:ScanModel = ScanModel()
     
     @State private var editModalVisible:Bool = false
     @State private var editNewField:Bool = false
@@ -48,7 +48,7 @@ struct ZSetEditorView: View {
                            action: onDeleteAction)
                 SearchBar(keywords: $page.keywords, placeholder: "Search set...", action: onQueryField)
                 Spacer()
-                PageBar(page:page, action: onPageAction)
+                ScanBar(scanModel:page, action: onPageAction)
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
             
@@ -163,13 +163,15 @@ struct ZSetEditorView: View {
     func onUpdateItemAction() throws -> Void {
         let score:Double = Double(editScore) ?? 0
         if editIndex == -1 {
-            let _ = try redisInstanceModel.getClient().zadd(redisKeyModel.key, score: score, ele: editValue)
-            try onRefreshAction()
+            let _ = redisInstanceModel.getClient().zadd(redisKeyModel.key, score: score, ele: editValue).done({ _ in
+                try onRefreshAction()
+            })
         } else {
             let editEle = list[editIndex] ?? ("", 0)
-            let _ = try redisInstanceModel.getClient().zupdate(redisKeyModel.key, from: editEle.0, to: editValue, score: score )
-            logger.info("redis zset update success, update list")
-            list[editIndex] = (editValue, score)
+            let _ = try redisInstanceModel.getClient().zupdate(redisKeyModel.key, from: editEle.0, to: editValue, score: score ).done({_ in
+                self.logger.info("redis zset update success, update list")
+                self.list[editIndex] = (editValue, score)
+            })
         }
         
         if self.redisKeyModel.isNew {
@@ -184,39 +186,38 @@ struct ZSetEditorView: View {
     
     func onSubmitAction() throws -> Void {
         logger.info("redis hash value editor on submit")
-        let _ = try redisInstanceModel.getClient().expire(redisKeyModel.key, seconds: redisKeyModel.ttl)
+        let _ = redisInstanceModel.getClient().expire(redisKeyModel.key, seconds: redisKeyModel.ttl)
     }
     
     func onRefreshAction() throws -> Void {
-        page.firstPage()
-        try queryPage(redisKeyModel)
+        page.resetHead()
+        queryPage(redisKeyModel)
         try ttl(redisKeyModel)
     }
     
-    func onQueryField() throws -> Void {
-        page.firstPage()
-        try queryPage(redisKeyModel)
+    func onQueryField() -> Void {
+        page.resetHead()
+        queryPage(redisKeyModel)
     }
     
-    func onPageAction() throws -> Void {
-        try queryPage(redisKeyModel)
+    func onPageAction() -> Void {
+        queryPage(redisKeyModel)
     }
     
     func onLoad(_ redisKeyModel:RedisKeyModel) -> Void {
-        do {
-            try queryPage(redisKeyModel)
-        } catch {
-            logger.error("on string editor view load query redis hash error:\(error)")
-            globalContext.showError(error)
-        }
+        queryPage(redisKeyModel)
     }
     
-    func queryPage(_ redisKeyModel:RedisKeyModel) throws -> Void {
-        list = try redisInstanceModel.getClient().pageZSet(redisKeyModel, page: page)
+    func queryPage(_ redisKeyModel:RedisKeyModel) -> Void {
+        let _ = redisInstanceModel.getClient().pageZSet(redisKeyModel, page: page).done({ res in
+            self.list = res
+        })
     }
     
     func ttl(_ redisKeyModel:RedisKeyModel) throws -> Void {
-        redisKeyModel.ttl = try redisInstanceModel.getClient().ttl(key: redisKeyModel.key)
+        let _ = redisInstanceModel.getClient().ttl(key: redisKeyModel.key).done({r in
+            redisKeyModel.ttl = r
+        })
     }
     
     func deleteEle(_ index:Int) throws -> Void {
@@ -227,10 +228,11 @@ struct ZSetEditorView: View {
             return
         }
         
-        let r = try redisInstanceModel.getClient().zrem(redisKeyModel.key, ele: ele!.0)
-        if r > 0 {
-            list.remove(at: index)
-        }
+        let _ = redisInstanceModel.getClient().zrem(redisKeyModel.key, ele: ele!.0).done({ r in
+            if r > 0 {
+                list.remove(at: index)
+            }
+        })
     }
 }
 

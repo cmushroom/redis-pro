@@ -47,23 +47,16 @@ struct DatabasePicker: View {
     
     
     func onSelectDatabaseAction(_ database:Int) -> Void {
-        do {
-            try redisInstanceModel.getClient().selectDB(database)
+        let _ = redisInstanceModel.getClient().selectDB(database).done({
             self.database = database
-            
             action()
-        } catch {
-            globalContext.showError(error)
-        }
-
+        })
     }
     
     func queryDBList() -> Void {
-        do {
-            self.databases = try redisInstanceModel.getClient().databases()
-        } catch {
-            globalContext.showError(error)
-        }
+        let _ = redisInstanceModel.getClient().databases().done({r in
+            self.databases = r
+        })
     }
 }
 

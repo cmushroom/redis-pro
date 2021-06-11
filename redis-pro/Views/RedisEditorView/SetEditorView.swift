@@ -16,7 +16,7 @@ struct SetEditorView: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @EnvironmentObject var globalContext:GlobalContext
     @ObservedObject var redisKeyModel:RedisKeyModel
-    @StateObject private var page:Page = Page()
+    @StateObject private var page:ScanModel = ScanModel()
     
     @State private var editModalVisible:Bool = false
     @State private var editNewField:Bool = false
@@ -45,7 +45,7 @@ struct SetEditorView: View {
                            action: onDeleteAction)
                 SearchBar(keywords: $page.keywords, placeholder: "Search set...", action: onQueryField)
                 Spacer()
-                PageBar(page:page, action: onPageAction)
+                ScanBar(scanModel:page, action: onPageAction)
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
             
@@ -139,12 +139,14 @@ struct SetEditorView: View {
     
     func onUpdateItemAction() throws -> Void {
         if editIndex == -1 {
-            let _ = try redisInstanceModel.getClient().sadd(redisKeyModel.key, ele: editValue)
-            try onRefreshAction()
+            let _ = redisInstanceModel.getClient().sadd(redisKeyModel.key, ele: editValue).done({_ in
+                try onRefreshAction()
+            })
         } else {
-            let _ = try redisInstanceModel.getClient().supdate(redisKeyModel.key, from: list[editIndex] ?? "", to: editValue )
-            logger.info("redis set update success, update list")
-            list[editIndex] = editValue
+            let _ = redisInstanceModel.getClient().supdate(redisKeyModel.key, from: list[editIndex] ?? "", to: editValue ).done({ _ in
+                self.logger.info("redis set update success, update list")
+                self.list[editIndex] = editValue
+            })
         }
         
         if self.redisKeyModel.isNew {
@@ -159,48 +161,48 @@ struct SetEditorView: View {
     
     func onSubmitAction() throws -> Void {
         logger.info("redis hash value editor on submit")
-        let _ = try redisInstanceModel.getClient().expire(redisKeyModel.key, seconds: redisKeyModel.ttl)
+        let _ = redisInstanceModel.getClient().expire(redisKeyModel.key, seconds: redisKeyModel.ttl)
     }
     
     func onRefreshAction() throws -> Void {
-        page.firstPage()
-        try queryPage(redisKeyModel)
-        try ttl(redisKeyModel)
+        page.resetHead()
+        queryPage(redisKeyModel)
+        ttl(redisKeyModel)
     }
     
     func onQueryField() throws -> Void {
-        page.firstPage()
-        try queryPage(redisKeyModel)
+        page.resetHead()
+        queryPage(redisKeyModel)
     }
     
-    func onPageAction() throws -> Void {
-        try queryPage(redisKeyModel)
+    func onPageAction() -> Void {
+        queryPage(redisKeyModel)
     }
     
     func onLoad(_ redisKeyModel:RedisKeyModel) -> Void {
-        do {
-            try queryPage(redisKeyModel)
-        } catch {
-            logger.error("on string editor view load query redis hash error:\(error)")
-            globalContext.showError(error)
-        }
+        queryPage(redisKeyModel)
     }
     
-    func queryPage(_ redisKeyModel:RedisKeyModel) throws -> Void {
-        list = try redisInstanceModel.getClient().pageSet(redisKeyModel, page: page)
+    func queryPage(_ redisKeyModel:RedisKeyModel) -> Void {
+        let _ = redisInstanceModel.getClient().pageSet(redisKeyModel, page: page).done({res in
+            list = res
+        })
     }
     
-    func ttl(_ redisKeyModel:RedisKeyModel) throws -> Void {
-        redisKeyModel.ttl = try redisInstanceModel.getClient().ttl(key: redisKeyModel.key)
+    func ttl(_ redisKeyModel:RedisKeyModel) -> Void {
+        let _ = redisInstanceModel.getClient().ttl(key: redisKeyModel.key).done({r in
+            redisKeyModel.ttl = r
+        })
     }
     
     func deleteEle(_ index:Int) throws -> Void {
         logger.info("delete set item, index: \(index)")
         let ele = list[index] ?? ""
-        let r = try redisInstanceModel.getClient().srem(redisKeyModel.key, ele: ele)
-        if r > 0 {
-            list.remove(at: index)
-        }
+        let _ = redisInstanceModel.getClient().srem(redisKeyModel.key, ele: ele).done({r in
+            if r > 0 {
+                self.list.remove(at: index)
+            }
+        })
     }
 }
 

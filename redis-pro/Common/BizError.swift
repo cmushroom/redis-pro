@@ -15,4 +15,7 @@ struct BizError: Error{
     init(message:String) {
         self.message = message
     }
+    init(_ message:String) {
+        self.message = message
+    }
 }

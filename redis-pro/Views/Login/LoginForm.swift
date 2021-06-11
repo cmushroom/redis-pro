@@ -8,19 +8,18 @@
 import SwiftUI
 import NIO
 import RediStack
+import PromiseKit
 import Logging
 
 struct LoginForm: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @EnvironmentObject var globalContext:GlobalContext
     
-    @State private var loading:Bool = false
-    
     @ObservedObject var redisFavoriteModel: RedisFavoriteModel
     @ObservedObject var redisModel:RedisModel
     
-    
     let logger = Logger(label: "redis-login")
+    
     
     var saveBtnDisable: Bool {
         !redisModel.isFavorite
@@ -43,40 +42,36 @@ struct LoginForm: View {
                     Divider()
                         .padding(.vertical, 8)
                     HStack(alignment: .center){
-                        Button(action: {
-                            if let url = URL(string: "https://github.com/cmushroom/redis-pro") {
-                                NSWorkspace.shared.open(url)
+                        if !globalContext.loading {
+                            Button(action: {
+                                if let url = URL(string: Constants.REPO_URL) {
+                                    NSWorkspace.shared.open(url)
+                                }
+                            }) {
+                                Image(systemName: "questionmark.circle")
+                                    .font(.system(size: 18.0))
                             }
-                        }) {
-                            Image(systemName: "questionmark.circle")
-                                .font(.system(size: 18.0))
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                        
-                        if (loading) {
-                            ProgressView().progressViewStyle(CircularProgressViewStyle()).scaleEffect(CGSize(width: 0.5, height: 0.5))
+                            .buttonStyle(PlainButtonStyle())
                         }
                         
-                        Text(redisModel.ping ? "Connect successed!" : " ")
-                            .font(.body)
-                            .multilineTextAlignment(.leading)
-                            .lineLimit(1)
-                            .frame(height: 10.0)
+                        MLoading(text: redisModel.ping ? "Connect successed!" : " ",
+                                 loadingText: "Connecting...",
+                                 loading: globalContext.loading)
                         
                         Spacer()
-
-                        MButton(text: "Connect", action: onConnect)
+                        
+                        MButton(text: "Connect", action: onConnect, disabled: self.globalContext.loading)
                             .buttonStyle(BorderedButtonStyle())
                             .keyboardShortcut(.defaultAction)
                         
                     }
-//                    .frame(height: 40.0)
+                    //                    .frame(height: 40.0)
                     HStack(alignment: .center){
                         MButton(text: "Add to Favorites", action: onAddRedisInstanceAction)
                         Spacer()
                         MButton(text: "Save changes", action: onSaveRedisInstanceAction)
                         Spacer()
-                        MButton(text: "Test connection", action: onTestConnectionAction)
+                        MButton(text: "Test connection", action: onTestConnectionAction, disabled: self.globalContext.loading)
                     }
                 }
             }
@@ -99,10 +94,7 @@ struct LoginForm: View {
     func onTestConnectionAction() throws -> Void {
         logger.info("test connect to redis server: \(redisModel)")
         
-        let ping = try redisInstanceModel.testConnect(redisModel:redisModel)
-        if !ping {
-            throw BizError(message: "test connection redis error!")
-        }
+        let _ = self.redisInstanceModel.testConnectAsync(redisModel)
     }
     
     func onAddRedisInstanceAction()  throws -> Void {
@@ -133,9 +125,10 @@ struct LoginForm: View {
     }
     
     func onConnect() throws -> Void {
-        try redisInstanceModel.connect(redisModel:redisModel)
-        redisFavoriteModel.saveLast(redisModel: redisModel)
-        logger.info("on connect to redis server: \(redisModel)")
+        let _ = redisInstanceModel.connect(redisModel:redisModel).done({r in
+            logger.info("on connect to redis server successed: \(redisModel)")
+            redisFavoriteModel.saveLast(redisModel: redisModel)
+        })
     }
     
 }

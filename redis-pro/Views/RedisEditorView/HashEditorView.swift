@@ -16,7 +16,7 @@ struct HashEditorView: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @EnvironmentObject var globalContext:GlobalContext
     @ObservedObject var redisKeyModel:RedisKeyModel
-    @StateObject private var page:Page = Page()
+    @StateObject private var page:ScanModel = ScanModel()
     
     @State private var editModalVisible:Bool = false
     @State private var editNewField:Bool = false
@@ -44,7 +44,7 @@ struct HashEditorView: View {
                 SearchBar(keywords: $page.keywords, placeholder: "Search field...", action: onQueryField)
                 
                 Spacer()
-                PageBar(page:page)
+                ScanBar(scanModel:page, action: onPageAction)
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
             
@@ -159,14 +159,18 @@ struct HashEditorView: View {
     
     
     func onSaveFieldAction() throws -> Void {
-        let _ = try redisInstanceModel.getClient().hset(redisKeyModel.key, field: editField, value: editValue)
-        logger.info("redis hset success, update field list")
+        let _ = redisInstanceModel.getClient().hset(redisKeyModel.key, field: editField, value: editValue).done({ _ in
+            
+            if self.redisKeyModel.isNew {
+                self.redisKeyModel.isNew = false
+            }
+            logger.info("redis hset success, update field list")
+            
+            self.onLoad(redisKeyModel)
+        
+        })
 //        hashMap.updateValue(editValue, forKey: editField)
         
-        if self.redisKeyModel.isNew {
-            redisKeyModel.isNew = false
-        }
-        onLoad(redisKeyModel)
     }
     
     
@@ -181,44 +185,48 @@ struct HashEditorView: View {
         try deleteField(selectField!)
     }
     func onQueryField() throws -> Void {
-        page.firstPage()
-        try queryHashPage(redisKeyModel)
+        page.resetHead()
+        queryHashPage(redisKeyModel)
     }
     
     func onSubmitAction() throws -> Void {
         logger.info("redis hash value editor on submit")
-        let _ = try redisInstanceModel.getClient().expire(redisKeyModel.key, seconds: redisKeyModel.ttl)
+        let _ = redisInstanceModel.getClient().expire(redisKeyModel.key, seconds: redisKeyModel.ttl)
     }
     
     func onRefreshAction() throws -> Void {
-        try queryHashPage(redisKeyModel)
+        queryHashPage(redisKeyModel)
         try ttl(redisKeyModel)
     }
     
     
     func onLoad(_ redisKeyModel:RedisKeyModel) -> Void {
-        do {
-            try queryHashPage(redisKeyModel)
-        } catch {
-            logger.error("on string editor view load query redis hash error:\(error)")
-            globalContext.showError(error)
-        }
+        queryHashPage(redisKeyModel)
     }
     
-    func queryHashPage(_ redisKeyModel:RedisKeyModel) throws -> Void {
-        hashMap = try redisInstanceModel.getClient().pageHash(redisKeyModel, page: page)
+    func onPageAction() -> Void {
+        queryHashPage(redisKeyModel)
+    }
+    
+    func queryHashPage(_ redisKeyModel:RedisKeyModel) -> Void {
+        let _ = redisInstanceModel.getClient().pageHash(redisKeyModel, page: page).done({res in
+            self.hashMap = res
+        })
     }
     
     func ttl(_ redisKeyModel:RedisKeyModel) throws -> Void {
-        redisKeyModel.ttl = try redisInstanceModel.getClient().ttl(key: redisKeyModel.key)
+        let _  = redisInstanceModel.getClient().ttl(key: redisKeyModel.key).done({r in
+            redisKeyModel.ttl = r
+        })
     }
     
     func deleteField(_ field:String) throws -> Void {
         logger.info("delete hash field: \(field)")
-        let r = try redisInstanceModel.getClient().hdel(redisKeyModel.key, field: field)
-        if r > 0 {
-            hashMap.removeValue(forKey: field)
-        }
+        let _ = redisInstanceModel.getClient().hdel(redisKeyModel.key, field: field).done({r in
+            if r > 0 {
+                self.hashMap.removeValue(forKey: field)
+            }
+        })
     }
 }
 

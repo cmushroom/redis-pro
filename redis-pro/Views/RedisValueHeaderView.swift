@@ -16,9 +16,9 @@ struct RedisValueHeaderView: View {
     
     private var ttl: some View {
         HStack(alignment:.center, spacing: 0) {
-            FormItemInt(label: "TTL(s)", value: $redisKeyModel.ttl, suffix: "square.and.pencil", onCommit: onTTLCommit)
+            FormItemInt(label: "TTL(s)", value: $redisKeyModel.ttl, suffix: "square.and.pencil", onCommit: onTTLCommit, autoCommit: false)
                 .help(Helps.TTL_HELP)
-                .frame(width: 160)
+                .frame(width: 200)
         }
     }
     
@@ -26,11 +26,9 @@ struct RedisValueHeaderView: View {
         HStack(alignment: .center, spacing: 6) {
             FormItemText(label: "Key", labelWidth: 40, required: true, value: $redisKeyModel.key, disabled: !redisKeyModel.isNew)
             RedisKeyTypePicker(label: "Type", value: $redisKeyModel.type, disabled: !redisKeyModel.isNew)
-            ttl
-//            FormItemInt(label: "TTL(s)", value: $redisKeyModel.ttl)
-//                .help(Helps.TTL_HELP)
-//                .frame(width: 160)
             Spacer()
+            
+            ttl
         }
         .onChange(of: redisKeyModel, perform: { value in
             logger.info("redis value header key model change \(value)")
@@ -47,17 +45,14 @@ struct RedisValueHeaderView: View {
             return
         }
         logger.info("update redis key ttl: \(redisKeyModel)")
-        let _ = try redisInstanceModel.getClient().expire(redisKeyModel.key, seconds: redisKeyModel.ttl)
+        let _ = redisInstanceModel.getClient().expire(redisKeyModel.key, seconds: redisKeyModel.ttl)
     }
     
     func ttl(_ redisKeyModel:RedisKeyModel) -> Void {
-        do {
-            let key:String = redisKeyModel.key
-            let ttl = try redisInstanceModel.getClient().ttl(key: key)
-            redisKeyModel.ttl = ttl
-        } catch {
-            logger.error("\(error)")
-        }
+        let key:String = redisKeyModel.key
+        let _ = redisInstanceModel.getClient().ttl(key: key).done({r in
+            redisKeyModel.ttl = r
+        })
     }
     
 }

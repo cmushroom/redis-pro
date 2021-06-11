@@ -7,16 +7,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "FFBB02CC-8D6A-4ADD-9A7D-F63C495CF02D"
+            uuid = "C7CB2F45-21FF-4AE2-B326-152530B569C6"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../../Library/Developer/Xcode/DerivedData/redis-pro-dbqglkilqencgkaoiowgcvdcpodv/SourcePackages/checkouts/RediStack/Sources/RediStack/Commands/RedisCommand.swift"
+            filePath = "redisProTests/LogTests.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "103"
-            endingLineNumber = "103"
-            landmarkName = "_scan(keyword:_:_:_:_:_:)"
+            startingLineNumber = "26"
+            endingLineNumber = "26"
+            landmarkName = "testExample()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -20,6 +20,15 @@
         }
       },
       {
+        "package": "PromiseKit",
+        "repositoryURL": "https://gitee.com/chengpan168_admin/PromiseKit.git",
+        "state": {
+          "branch": null,
+          "revision": "d2f7ba14bcdc45e18f4f60ad9df883fb9055f081",
+          "version": "6.15.3"
+        }
+      },
+      {
         "package": "RediStack",
         "repositoryURL": "https://gitee.com/chengpan168_admin/RediStack.git",
         "state": {
@@ -51,8 +60,8 @@
         "repositoryURL": "https://gitee.com/mirrors_apple/swift-nio.git",
         "state": {
           "branch": null,
-          "revision": "3be4e0980075de10a4bc8dee07491d49175cfd7a",
-          "version": "2.27.0"
+          "revision": "d161bf658780b209c185994528e7e24376cf7283",
+          "version": "2.29.0"
         }
       },
       {
@@ -62,6 +71,24 @@
           "branch": null,
           "revision": "fcf03632e5dc098dc433ffdcf93b42c9b6321968",
           "version": "1.0.0"
+        }
+      },
+      {
+        "package": "SwiftyJSON",
+        "repositoryURL": "https://gitee.com/chengpan168_admin/SwiftyJSON.git",
+        "state": {
+          "branch": null,
+          "revision": "b3dcd7dbd0d488e1a7077cb33b00f2083e382f07",
+          "version": "5.0.1"
+        }
+      },
+      {
+        "package": "XCGLogger",
+        "repositoryURL": "https://gitee.com/chengpan168_admin/XCGLogger.git",
+        "state": {
+          "branch": null,
+          "revision": "a9c4667b247928a29bdd41be2ec2c8d304215a54",
+          "version": "7.0.1"
         }
       }
     ]

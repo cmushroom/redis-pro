@@ -1,0 +1,12 @@
+{
+  "developmentRegion" : "en",
+  "project" : "redis-pro.xcodeproj",
+  "targetLocale" : "en",
+  "toolInfo" : {
+    "toolBuildNumber" : "12E262",
+    "toolID" : "com.apple.dt.xcode",
+    "toolName" : "Xcode",
+    "toolVersion" : "12.5"
+  },
+  "version" : "1.0"
+}

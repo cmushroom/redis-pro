@@ -16,6 +16,8 @@ struct MTextField: View {
     var onCommit:() throws -> Void = {}
     var disabled:Bool = false
     @EnvironmentObject var globalContext:GlobalContext
+    @Environment(\.colorScheme) var colorScheme
+    var autoCommit:Bool = true
     
     let logger = Logger(label: "text-field")
     
@@ -23,9 +25,10 @@ struct MTextField: View {
         HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 2) {
             TextField(placeholder ?? "", text: $value, onEditingChanged: { isEditing in
                 self.isEditing = isEditing
-            }, onCommit: doAction)
+            }, onCommit: doCommit)
             .disabled(disabled)
-            .font(/*@START_MENU_TOKEN@*/.body/*@END_MENU_TOKEN@*/)
+            .lineLimit(1)
+            .font(.body)
             .disableAutocorrection(true)
             .textFieldStyle(PlainTextFieldStyle())
             .onHover { inside in
@@ -33,17 +36,22 @@ struct MTextField: View {
             }
             
             if suffix != nil {
-                MIcon(icon: suffix, fontSize: 14, action: doAction)
+                MIcon(icon: suffix!, fontSize: 14, action: doAction)
                     .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
             }
         }
         .padding(EdgeInsets(top: 3, leading: 4, bottom: 3, trailing: 4))
-        .background(Color.white)
+        .background(colorScheme == .dark ? Color.clear : Color.white)
         .cornerRadius(4)
         .overlay(
             RoundedRectangle(cornerRadius: 4).stroke(Color.gray.opacity(!disabled && isEditing ?  0.4 : 0.2), lineWidth: 1)
             )
-//        .border(Color.gray.opacity(isEditing ?  0.4 : 0.2), width: 1)
+    }
+    
+    func doCommit() -> Void {
+        if autoCommit {
+            doAction()
+        }
     }
     
     func doAction() -> Void {

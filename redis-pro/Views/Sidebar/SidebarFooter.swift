@@ -22,7 +22,7 @@ struct SidebarFooter: View {
                         Label("", systemImage: "ellipsis.circle")
                         .labelStyle(IconOnlyLabelStyle())
             ){
-                Button("Order Now", action: onRefreshAction)
+                Button("Redis Info", action: onRedisInfoAction)
             }
             .frame(width:30)
             .menuButtonStyle(BorderlessPullDownMenuButtonStyle())
@@ -42,6 +42,10 @@ struct SidebarFooter: View {
         } catch {
             globalContext.showError(error)
         }
+    }
+    
+    func onRedisInfoAction() -> Void {
+        let _ = redisInstanceModel.getClient().info()
     }
     
 }

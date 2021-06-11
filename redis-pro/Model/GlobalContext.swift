@@ -8,7 +8,7 @@
 import Foundation
 import RediStack
 
-class GlobalContext:ObservableObject {
+class GlobalContext:ObservableObject, CustomStringConvertible {
     @Published var alertVisible:Bool = false
     var alertTitle:String = ""
     var alertMessage:String = ""
@@ -16,6 +16,8 @@ class GlobalContext:ObservableObject {
     var primaryButtonText:String = "Ok"
     var secondButtonText:String = "Cancel"
     var primaryAction:() throws -> Void = {}
+    
+    @Published var loading:Bool = false
 
     
     func showError(_ error:Error) -> Void {
@@ -29,4 +31,8 @@ class GlobalContext:ObservableObject {
         }
     }
 
+    
+    var description: String {
+        return "GlobalContext:[alertVisible:\(alertVisible), loading:\(loading)]"
+    }
 }

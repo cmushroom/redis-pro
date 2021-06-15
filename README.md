@@ -1,21 +1,35 @@
 #  Redis Pro
 
 ## 简介
-* redis-pro 使用SwiftUI 编写的redis 轻量客户端管理工具.
-* 开发过程中借鉴了 Sequel-Ace [Sequel-Ace](https://github.com/Sequel-Ace/Sequel-Ace)! 和阿里云DMS，Sequel-Ace (前身 Sequel-Pro) 是我比较喜欢的一个 mysql桌面客户端，一直想找一个类似的redis客户端，正值当时看到swift ui 发布了2.0版本， 所以在业余时间开发了这个小工具顺便学习一下新语言，新框架
-    
-* 欢迎大家一起共建！
+* redis-pro 是一款 redis 轻量客户端管理工具， 采用SwiftUI 编写
+* 开发过程中借鉴了 Sequel-Ace [Sequel-Ace](https://github.com/Sequel-Ace/Sequel-Ace)! 和阿里云DMS，Sequel-Ace (前身 Sequel-Pro) 是一个简洁易用的小众 mysql桌面客户端
+
+## 安装
+* 到release页面下载安装
+[下载地址](https://github.com/cmushroom/redis-pro/releases)
+
+
 
 ## 平台
-目前只支持 macos (Intel, Apple Silicon) 平台, 依赖swift ui的支持情况
+目前只支持 macos (Intel, Apple Silicon) 平台,  后续考虑支持 ipad os， 再后期可能会支持ios
+
+## 功能计划(暂定)
+* redis config 修改
+* ssh 登录
+* ipad os 支持
     
 
 ## 版本要求
 * macos:  >= 11.0
 * redis: 3.x¹ ... 6.x
 
-## 下载地址
-[下载地址](https://github.com/cmushroom/redis-pro/releases)
+## 依赖
+* RediStack 采用swiftNIO 编写的redis client
+* swift-log swift 日志框架, 是上层框架， 需要具体的实现
+* XCGLogger 日志写入到文件使用
+* SwiftyJSON json 转换
+* PromiseKit 异步化操作使用， 简化callback代码
+
 
 
 ## 应用截图
@@ -33,3 +47,8 @@ Info
 
 暗黑模式
 ![设置](https://raw.githubusercontent.com/cmushroom/redis-pro/resource/dark.png)
+
+
+** FAQ
+* keys 分页数量不匹配
+redis scan 命令特性决定， COUNT 选项的作用就是让用户告知迭代命令， 在每次迭代中应该从数据集里返回多少元素。虽然 COUNT 选项只是对增量式迭代命令的一种提示（hint）， 但是在大多数情况下， 这种提示都是有效的。少数情况会发生返回数量与COUNT不一致的情况， 多数发生在keys数量不多， 与页大小差距不大的情况

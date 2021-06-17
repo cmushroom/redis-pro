@@ -8,6 +8,7 @@
 import SwiftUI
 import AppKit
 import Foundation
+import SwiftTerm
 
 struct SmallButtonStyle: PrimitiveButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
@@ -97,6 +98,8 @@ struct MButton: View {
                     Button("LinkButtonStyle", action: {}).buttonStyle(LinkButtonStyle())
                     
                     Button("PlainButtonStyle", action: {}).preferredColorScheme(.dark).environment(\.sizeCategory, .small).buttonStyle(PlainButtonStyle())
+                    
+                
                 }
                 .preferredColorScheme(.dark)
                 .padding(20)

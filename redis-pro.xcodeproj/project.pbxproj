@@ -49,7 +49,6 @@
 		4340E2CC266649D000F51F19 /* ScanBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4340E2CB266649D000F51F19 /* ScanBar.swift */; };
 		4340E2CE266660FE00F51F19 /* PromiseExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4340E2CD266660FE00F51F19 /* PromiseExt.swift */; };
 		43481049262D30CE002809ED /* Helps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43481048262D30CE002809ED /* Helps.swift */; };
-		43650AEC26676F0600D11CE7 /* ClassicLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43650AEB26676F0600D11CE7 /* ClassicLogger.swift */; };
 		43650AEE26677BBC00D11CE7 /* LogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43650AED26677BBC00D11CE7 /* LogTests.swift */; };
 		436BB68726440584008B4866 /* CoreMetrics in Frameworks */ = {isa = PBXBuildFile; productRef = 436BB68626440584008B4866 /* CoreMetrics */; };
 		436BB68926440584008B4866 /* Metrics in Frameworks */ = {isa = PBXBuildFile; productRef = 436BB68826440584008B4866 /* Metrics */; };
@@ -76,8 +75,6 @@
 		438BBEB52655015D00B458BF /* CrashReporter in Frameworks */ = {isa = PBXBuildFile; productRef = 438BBEB42655015D00B458BF /* CrashReporter */; };
 		4397288C2643E43800803BE9 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4397288B2643E43800803BE9 /* Constants.swift */; };
 		43BB012326390BC20039565E /* ModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BB012226390BC20039565E /* ModalView.swift */; };
-		43CD2865266F931900E11876 /* ObjcExceptionBridging in Frameworks */ = {isa = PBXBuildFile; productRef = 43CD2864266F931900E11876 /* ObjcExceptionBridging */; };
-		43CD2867266F931900E11876 /* XCGLogger in Frameworks */ = {isa = PBXBuildFile; productRef = 43CD2866266F931900E11876 /* XCGLogger */; };
 		43CD286A2670933F00E11876 /* CheckUpdateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD28692670933F00E11876 /* CheckUpdateTests.swift */; };
 		43CD286E2670A03800E11876 /* VersionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD286D2670A03800E11876 /* VersionManager.swift */; };
 		43CD28712670C3DD00E11876 /* ColorSchemeEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD28702670C3DD00E11876 /* ColorSchemeEnum.swift */; };
@@ -85,6 +82,10 @@
 		43CD28782671FA2A00E11876 /* RedisInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD28772671FA2A00E11876 /* RedisInfoModel.swift */; };
 		43CD287A267209D900E11876 /* RedisInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD2879267209D900E11876 /* RedisInfoView.swift */; };
 		43CD289E26732F4C00E11876 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 43CD28A026732F4C00E11876 /* Localizable.strings */; };
+		43CD28A7267AFC9600E11876 /* SwiftTerm in Frameworks */ = {isa = PBXBuildFile; productRef = 43CD28A6267AFC9600E11876 /* SwiftTerm */; };
+		43CD28AA267B64FA00E11876 /* Puppy in Frameworks */ = {isa = PBXBuildFile; productRef = 43CD28A9267B64FA00E11876 /* Puppy */; };
+		43CD28AC267B67C600E11876 /* PuppyLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD28AB267B67C600E11876 /* PuppyLogger.swift */; };
+		43CD28AE267B6E0E00E11876 /* LoggerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD28AD267B6E0E00E11876 /* LoggerFactory.swift */; };
 		43DFEF3725C29288006EF535 /* FormItemInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DFEF3625C29288006EF535 /* FormItemInt.swift */; };
 		43EADB052620043F003B8310 /* HashEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EADB042620043F003B8310 /* HashEditorView.swift */; };
 		43EADB0826200540003B8310 /* IconButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EADB0726200540003B8310 /* IconButton.swift */; };
@@ -158,7 +159,6 @@
 		4340E2CB266649D000F51F19 /* ScanBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanBar.swift; sourceTree = "<group>"; };
 		4340E2CD266660FE00F51F19 /* PromiseExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromiseExt.swift; sourceTree = "<group>"; };
 		43481048262D30CE002809ED /* Helps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helps.swift; sourceTree = "<group>"; };
-		43650AEB26676F0600D11CE7 /* ClassicLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassicLogger.swift; sourceTree = "<group>"; };
 		43650AED26677BBC00D11CE7 /* LogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogTests.swift; sourceTree = "<group>"; };
 		436BB6922644D126008B4866 /* SetEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetEditorView.swift; sourceTree = "<group>"; };
 		436BB6942644E8D6008B4866 /* ZSetEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZSetEditorView.swift; sourceTree = "<group>"; };
@@ -193,6 +193,8 @@
 		43CD2879267209D900E11876 /* RedisInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisInfoView.swift; sourceTree = "<group>"; };
 		43CD289F26732F4C00E11876 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		43CD28A126732F5000E11876 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		43CD28AB267B67C600E11876 /* PuppyLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PuppyLogger.swift; sourceTree = "<group>"; };
+		43CD28AD267B6E0E00E11876 /* LoggerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggerFactory.swift; sourceTree = "<group>"; };
 		43DFEF3625C29288006EF535 /* FormItemInt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormItemInt.swift; sourceTree = "<group>"; };
 		43EADB042620043F003B8310 /* HashEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashEditorView.swift; sourceTree = "<group>"; };
 		43EADB0726200540003B8310 /* IconButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconButton.swift; sourceTree = "<group>"; };
@@ -211,14 +213,14 @@
 				438BBEB52655015D00B458BF /* CrashReporter in Frameworks */,
 				623704F5265A27760084CCA8 /* AppCenterCrashes in Frameworks */,
 				436BB68726440584008B4866 /* CoreMetrics in Frameworks */,
+				43CD28AA267B64FA00E11876 /* Puppy in Frameworks */,
 				4340E2B52662152B00F51F19 /* PromiseKit in Frameworks */,
 				62C48932265A138D00D68D06 /* Logging in Frameworks */,
-				43CD2865266F931900E11876 /* ObjcExceptionBridging in Frameworks */,
 				62C48938265A13E500D68D06 /* NIO in Frameworks */,
 				4340E2C82666257500F51F19 /* SwiftyJSON in Frameworks */,
 				436BB68926440584008B4866 /* Metrics in Frameworks */,
-				43CD2867266F931900E11876 /* XCGLogger in Frameworks */,
 				623704F7265A27760084CCA8 /* AppCenterAnalytics in Frameworks */,
+				43CD28A7267AFC9600E11876 /* SwiftTerm in Frameworks */,
 				62C48935265A13BB00D68D06 /* ServiceDiscovery in Frameworks */,
 				623704FC265A27970084CCA8 /* RedisTypes in Frameworks */,
 				623704FA265A27970084CCA8 /* RediStack in Frameworks */,
@@ -370,8 +372,9 @@
 				437BC24626452AE400E2C84D /* StringFormatter.swift */,
 				437BC24D26461E2100E2C84D /* NumberHelper.swift */,
 				4340E2CD266660FE00F51F19 /* PromiseExt.swift */,
-				43650AEB26676F0600D11CE7 /* ClassicLogger.swift */,
 				43CD286D2670A03800E11876 /* VersionManager.swift */,
+				43CD28AB267B67C600E11876 /* PuppyLogger.swift */,
+				43CD28AD267B6E0E00E11876 /* LoggerFactory.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -485,8 +488,8 @@
 				623704FB265A27970084CCA8 /* RedisTypes */,
 				4340E2B42662152B00F51F19 /* PromiseKit */,
 				4340E2C72666257500F51F19 /* SwiftyJSON */,
-				43CD2864266F931900E11876 /* ObjcExceptionBridging */,
-				43CD2866266F931900E11876 /* XCGLogger */,
+				43CD28A6267AFC9600E11876 /* SwiftTerm */,
+				43CD28A9267B64FA00E11876 /* Puppy */,
 			);
 			productName = "redis-pro";
 			productReference = 4320AAF025B6740900A8E214 /* redis-pro.app */;
@@ -547,7 +550,8 @@
 				623704F8265A27970084CCA8 /* XCRemoteSwiftPackageReference "RediStack" */,
 				4340E2B32662152B00F51F19 /* XCRemoteSwiftPackageReference "PromiseKit" */,
 				4340E2C62666257500F51F19 /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
-				43CD2863266F931900E11876 /* XCRemoteSwiftPackageReference "XCGLogger" */,
+				43CD28A5267AFC9600E11876 /* XCRemoteSwiftPackageReference "SwiftTerm" */,
+				43CD28A8267B64FA00E11876 /* XCRemoteSwiftPackageReference "Puppy" */,
 			);
 			productRefGroup = 4320AAF125B6740900A8E214 /* Products */;
 			projectDirPath = "";
@@ -596,7 +600,6 @@
 				4397288C2643E43800803BE9 /* Constants.swift in Sources */,
 				4314A34C26258A4300053FEE /* Page.swift in Sources */,
 				431266D8261C66E100FB6B69 /* MTheme.swift in Sources */,
-				43650AEC26676F0600D11CE7 /* ClassicLogger.swift in Sources */,
 				431266C82617080D00FB6B69 /* RedisQuickRow.swift in Sources */,
 				437C0937264952B300F1904C /* MTabView.swift in Sources */,
 				62CB3D722619AE050061E8C3 /* HomeView.swift in Sources */,
@@ -615,10 +618,12 @@
 				4382203E265668CC00DA7F9E /* MLoading.swift in Sources */,
 				4385D32E261ED26200BA8ED1 /* IndexView.swift in Sources */,
 				4320AAF425B6740900A8E214 /* redis_proApp.swift in Sources */,
+				43CD28AE267B6E0E00E11876 /* LoggerFactory.swift in Sources */,
 				43CD286E2670A03800E11876 /* VersionManager.swift in Sources */,
 				430A09DC25BEAD2700B60DFC /* RedisInsanceModel.swift in Sources */,
 				437BC24E26461E2100E2C84D /* NumberHelper.swift in Sources */,
 				431266F5261D912500FB6B69 /* StringEditorView.swift in Sources */,
+				43CD28AC267B67C600E11876 /* PuppyLogger.swift in Sources */,
 				431266CF261C4E0900FB6B69 /* RedisKeySearchRowView.swift in Sources */,
 				4314A34126243ED500053FEE /* PageBar.swift in Sources */,
 				62CB3D7D2619AF990061E8C3 /* RedisKeyModel.swift in Sources */,
@@ -967,12 +972,20 @@
 				minimumVersion = 1.8.1;
 			};
 		};
-		43CD2863266F931900E11876 /* XCRemoteSwiftPackageReference "XCGLogger" */ = {
+		43CD28A5267AFC9600E11876 /* XCRemoteSwiftPackageReference "SwiftTerm" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://gitee.com/chengpan168_admin/XCGLogger.git";
+			repositoryURL = "https://gitee.com/chengpan168_admin/SwiftTerm.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 7.0.1;
+				minimumVersion = 1.0.7;
+			};
+		};
+		43CD28A8267B64FA00E11876 /* XCRemoteSwiftPackageReference "Puppy" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://gitee.com/chengpan168_admin/Puppy.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.2.0;
 			};
 		};
 		623704F3265A27760084CCA8 /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */ = {
@@ -1043,15 +1056,15 @@
 			package = 438BBEB32655015D00B458BF /* XCRemoteSwiftPackageReference "plcrashreporter" */;
 			productName = CrashReporter;
 		};
-		43CD2864266F931900E11876 /* ObjcExceptionBridging */ = {
+		43CD28A6267AFC9600E11876 /* SwiftTerm */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 43CD2863266F931900E11876 /* XCRemoteSwiftPackageReference "XCGLogger" */;
-			productName = ObjcExceptionBridging;
+			package = 43CD28A5267AFC9600E11876 /* XCRemoteSwiftPackageReference "SwiftTerm" */;
+			productName = SwiftTerm;
 		};
-		43CD2866266F931900E11876 /* XCGLogger */ = {
+		43CD28A9267B64FA00E11876 /* Puppy */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 43CD2863266F931900E11876 /* XCRemoteSwiftPackageReference "XCGLogger" */;
-			productName = XCGLogger;
+			package = 43CD28A8267B64FA00E11876 /* XCRemoteSwiftPackageReference "Puppy" */;
+			productName = Puppy;
 		};
 		623704F4265A27760084CCA8 /* AppCenterCrashes */ = {
 			isa = XCSwiftPackageProductDependency;

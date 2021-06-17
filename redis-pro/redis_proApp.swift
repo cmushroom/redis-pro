@@ -11,7 +11,6 @@ import AppCenter
 import AppCenterAnalytics
 import AppCenterCrashes
 import Logging
-import XCGLogger
 
 @main
 struct redis_proApp: App {
@@ -19,19 +18,11 @@ struct redis_proApp: App {
     @AppStorage("User.colorSchemeValue")
     private var colorSchemeValue:String = ColorSchemeEnum.AUTO.rawValue
     
-    let logger = Logger(label: "redis-app")
-    
-    
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     init() {
         // logger
-        let xcgLogger = XCGLogger.default
-        xcgLogger.setup(level: .debug, showLogIdentifier: false, showFunctionName: true, showThreadName: true, showLevel: true, showFileNames: true, showLineNumbers: true, showDate: true, writeToFile: "redis-pro.log", fileLevel: .debug)
-        LoggingSystem.bootstrap({
-            ClassicLogHandler(label: $0, xcgLogger: xcgLogger)
-        })
-        logger.info("init logger complete...")
+        LoggerFactory().setUp()
     }
     
     var body: some Scene {

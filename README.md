@@ -1,7 +1,7 @@
 #  Redis Pro
 
 ![Swift5.0+](https://img.shields.io/badge/Swift-5.0%2B-orange.svg?style=flat)
-[![release](https://img.shields.io/github/v/release/sushichop/Puppy.svg?color=blue)](https://github.com/sushichop/Puppy/releases)
+[![release](https://img.shields.io/github/v/release/cmushroom/redis-pro?include_prereleases)](https://github.com/cmushroom/redis-pro/releases)
 [![license](https://img.shields.io/badge/license-Apache-blue.svg)](https://github.com/cmushroom/redis-pro/blob/main/LICENSE)
 ![platforms](https://img.shields.io/badge/Platforms-macOS%20-orange.svg?style=flat)
 

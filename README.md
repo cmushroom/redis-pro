@@ -21,6 +21,7 @@
 
 ## 功能计划(暂定)
 * redis config 修改
+* client list and kill
 * ssh 登录
 * ipad os 支持
     

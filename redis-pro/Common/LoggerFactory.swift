@@ -26,7 +26,6 @@ class LoggerFactory {
         fileRotation.delegate = delegate
         fileRotation.format = LogFormatter()
         
-//        let puppy = Puppy.default
         self.puppy.add(console)
         self.puppy.add(fileRotation)
         

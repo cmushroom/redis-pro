@@ -1093,6 +1093,28 @@ class RediStackClient{
         return promise
     }
     
+    func flushDB() -> Promise<Bool> {
+        self.globalContext?.loading = true
+        
+        let promise = getConnectionAsync().then({connection in
+            Promise<Bool> {resolver in
+                connection.send(command: "FLUSHDB")
+                    .whenComplete { completion in
+                        if case .success(let res) = completion {
+                            self.logger.info("flush db success: \(res)")
+                            resolver.fulfill(true)
+                        }
+                        else if case .failure(let error) = completion {
+                            resolver.reject(error)
+                        }
+                    }
+            }
+        })
+        
+        afterPromise(promise)
+        return promise
+    }
+    
     func info() -> Promise<[RedisInfoModel]> {
         self.globalContext?.loading = true
         

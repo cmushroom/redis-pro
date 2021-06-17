@@ -67,6 +67,7 @@ struct RedisKeysListView: View {
                         .labelStyle(IconOnlyLabelStyle())
             ){
                 Button("Redis Info", action: onRedisInfoAction)
+                MButton(text: "Flush DB", action: onFlushDBAction, isConfirm: true, confirmTitle: "Flush DB ?", confirmMessage: "Are you sure you want to flush db? This operation cannot be undone.")
             }
             .frame(width:30)
             .menuButtonStyle(BorderlessPullDownMenuButtonStyle())
@@ -217,6 +218,12 @@ struct RedisKeysListView: View {
     
         self.selectedRedisKeyIndex = nil
         self.redisInfoVisible = true
+    }
+    
+    func onFlushDBAction() -> Void {
+        let _ = self.redisInstanceModel.getClient().flushDB().done({ _ in
+            self.onRefreshAction()
+        })
     }
     
     func onSearchKeyAction() -> Void {

@@ -86,6 +86,10 @@
 		43CD28AA267B64FA00E11876 /* Puppy in Frameworks */ = {isa = PBXBuildFile; productRef = 43CD28A9267B64FA00E11876 /* Puppy */; };
 		43CD28AC267B67C600E11876 /* PuppyLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD28AB267B67C600E11876 /* PuppyLogger.swift */; };
 		43CD28AE267B6E0E00E11876 /* LoggerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD28AD267B6E0E00E11876 /* LoggerFactory.swift */; };
+		43CD28B0267C6A9D00E11876 /* MainViewTypeEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD28AF267C6A9D00E11876 /* MainViewTypeEnum.swift */; };
+		43CD28B2267C6D0800E11876 /* ClientsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD28B1267C6D0800E11876 /* ClientsListView.swift */; };
+		43CD28B4267C6F1100E11876 /* ClientModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD28B3267C6F1100E11876 /* ClientModel.swift */; };
+		43CD28B6267C7CF400E11876 /* Objects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD28B5267C7CF400E11876 /* Objects.swift */; };
 		43DFEF3725C29288006EF535 /* FormItemInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DFEF3625C29288006EF535 /* FormItemInt.swift */; };
 		43EADB052620043F003B8310 /* HashEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EADB042620043F003B8310 /* HashEditorView.swift */; };
 		43EADB0826200540003B8310 /* IconButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EADB0726200540003B8310 /* IconButton.swift */; };
@@ -195,6 +199,10 @@
 		43CD28A126732F5000E11876 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		43CD28AB267B67C600E11876 /* PuppyLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PuppyLogger.swift; sourceTree = "<group>"; };
 		43CD28AD267B6E0E00E11876 /* LoggerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggerFactory.swift; sourceTree = "<group>"; };
+		43CD28AF267C6A9D00E11876 /* MainViewTypeEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewTypeEnum.swift; sourceTree = "<group>"; };
+		43CD28B1267C6D0800E11876 /* ClientsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientsListView.swift; sourceTree = "<group>"; };
+		43CD28B3267C6F1100E11876 /* ClientModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientModel.swift; sourceTree = "<group>"; };
+		43CD28B5267C7CF400E11876 /* Objects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Objects.swift; sourceTree = "<group>"; };
 		43DFEF3625C29288006EF535 /* FormItemInt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormItemInt.swift; sourceTree = "<group>"; };
 		43EADB042620043F003B8310 /* HashEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashEditorView.swift; sourceTree = "<group>"; };
 		43EADB0726200540003B8310 /* IconButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconButton.swift; sourceTree = "<group>"; };
@@ -329,7 +337,7 @@
 				62CB3D6F2619ADB60061E8C3 /* Login */,
 				4385D337261FF6E900BA8ED1 /* RedisEditorView */,
 				437BC24F264678FB00E2C84D /* Sidebar */,
-				43CD28A22673368E00E11876 /* RedisInfo */,
+				43CD28A22673368E00E11876 /* System */,
 				4385D32D261ED26200BA8ED1 /* IndexView.swift */,
 				62CB3D712619AE050061E8C3 /* HomeView.swift */,
 				431266E4261D4E2700FB6B69 /* RedisValueView.swift */,
@@ -352,6 +360,7 @@
 				4314A3632626B98700053FEE /* AlertContext.swift */,
 				4370534D262812EE00D8F1B7 /* GlobalContext.swift */,
 				43CD28772671FA2A00E11876 /* RedisInfoModel.swift */,
+				43CD28B3267C6F1100E11876 /* ClientModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -363,6 +372,7 @@
 				4373C50425C3F0B6002B700E /* UserDefaultsKeysEnum.swift */,
 				62CB3D7F2619B09B0061E8C3 /* RedisKeyTypeEnum.swift */,
 				431266D4261C5C9000FB6B69 /* ButtonTypeEnum.swift */,
+				43CD28AF267C6A9D00E11876 /* MainViewTypeEnum.swift */,
 				431266D7261C66E100FB6B69 /* MTheme.swift */,
 				4373C50025C2E75B002B700E /* BizError.swift */,
 				4314A34E2625B46E00053FEE /* RediStackClient.swift */,
@@ -375,6 +385,7 @@
 				43CD286D2670A03800E11876 /* VersionManager.swift */,
 				43CD28AB267B67C600E11876 /* PuppyLogger.swift */,
 				43CD28AD267B6E0E00E11876 /* LoggerFactory.swift */,
+				43CD28B5267C7CF400E11876 /* Objects.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -439,12 +450,13 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
-		43CD28A22673368E00E11876 /* RedisInfo */ = {
+		43CD28A22673368E00E11876 /* System */ = {
 			isa = PBXGroup;
 			children = (
 				43CD2879267209D900E11876 /* RedisInfoView.swift */,
+				43CD28B1267C6D0800E11876 /* ClientsListView.swift */,
 			);
-			path = RedisInfo;
+			path = System;
 			sourceTree = "<group>";
 		};
 		62CB3D6F2619ADB60061E8C3 /* Login */ = {
@@ -598,6 +610,7 @@
 				4373C50525C3F0B6002B700E /* UserDefaultsKeysEnum.swift in Sources */,
 				4340E2CA2666494300F51F19 /* ScanModel.swift in Sources */,
 				4397288C2643E43800803BE9 /* Constants.swift in Sources */,
+				43CD28B6267C7CF400E11876 /* Objects.swift in Sources */,
 				4314A34C26258A4300053FEE /* Page.swift in Sources */,
 				431266D8261C66E100FB6B69 /* MTheme.swift in Sources */,
 				431266C82617080D00FB6B69 /* RedisQuickRow.swift in Sources */,
@@ -615,6 +628,7 @@
 				43CD28742670E8BE00E11876 /* SettingsView.swift in Sources */,
 				437BC24726452AE400E2C84D /* StringFormatter.swift in Sources */,
 				430A09D325BEA91700B60DFC /* LoginView.swift in Sources */,
+				43CD28B2267C6D0800E11876 /* ClientsListView.swift in Sources */,
 				4382203E265668CC00DA7F9E /* MLoading.swift in Sources */,
 				4385D32E261ED26200BA8ED1 /* IndexView.swift in Sources */,
 				4320AAF425B6740900A8E214 /* redis_proApp.swift in Sources */,
@@ -643,6 +657,7 @@
 				431266DE261D45C500FB6B69 /* MIcon.swift in Sources */,
 				437C09352649039000F1904C /* DatabasePicker.swift in Sources */,
 				430A09E225C1559400B60DFC /* FormLabel.swift in Sources */,
+				43CD28B0267C6A9D00E11876 /* MainViewTypeEnum.swift in Sources */,
 				43BB012326390BC20039565E /* ModalView.swift in Sources */,
 				43CD28712670C3DD00E11876 /* ColorSchemeEnum.swift in Sources */,
 				434047FA2611C828001519F9 /* RedisFavoriteModel.swift in Sources */,
@@ -653,6 +668,7 @@
 				4314A344262546DF00053FEE /* Extensions.swift in Sources */,
 				43CD28782671FA2A00E11876 /* RedisInfoModel.swift in Sources */,
 				437BC2492645413000E2C84D /* MDoubleField.swift in Sources */,
+				43CD28B4267C6F1100E11876 /* ClientModel.swift in Sources */,
 				62CB3D802619B09B0061E8C3 /* RedisKeyTypeEnum.swift in Sources */,
 				437BC2452645272E00E2C84D /* DoubleFormatter.swift in Sources */,
 				43135771263BB1560077EE46 /* ListEditorView.swift in Sources */,

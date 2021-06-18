@@ -1115,6 +1115,50 @@ class RediStackClient{
         return promise
     }
     
+    func clientList() -> Promise<[[String:String]]> {
+        self.globalContext?.loading = true
+        
+        let promise =
+            getConnectionAsync().then({connection in
+                Promise<[[String:String]]> { resolver in
+                    connection.send(command: "CLIENT", with: [RESPValue(from: "LIST")])
+                        .whenComplete{ completion in
+                            if case .success(let res) = completion {
+                                self.logger.info("query redis server client list success: \(res)")
+                                let resStr = res.string ?? ""
+                                let lines = resStr.components(separatedBy: "\n")
+
+                                var resArray = [[String:String]]()
+
+                                lines.forEach({ line in
+                                    if !line.contains("=") {
+                                        return
+                                    }
+                                    var item:[String:String] = Dictionary()
+                                    let kvStrArray = line.components(separatedBy: .whitespaces)
+                                    kvStrArray.forEach({kvStr in
+                                        if kvStr.contains("=") {
+                                            let kv = kvStr.components(separatedBy: "=")
+                                            if kv.count == 2 {
+                                                item[kv[0]] = kv[1]
+                                            }
+                                        }
+                                    })
+                                    resArray.append(item)
+                                })
+                                resolver.fulfill(resArray)
+                            }
+                            else if case .failure(let error) = completion {
+                                resolver.reject(error)
+                            }
+                        }
+                }
+            })
+        
+        afterPromise(promise)
+        return promise
+    }
+    
     func info() -> Promise<[RedisInfoModel]> {
         self.globalContext?.loading = true
         

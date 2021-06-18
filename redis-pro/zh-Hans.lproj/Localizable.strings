@@ -7,6 +7,32 @@
 */
 
 // ------------------------------------------------ Redis Info Start...-------------------------------------------------------
+"REDIS_CLIENT_LIST_ID" = "客户端唯一ID(64-bit)";
+"REDIS_CLIENT_LIST_NAME" = "the name set by the client with CLIENT SETNAME";
+"REDIS_CLIENT_LIST_ADDR" = "客户端的地址和端口";
+"REDIS_CLIENT_LIST_LADDR" = "address/port of local address client connected to (bind address)";
+"REDIS_CLIENT_LIST_FD" = "套接字所使用的文件描述符";
+"REDIS_CLIENT_LIST_AGE" = "以秒计算的已连接时长";
+"REDIS_CLIENT_LIST_IDLE" = "以秒计算的空闲时长";
+"REDIS_CLIENT_LIST_FLAGS" = "客户端 flag （见下文）";
+"REDIS_CLIENT_LIST_DB" = "该客户端正在使用的数据库 ID";
+"REDIS_CLIENT_LIST_SUB" = "已订阅频道的数量";
+"REDIS_CLIENT_LIST_PSUB" = "已订阅模式的数量";
+"REDIS_CLIENT_LIST_MULTI" = "在事务中被执行的命令数量";
+"REDIS_CLIENT_LIST_QBUF" = "查询缓存的长度（ 0 表示没有查询在等待）";
+"REDIS_CLIENT_LIST_QBUF-FREE" = "查询缓存的剩余空间（ 0 表示没有剩余空间）";
+"REDIS_CLIENT_LIST_OBL" = "输出缓存的长度";
+"REDIS_CLIENT_LIST_OLL" = "输出列表的长度（当输出缓存没有剩余空间时，回复被入队到这个队列里）";
+"REDIS_CLIENT_LIST_OMEM" = "输出缓存的内存占用量";
+"REDIS_CLIENT_LIST_EVENTS" = "文件描述符事件（见下文）";
+"REDIS_CLIENT_LIST_CMD" = "最近一次执行的命令";
+"REDIS_CLIENT_LIST_ARGV-mem" = "incomplete arguments for the next command (already extracted from query buffer)";
+"REDIS_CLIENT_LIST_TOT-mem" = "total memory consumed by this client in its various buffers";
+"REDIS_CLIENT_LIST_REDIR" = "client id of current client tracking redirection";
+"REDIS_CLIENT_LIST_USER" = "the authenticated username of the client";
+// ------------------------------------------------ Redis Info End...-------------------------------------------------------
+
+// ------------------------------------------------ Redis Info Start...-------------------------------------------------------
 // server
 "hello"="哈喽";
 "REDIS_INFO_SERVER" = "一般 Redis 服务器信息";

@@ -8,7 +8,7 @@
 
 ## 简介
 * redis-pro 是一款 redis 轻量客户端管理工具， 采用SwiftUI 编写
-* 开发过程中借鉴了 Sequel-Ace [Sequel-Ace](https://github.com/Sequel-Ace/Sequel-Ace)! 和阿里云DMS，Sequel-Ace (前身 Sequel-Pro) 是一个简洁易用的小众 mysql桌面客户端
+* 开发过程中借鉴了 [Sequel-Ace](https://github.com/Sequel-Ace/Sequel-Ace)! 和阿里云DMS，Sequel-Ace (前身 Sequel-Pro) 是一个简洁易用的小众 mysql桌面客户端
 
 ## 安装
 * 到release页面下载安装

@@ -20,11 +20,11 @@
 目前只支持 macos (Intel, Apple Silicon) 平台,  后续考虑支持 ipad os， 再后期可能会支持ios
 
 ## 功能计划(暂定)
-- [] client list and kill 
-- [] slow log
-- [] redis config 修改
-- [] ssh 登录
-- [] ipad os 支持
+- [ ] client list and kill 
+- [ ] slow log
+- [ ] redis config 修改
+- [ ] ssh 登录
+- [ ] ipad os 支持
     
 
 ## 版本要求

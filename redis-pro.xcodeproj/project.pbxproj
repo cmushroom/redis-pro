@@ -56,6 +56,10 @@
 		436BB6952644E8D6008B4866 /* ZSetEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436BB6942644E8D6008B4866 /* ZSetEditorView.swift */; };
 		436BB6972644EED8008B4866 /* FormItemNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436BB6962644EED8008B4866 /* FormItemNumber.swift */; };
 		4370534E262812EE00D8F1B7 /* GlobalContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4370534D262812EE00D8F1B7 /* GlobalContext.swift */; };
+		4370CE682685B07D001E5787 /* ClientListTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4370CE672685B07D001E5787 /* ClientListTableController.swift */; };
+		4370CE6A2685B0B7001E5787 /* ClientListTableController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4370CE692685B0B7001E5787 /* ClientListTableController.xib */; };
+		4370CE6E2685BC05001E5787 /* ClientListDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4370CE6D2685BC05001E5787 /* ClientListDemo.swift */; };
+		4370CE702685C4B2001E5787 /* ClientListTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4370CE6F2685C4B2001E5787 /* ClientListTable.swift */; };
 		4373C4FE25C2DEC8002B700E /* MButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4373C4FD25C2DEC8002B700E /* MButton.swift */; };
 		4373C50125C2E75B002B700E /* BizError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4373C50025C2E75B002B700E /* BizError.swift */; };
 		4373C50525C3F0B6002B700E /* UserDefaultsKeysEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4373C50425C3F0B6002B700E /* UserDefaultsKeysEnum.swift */; };
@@ -73,6 +77,7 @@
 		43822042265763D400DA7F9E /* RedisProCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43822041265763D400DA7F9E /* RedisProCommands.swift */; };
 		4385D32E261ED26200BA8ED1 /* IndexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4385D32D261ED26200BA8ED1 /* IndexView.swift */; };
 		438BBEB52655015D00B458BF /* CrashReporter in Frameworks */ = {isa = PBXBuildFile; productRef = 438BBEB42655015D00B458BF /* CrashReporter */; };
+		43915809268075490019D2D0 /* Demo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43915808268075490019D2D0 /* Demo.swift */; };
 		4397288C2643E43800803BE9 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4397288B2643E43800803BE9 /* Constants.swift */; };
 		43BB012326390BC20039565E /* ModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BB012226390BC20039565E /* ModalView.swift */; };
 		43CD286A2670933F00E11876 /* CheckUpdateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD28692670933F00E11876 /* CheckUpdateTests.swift */; };
@@ -82,7 +87,6 @@
 		43CD28782671FA2A00E11876 /* RedisInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD28772671FA2A00E11876 /* RedisInfoModel.swift */; };
 		43CD287A267209D900E11876 /* RedisInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD2879267209D900E11876 /* RedisInfoView.swift */; };
 		43CD289E26732F4C00E11876 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 43CD28A026732F4C00E11876 /* Localizable.strings */; };
-		43CD28A7267AFC9600E11876 /* SwiftTerm in Frameworks */ = {isa = PBXBuildFile; productRef = 43CD28A6267AFC9600E11876 /* SwiftTerm */; };
 		43CD28AA267B64FA00E11876 /* Puppy in Frameworks */ = {isa = PBXBuildFile; productRef = 43CD28A9267B64FA00E11876 /* Puppy */; };
 		43CD28AC267B67C600E11876 /* PuppyLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD28AB267B67C600E11876 /* PuppyLogger.swift */; };
 		43CD28AE267B6E0E00E11876 /* LoggerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD28AD267B6E0E00E11876 /* LoggerFactory.swift */; };
@@ -169,6 +173,10 @@
 		436BB6962644EED8008B4866 /* FormItemNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormItemNumber.swift; sourceTree = "<group>"; };
 		4370534B2626E65D00D8F1B7 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		4370534D262812EE00D8F1B7 /* GlobalContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalContext.swift; sourceTree = "<group>"; };
+		4370CE672685B07D001E5787 /* ClientListTableController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientListTableController.swift; sourceTree = "<group>"; };
+		4370CE692685B0B7001E5787 /* ClientListTableController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClientListTableController.xib; sourceTree = "<group>"; };
+		4370CE6D2685BC05001E5787 /* ClientListDemo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientListDemo.swift; sourceTree = "<group>"; };
+		4370CE6F2685C4B2001E5787 /* ClientListTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientListTable.swift; sourceTree = "<group>"; };
 		4373C4FD25C2DEC8002B700E /* MButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MButton.swift; sourceTree = "<group>"; };
 		4373C50025C2E75B002B700E /* BizError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BizError.swift; sourceTree = "<group>"; };
 		4373C50425C3F0B6002B700E /* UserDefaultsKeysEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsKeysEnum.swift; sourceTree = "<group>"; };
@@ -186,6 +194,7 @@
 		4382203F26574E3F00DA7F9E /* MSpin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSpin.swift; sourceTree = "<group>"; };
 		43822041265763D400DA7F9E /* RedisProCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisProCommands.swift; sourceTree = "<group>"; };
 		4385D32D261ED26200BA8ED1 /* IndexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexView.swift; sourceTree = "<group>"; };
+		43915808268075490019D2D0 /* Demo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Demo.swift; sourceTree = "<group>"; };
 		4397288B2643E43800803BE9 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		43BB012226390BC20039565E /* ModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalView.swift; sourceTree = "<group>"; };
 		43CD2868267091B600E11876 /* .version */ = {isa = PBXFileReference; lastKnownFileType = text; path = .version; sourceTree = "<group>"; };
@@ -228,7 +237,6 @@
 				4340E2C82666257500F51F19 /* SwiftyJSON in Frameworks */,
 				436BB68926440584008B4866 /* Metrics in Frameworks */,
 				623704F7265A27760084CCA8 /* AppCenterAnalytics in Frameworks */,
-				43CD28A7267AFC9600E11876 /* SwiftTerm in Frameworks */,
 				62C48935265A13BB00D68D06 /* ServiceDiscovery in Frameworks */,
 				623704FC265A27970084CCA8 /* RedisTypes in Frameworks */,
 				623704FA265A27970084CCA8 /* RediStack in Frameworks */,
@@ -270,6 +278,7 @@
 				4382203D265668CC00DA7F9E /* MLoading.swift */,
 				4382203F26574E3F00DA7F9E /* MSpin.swift */,
 				4314A343262546DF00053FEE /* Extensions.swift */,
+				43915808268075490019D2D0 /* Demo.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -455,6 +464,10 @@
 			children = (
 				43CD2879267209D900E11876 /* RedisInfoView.swift */,
 				43CD28B1267C6D0800E11876 /* ClientsListView.swift */,
+				4370CE6D2685BC05001E5787 /* ClientListDemo.swift */,
+				4370CE6F2685C4B2001E5787 /* ClientListTable.swift */,
+				4370CE672685B07D001E5787 /* ClientListTableController.swift */,
+				4370CE692685B0B7001E5787 /* ClientListTableController.xib */,
 			);
 			path = System;
 			sourceTree = "<group>";
@@ -500,7 +513,6 @@
 				623704FB265A27970084CCA8 /* RedisTypes */,
 				4340E2B42662152B00F51F19 /* PromiseKit */,
 				4340E2C72666257500F51F19 /* SwiftyJSON */,
-				43CD28A6267AFC9600E11876 /* SwiftTerm */,
 				43CD28A9267B64FA00E11876 /* Puppy */,
 			);
 			productName = "redis-pro";
@@ -562,7 +574,6 @@
 				623704F8265A27970084CCA8 /* XCRemoteSwiftPackageReference "RediStack" */,
 				4340E2B32662152B00F51F19 /* XCRemoteSwiftPackageReference "PromiseKit" */,
 				4340E2C62666257500F51F19 /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
-				43CD28A5267AFC9600E11876 /* XCRemoteSwiftPackageReference "SwiftTerm" */,
 				43CD28A8267B64FA00E11876 /* XCRemoteSwiftPackageReference "Puppy" */,
 			);
 			productRefGroup = 4320AAF125B6740900A8E214 /* Products */;
@@ -581,6 +592,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4320AAFB25B6740A00A8E214 /* Preview Assets.xcassets in Resources */,
+				4370CE6A2685B0B7001E5787 /* ClientListTableController.xib in Resources */,
 				43CD289E26732F4C00E11876 /* Localizable.strings in Resources */,
 				4320AAF825B6740A00A8E214 /* Assets.xcassets in Resources */,
 			);
@@ -604,6 +616,7 @@
 				4313576F263ABB1C0077EE46 /* FormWrapper.swift in Sources */,
 				4340E2CC266649D000F51F19 /* ScanBar.swift in Sources */,
 				4313576B263AB6400077EE46 /* FormItemTextArea.swift in Sources */,
+				43915809268075490019D2D0 /* Demo.swift in Sources */,
 				436BB6952644E8D6008B4866 /* ZSetEditorView.swift in Sources */,
 				4314A3472625484100053FEE /* MTextField.swift in Sources */,
 				436BB6932644D126008B4866 /* SetEditorView.swift in Sources */,
@@ -614,6 +627,7 @@
 				4314A34C26258A4300053FEE /* Page.swift in Sources */,
 				431266D8261C66E100FB6B69 /* MTheme.swift in Sources */,
 				431266C82617080D00FB6B69 /* RedisQuickRow.swift in Sources */,
+				4370CE682685B07D001E5787 /* ClientListTableController.swift in Sources */,
 				437C0937264952B300F1904C /* MTabView.swift in Sources */,
 				62CB3D722619AE050061E8C3 /* HomeView.swift in Sources */,
 				431266E8261D4E4100FB6B69 /* RedisValueHeaderView.swift in Sources */,
@@ -626,6 +640,7 @@
 				430A09D925BEA9A700B60DFC /* RedisRow.swift in Sources */,
 				431266F2261D89E600FB6B69 /* RedisValueEditView.swift in Sources */,
 				43CD28742670E8BE00E11876 /* SettingsView.swift in Sources */,
+				4370CE6E2685BC05001E5787 /* ClientListDemo.swift in Sources */,
 				437BC24726452AE400E2C84D /* StringFormatter.swift in Sources */,
 				430A09D325BEA91700B60DFC /* LoginView.swift in Sources */,
 				43CD28B2267C6D0800E11876 /* ClientsListView.swift in Sources */,
@@ -648,6 +663,7 @@
 				4373C50C25C3FC81002B700E /* LoginForm.swift in Sources */,
 				430A09D625BEA98300B60DFC /* RedisList.swift in Sources */,
 				431266E5261D4E2700FB6B69 /* RedisValueView.swift in Sources */,
+				4370CE702685C4B2001E5787 /* ClientListTable.swift in Sources */,
 				62CB3D752619AEC20061E8C3 /* RedisKeysListView.swift in Sources */,
 				436BB6972644EED8008B4866 /* FormItemNumber.swift in Sources */,
 				43DFEF3725C29288006EF535 /* FormItemInt.swift in Sources */,
@@ -840,7 +856,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"redis-pro/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "redis-pro/Info.plist";
@@ -849,7 +865,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = "1.0.0-beta";
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.cmushroom.redis-pro";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -865,7 +881,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"redis-pro/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
@@ -875,7 +891,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = "1.0.0-beta";
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.cmushroom.redis-pro";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -988,14 +1004,6 @@
 				minimumVersion = 1.8.1;
 			};
 		};
-		43CD28A5267AFC9600E11876 /* XCRemoteSwiftPackageReference "SwiftTerm" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://gitee.com/chengpan168_admin/SwiftTerm.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.7;
-			};
-		};
 		43CD28A8267B64FA00E11876 /* XCRemoteSwiftPackageReference "Puppy" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://gitee.com/chengpan168_admin/Puppy.git";
@@ -1071,11 +1079,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 438BBEB32655015D00B458BF /* XCRemoteSwiftPackageReference "plcrashreporter" */;
 			productName = CrashReporter;
-		};
-		43CD28A6267AFC9600E11876 /* SwiftTerm */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 43CD28A5267AFC9600E11876 /* XCRemoteSwiftPackageReference "SwiftTerm" */;
-			productName = SwiftTerm;
 		};
 		43CD28A9267B64FA00E11876 /* Puppy */ = {
 			isa = XCSwiftPackageProductDependency;

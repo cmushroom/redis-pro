@@ -83,15 +83,6 @@
         }
       },
       {
-        "package": "SwiftTerm",
-        "repositoryURL": "https://gitee.com/chengpan168_admin/SwiftTerm.git",
-        "state": {
-          "branch": null,
-          "revision": "70a3af884c24dff9f1beeda04e889b5591f04f3c",
-          "version": "1.0.7"
-        }
-      },
-      {
         "package": "SwiftyJSON",
         "repositoryURL": "https://gitee.com/chengpan168_admin/SwiftyJSON.git",
         "state": {

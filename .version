@@ -1,6 +1,6 @@
 {
-    "latestVersionNum": 1,
-    "latestVersion": "1.0.1",
+    "latestVersionNum": 2,
+    "latestVersion": "1.1.0",
     "updateType": "hint",
-    "releaseNotes": "1. a \n2. b \n3.c"
+    "releaseNotes": "1. client list and kill \n2. rotation log file, use puppy logger \n3. flush db"
 }

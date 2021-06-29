@@ -8,7 +8,6 @@
 import SwiftUI
 import AppKit
 import Foundation
-import SwiftTerm
 
 struct SmallButtonStyle: PrimitiveButtonStyle {
     func makeBody(configuration: Configuration) -> some View {

@@ -6,7 +6,7 @@
   
 */
 
-// ------------------------------------------------ Redis Info Start...-------------------------------------------------------
+// ------------------------------------------------ Redis Client List Start...-------------------------------------------------------
 "REDIS_CLIENT_LIST_ID" = "客户端唯一ID(64-bit)";
 "REDIS_CLIENT_LIST_NAME" = "the name set by the client with CLIENT SETNAME";
 "REDIS_CLIENT_LIST_ADDR" = "客户端的地址和端口";
@@ -26,11 +26,11 @@
 "REDIS_CLIENT_LIST_OMEM" = "输出缓存的内存占用量";
 "REDIS_CLIENT_LIST_EVENTS" = "文件描述符事件（见下文）";
 "REDIS_CLIENT_LIST_CMD" = "最近一次执行的命令";
-"REDIS_CLIENT_LIST_ARGV-mem" = "incomplete arguments for the next command (already extracted from query buffer)";
-"REDIS_CLIENT_LIST_TOT-mem" = "total memory consumed by this client in its various buffers";
+"REDIS_CLIENT_LIST_ARGV-MEM" = "incomplete arguments for the next command (already extracted from query buffer)";
+"REDIS_CLIENT_LIST_TOT-MEM" = "total memory consumed by this client in its various buffers";
 "REDIS_CLIENT_LIST_REDIR" = "client id of current client tracking redirection";
 "REDIS_CLIENT_LIST_USER" = "the authenticated username of the client";
-// ------------------------------------------------ Redis Info End...-------------------------------------------------------
+// ------------------------------------------------ Redis Client List End...-------------------------------------------------------
 
 // ------------------------------------------------ Redis Info Start...-------------------------------------------------------
 // server

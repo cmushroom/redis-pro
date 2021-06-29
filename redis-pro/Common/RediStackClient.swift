@@ -1115,12 +1115,36 @@ class RediStackClient{
         return promise
     }
     
-    func clientList() -> Promise<[[String:String]]> {
+    func clientKill(_ clientModel:ClientModel) -> Promise<Bool> {
         self.globalContext?.loading = true
         
         let promise =
             getConnectionAsync().then({connection in
-                Promise<[[String:String]]> { resolver in
+                Promise<Bool> { resolver in
+                    connection.send(command: "CLIENT", with: [RESPValue(from: "KILL"), RESPValue(from: "\(clientModel.addr)")])
+                        .whenComplete{ completion in
+                            if case .success(let res) = completion {
+                                self.logger.info("client kill success: \(res)")
+                            
+                                resolver.fulfill(true)
+                            }
+                            else if case .failure(let error) = completion {
+                                resolver.reject(error)
+                            }
+                        }
+                }
+            })
+        
+        afterPromise(promise)
+        return promise
+    }
+    
+    func clientList() -> Promise<[ClientModel]> {
+        self.globalContext?.loading = true
+        
+        let promise =
+            getConnectionAsync().then({connection in
+                Promise<[ClientModel]> { resolver in
                     connection.send(command: "CLIENT", with: [RESPValue(from: "LIST")])
                         .whenComplete{ completion in
                             if case .success(let res) = completion {
@@ -1128,23 +1152,13 @@ class RediStackClient{
                                 let resStr = res.string ?? ""
                                 let lines = resStr.components(separatedBy: "\n")
 
-                                var resArray = [[String:String]]()
+                                var resArray = [ClientModel]()
 
                                 lines.forEach({ line in
                                     if !line.contains("=") {
                                         return
                                     }
-                                    var item:[String:String] = Dictionary()
-                                    let kvStrArray = line.components(separatedBy: .whitespaces)
-                                    kvStrArray.forEach({kvStr in
-                                        if kvStr.contains("=") {
-                                            let kv = kvStr.components(separatedBy: "=")
-                                            if kv.count == 2 {
-                                                item[kv[0]] = kv[1]
-                                            }
-                                        }
-                                    })
-                                    resArray.append(item)
+                                    resArray.append(ClientModel(line: line))
                                 })
                                 resolver.fulfill(resArray)
                             }

@@ -9,19 +9,18 @@ import SwiftUI
 
 struct ClientsListView: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
-    @State private var clientModels:[[String:String]] = [[String:String]]()
-    @State private var selection:Int?
-    
-    
-//    @State var list = [[String:String]]()
+    @State private var clientModels:[ClientModel] = [ClientModel]()
     @State var selectRowIndex: Int = -1
     
-    private var columns:[String] = ["id", "name", "addr", "laddr", "fd", "age", "idle", "flags", "db", "sub", "psub", "multi", "qbuf", "qbuf-free", "obl", "oll", "omem", "events", "cmd", "argv-mem", "tot-mem", "redir", "user"]
+    var selectClientAddr:String {
+        selectRowIndex == -1 ? "" : self.clientModels[self.selectRowIndex].addr
+    }
     
     private var footer: some View {
         HStack(alignment: .center , spacing: 8) {
             Spacer()
-            MButton(text: "Kill Client", action: onRefrehAction)
+            MButton(text: "Kill Client", action: clientKill, disabled: selectRowIndex < 0, isConfirm: true, confirmTitle: selectRowIndex < 0 ? "" : "Kill Client?",
+                confirmMessage: "Are you sure you want to kill client:\(selectClientAddr)? This operation cannot be undone.")
             MButton(text: "Refresh", action: onRefrehAction)
         }
     }
@@ -46,6 +45,16 @@ struct ClientsListView: View {
     }
     func onRefrehAction() -> Void {
         let _ = redisInstanceModel.getClient().clientList().done({res in
+            self.clientModels = res
+        })
+    }
+    func clientKill() -> Void {
+        if self.selectRowIndex < 0 {
+            return
+        }
+        
+        let _ = redisInstanceModel.getClient().clientKill(self.clientModels[self.selectRowIndex]).done({_ in
+            self.onRefrehAction()
         })
     }
 }

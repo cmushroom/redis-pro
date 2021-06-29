@@ -27,8 +27,8 @@
 "REDIS_CLIENT_LIST_OMEM" = "output buffer memory usage";
 "REDIS_CLIENT_LIST_EVENTS" = "file descriptor events (see below)";
 "REDIS_CLIENT_LIST_CMD" = "last command played";
-"REDIS_CLIENT_LIST_ARGV-mem" = "incomplete arguments for the next command (already extracted from query buffer)";
-"REDIS_CLIENT_LIST_TOT-mem" = "total memory consumed by this client in its various buffers";
+"REDIS_CLIENT_LIST_ARGV-MEM" = "incomplete arguments for the next command (already extracted from query buffer)";
+"REDIS_CLIENT_LIST_TOT-MEM" = "total memory consumed by this client in its various buffers";
 "REDIS_CLIENT_LIST_REDIR" = "client id of current client tracking redirection";
 "REDIS_CLIENT_LIST_USER" = "the authenticated username of the client";
 // ------------------------------------------------ Redis Info End...-------------------------------------------------------

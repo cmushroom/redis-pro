@@ -4,13 +4,15 @@
 //
 //  Created by chengpanwang on 2021/6/18.
 //
+//"id", "name", "addr", "laddr", "fd", "age", "idle", "flags", "db", "sub", "psub", "multi", "qbuf", "qbuf-free", "obl", "oll", "omem", "events", "cmd", "argv-mem", "tot-mem", "redir", "user"
 
 import Foundation
 
 class ClientModel:NSObject, Identifiable {
-    @objc var id:Int = 0
-    @objc var name:String = UUID().uuidString
+    @objc var id:String = ""
+    @objc var name:String = ""
     @objc var addr:String = ""
+    @objc var laddr:String = ""
     @objc var fd:String = ""
     @objc var age:String = ""
     @objc var idle:String = ""
@@ -39,6 +41,50 @@ class ClientModel:NSObject, Identifiable {
 //    w : 客户端套接字（在事件 loop 中）是可写的（writeable）
     @objc var events:String = ""
     @objc var cmd:String = ""
+    @objc var argv_mem:String = ""
+    @objc var tot_mem:String = ""
+    @objc var redir:String = ""
+    @objc var user:String = ""
+
+    override init() {
+    }
     
-    
+    init(line:String) {
+        let kvStrArray = line.components(separatedBy: .whitespaces)
+        
+        var item:[String:String] = [String:String]()
+        kvStrArray.forEach({kvStr in
+            if kvStr.contains("=") {
+                let kv = kvStr.components(separatedBy: "=")
+                if kv.count == 2 {
+                    item[kv[0]] = kv[1]
+                }
+            }
+        })
+
+        self.id = item["id"] ?? ""
+        self.name = item["name"] ?? ""
+        self.addr = item["addr"] ?? ""
+        self.laddr = item["laddr"] ?? ""
+        self.fd = item["fd"] ?? ""
+        self.age = item["age"] ?? ""
+        self.idle = item["idle"] ?? ""
+        self.flags = item["flags"] ?? ""
+        self.db = item["db"] ?? ""
+        self.sub = item["sub"] ?? ""
+        self.psub = item["psub"] ?? ""
+        self.multi = item["multi"] ?? ""
+        self.qbuf = item["qbuf"] ?? ""
+        self.qbuf_free = item["qbuf-free"] ?? ""
+        self.obl = item["obl"] ?? ""
+        self.oll = item["oll"] ?? ""
+        self.omem = item["omem"] ?? ""
+        self.events = item["events"] ?? ""
+        self.cmd = item["cmd"] ?? ""
+        self.argv_mem = item["argv-mem"] ?? ""
+        self.tot_mem = item["tot-mem"] ?? ""
+        self.redir = item["redir"] ?? ""
+        self.user = item["user"] ?? ""
+        
+    }
 }

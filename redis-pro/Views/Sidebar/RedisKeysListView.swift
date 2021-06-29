@@ -15,7 +15,6 @@ struct RedisKeysListView: View {
     @EnvironmentObject var globalContext:GlobalContext
     @State var redisKeyModels:[RedisKeyModel] = [RedisKeyModel]()
     @State var selectedRedisKeyIndex:Int?
-//    @StateObject var page:Page = Page()
     @StateObject var scanModel:ScanModel = ScanModel()
     @State private var renameModalVisible:Bool = false
     @State private var oldKeyIndex:Int?
@@ -121,12 +120,12 @@ struct RedisKeysListView: View {
                 if mainViewType == MainViewTypeEnum.REDIS_INFO {
                     RedisInfoView()
                         .onDisappear {
-                            self.redisInfoVisible = false
+                            self.self.mainViewType = MainViewTypeEnum.EDITOR
                         }
                 } else if mainViewType == MainViewTypeEnum.CLIENT_LIST {
                     ClientsListView()
                         .onDisappear {
-                            self.redisInfoVisible = false
+                            self.self.mainViewType = MainViewTypeEnum.EDITOR
                         }
                 } else {
                     EmptyView()

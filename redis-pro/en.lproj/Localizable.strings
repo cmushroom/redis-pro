@@ -5,6 +5,36 @@
   Created by chengpanwang on 2021/6/11.
   
 */
+
+
+// ------------------------------------------------ Redis Info Start...-------------------------------------------------------
+"REDIS_CLIENT_LIST_ID" = "an unique 64-bit client ID.";
+"REDIS_CLIENT_LIST_NAME" = "the name set by the client with CLIENT SETNAME";
+"REDIS_CLIENT_LIST_ADDR" = "address/port of the client";
+"REDIS_CLIENT_LIST_LADDR" = "address/port of local address client connected to (bind address)";
+"REDIS_CLIENT_LIST_FD" = "file descriptor corresponding to the socket";
+"REDIS_CLIENT_LIST_AGE" = "total duration of the connection in seconds";
+"REDIS_CLIENT_LIST_IDLE" = "idle time of the connection in seconds";
+"REDIS_CLIENT_LIST_FLAGS" = "client flags (see below)";
+"REDIS_CLIENT_LIST_DB" = "current database ID";
+"REDIS_CLIENT_LIST_SUB" = "number of channel subscriptions";
+"REDIS_CLIENT_LIST_PSUB" = "number of pattern matching subscriptions";
+"REDIS_CLIENT_LIST_MULTI" = "number of commands in a MULTI/EXEC context";
+"REDIS_CLIENT_LIST_QBUF" = "query buffer length (0 means no query pending)";
+"REDIS_CLIENT_LIST_QBUF-FREE" = "free space of the query buffer (0 means the buffer is full)";
+"REDIS_CLIENT_LIST_OBL" = "output buffer length";
+"REDIS_CLIENT_LIST_OLL" = "output list length (replies are queued in this list when the buffer is full)";
+"REDIS_CLIENT_LIST_OMEM" = "output buffer memory usage";
+"REDIS_CLIENT_LIST_EVENTS" = "file descriptor events (see below)";
+"REDIS_CLIENT_LIST_CMD" = "last command played";
+"REDIS_CLIENT_LIST_ARGV-MEM" = "incomplete arguments for the next command (already extracted from query buffer)";
+"REDIS_CLIENT_LIST_TOT-MEM" = "total memory consumed by this client in its various buffers";
+"REDIS_CLIENT_LIST_REDIR" = "client id of current client tracking redirection";
+"REDIS_CLIENT_LIST_USER" = "the authenticated username of the client";
+// ------------------------------------------------ Redis Info End...-------------------------------------------------------
+
+// ------------------------------------------------ Redis Info Start...-------------------------------------------------------
+// Server
 "hello"="哈喽";
 "REDIS_INFO_SERVER" = "一般 Redis 服务器信息";
 "REDIS_INFO_SERVER_REDIS_VERSION" = "Redis 服务器版本";
@@ -228,3 +258,4 @@
 
 // keyspace
 "REDIS_INFO_KEYSPACE" = "数据库相关的统计信息";
+// ------------------------------------------------ Redis Info End...-------------------------------------------------------

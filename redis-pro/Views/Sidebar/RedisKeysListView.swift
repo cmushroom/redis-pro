@@ -100,6 +100,11 @@ struct RedisKeysListView: View {
                 }
                 
             }
+            .onChange(of: selectedRedisKeyIndex, perform: {_ in
+                if selectedRedisKeyIndex  != nil {
+                    self.mainViewType = MainViewTypeEnum.EDITOR
+                }
+            })
             .listStyle(PlainListStyle())
             .frame(minWidth:150)
             .padding(.all, 0)
@@ -119,14 +124,8 @@ struct RedisKeysListView: View {
             } else {
                 if mainViewType == MainViewTypeEnum.REDIS_INFO {
                     RedisInfoView()
-                        .onDisappear {
-                            self.self.mainViewType = MainViewTypeEnum.EDITOR
-                        }
                 } else if mainViewType == MainViewTypeEnum.CLIENT_LIST {
                     ClientsListView()
-                        .onDisappear {
-                            self.self.mainViewType = MainViewTypeEnum.EDITOR
-                        }
                 } else {
                     EmptyView()
                 }

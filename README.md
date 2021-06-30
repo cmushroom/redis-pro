@@ -5,7 +5,6 @@
 [![license](https://img.shields.io/badge/license-Apache-blue.svg)](https://github.com/cmushroom/redis-pro/blob/main/LICENSE)
 ![platforms](https://img.shields.io/badge/Platforms-macOS%20-orange.svg?style=flat)
 
-
 ## 简介
 * redis-pro 是一款 redis 轻量客户端管理工具， 采用SwiftUI 编写
 * 开发过程中借鉴了 Sequel-Ace [Sequel-Ace](https://github.com/Sequel-Ace/Sequel-Ace)! 和阿里云DMS，Sequel-Ace (前身 Sequel-Pro) 是一个简洁易用的小众 mysql桌面客户端

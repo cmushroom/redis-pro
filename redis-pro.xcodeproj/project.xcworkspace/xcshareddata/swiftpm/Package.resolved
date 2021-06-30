@@ -29,6 +29,15 @@
         }
       },
       {
+        "package": "Puppy",
+        "repositoryURL": "https://gitee.com/chengpan168_admin/Puppy.git",
+        "state": {
+          "branch": null,
+          "revision": "dc82e65c749cee431ffbb8c0913680b61ccd7e08",
+          "version": "0.2.0"
+        }
+      },
+      {
         "package": "RediStack",
         "repositoryURL": "https://gitee.com/chengpan168_admin/RediStack.git",
         "state": {
@@ -80,15 +89,6 @@
           "branch": null,
           "revision": "b3dcd7dbd0d488e1a7077cb33b00f2083e382f07",
           "version": "5.0.1"
-        }
-      },
-      {
-        "package": "XCGLogger",
-        "repositoryURL": "https://gitee.com/chengpan168_admin/XCGLogger.git",
-        "state": {
-          "branch": null,
-          "revision": "a9c4667b247928a29bdd41be2ec2c8d304215a54",
-          "version": "7.0.1"
         }
       }
     ]

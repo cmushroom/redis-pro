@@ -1093,6 +1093,86 @@ class RediStackClient{
         return promise
     }
     
+    func flushDB() -> Promise<Bool> {
+        self.globalContext?.loading = true
+        
+        let promise = getConnectionAsync().then({connection in
+            Promise<Bool> {resolver in
+                connection.send(command: "FLUSHDB")
+                    .whenComplete { completion in
+                        if case .success(let res) = completion {
+                            self.logger.info("flush db success: \(res)")
+                            resolver.fulfill(true)
+                        }
+                        else if case .failure(let error) = completion {
+                            resolver.reject(error)
+                        }
+                    }
+            }
+        })
+        
+        afterPromise(promise)
+        return promise
+    }
+    
+    func clientKill(_ clientModel:ClientModel) -> Promise<Bool> {
+        self.globalContext?.loading = true
+        
+        let promise =
+            getConnectionAsync().then({connection in
+                Promise<Bool> { resolver in
+                    connection.send(command: "CLIENT", with: [RESPValue(from: "KILL"), RESPValue(from: "\(clientModel.addr)")])
+                        .whenComplete{ completion in
+                            if case .success(let res) = completion {
+                                self.logger.info("client kill success: \(res)")
+                            
+                                resolver.fulfill(true)
+                            }
+                            else if case .failure(let error) = completion {
+                                resolver.reject(error)
+                            }
+                        }
+                }
+            })
+        
+        afterPromise(promise)
+        return promise
+    }
+    
+    func clientList() -> Promise<[ClientModel]> {
+        self.globalContext?.loading = true
+        
+        let promise =
+            getConnectionAsync().then({connection in
+                Promise<[ClientModel]> { resolver in
+                    connection.send(command: "CLIENT", with: [RESPValue(from: "LIST")])
+                        .whenComplete{ completion in
+                            if case .success(let res) = completion {
+                                self.logger.info("query redis server client list success: \(res)")
+                                let resStr = res.string ?? ""
+                                let lines = resStr.components(separatedBy: "\n")
+
+                                var resArray = [ClientModel]()
+
+                                lines.forEach({ line in
+                                    if !line.contains("=") {
+                                        return
+                                    }
+                                    resArray.append(ClientModel(line: line))
+                                })
+                                resolver.fulfill(resArray)
+                            }
+                            else if case .failure(let error) = completion {
+                                resolver.reject(error)
+                            }
+                        }
+                }
+            })
+        
+        afterPromise(promise)
+        return promise
+    }
+    
     func info() -> Promise<[RedisInfoModel]> {
         self.globalContext?.loading = true
         

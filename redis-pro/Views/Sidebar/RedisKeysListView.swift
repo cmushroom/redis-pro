@@ -15,12 +15,12 @@ struct RedisKeysListView: View {
     @EnvironmentObject var globalContext:GlobalContext
     @State var redisKeyModels:[RedisKeyModel] = [RedisKeyModel]()
     @State var selectedRedisKeyIndex:Int?
-//    @StateObject var page:Page = Page()
     @StateObject var scanModel:ScanModel = ScanModel()
     @State private var renameModalVisible:Bool = false
     @State private var oldKeyIndex:Int?
     @State private var newKeyName:String = ""
     @State private var redisInfoVisible:Bool = false
+    @State private var mainViewType:MainViewTypeEnum = MainViewTypeEnum.EDITOR
     
     let logger = Logger(label: "redis-key-list-view")
     
@@ -67,6 +67,8 @@ struct RedisKeysListView: View {
                         .labelStyle(IconOnlyLabelStyle())
             ){
                 Button("Redis Info", action: onRedisInfoAction)
+                Button("Clients", action: onShowClientsAction)
+                MButton(text: "Flush DB", action: onFlushDBAction, isConfirm: true, confirmTitle: "Flush DB ?", confirmMessage: "Are you sure you want to flush db? This operation cannot be undone.")
             }
             .frame(width:30)
             .menuButtonStyle(BorderlessPullDownMenuButtonStyle())
@@ -112,17 +114,22 @@ struct RedisKeysListView: View {
     
     private var rightMainView: some View {
         VStack(alignment: .leading, spacing: 0){
-            if selectRedisKeyModel == nil {
-                if redisInfoVisible {
+            if selectRedisKeyModel != nil {
+                RedisValueView(redisKeyModel: selectRedisKeyModel!)
+            } else {
+                if mainViewType == MainViewTypeEnum.REDIS_INFO {
                     RedisInfoView()
                         .onDisappear {
-                            self.redisInfoVisible = false
+                            self.self.mainViewType = MainViewTypeEnum.EDITOR
+                        }
+                } else if mainViewType == MainViewTypeEnum.CLIENT_LIST {
+                    ClientsListView()
+                        .onDisappear {
+                            self.self.mainViewType = MainViewTypeEnum.EDITOR
                         }
                 } else {
                     EmptyView()
                 }
-            } else {
-                RedisValueView(redisKeyModel: selectRedisKeyModel!)
             }
             Spacer()
         }
@@ -217,6 +224,18 @@ struct RedisKeysListView: View {
     
         self.selectedRedisKeyIndex = nil
         self.redisInfoVisible = true
+        self.mainViewType = MainViewTypeEnum.REDIS_INFO
+    }
+    
+    func onShowClientsAction() -> Void {
+        self.selectedRedisKeyIndex = nil
+        self.mainViewType = MainViewTypeEnum.CLIENT_LIST
+    }
+    
+    func onFlushDBAction() -> Void {
+        let _ = self.redisInstanceModel.getClient().flushDB().done({ _ in
+            self.onRefreshAction()
+        })
     }
     
     func onSearchKeyAction() -> Void {

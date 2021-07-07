@@ -6,10 +6,13 @@
 //
 
 import SwiftUI
+import Logging
 
 struct IndexView: View {
     @StateObject var redisInstanceModel:RedisInstanceModel = RedisInstanceModel(redisModel: RedisModel())
     @EnvironmentObject var globalContext:GlobalContext
+    
+    let logger = Logger(label: "index-view")
     
     var body: some View {
         HStack {
@@ -46,7 +49,8 @@ struct IndexView: View {
         .alert(isPresented: $globalContext.alertVisible) {
             globalContext.showSecondButton ? Alert(title: Text(globalContext.alertTitle), message: Text(globalContext.alertMessage),
                                                    primaryButton: .default(Text(globalContext.primaryButtonText),
-                                                                           action: doAction), secondaryButton: .cancel(Text(globalContext.secondButtonText))) : Alert(title: Text(globalContext.alertTitle), message: Text(globalContext.alertMessage), dismissButton: .default(Text(globalContext.primaryButtonText)))
+                                                                           action: doAction),
+                                                   secondaryButton: .cancel(Text(globalContext.secondButtonText), action: cancelAction)) : Alert(title: Text(globalContext.alertTitle), message: Text(globalContext.alertMessage), dismissButton: .default(Text(globalContext.primaryButtonText)))
         }
         //                .popover(isPresented: $globalContext.alertVisible, arrowEdge: .bottom) {
         //                    Text("popover")
@@ -89,14 +93,16 @@ struct IndexView: View {
     
     
     func doAction() -> Void {
+        logger.info("alert ok action ...")
         do {
             try globalContext.primaryAction()
         } catch {
-            globalContext.alertVisible = true
-            globalContext.showSecondButton = false
-            globalContext.alertMessage = "\(error)"
+            globalContext.showError(error)
         }
         
+    }
+    func cancelAction() -> Void {
+        logger.info("alert cancel action ...")
     }
 }
 

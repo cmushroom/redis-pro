@@ -41,7 +41,6 @@
 		4320AAFB25B6740A00A8E214 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4320AAFA25B6740A00A8E214 /* Preview Assets.xcassets */; };
 		433FC19E2667B3530091CB32 /* FileManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433FC19D2667B3530091CB32 /* FileManagerTests.swift */; };
 		434047FA2611C828001519F9 /* RedisFavoriteModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434047F92611C828001519F9 /* RedisFavoriteModel.swift */; };
-		4340E2B52662152B00F51F19 /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4340E2B42662152B00F51F19 /* PromiseKit */; };
 		4340E2BD2666236200F51F19 /* redisProTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4340E2BC2666236200F51F19 /* redisProTests.swift */; };
 		4340E2C52666239F00F51F19 /* JsonPrettyFormatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4340E2C42666239F00F51F19 /* JsonPrettyFormatTests.swift */; };
 		4340E2C82666257500F51F19 /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = 4340E2C72666257500F51F19 /* SwiftyJSON */; };
@@ -77,6 +76,7 @@
 		43822042265763D400DA7F9E /* RedisProCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43822041265763D400DA7F9E /* RedisProCommands.swift */; };
 		4385D32E261ED26200BA8ED1 /* IndexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4385D32D261ED26200BA8ED1 /* IndexView.swift */; };
 		438BBEB52655015D00B458BF /* CrashReporter in Frameworks */ = {isa = PBXBuildFile; productRef = 438BBEB42655015D00B458BF /* CrashReporter */; };
+		438BE52E268C5A660058D164 /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 438BE52D268C5A660058D164 /* PromiseKit */; };
 		43915809268075490019D2D0 /* Demo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43915808268075490019D2D0 /* Demo.swift */; };
 		4397288C2643E43800803BE9 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4397288B2643E43800803BE9 /* Constants.swift */; };
 		43BB012326390BC20039565E /* ModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BB012226390BC20039565E /* ModalView.swift */; };
@@ -231,12 +231,12 @@
 				623704F5265A27760084CCA8 /* AppCenterCrashes in Frameworks */,
 				436BB68726440584008B4866 /* CoreMetrics in Frameworks */,
 				43CD28AA267B64FA00E11876 /* Puppy in Frameworks */,
-				4340E2B52662152B00F51F19 /* PromiseKit in Frameworks */,
 				62C48932265A138D00D68D06 /* Logging in Frameworks */,
 				62C48938265A13E500D68D06 /* NIO in Frameworks */,
 				4340E2C82666257500F51F19 /* SwiftyJSON in Frameworks */,
 				436BB68926440584008B4866 /* Metrics in Frameworks */,
 				623704F7265A27760084CCA8 /* AppCenterAnalytics in Frameworks */,
+				438BE52E268C5A660058D164 /* PromiseKit in Frameworks */,
 				62C48935265A13BB00D68D06 /* ServiceDiscovery in Frameworks */,
 				623704FC265A27970084CCA8 /* RedisTypes in Frameworks */,
 				623704FA265A27970084CCA8 /* RediStack in Frameworks */,
@@ -511,9 +511,9 @@
 				623704F6265A27760084CCA8 /* AppCenterAnalytics */,
 				623704F9265A27970084CCA8 /* RediStack */,
 				623704FB265A27970084CCA8 /* RedisTypes */,
-				4340E2B42662152B00F51F19 /* PromiseKit */,
 				4340E2C72666257500F51F19 /* SwiftyJSON */,
 				43CD28A9267B64FA00E11876 /* Puppy */,
+				438BE52D268C5A660058D164 /* PromiseKit */,
 			);
 			productName = "redis-pro";
 			productReference = 4320AAF025B6740900A8E214 /* redis-pro.app */;
@@ -572,9 +572,9 @@
 				62C48936265A13E500D68D06 /* XCRemoteSwiftPackageReference "swift-nio" */,
 				623704F3265A27760084CCA8 /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */,
 				623704F8265A27970084CCA8 /* XCRemoteSwiftPackageReference "RediStack" */,
-				4340E2B32662152B00F51F19 /* XCRemoteSwiftPackageReference "PromiseKit" */,
 				4340E2C62666257500F51F19 /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
 				43CD28A8267B64FA00E11876 /* XCRemoteSwiftPackageReference "Puppy" */,
+				438BE52C268C5A650058D164 /* XCRemoteSwiftPackageReference "PromiseKit" */,
 			);
 			productRefGroup = 4320AAF125B6740900A8E214 /* Products */;
 			projectDirPath = "";
@@ -972,14 +972,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		4340E2B32662152B00F51F19 /* XCRemoteSwiftPackageReference "PromiseKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://gitee.com/chengpan168_admin/PromiseKit.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 6.15.3;
-			};
-		};
 		4340E2C62666257500F51F19 /* XCRemoteSwiftPackageReference "SwiftyJSON" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://gitee.com/chengpan168_admin/SwiftyJSON.git";
@@ -1002,6 +994,15 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 1.8.1;
+			};
+		};
+		438BE52C268C5A650058D164 /* XCRemoteSwiftPackageReference "PromiseKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://gitee.com/chengpan168_admin/PromiseKit.git";
+			requirement = {
+				kind = versionRange;
+				maximumVersion = 7.0.0;
+				minimumVersion = 6.15.3;
 			};
 		};
 		43CD28A8267B64FA00E11876 /* XCRemoteSwiftPackageReference "Puppy" */ = {
@@ -1055,11 +1056,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		4340E2B42662152B00F51F19 /* PromiseKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 4340E2B32662152B00F51F19 /* XCRemoteSwiftPackageReference "PromiseKit" */;
-			productName = PromiseKit;
-		};
 		4340E2C72666257500F51F19 /* SwiftyJSON */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4340E2C62666257500F51F19 /* XCRemoteSwiftPackageReference "SwiftyJSON" */;
@@ -1079,6 +1075,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 438BBEB32655015D00B458BF /* XCRemoteSwiftPackageReference "plcrashreporter" */;
 			productName = CrashReporter;
+		};
+		438BE52D268C5A660058D164 /* PromiseKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 438BE52C268C5A650058D164 /* XCRemoteSwiftPackageReference "PromiseKit" */;
+			productName = PromiseKit;
 		};
 		43CD28A9267B64FA00E11876 /* Puppy */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -46,16 +46,16 @@ struct VersionManager {
                     
                     // 提示升级
                     if updateType == "hint" {
-                        globalContext.alertVisible = true
-                        globalContext.alertTitle = "New version \(latestVersion) is available"
-                        globalContext.alertMessage = releaseNotes
-                        globalContext.primaryButtonText = "Upgrade"
-                        globalContext.showSecondButton = true
-                        globalContext.primaryAction = {
-                            if let url = URL(string: Constants.RELEASE_URL) {
-                                NSWorkspace.shared.open(url)
-                            }
-                        }
+                        globalContext.showAlert("New version \(latestVersion) is available"
+                                                , alertMessage: releaseNotes
+                                                , primaryAction: {
+                                                    if let url = URL(string: Constants.RELEASE_URL) {
+                                                        NSWorkspace.shared.open(url)
+                                                    }
+                                                }
+                                                , primaryButtonText: "Upgrade"
+                                                , showSecondButton: true
+                        )
                     }
                     // 强制升级
                     else if updateType == "force" {
@@ -63,8 +63,7 @@ struct VersionManager {
                     }
                 } else {
                     if isNoUpgradeHint {
-                        globalContext.alertVisible = true
-                        globalContext.alertTitle = "Current version \(currentVersion ?? "") is latest!"
+                        globalContext.showAlert("Current version \(currentVersion ?? "") is latest!", alertMessage: "")
                     }
                 }
                 

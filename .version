@@ -1,6 +1,6 @@
 {
-    "latestVersionNum": 2,
-    "latestVersion": "1.1.0",
+    "latestVersionNum": 3,
+    "latestVersion": "1.1.1",
     "updateType": "hint",
-    "releaseNotes": "1. client list and kill \n2. rotation log file, use puppy logger \n3. flush db"
+    "releaseNotes": "1. 检查版本更新弹框错误 \n2. 多个tab页时，删除key提示错误"
 }

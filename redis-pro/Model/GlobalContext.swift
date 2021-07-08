@@ -18,6 +18,7 @@ class GlobalContext:ObservableObject, CustomStringConvertible {
     var primaryAction:() throws -> Void = {}
     
     @Published var loading:Bool = false
+    @Published var versionUpgrade:Int = 0
 
     
     func showError(_ error:Error) -> Void {
@@ -30,9 +31,18 @@ class GlobalContext:ObservableObject, CustomStringConvertible {
             alertMessage = "\(error)"
         }
     }
+    
+    func showAlert(_ alertTitle:String, alertMessage:String = "", primaryAction: @escaping () throws -> Void = {}, primaryButtonText:String = "Ok", showSecondButton:Bool = false) -> Void {
+        self.alertVisible = true
+        self.alertTitle = alertTitle
+        self.alertMessage = alertMessage
+        self.primaryAction = primaryAction
+        self.primaryButtonText = primaryButtonText
+        self.showSecondButton = showSecondButton
+    }
 
     
     var description: String {
-        return "GlobalContext:[alertVisible:\(alertVisible), loading:\(loading)]"
+        return "GlobalContext:[alertVisible:\(alertVisible), loading:\(loading), showSecondButton: \(showSecondButton), primaryButtonText:\(primaryButtonText)]"
     }
 }

@@ -6,10 +6,13 @@
 //
 
 import SwiftUI
+import Logging
 
 struct IndexView: View {
+    @StateObject var globalContext:GlobalContext = GlobalContext()
     @StateObject var redisInstanceModel:RedisInstanceModel = RedisInstanceModel(redisModel: RedisModel())
-    @EnvironmentObject var globalContext:GlobalContext
+    
+    let logger = Logger(label: "index-view")
     
     var body: some View {
         HStack {
@@ -25,28 +28,20 @@ struct IndexView: View {
                 }
             }
         }
+        .focusedValue(\.versionUpgrade, $globalContext.versionUpgrade)
+        .environmentObject(globalContext)
         .onAppear {
             redisInstanceModel.setUp(globalContext)
         }
-        .onReceive(globalContext.objectWillChange, perform: { newValue in
+        .onChange(of: globalContext.versionUpgrade, perform: {_ in
+            checkVersionAction()
         })
         .overlay(MSpin(loading: globalContext.loading))
-//        .sheet(isPresented: $globalContext.loading) {
-//            HStack(alignment:.center, spacing: 8) {
-//                ProgressView()
-//                Text("Loading...")
-//            }
-//            .padding(EdgeInsets(top: 0, leading: 12, bottom: 0, trailing: 12))
-//            .frame(width: 200, height: 60)
-//            .background(Color.black.opacity(0.5))
-//            .cornerRadius(4)
-//            .shadow(color: .black.opacity(0.6), radius: 8, x: 4, y: 4)
-//            .colorScheme(.dark)
-//        }
         .alert(isPresented: $globalContext.alertVisible) {
             globalContext.showSecondButton ? Alert(title: Text(globalContext.alertTitle), message: Text(globalContext.alertMessage),
                                                    primaryButton: .default(Text(globalContext.primaryButtonText),
-                                                                           action: doAction), secondaryButton: .cancel(Text(globalContext.secondButtonText))) : Alert(title: Text(globalContext.alertTitle), message: Text(globalContext.alertMessage), dismissButton: .default(Text(globalContext.primaryButtonText)))
+                                                                           action: doAction),
+                                                   secondaryButton: .cancel(Text(globalContext.secondButtonText), action: cancelAction)) : Alert(title: Text(globalContext.alertTitle), message: Text(globalContext.alertMessage), dismissButton: .default(Text(globalContext.primaryButtonText)))
         }
         //                .popover(isPresented: $globalContext.alertVisible, arrowEdge: .bottom) {
         //                    Text("popover")
@@ -89,14 +84,21 @@ struct IndexView: View {
     
     
     func doAction() -> Void {
+        logger.info("alert ok action ...")
         do {
             try globalContext.primaryAction()
         } catch {
-            globalContext.alertVisible = true
-            globalContext.showSecondButton = false
-            globalContext.alertMessage = "\(error)"
+            globalContext.showError(error)
         }
         
+    }
+    func cancelAction() -> Void {
+        logger.info("alert cancel action ...")
+        logger.info("redis instance : \(redisInstanceModel.redisModel)")
+    }
+    
+    func checkVersionAction() -> Void {
+        VersionManager(globalContext: globalContext).checkUpdate(isNoUpgradeHint: true)
     }
 }
 

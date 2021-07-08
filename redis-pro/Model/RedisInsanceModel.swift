@@ -84,9 +84,7 @@ class RedisInstanceModel:ObservableObject, Identifiable {
     func testConnectAsync(_ redisModel:RedisModel) -> Promise<Bool> {
         self.redisModel = redisModel
         
-        let promise = getClient().initConnection().then({ _ in
-            self.getClient().pingAsync()
-        })
+        let promise = self.getClient().pingAsync()
         
         promise
             .catch({error in

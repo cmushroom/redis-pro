@@ -6,9 +6,19 @@
 //
 
 import SwiftUI
+import Cocoa
 
 struct RedisProCommands: Commands {
-    @ObservedObject var globalContext:GlobalContext
+    
+    private struct HelpCommands: View {
+        @FocusedBinding(\.versionUpgrade) var versionUpgrade:Int?
+        
+        var body: some View {
+            Button("Check Update") {
+                versionUpgrade? += 1
+            }
+        }
+    }
     
     var body: some Commands {
         SidebarCommands()
@@ -23,14 +33,25 @@ struct RedisProCommands: Commands {
                         currentWindow.addTabbedWindow(newWindow, ordered: .above)
                     }
                 }
+                
             })
             .keyboardShortcut("t", modifiers: [.command])
         }
         
         CommandGroup(replacing: CommandGroupPlacement.help) {
-            Button("Check Update") {
-                VersionManager(globalContext: globalContext).checkUpdate(isNoUpgradeHint: true)
-            }
+            HelpCommands()
         }
+    }
+}
+
+
+private struct VersionUpgradeKey: FocusedValueKey {
+    typealias Value = Binding<Int>
+}
+
+extension FocusedValues {
+    var versionUpgrade: Binding<Int>? {
+        get { self[VersionUpgradeKey.self] }
+        set { self[VersionUpgradeKey.self] = newValue }
     }
 }

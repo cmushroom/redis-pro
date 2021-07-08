@@ -10,14 +10,15 @@ import RediStack
 
 class GlobalContext:ObservableObject, CustomStringConvertible {
     @Published var alertVisible:Bool = false
-    @Published var alertTitle:String = ""
-    @Published var alertMessage:String = ""
+    var alertTitle:String = ""
+    var alertMessage:String = ""
     var showSecondButton:Bool = false
-    @Published var primaryButtonText:String = "Ok"
+    var primaryButtonText:String = "Ok"
     var secondButtonText:String = "Cancel"
     var primaryAction:() throws -> Void = {}
     
     @Published var loading:Bool = false
+    @Published var versionUpgrade:Int = 0
 
     
     func showError(_ error:Error) -> Void {

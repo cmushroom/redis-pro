@@ -11,15 +11,15 @@ import AppCenter
 import AppCenterAnalytics
 import AppCenterCrashes
 import Logging
+import Cocoa
 
 @main
 struct redis_proApp: App {
-    @StateObject var globalContext:GlobalContext = GlobalContext()
     @AppStorage("User.colorSchemeValue")
     private var colorSchemeValue:String = ColorSchemeEnum.AUTO.rawValue
-    
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
+    // 应用启动只初始化一次
     init() {
         // logger
         LoggerFactory().setUp()
@@ -29,13 +29,9 @@ struct redis_proApp: App {
         WindowGroup {
             IndexView()
                 .preferredColorScheme(ColorSchemeEnum.getColorScheme(colorSchemeValue))
-                .environmentObject(globalContext)
-                .onAppear {
-                    VersionManager(globalContext: globalContext).checkUpdate()
-                }
         }
         .commands {
-            RedisProCommands(globalContext: globalContext)
+            RedisProCommands()
         }
         
         Settings {

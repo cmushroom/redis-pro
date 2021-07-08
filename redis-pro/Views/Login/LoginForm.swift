@@ -17,12 +17,55 @@ struct LoginForm: View {
     
     @ObservedObject var redisFavoriteModel: RedisFavoriteModel
     @ObservedObject var redisModel:RedisModel
+    @State private var pingState:String = ""
     
     let logger = Logger(label: "redis-login")
     
     
     var saveBtnDisable: Bool {
         !redisModel.isFavorite
+    }
+    
+    private var footer: some View {
+        Section {
+            Divider()
+                .padding(.vertical, 8)
+            VStack(alignment: .center, spacing: 10) {
+                HStack(alignment: .center){
+                    if !globalContext.loading {
+                        Button(action: {
+                            if let url = URL(string: Constants.REPO_URL) {
+                                NSWorkspace.shared.open(url)
+                            }
+                        }) {
+                            Image(systemName: "questionmark.circle")
+                                .font(.system(size: 18.0))
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    }
+                    
+                    MLoading(text: pingState,
+                             loadingText: "Connecting...",
+                             loading: globalContext.loading)
+                        .help(pingState)
+                    
+                    Spacer()
+                    
+                    MButton(text: "Connect", action: onConnect, disabled: self.globalContext.loading)
+                        .buttonStyle(BorderedButtonStyle())
+                        .keyboardShortcut(.defaultAction)
+                    
+                }
+                
+                HStack(alignment: .center){
+                    MButton(text: "Add to Favorites", action: onAddRedisInstanceAction)
+                    Spacer()
+                    MButton(text: "Save changes", action: onSaveRedisInstanceAction)
+                    Spacer()
+                    MButton(text: "Test connection", action: onTestConnectionAction, disabled: self.globalContext.loading)
+                }
+            }
+        }
     }
     
     var body: some View {
@@ -38,42 +81,7 @@ struct LoginForm: View {
                     }
                 }
                 
-                Section {
-                    Divider()
-                        .padding(.vertical, 8)
-                    HStack(alignment: .center){
-                        if !globalContext.loading {
-                            Button(action: {
-                                if let url = URL(string: Constants.REPO_URL) {
-                                    NSWorkspace.shared.open(url)
-                                }
-                            }) {
-                                Image(systemName: "questionmark.circle")
-                                    .font(.system(size: 18.0))
-                            }
-                            .buttonStyle(PlainButtonStyle())
-                        }
-                        
-                        MLoading(text: redisModel.ping ? "Connect successed!" : " ",
-                                 loadingText: "Connecting...",
-                                 loading: globalContext.loading)
-                        
-                        Spacer()
-                        
-                        MButton(text: "Connect", action: onConnect, disabled: self.globalContext.loading)
-                            .buttonStyle(BorderedButtonStyle())
-                            .keyboardShortcut(.defaultAction)
-                        
-                    }
-                    //                    .frame(height: 40.0)
-                    HStack(alignment: .center){
-                        MButton(text: "Add to Favorites", action: onAddRedisInstanceAction)
-                        Spacer()
-                        MButton(text: "Save changes", action: onSaveRedisInstanceAction)
-                        Spacer()
-                        MButton(text: "Test connection", action: onTestConnectionAction, disabled: self.globalContext.loading)
-                    }
-                }
+                footer
             }
             .padding(.horizontal, 18.0)
             .tabItem {
@@ -87,14 +95,19 @@ struct LoginForm: View {
             //                    }
         }
         .padding(20.0)
-        .frame(width: 420.0, height: 340.0)
+        .frame(width: 460.0, height: 400.0)
     }
     
     
     func onTestConnectionAction() throws -> Void {
         logger.info("test connect to redis server: \(redisModel)")
         
-        let _ = self.redisInstanceModel.testConnectAsync(redisModel)
+        let _ = self.redisInstanceModel.testConnectAsync(redisModel).done({ ping in
+            self.pingState = ping ? "Connect successed!" : "Connect fail! "
+        })
+        .catch({ error in
+            self.pingState = "Connect fail, error: \(error)! "
+        })
     }
     
     func onAddRedisInstanceAction()  throws -> Void {

@@ -21,7 +21,7 @@
                 <rect key="frame" x="1" y="1" width="1696" height="354"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
-                    <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="R1G-fs-Zwo" viewBased="YES" id="hIO-5W-eZR">
+                    <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="R1G-fs-Zwo" viewBased="YES" id="hIO-5W-eZR">
                         <rect key="frame" x="0.0" y="0.0" width="1786" height="326"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <size key="intercellSpacing" width="14" height="6"/>

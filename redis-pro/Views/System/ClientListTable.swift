@@ -29,7 +29,7 @@ struct ClientListTable: NSViewControllerRepresentable {
     
     
     func updateNSViewController(_ nsViewController: NSViewController, context: Context) {
-        logger.info("client list table updateNSViewController, selectRowIndex: \(selectRowIndex)")
+//        logger.info("client list table updateNSViewController, selectRowIndex: \(selectRowIndex)")
             
         guard let controller = nsViewController as? ClientListTableController else {return}
         controller.setList(list)

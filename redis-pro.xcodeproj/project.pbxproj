@@ -97,6 +97,10 @@
 		43DFEF3725C29288006EF535 /* FormItemInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DFEF3625C29288006EF535 /* FormItemInt.swift */; };
 		43EADB052620043F003B8310 /* HashEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EADB042620043F003B8310 /* HashEditorView.swift */; };
 		43EADB0826200540003B8310 /* IconButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EADB0726200540003B8310 /* IconButton.swift */; };
+		43F22ED32697FC0100A00F97 /* RedisKeysTableController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 43F22ED22697FC0100A00F97 /* RedisKeysTableController.xib */; };
+		43F22ED52697FC1900A00F97 /* RedisKeysTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F22ED42697FC1900A00F97 /* RedisKeysTableController.swift */; };
+		43F22ED72697FC4B00A00F97 /* RedisKeysTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F22ED62697FC4B00A00F97 /* RedisKeysTable.swift */; };
+		43F22ED92697FC5800A00F97 /* RedisKeysTableDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F22ED82697FC5800A00F97 /* RedisKeysTableDemo.swift */; };
 		623704F5265A27760084CCA8 /* AppCenterCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = 623704F4265A27760084CCA8 /* AppCenterCrashes */; };
 		623704F7265A27760084CCA8 /* AppCenterAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 623704F6265A27760084CCA8 /* AppCenterAnalytics */; };
 		623704FA265A27970084CCA8 /* RediStack in Frameworks */ = {isa = PBXBuildFile; productRef = 623704F9265A27970084CCA8 /* RediStack */; };
@@ -215,6 +219,10 @@
 		43DFEF3625C29288006EF535 /* FormItemInt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormItemInt.swift; sourceTree = "<group>"; };
 		43EADB042620043F003B8310 /* HashEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashEditorView.swift; sourceTree = "<group>"; };
 		43EADB0726200540003B8310 /* IconButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconButton.swift; sourceTree = "<group>"; };
+		43F22ED22697FC0100A00F97 /* RedisKeysTableController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RedisKeysTableController.xib; sourceTree = "<group>"; };
+		43F22ED42697FC1900A00F97 /* RedisKeysTableController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisKeysTableController.swift; sourceTree = "<group>"; };
+		43F22ED62697FC4B00A00F97 /* RedisKeysTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisKeysTable.swift; sourceTree = "<group>"; };
+		43F22ED82697FC5800A00F97 /* RedisKeysTableDemo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisKeysTableDemo.swift; sourceTree = "<group>"; };
 		62CB3D712619AE050061E8C3 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		62CB3D742619AEC20061E8C3 /* RedisKeysListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisKeysListView.swift; sourceTree = "<group>"; };
 		62CB3D782619AEEB0061E8C3 /* RedisKeyRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisKeyRowView.swift; sourceTree = "<group>"; };
@@ -420,6 +428,10 @@
 				62CB3D782619AEEB0061E8C3 /* RedisKeyRowView.swift */,
 				437BC25026467A3D00E2C84D /* SidebarFooter.swift */,
 				437C09342649039000F1904C /* DatabasePicker.swift */,
+				43F22ED82697FC5800A00F97 /* RedisKeysTableDemo.swift */,
+				43F22ED62697FC4B00A00F97 /* RedisKeysTable.swift */,
+				43F22ED42697FC1900A00F97 /* RedisKeysTableController.swift */,
+				43F22ED22697FC0100A00F97 /* RedisKeysTableController.xib */,
 			);
 			path = Sidebar;
 			sourceTree = "<group>";
@@ -594,6 +606,7 @@
 				4320AAFB25B6740A00A8E214 /* Preview Assets.xcassets in Resources */,
 				4370CE6A2685B0B7001E5787 /* ClientListTableController.xib in Resources */,
 				43CD289E26732F4C00E11876 /* Localizable.strings in Resources */,
+				43F22ED32697FC0100A00F97 /* RedisKeysTableController.xib in Resources */,
 				4320AAF825B6740A00A8E214 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -624,6 +637,7 @@
 				4340E2CA2666494300F51F19 /* ScanModel.swift in Sources */,
 				4397288C2643E43800803BE9 /* Constants.swift in Sources */,
 				43CD28B6267C7CF400E11876 /* Objects.swift in Sources */,
+				43F22ED72697FC4B00A00F97 /* RedisKeysTable.swift in Sources */,
 				4314A34C26258A4300053FEE /* Page.swift in Sources */,
 				431266D8261C66E100FB6B69 /* MTheme.swift in Sources */,
 				431266C82617080D00FB6B69 /* RedisQuickRow.swift in Sources */,
@@ -635,6 +649,7 @@
 				4382204026574E3F00DA7F9E /* MSpin.swift in Sources */,
 				431266D5261C5C9000FB6B69 /* ButtonTypeEnum.swift in Sources */,
 				43CD287A267209D900E11876 /* RedisInfoView.swift in Sources */,
+				43F22ED52697FC1900A00F97 /* RedisKeysTableController.swift in Sources */,
 				4370534E262812EE00D8F1B7 /* GlobalContext.swift in Sources */,
 				431266EB261D4EED00FB6B69 /* RedisKeyValueModel.swift in Sources */,
 				430A09D925BEA9A700B60DFC /* RedisRow.swift in Sources */,
@@ -678,6 +693,7 @@
 				43CD28712670C3DD00E11876 /* ColorSchemeEnum.swift in Sources */,
 				434047FA2611C828001519F9 /* RedisFavoriteModel.swift in Sources */,
 				4373C50925C3F218002B700E /* RedisModel.swift in Sources */,
+				43F22ED92697FC5800A00F97 /* RedisKeysTableDemo.swift in Sources */,
 				4373C50125C2E75B002B700E /* BizError.swift in Sources */,
 				431266EE261D517500FB6B69 /* RedisKeyTypePicker.swift in Sources */,
 				62CB3D792619AEEB0061E8C3 /* RedisKeyRowView.swift in Sources */,
@@ -856,7 +872,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"redis-pro/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "redis-pro/Info.plist";
@@ -865,7 +881,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.cmushroom.redis-pro";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -881,7 +897,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"redis-pro/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
@@ -891,7 +907,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.cmushroom.redis-pro";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

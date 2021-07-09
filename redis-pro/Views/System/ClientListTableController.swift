@@ -18,7 +18,6 @@ class ClientListTableController: NSViewController {
         
         // 提示
         for column in tableView.tableColumns {
-            print("column : \(column.title), \(column.identifier)")
             let tip:String = NSLocalizedString("REDIS_CLIENT_LIST_\(column.identifier.rawValue)".uppercased(), tableName: nil, bundle: Bundle.main, value: "", comment: "")
             column.title = column.title + "􀁜"
             column.headerToolTip = tip
@@ -27,6 +26,5 @@ class ClientListTableController: NSViewController {
     
     func setList(_ list:[ClientModel]) -> Void {
         self.list = list
-        print("set list ...... \(list)")
     }
 }

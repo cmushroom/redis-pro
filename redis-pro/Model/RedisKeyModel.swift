@@ -19,6 +19,7 @@ class RedisKeyModel:NSObject, ObservableObject, Identifiable {
         key
     }
     
+    // type 颜色
     @objc var typeColor: NSColor {
         switch type {
         case RedisKeyTypeEnum.STRING.rawValue:

@@ -17,15 +17,15 @@ class TextViewController: NSViewController {
     @IBOutlet var textView: NSTextView!
     
     var selectedRanges: [NSValue] = [] {
-           didSet {
-               guard selectedRanges.count > 0 else {
-                   return
-               }
-               
-               textView.selectedRanges = selectedRanges
-           }
-       }
-    
+        didSet {
+            guard selectedRanges.count > 0 else {
+                return
+            }
+            
+            textView.selectedRanges = selectedRanges
+            //            textView.setSelectedRange(selectedRanges, affinity: .downstream, stillSelecting: true)
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,10 +59,12 @@ struct MTextView: NSViewControllerRepresentable {
     
     func updateNSViewController(_ nsViewController: NSViewController, context: Context) {
         guard let controller = nsViewController as? TextViewController else {return}
-        controller.setText(text)
-        controller.textView?.delegate = context.coordinator
         
-        controller.selectedRanges = context.coordinator.selectedRanges
+        controller.textView?.delegate = context.coordinator
+        DispatchQueue.main.async {
+            controller.setText(text)
+            controller.selectedRanges = context.coordinator.selectedRanges
+        }
     }
     
     class Coordinator: NSObject, NSTextViewDelegate {

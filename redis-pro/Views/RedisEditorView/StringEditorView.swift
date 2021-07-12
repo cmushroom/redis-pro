@@ -22,7 +22,8 @@ struct StringEditorView: View {
         VStack(alignment: .leading, spacing: 0) {
             VStack(alignment: .leading, spacing: 4){
                 // text editor
-                MTextEditor(text: $text)
+//                MTextEditor(text: $text)
+                MTextView(text: $text)
             }
             .background(colorScheme == .dark ? Color.clear : Color.white)
 

@@ -6,15 +6,35 @@
 //
 
 import Foundation
+import Cocoa
 
-class RedisKeyModel:ObservableObject, Identifiable, Equatable, CustomStringConvertible {
-    @Published var key: String
-    @Published var type: String
+class RedisKeyModel:NSObject, ObservableObject, Identifiable {
+    @objc var no:Int = 0
+    @objc @Published var key: String
+    @objc @Published var type: String
     @Published var ttl: Int = -1
-    @Published var isNew: Bool
+    @Published var isNew: Bool = false
     
     var id:String {
         key
+    }
+    
+    // type 颜色
+    @objc var typeColor: NSColor {
+        switch type {
+        case RedisKeyTypeEnum.STRING.rawValue:
+            return NSColor.systemBlue
+        case RedisKeyTypeEnum.HASH.rawValue:
+            return NSColor.systemPink
+        case RedisKeyTypeEnum.LIST.rawValue:
+            return NSColor.systemOrange
+        case RedisKeyTypeEnum.SET.rawValue:
+            return NSColor.systemGreen
+        case RedisKeyTypeEnum.ZSET.rawValue:
+            return NSColor.systemTeal
+        default:
+            return NSColor.systemBrown
+        }
     }
     
     convenience init(key:String, type:String) {
@@ -32,7 +52,7 @@ class RedisKeyModel:ObservableObject, Identifiable, Equatable, CustomStringConve
            return lhs.id == rhs.id
        }
     
-    var description: String {
+    override var description: String {
         return "RedisKeyModel:[key:\(key), type:\(type), ttl:\(ttl)]"
     }
 }

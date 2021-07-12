@@ -14,7 +14,7 @@ struct LoginView: View {
     let logger = Logger(label: "login-view")
     
     var body: some View {
-        RedisList()
+        RedisListView()
             .onDisappear {
                 logger.info("redis pro login view destroy...")
             }

@@ -12,12 +12,14 @@ func onAppear() {
     print("list on appear。。。")
 }
 
-struct RedisList: View {
+struct RedisListView: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @EnvironmentObject var globalContext:GlobalContext
     @StateObject var redisFavoriteModel: RedisFavoriteModel = RedisFavoriteModel()
     @State private var showFavoritesOnly = false
     @State private var selectedRedisModelId: String?
+    @State private var selectIndex:Int?
+    
     @AppStorage("User.defaultFavorite")
     private var defaultFavorite:String = "last"
     
@@ -26,42 +28,46 @@ struct RedisList: View {
     var quickRedisModel:[RedisModel] = [RedisModel](repeating: RedisModel(name: "QUICK CONNECT"), count: 1)
     
     var selectRedisModel: RedisModel {
-        redisFavoriteModel.redisModels.first(where: { $0.id == selectedRedisModelId }) ?? RedisModel()
+        redisFavoriteModel.redisModels[selectIndex ?? 0]
     }
     
     var filteredRedisModel: [RedisModel] {
         redisFavoriteModel.redisModels
     }
     
+    var redisTable:some View {
+        RedisListTable(datasource: $redisFavoriteModel.redisModels, selectRowIndex: $selectIndex, doubleAction: self.onConnect)
+    }
+    
     var body: some View {
         HSplitView {
             VStack(alignment: .leading,
                    spacing: 0) {
-                
-                List(selection: $selectedRedisModelId) {
-                    ForEach(quickRedisModel) { redisModel in
-                        RedisQuickRow(redisModel: redisModel)
-                            .listRowInsets(EdgeInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0)))
-                    }
-                    
-                    Section(header: Text("FAVORITES")) {
-                        ForEach(filteredRedisModel) { redisModel in
-                            RedisRow(redisModel: redisModel)
-                                .tag(redisModel.id)
-                                .contentShape(Rectangle())
-                                .gesture(TapGesture(count: 2).onEnded {
-                                    onConnect()
-                                })
-                                .simultaneousGesture(TapGesture().onEnded {
-                                    self.selectedRedisModelId = redisModel.id
-                                })
-                        }
-                    }
-                    .collapsible(false)
-                    
-                }
-                .listStyle(PlainListStyle())
-                .padding(.all, 0)
+                redisTable
+//                List(selection: $selectedRedisModelId) {
+//                    ForEach(quickRedisModel) { redisModel in
+//                        RedisQuickRow(redisModel: redisModel)
+//                            .listRowInsets(EdgeInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0)))
+//                    }
+//
+//                    Section(header: Text("FAVORITES")) {
+//                        ForEach(filteredRedisModel) { redisModel in
+//                            RedisRow(redisModel: redisModel)
+//                                .tag(redisModel.id)
+//                                .contentShape(Rectangle())
+//                                .gesture(TapGesture(count: 2).onEnded {
+//                                    onConnect()
+//                                })
+//                                .simultaneousGesture(TapGesture().onEnded {
+//                                    self.selectedRedisModelId = redisModel.id
+//                                })
+//                        }
+//                    }
+//                    .collapsible(false)
+//
+//                }
+//                .listStyle(PlainListStyle())
+//                .padding(.all, 0)
                 
                 
                 // footer
@@ -73,7 +79,7 @@ struct RedisList: View {
                 .padding(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
             }
             .padding(0)
-            .frame(minWidth:180, idealWidth: 180, maxWidth: .infinity)
+            .frame(minWidth:200, idealWidth: 180, maxWidth: .infinity)
             .layoutPriority(0)
             .onAppear{
                 logger.info("load all redis favorite list")
@@ -131,7 +137,7 @@ struct RedisList: View {
 struct RedisInstanceList_Previews: PreviewProvider {
     private static var redisFavoriteModel: RedisFavoriteModel = RedisFavoriteModel()
     static var previews: some View {
-        RedisList()
+        RedisListView()
             .environmentObject(redisFavoriteModel)
             .onAppear{
                 redisFavoriteModel.loadAll()

@@ -1,6 +1,6 @@
 {
-    "latestVersionNum": 3,
-    "latestVersion": "1.1.1",
+    "latestVersionNum": 4,
+    "latestVersion": "1.1.2",
     "updateType": "hint",
-    "releaseNotes": "1. 检查版本更新弹框错误 \n2. 多个tab页时，删除key提示错误"
+    "releaseNotes": "1. 文本编辑器修复自动中文双引号，单引号问题 \n2. Key, Redis列表使用table表格，优化界面显示"
 }

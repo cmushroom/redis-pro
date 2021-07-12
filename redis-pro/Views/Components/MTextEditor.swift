@@ -20,16 +20,13 @@ struct MTextEditor: View {
             .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
             .lineSpacing(1.5)
             .disableAutocorrection(true)
-            .textFieldStyle(RoundedBorderTextFieldStyle())
             .onHover { inside in
                 self.editing = inside
             }
-            .cornerRadius(4)
-            .overlay(
-                RoundedRectangle(cornerRadius: 4).stroke(Color.gray.opacity(!disabled && editing ?  0.4 : 0.2), lineWidth: 1)
-                )
+            .addBorder(Color.gray.opacity(!disabled && editing ?  0.4 : 0.2), width: 1, cornerRadius: 4)
     }
 }
+
 
 struct MTextEditor_Previews: PreviewProvider {
     @State static var text:String = ""

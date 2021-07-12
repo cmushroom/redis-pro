@@ -8,7 +8,7 @@
 import Cocoa
 
 class ClientListTableController: NSViewController {
-    @objc dynamic var list: [ClientModel] = []
+    @objc dynamic var datasource: [ClientModel] = []
     
     @IBOutlet weak var tableView: NSTableView!
     @IBOutlet var arrayController: NSArrayController!
@@ -18,15 +18,13 @@ class ClientListTableController: NSViewController {
         
         // 提示
         for column in tableView.tableColumns {
-            print("column : \(column.title), \(column.identifier)")
             let tip:String = NSLocalizedString("REDIS_CLIENT_LIST_\(column.identifier.rawValue)".uppercased(), tableName: nil, bundle: Bundle.main, value: "", comment: "")
             column.title = column.title + "􀁜"
             column.headerToolTip = tip
         }
     }
     
-    func setList(_ list:[ClientModel]) -> Void {
-        self.list = list
-        print("set list ...... \(list)")
+    func setDatasource(_ datasource:[ClientModel]) -> Void {
+        self.datasource = datasource
     }
 }

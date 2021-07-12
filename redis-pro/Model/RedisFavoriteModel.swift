@@ -10,7 +10,7 @@ import SwiftUI
 import Logging
 
 class RedisFavoriteModel:ObservableObject {
-    @Published var redisModels: [RedisModel] = [RedisModel](repeating: RedisModel(), count: 0)
+    @Published var redisModels: [RedisModel] = [RedisModel](repeating: RedisModel(), count: 1)
     var lastRedisModelId:String?
     
     let userDefaults = UserDefaults.standard

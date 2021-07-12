@@ -12,6 +12,7 @@ import PromiseKit
 import Logging
 
 struct LoginForm: View {
+    @Environment(\.openURL) var openURL
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @EnvironmentObject var globalContext:GlobalContext
     
@@ -34,9 +35,10 @@ struct LoginForm: View {
                 HStack(alignment: .center){
                     if !globalContext.loading {
                         Button(action: {
-                            if let url = URL(string: Constants.REPO_URL) {
-                                NSWorkspace.shared.open(url)
+                            guard let url = URL(string: Constants.REPO_URL) else {
+                                return
                             }
+                            openURL(url)
                         }) {
                             Image(systemName: "questionmark.circle")
                                 .font(.system(size: 18.0))

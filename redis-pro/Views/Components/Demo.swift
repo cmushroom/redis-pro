@@ -16,26 +16,11 @@ struct Demo: View {
 
 struct Demo_Previews: PreviewProvider {
     @State static var selection:Int?
+    @State static var text:String = "aaa"
     static var previews: some View {
         VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 10) {
             
-            List(selection: $selection) {
-                HStack(alignment: .center, spacing: 100) {
-                    Text("a").tag(4)
-                    Text("a").tag(5)
-                    Text("a").tag(5)
-                    Spacer()
-                }
-                .tag(4)
-                
-                    HStack(alignment: .center, spacing: 10) {
-                        Text("a").tag(4)
-                        Text("a").tag(5)
-                        Text("a").tag(5)
-                        Spacer()
-                    }
-                    .tag(5)
-            }.frame(width: 200)
+           MTextView(text: $text)
         }
         .frame(width: 200, height: 400, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
     }

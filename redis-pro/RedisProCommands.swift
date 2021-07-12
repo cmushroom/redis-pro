@@ -20,6 +20,19 @@ struct RedisProCommands: Commands {
         }
     }
     
+    private struct HomePageCommands: View {
+        @Environment(\.openURL) var openURL
+        
+        var body: some View {
+            Button("Home") {
+                guard let url = URL(string: Constants.REPO_URL) else {
+                    return
+                }
+                openURL(url)
+            }
+        }
+    }
+    
     var body: some Commands {
         SidebarCommands()
         
@@ -40,6 +53,7 @@ struct RedisProCommands: Commands {
         
         CommandGroup(replacing: CommandGroupPlacement.help) {
             HelpCommands()
+            HomePageCommands()
         }
     }
 }

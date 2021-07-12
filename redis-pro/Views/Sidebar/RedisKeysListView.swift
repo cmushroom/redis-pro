@@ -22,6 +22,8 @@ struct RedisKeysListView: View {
     @State private var redisInfoVisible:Bool = false
     @State private var mainViewType:MainViewTypeEnum = MainViewTypeEnum.EDITOR
     
+    @State var redisKeyTableRows = [RedisKeyTableRow]()
+    
     let logger = Logger(label: "redis-key-list-view")
     
     var selectRedisKeyModel:RedisKeyModel? {
@@ -86,31 +88,32 @@ struct RedisKeysListView: View {
             sidebarHeader
             
             // list
-            List(selection: $selectedRedisKeyIndex) {
-                ForEach(redisKeyModels.indices, id:\.self) { index in
-                    RedisKeyRowView(index: index, redisKeyModel: redisKeyModels[index])
-                        .contextMenu {
-                            Button("Rename", action: {
-                                self.oldKeyIndex = index
-                                self.renameModalVisible = true
-                            })
-                            MButton(text: "Delete Key", action: {try onDeleteConfirmAction(index)})
-                        }
-                        .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                }
-                
-            }
-            .onChange(of: selectedRedisKeyIndex, perform: {_ in
-                if selectedRedisKeyIndex  != nil {
-                    self.mainViewType = MainViewTypeEnum.EDITOR
-                }
-            })
-            .listStyle(PlainListStyle())
-            .frame(minWidth:150)
-            .padding(.all, 0)
+            //            List(selection: $selectedRedisKeyIndex) {
+            //                ForEach(redisKeyModels.indices, id:\.self) { index in
+            //                    RedisKeyRowView(index: index, redisKeyModel: redisKeyModels[index])
+            //                        .contextMenu {
+            //                            Button("Rename", action: {
+            //                                self.oldKeyIndex = index
+            //                                self.renameModalVisible = true
+            //                            })
+            //                            MButton(text: "Delete Key", action: {try onDeleteConfirmAction(index)})
+            //                        }
+            //                        .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+            //                }
+            //
+            //            }
+            //            .onChange(of: selectedRedisKeyIndex, perform: {_ in
+            //                if selectedRedisKeyIndex  != nil {
+            //                    self.mainViewType = MainViewTypeEnum.EDITOR
+            //                }
+            //            })
+            //            .listStyle(PlainListStyle())
+            //            .frame(minWidth:150)
+            //            .padding(.all, 0)
             
+            RedisKeysTable(datasource: $redisKeyModels, selectRowIndex: $selectedRedisKeyIndex, deleteAction: onDeleteConfirmAction, renameAction: onRenameConfirmAction)
             // footer
-//            SidebarFooter(page: page, pageAction: onQueryKeyPageAction)
+            //            SidebarFooter(page: page, pageAction: onQueryKeyPageAction)
             sidebarFoot
                 .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 6))
             
@@ -132,6 +135,11 @@ struct RedisKeysListView: View {
             }
             Spacer()
         }
+        .onChange(of: selectedRedisKeyIndex, perform: { _ in
+            if selectedRedisKeyIndex  != nil {
+                self.mainViewType = MainViewTypeEnum.EDITOR
+            }
+        })
         .frame(minWidth: 600, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
         .layoutPriority(1)
     }
@@ -140,9 +148,9 @@ struct RedisKeysListView: View {
         HSplitView {
             // sidebar
             sidebar
-            .padding(0)
-            .frame(minWidth:240, idealWidth: 240, maxWidth: .infinity)
-            .layoutPriority(0)
+                .padding(0)
+                .frame(minWidth:240, idealWidth: 240, maxWidth: .infinity)
+                .layoutPriority(0)
             
             // content
             rightMainView
@@ -167,6 +175,11 @@ struct RedisKeysListView: View {
         self.selectedRedisKeyIndex = 0
     }
     
+    func onRenameConfirmAction(_ index:Int) -> Void {
+        self.oldKeyIndex = index
+        self.renameModalVisible = true
+    }
+    
     func onRenameAction() throws -> Void {
         let renameKeyModel = redisKeyModels[oldKeyIndex!]
         let _ = redisInstanceModel.getClient().rename(renameKeyModel.key, newKey: newKeyName).done({r in
@@ -176,11 +189,11 @@ struct RedisKeysListView: View {
         })
     }
     
-    func onDeleteAction() throws -> Void {
-        try deleteKey(selectedRedisKeyIndex!)
+    func onDeleteAction() -> Void {
+        deleteKey(selectedRedisKeyIndex!)
     }
     
-    func onDeleteConfirmAction(_ index:Int) throws -> Void {
+    func onDeleteConfirmAction(_ index:Int) -> Void {
         globalContext.alertVisible = true
         globalContext.showSecondButton = true
         globalContext.primaryButtonText = "Delete"
@@ -189,11 +202,11 @@ struct RedisKeysListView: View {
         globalContext.alertTitle = String(format: Helps.DELETE_LIST_ITEM_CONFIRM_TITLE, item)
         globalContext.alertMessage = String(format:Helps.DELETE_LIST_ITEM_CONFIRM_MESSAGE, item)
         globalContext.primaryAction = {
-            try deleteKey(index)
+            deleteKey(index)
         }
     }
     
-    func deleteKey(_ index:Int) throws -> Void {
+    func deleteKey(_ index:Int) -> Void {
         let redisKeyModel = self.redisKeyModels[index]
         let _ = redisInstanceModel.getClient().del(key: redisKeyModel.key).done({r in
             self.logger.info("on delete redis key: \(index), r:\(r)")
@@ -206,21 +219,21 @@ struct RedisKeysListView: View {
     }
     
     func onRedisInfoAction() -> Void {
-//        let _ = redisInstanceModel.getClient().info()
-//        let window = NSWindow(
-//            contentRect: NSRect(x: 0, y: 0, width: 800, height: 600),
-//            styleMask: [.titled, .closable, .resizable],
-//               backing: .buffered,
-//               defer: false
-//        )
-//        window.center()
-//        window.setFrameAutosaveName("Redis Info")
-//        window.title = "Redis Info"
-//        window.toolbarStyle = .unifiedCompact
-//        window.isReleasedWhenClosed = true
-//        window.contentView = NSHostingView(rootView: RedisInfoView(redisInstanceModel: redisInstanceModel).frame(minWidth: 500, minHeight: 600))
-//        window.makeKeyAndOrderFront(nil)
-    
+        //        let _ = redisInstanceModel.getClient().info()
+        //        let window = NSWindow(
+        //            contentRect: NSRect(x: 0, y: 0, width: 800, height: 600),
+        //            styleMask: [.titled, .closable, .resizable],
+        //               backing: .buffered,
+        //               defer: false
+        //        )
+        //        window.center()
+        //        window.setFrameAutosaveName("Redis Info")
+        //        window.title = "Redis Info"
+        //        window.toolbarStyle = .unifiedCompact
+        //        window.isReleasedWhenClosed = true
+        //        window.contentView = NSHostingView(rootView: RedisInfoView(redisInstanceModel: redisInstanceModel).frame(minWidth: 500, minHeight: 600))
+        //        window.makeKeyAndOrderFront(nil)
+        
         self.selectedRedisKeyIndex = nil
         self.redisInfoVisible = true
         self.mainViewType = MainViewTypeEnum.REDIS_INFO
@@ -246,12 +259,20 @@ struct RedisKeysListView: View {
         if !redisInstanceModel.isConnect || globalContext.loading {
             return
         }
-
+        
         let promise = self.redisInstanceModel.getClient().pageKeys(scanModel)
-            
+        
         let _ = promise.done({ keysPage in
-                self.redisKeyModels = keysPage
-            })
+            self.redisKeyModels = keysPage
+        })
+    }
+    
+    func toRedisKeyRows(redisKeyModels:[RedisKeyModel]) -> Void {
+        self.redisKeyTableRows.removeAll()
+        
+        redisKeyModels.enumerated().forEach({ (index, item) in
+            self.redisKeyTableRows.append(RedisKeyTableRow(no: index + 1, type: item.type, key: item.key))
+        })
     }
 }
 

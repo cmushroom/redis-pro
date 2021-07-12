@@ -8,9 +8,9 @@
 import Foundation
 import SwiftUI
 
-class RedisModel:ObservableObject, Identifiable, CustomStringConvertible {
+class RedisModel:NSObject, ObservableObject, Identifiable {
     @Published var id: String = UUID().uuidString
-    @Published var name: String = "New Favorite"
+    @objc @Published var name: String = "New Favorite"
     @Published var host: String = "127.0.0.1"
     @Published var port: Int = 6379
     @Published var database: Int = 0
@@ -20,7 +20,6 @@ class RedisModel:ObservableObject, Identifiable, CustomStringConvertible {
 //    @Published var loading: Bool = false
     
     var image:Image  = Image("icon-redis")
-    
     
     var dictionary: [String: Any] {
         return ["id": id,
@@ -32,7 +31,7 @@ class RedisModel:ObservableObject, Identifiable, CustomStringConvertible {
         ]
     }
     
-    init() {
+    override init() {
     }
     
     init(name: String) {
@@ -53,7 +52,7 @@ class RedisModel:ObservableObject, Identifiable, CustomStringConvertible {
     }
     
     
-    var description: String {
+    override var description: String {
         return "RedisModel:[id:\(id), name:\(name), host:\(host), port:\(port), password:\(password), database:\(database)]"
     }
 }

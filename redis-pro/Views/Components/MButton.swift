@@ -41,6 +41,7 @@ struct MButton: View {
     var body: some View {
         Button(action: doAction) {
             Text(text)
+                .padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4))
         }
         .foregroundColor(colorScheme == .dark ? Color.white.opacity(disabled ? 0.4 : 0.9) : nil)
         .disabled(disabled)

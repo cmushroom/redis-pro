@@ -8,7 +8,7 @@
 import Cocoa
 
 class ClientListTableController: NSViewController {
-    @objc dynamic var list: [ClientModel] = []
+    @objc dynamic var datasource: [ClientModel] = []
     
     @IBOutlet weak var tableView: NSTableView!
     @IBOutlet var arrayController: NSArrayController!
@@ -24,7 +24,7 @@ class ClientListTableController: NSViewController {
         }
     }
     
-    func setList(_ list:[ClientModel]) -> Void {
-        self.list = list
+    func setDatasource(_ datasource:[ClientModel]) -> Void {
+        self.datasource = datasource
     }
 }

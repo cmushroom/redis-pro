@@ -17,12 +17,12 @@ struct ClientListDemo: View {
 struct ClientListDemo_Previews: PreviewProvider {
     
     @State static var list = [ClientModel(), ClientModel()]
-    @State static var selectRowIndex: Int = -1
+    @State static var selectRowIndex: Int?
     
     static var previews: some View {
         VStack {
             Text("REDIS_CLIENT_LIST_ID")
-            ClientListTable(list: $list, selectRowIndex: $selectRowIndex)
+            ClientListTable(datasource: $list, selectRowIndex: $selectRowIndex)
         }
     }
 }

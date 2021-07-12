@@ -135,6 +135,11 @@ struct RedisKeysListView: View {
             }
             Spacer()
         }
+        .onChange(of: selectedRedisKeyIndex, perform: { _ in
+            if selectedRedisKeyIndex  != nil {
+                self.mainViewType = MainViewTypeEnum.EDITOR
+            }
+        })
         .frame(minWidth: 600, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
         .layoutPriority(1)
     }

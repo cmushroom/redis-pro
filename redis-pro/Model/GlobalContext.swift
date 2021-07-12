@@ -22,7 +22,11 @@ class GlobalContext:ObservableObject, CustomStringConvertible {
 
     
     func showError(_ error:Error) -> Void {
-        alertVisible = true
+        self.alertVisible = true
+        self.alertTitle = "JSON Format Error!"
+        self.primaryButtonText = "Ok"
+        self.secondButtonText = "Cancel"
+        
         if error is BizError {
             alertMessage = (error as! BizError).message
         } else if error is RedisError {

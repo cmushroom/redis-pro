@@ -61,18 +61,7 @@ struct RedisKeysTable: NSViewControllerRepresentable {
             self.table.selectRowIndex = tableView.selectedRow == -1 ? nil : tableView.selectedRow
             
         }
-        
-//        func tableViewSelectionDidChange(_ notification: Notification) {
-//            guard let tableView = notification.object as? NSTableView else {return}
-//            guard self.table.datasource.count > 0 else {return}
-//
-//            self.logger.info("redis key table Coordinator tableViewSelectionDidChange, selectedRow: \(tableView.selectedRow)")
-//            guard tableView.selectedRow >= 0 else {
-//                self.table.selectRowIndex = nil
-//                return
-//            }
-//            self.table.selectRowIndex = tableView.selectedRow == -1 ? nil : tableView.selectedRow
-//        }
+
         
     }
     

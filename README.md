@@ -45,21 +45,21 @@
 <img width="1124" alt="0" src="https://user-images.githubusercontent.com/2920167/125376590-ec6fb500-e3bd-11eb-8f6b-140c32578e8c.png">
 
 首页
-1.png<img width="1124" alt="1" src="https://user-images.githubusercontent.com/2920167/125376643-0e693780-e3be-11eb-92fa-9c13dcc26f78.png">
+<img width="1124" alt="1" src="https://user-images.githubusercontent.com/2920167/125376643-0e693780-e3be-11eb-92fa-9c13dcc26f78.png">
 
 设置
-2.png<img width="1128" alt="2" src="https://user-images.githubusercontent.com/2920167/125376658-15904580-e3be-11eb-94cf-8590a550ea1a.png">
+<img width="1128" alt="2" src="https://user-images.githubusercontent.com/2920167/125376658-15904580-e3be-11eb-94cf-8590a550ea1a.png">
 
 Info
-3.png<img width="1124" alt="3" src="https://user-images.githubusercontent.com/2920167/125376733-39538b80-e3be-11eb-896d-72cacb469540.png">
+<img width="1124" alt="3" src="https://user-images.githubusercontent.com/2920167/125376733-39538b80-e3be-11eb-896d-72cacb469540.png">
 
 Clients
-4.png<img width="1124" alt="4" src="https://user-images.githubusercontent.com/2920167/125376767-4a9c9800-e3be-11eb-84b3-33c2c1c846fc.png">
+<img width="1124" alt="4" src="https://user-images.githubusercontent.com/2920167/125376767-4a9c9800-e3be-11eb-84b3-33c2c1c846fc.png">
 
 
 暗黑模式
-5.png<img width="1124" alt="5" src="https://user-images.githubusercontent.com/2920167/125376789-538d6980-e3be-11eb-9267-6a451597f983.png">
-7.png<img width="1124" alt="5" src="https://user-images.githubusercontent.com/2920167/125376778-4f614c00-e3be-11eb-8c11-7195e4cdb665.png">
+<img width="1124" alt="5" src="https://user-images.githubusercontent.com/2920167/125376789-538d6980-e3be-11eb-9267-6a451597f983.png">
+<img width="1124" alt="5" src="https://user-images.githubusercontent.com/2920167/125376778-4f614c00-e3be-11eb-8c11-7195e4cdb665.png">
 
 
 ## FAQ

@@ -56,19 +56,9 @@ struct MTextView: NSViewControllerRepresentable {
     
     func updateNSViewController(_ nsViewController: NSViewController, context: Context) {
         guard let controller = nsViewController as? TextViewController else {return}
-        
         controller.textView?.delegate = context.coordinator
         controller.setText(text)
-        
-        if controller.textView.isAccessibilityFocused() {
-    
-        }
-        
-        DispatchQueue.main.async {
-            controller.textView.isAccessibilityFocused()
-//            nsViewController.resignFirstResponder()
-            controller.selectedRanges = context.coordinator.selectedRanges
-        }
+        controller.selectedRanges = context.coordinator.selectedRanges
     }
     
     class Coordinator: NSObject, NSTextViewDelegate {

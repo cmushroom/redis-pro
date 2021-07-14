@@ -29,7 +29,7 @@
                         <size key="maxSize" width="1000" height="10000000"/>
                         <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
                         <connections>
-                            <binding destination="-2" name="value" keyPath="self.text" id="kg3-KK-fYx"/>
+                            <binding destination="-2" name="value" keyPath="self.text" id="j0d-Ao-tXG"/>
                         </connections>
                     </textView>
                 </subviews>
@@ -44,5 +44,6 @@
             </scroller>
             <point key="canvasLocation" x="115" y="111"/>
         </scrollView>
+        <userDefaultsController representsSharedInstance="YES" id="JRi-RU-846"/>
     </objects>
 </document>

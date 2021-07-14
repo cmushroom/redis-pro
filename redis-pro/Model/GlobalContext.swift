@@ -23,7 +23,7 @@ class GlobalContext:ObservableObject, CustomStringConvertible {
     
     func showError(_ error:Error) -> Void {
         self.alertVisible = true
-        self.alertTitle = "JSON Format Error!"
+        self.alertTitle = "Error!"
         self.primaryButtonText = "Ok"
         self.secondButtonText = "Cancel"
         

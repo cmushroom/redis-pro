@@ -1,3 +1,4 @@
+
 #  Redis Pro
 
 ![Swift5.0+](https://img.shields.io/badge/Swift-5.0%2B-orange.svg?style=flat)
@@ -5,21 +6,22 @@
 [![license](https://img.shields.io/badge/license-Apache%202-blue)](https://github.com/cmushroom/redis-pro/blob/main/LICENSE)
 ![platforms](https://img.shields.io/badge/Platforms-macOS%20-orange.svg?style=flat)
 
-## Intro
+## 简介
 * redis-pro 是一款 redis 轻量客户端管理工具， 采用SwiftUI 编写
 * 开发过程中借鉴了 [Sequel-Ace](https://github.com/Sequel-Ace/Sequel-Ace)! 和阿里云DMS，Sequel-Ace (前身 Sequel-Pro) 是一个简洁易用的小众 mysql桌面客户端
 
-## Install
+## 安装
 * 到release页面下载安装
 [下载地址](https://github.com/cmushroom/redis-pro/releases)
 
 
 
-## Platform
+## 平台
 目前只支持 macos (Intel, Apple Silicon) 平台,  后续考虑支持 ipad os
 
 ## 功能计划(暂定)
 - [x] client list and kill 
+- [ ] homebrew install
 - [ ] slow log
 - [ ] redis config 修改
 - [ ] ssh 登录

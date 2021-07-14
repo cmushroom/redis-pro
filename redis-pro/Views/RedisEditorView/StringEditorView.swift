@@ -8,9 +8,11 @@
 import SwiftUI
 import Logging
 import SwiftyJSON
+import Cocoa
 
 struct StringEditorView: View {
     @State var text: String = ""
+    
     @ObservedObject var redisKeyModel:RedisKeyModel
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @EnvironmentObject var globalContext:GlobalContext

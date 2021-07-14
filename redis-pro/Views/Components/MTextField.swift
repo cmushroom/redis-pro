@@ -27,6 +27,7 @@ struct MTextField: View {
                 self.isEditing = isEditing
             }, onCommit: doCommit)
             .disabled(disabled)
+            .multilineTextAlignment(/*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/)
             .lineLimit(1)
             .font(.body)
             .disableAutocorrection(true)
@@ -36,8 +37,8 @@ struct MTextField: View {
             }
             
             if suffix != nil {
-                MIcon(icon: suffix!, fontSize: 14, action: doAction)
-                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                MIcon(icon: suffix!, fontSize: MTheme.FONT_SIZE_BUTTON, action: doAction)
+                    .padding(0)
             }
         }
         .padding(EdgeInsets(top: 3, leading: 4, bottom: 3, trailing: 4))

@@ -31,7 +31,7 @@ struct StringEditorView: View {
             // footer
             HStack(alignment: .center, spacing: 4) {
                 Spacer()
-                MButton(text: "JSON Format", action: onJsonFormat)
+                MButton(text: "Json Format", action: onJsonFormat)
                 IconButton(icon: "arrow.clockwise", name: "Refresh", action: onRefreshAction)
                 IconButton(icon: "checkmark", name: "Submit", isConfirm: false, confirmTitle: "", confirmMessage: "", confirmPrimaryButtonText: "Submit", action: onSubmitAction)
             }

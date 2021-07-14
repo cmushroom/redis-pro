@@ -103,11 +103,15 @@ struct RedisListView: View {
     
     func selectFavoriteRedisModel() -> Void {
         if defaultFavorite == "last" {
-            DispatchQueue.main.async {
-                self.selectedRedisModelId = self.redisFavoriteModel.lastRedisModelId
-            }
+            self.selectedRedisModelId = self.redisFavoriteModel.lastRedisModelId
         } else {
             self.selectedRedisModelId = defaultFavorite
+        }
+        
+        if let index = self.redisFavoriteModel.redisModels.firstIndex(where: { (e) -> Bool in
+            return e.id == self.selectedRedisModelId
+        }) {
+            self.selectIndex = index
         }
     }
     

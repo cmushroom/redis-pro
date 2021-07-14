@@ -41,7 +41,7 @@ struct LoginForm: View {
                             openURL(url)
                         }) {
                             Image(systemName: "questionmark.circle")
-                                .font(.system(size: 18.0))
+                                .font(.system(size: 16.0))
                         }
                         .buttonStyle(PlainButtonStyle())
                     }

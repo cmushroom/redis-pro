@@ -41,7 +41,10 @@ struct MButton: View {
     var body: some View {
         Button(action: doAction) {
             Text(text)
-                .padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4))
+                .font(.system(size: MTheme.FONT_SIZE_BUTTON))
+                .multilineTextAlignment(.center)
+                .lineLimit(1)
+                .padding(.horizontal, 4.0)
         }
         .foregroundColor(colorScheme == .dark ? Color.white.opacity(disabled ? 0.4 : 0.9) : nil)
         .disabled(disabled)

@@ -8,9 +8,9 @@
 import Foundation
 
 class SlowLogModel:NSObject, Identifiable {
-    @objc var id:String = UUID().uuidString
+    @objc var id:String = ""
     @objc var timestamp:Int64 = 0
-    @objc var cmd:String = UUID().uuidString
+    @objc var cmd:String = ""
     
     override init() {
     }

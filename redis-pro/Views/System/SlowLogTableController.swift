@@ -22,27 +22,12 @@ class SlowLogTableController: NSViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.tableView.tableColumns[0].title = "sss"
-        
-        let column = NSTableColumn()
-        column.title = "test title"
-        self.tableView.addTableColumn(column)
-        
-//        column.bind(.value, to: self.arrayController!, withKeyPath: "arrangedObjects", options: nil)
-//        NSTableCellView()
-//        let cellView = column.dataCell as! NSTableCellView
-//        cellView.textField?.stringValue = "teeeeeee"
-//        cellView.textField?.bind(.value, to: cellView, withKeyPath: "objectValue.id", options: [NSBindingOption.allowsEditingMultipleValuesSelection: 1])
-        
-        
     }
         
     func setDatasource(_ datasource:[Any]) -> Void {
         self.datasource = datasource
     }
 }
-
 
 struct SlowLogTable: NSViewControllerRepresentable {
     @Binding var datasource: [Any]

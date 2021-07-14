@@ -11,11 +11,10 @@ import Cocoa
 struct RedisProCommands: Commands {
     
     private struct HelpCommands: View {
-        @FocusedBinding(\.versionUpgrade) var versionUpgrade:Int?
         
         var body: some View {
             Button("Check Update") {
-                versionUpgrade? += 1
+                VersionManager().checkUpdate(isNoUpgradeHint: true)
             }
         }
     }
@@ -55,17 +54,5 @@ struct RedisProCommands: Commands {
             HelpCommands()
             HomePageCommands()
         }
-    }
-}
-
-
-private struct VersionUpgradeKey: FocusedValueKey {
-    typealias Value = Binding<Int>
-}
-
-extension FocusedValues {
-    var versionUpgrade: Binding<Int>? {
-        get { self[VersionUpgradeKey.self] }
-        set { self[VersionUpgradeKey.self] = newValue }
     }
 }

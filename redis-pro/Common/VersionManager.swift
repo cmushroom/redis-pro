@@ -11,9 +11,10 @@ import Logging
 import SwiftyJSON
 
 struct VersionManager {
-    @ObservedObject var globalContext:GlobalContext
-    
     let logger = Logger(label: "version-manager")
+    let checkUpdateUrl:String = "https://gitee.com/chengpan168_admin/redis-pro/raw/dev/.version"
+    let alert = MAlert()
+    
     
     func checkUpdate(isNoUpgradeHint:Bool = false) -> Void {
         let currentVersionNum = Bundle.main.infoDictionary?["CFBundleVersion"]
@@ -24,7 +25,7 @@ struct VersionManager {
             return
         }
         
-        if let url = URL(string: "https://gitee.com/chengpan168_admin/redis-pro/raw/dev/.version") {
+        if let url = URL(string: checkUpdateUrl) {
             do {
                 let contents = try String(contentsOf: url)
                 logger.info("get new version result: \(contents)")
@@ -46,15 +47,13 @@ struct VersionManager {
                     
                     // 提示升级
                     if updateType == "hint" {
-                        globalContext.showAlert("New version \(latestVersion) is available"
-                                                , alertMessage: releaseNotes
-                                                , primaryAction: {
-                                                    if let url = URL(string: Constants.RELEASE_URL) {
-                                                        NSWorkspace.shared.open(url)
-                                                    }
-                                                }
-                                                , primaryButtonText: "Upgrade"
-                                                , showSecondButton: true
+                        alert.confirm("New version \(latestVersion) is available", message: releaseNotes,
+                                      primaryButton: "Upgrade",
+                                      primaryAction: {
+                                        if let url = URL(string: Constants.RELEASE_URL) {
+                                            NSWorkspace.shared.open(url)
+                                        }
+                                      }
                         )
                     }
                     // 强制升级
@@ -63,7 +62,7 @@ struct VersionManager {
                     }
                 } else {
                     if isNoUpgradeHint {
-                        globalContext.showAlert("Current version \(currentVersion ?? "") is latest!", alertMessage: "")
+                        alert.show("Current version \(currentVersion ?? "") is latest!")
                     }
                 }
                 

@@ -18,7 +18,6 @@ class GlobalContext:ObservableObject, CustomStringConvertible {
     var primaryAction:() throws -> Void = {}
     
     @Published var loading:Bool = false
-    @Published var versionUpgrade:Int = 0
 
     
     func showError(_ error:Error) -> Void {

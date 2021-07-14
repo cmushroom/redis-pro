@@ -107,6 +107,7 @@
 		43F22EE3269C2D6600A00F97 /* TextViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 43F22EE2269C2D6600A00F97 /* TextViewController.xib */; };
 		43F22EE5269C2E0900A00F97 /* TextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F22EE4269C2E0900A00F97 /* TextViewController.swift */; };
 		43F22EE9269E7F9500A00F97 /* README.zh_CN.md in Resources */ = {isa = PBXBuildFile; fileRef = 43F22EE8269E7F9500A00F97 /* README.zh_CN.md */; };
+		43F22EEB269EC11E00A00F97 /* MAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F22EEA269EC11E00A00F97 /* MAlert.swift */; };
 		623704F5265A27760084CCA8 /* AppCenterCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = 623704F4265A27760084CCA8 /* AppCenterCrashes */; };
 		623704F7265A27760084CCA8 /* AppCenterAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 623704F6265A27760084CCA8 /* AppCenterAnalytics */; };
 		623704FA265A27970084CCA8 /* RediStack in Frameworks */ = {isa = PBXBuildFile; productRef = 623704F9265A27970084CCA8 /* RediStack */; };
@@ -235,6 +236,7 @@
 		43F22EE2269C2D6600A00F97 /* TextViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TextViewController.xib; sourceTree = "<group>"; };
 		43F22EE4269C2E0900A00F97 /* TextViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewController.swift; sourceTree = "<group>"; };
 		43F22EE8269E7F9500A00F97 /* README.zh_CN.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.zh_CN.md; sourceTree = "<group>"; };
+		43F22EEA269EC11E00A00F97 /* MAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAlert.swift; sourceTree = "<group>"; };
 		62CB3D712619AE050061E8C3 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		62CB3D742619AEC20061E8C3 /* RedisKeysListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisKeysListView.swift; sourceTree = "<group>"; };
 		62CB3D782619AEEB0061E8C3 /* RedisKeyRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisKeyRowView.swift; sourceTree = "<group>"; };
@@ -301,6 +303,7 @@
 				43915808268075490019D2D0 /* Demo.swift */,
 				43F22EE4269C2E0900A00F97 /* TextViewController.swift */,
 				43F22EE2269C2D6600A00F97 /* TextViewController.xib */,
+				43F22EEA269EC11E00A00F97 /* MAlert.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -687,6 +690,7 @@
 				43CD28AE267B6E0E00E11876 /* LoggerFactory.swift in Sources */,
 				43CD286E2670A03800E11876 /* VersionManager.swift in Sources */,
 				430A09DC25BEAD2700B60DFC /* RedisInsanceModel.swift in Sources */,
+				43F22EEB269EC11E00A00F97 /* MAlert.swift in Sources */,
 				437BC24E26461E2100E2C84D /* NumberHelper.swift in Sources */,
 				431266F5261D912500FB6B69 /* StringEditorView.swift in Sources */,
 				43CD28AC267B67C600E11876 /* PuppyLogger.swift in Sources */,

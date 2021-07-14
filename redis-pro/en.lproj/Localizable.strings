@@ -6,6 +6,8 @@
   
 */
 
+// system
+"UNIT_MICROSECOND" = "1 second = 1,000,000 microsecond";
 
 // ------------------------------------------------ Redis Info Start...-------------------------------------------------------
 "REDIS_CLIENT_LIST_ID" = "an unique 64-bit client ID.";

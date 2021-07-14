@@ -6,6 +6,10 @@
   
 */
 
+// system
+"UNIT_MICROSECOND" = "1秒 = 1,000,000 微秒";
+
+
 // ------------------------------------------------ Redis Client List Start...-------------------------------------------------------
 "REDIS_CLIENT_LIST_ID" = "客户端唯一ID(64-bit)";
 "REDIS_CLIENT_LIST_NAME" = "the name set by the client with CLIENT SETNAME";

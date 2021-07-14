@@ -50,11 +50,6 @@ class RedisKeysTableController: NSViewController {
     @objc private func tableViewDeleteItemClicked(_ sender: AnyObject) {
         logger.info("context menu delete index: \(tableView.clickedRow)")
         self.deleteAction(tableView.clickedRow)
-//        guard tableView.clickedRow >= 0 else { return }
-        //
-        //        items.remove(at: tableView.clickedRow)
-        //
-        //        tableView.reloadData()
     }
 }
 

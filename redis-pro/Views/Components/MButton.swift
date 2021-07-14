@@ -24,6 +24,7 @@ struct SmallButtonStyle: PrimitiveButtonStyle {
 
 struct MButton: View {
     @EnvironmentObject var globalContext:GlobalContext
+    
     var text:String
     var action: () throws -> Void = {}
     var disabled:Bool = false

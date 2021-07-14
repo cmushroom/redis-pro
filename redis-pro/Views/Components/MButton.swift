@@ -63,14 +63,7 @@ struct MButton: View {
             if !isConfirm {
                 try action()
             } else {
-                globalContext.alertVisible = true
-                globalContext.showSecondButton = true
-                globalContext.alertTitle = confirmTitle ?? ""
-                globalContext.alertMessage = confirmMessage ?? ""
-                globalContext.primaryAction = action
-                if confirmPrimaryButtonText != nil {
-                    globalContext.primaryButtonText = confirmPrimaryButtonText!
-                }
+                globalContext.confirm(confirmTitle ?? "", alertMessage: confirmMessage ?? "", primaryAction: action, primaryButton: confirmPrimaryButtonText ?? globalContext.primaryButtonText)
             }
         } catch {
             globalContext.showError(error)

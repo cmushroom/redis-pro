@@ -35,15 +35,22 @@ class GlobalContext:ObservableObject, CustomStringConvertible {
         }
     }
     
-    func showAlert(_ alertTitle:String, alertMessage:String = "", primaryAction: @escaping () throws -> Void = {}, primaryButtonText:String = "Ok", showSecondButton:Bool = false) -> Void {
+    func showAlert(_ alertTitle:String, alertMessage:String = "", primaryAction: @escaping () throws -> Void = {}, primaryButtonText:String = "Ok") -> Void {
         self.alertVisible = true
         self.alertTitle = alertTitle
         self.alertMessage = alertMessage
         self.primaryAction = primaryAction
         self.primaryButtonText = primaryButtonText
-        self.showSecondButton = showSecondButton
     }
-
+    
+    func confirm(_ alertTitle:String, alertMessage:String = "", primaryAction: @escaping () throws -> Void = {}, primaryButton:String = "Ok") -> Void {
+        self.alertVisible = true
+        self.alertTitle = alertTitle
+        self.alertMessage = alertMessage
+        self.primaryAction = primaryAction
+        self.primaryButtonText = primaryButton
+        self.showSecondButton = true
+    }
     
     var description: String {
         return "GlobalContext:[alertVisible:\(alertVisible), loading:\(loading), showSecondButton: \(showSecondButton), primaryButtonText:\(primaryButtonText)]"

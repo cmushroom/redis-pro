@@ -139,16 +139,14 @@ struct ZSetEditorView: View {
     }
     
     func onDeleteConfirmAction(_ index:Int) -> Void {
-        globalContext.alertVisible = true
-        globalContext.showSecondButton = true
-        globalContext.primaryButtonText = "Delete"
-        
         let item = list[index] ?? ("", 0)
-        globalContext.alertTitle = String(format: Helps.DELETE_LIST_ITEM_CONFIRM_TITLE, item.0)
-        globalContext.alertMessage = String(format:Helps.DELETE_LIST_ITEM_CONFIRM_MESSAGE, item.0)
-        globalContext.primaryAction = {
-            try deleteEle(index)
-        }
+        
+        globalContext.confirm(String(format: Helps.DELETE_LIST_ITEM_CONFIRM_TITLE, item.0)
+                              , alertMessage: String(format:Helps.DELETE_LIST_ITEM_CONFIRM_MESSAGE, item.0)
+                              , primaryAction: {
+                                try deleteEle(index)
+                              }
+                              , primaryButton: "Delete")
         
     }
     

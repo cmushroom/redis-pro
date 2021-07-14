@@ -194,16 +194,14 @@ struct RedisKeysListView: View {
     }
     
     func onDeleteConfirmAction(_ index:Int) -> Void {
-        globalContext.alertVisible = true
-        globalContext.showSecondButton = true
-        globalContext.primaryButtonText = "Delete"
-        
         let item = redisKeyModels[index].key
-        globalContext.alertTitle = String(format: Helps.DELETE_LIST_ITEM_CONFIRM_TITLE, item)
-        globalContext.alertMessage = String(format:Helps.DELETE_LIST_ITEM_CONFIRM_MESSAGE, item)
-        globalContext.primaryAction = {
-            deleteKey(index)
-        }
+        
+        globalContext.confirm(String(format: Helps.DELETE_LIST_ITEM_CONFIRM_TITLE, item)
+                              , alertMessage: String(format:Helps.DELETE_LIST_ITEM_CONFIRM_MESSAGE, item)
+                              , primaryAction: {
+                                deleteKey(index)
+                              }
+                              , primaryButton: "Delete")
     }
     
     func deleteKey(_ index:Int) -> Void {
@@ -219,21 +217,6 @@ struct RedisKeysListView: View {
     }
     
     func onRedisInfoAction() -> Void {
-        //        let _ = redisInstanceModel.getClient().info()
-        //        let window = NSWindow(
-        //            contentRect: NSRect(x: 0, y: 0, width: 800, height: 600),
-        //            styleMask: [.titled, .closable, .resizable],
-        //               backing: .buffered,
-        //               defer: false
-        //        )
-        //        window.center()
-        //        window.setFrameAutosaveName("Redis Info")
-        //        window.title = "Redis Info"
-        //        window.toolbarStyle = .unifiedCompact
-        //        window.isReleasedWhenClosed = true
-        //        window.contentView = NSHostingView(rootView: RedisInfoView(redisInstanceModel: redisInstanceModel).frame(minWidth: 500, minHeight: 600))
-        //        window.makeKeyAndOrderFront(nil)
-        
         self.selectedRedisKeyIndex = nil
         self.redisInfoVisible = true
         self.mainViewType = MainViewTypeEnum.REDIS_INFO

@@ -114,7 +114,7 @@ struct HashEditorView: View {
             HStack(alignment: .center, spacing: 4) {
                 Spacer()
                 IconButton(icon: "arrow.clockwise", name: "Refresh", action: onRefreshAction)
-//                IconButton(icon: "checkmark", name: "Submit", confirmPrimaryButtonText: "Submit", action: onSubmitAction)
+                //                IconButton(icon: "checkmark", name: "Submit", confirmPrimaryButtonText: "Submit", action: onSubmitAction)
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
         }
@@ -146,15 +146,9 @@ struct HashEditorView: View {
     }
     
     func onDeleteConfirmAction(field:String) -> Void {
-        globalContext.alertVisible = true
-        globalContext.showSecondButton = true
-        globalContext.primaryButtonText = "Delete"
-        globalContext.alertTitle = String(format: Helps.DELETE_HASH_FIELD_CONFIRM_TITLE, field)
-        globalContext.alertMessage = String(format:Helps.DELETE_HASH_FIELD_CONFIRM_MESSAGE, field)
-        globalContext.primaryAction = {
+        globalContext.confirm(String(format: Helps.DELETE_HASH_FIELD_CONFIRM_TITLE, field), alertMessage: String(format:Helps.DELETE_HASH_FIELD_CONFIRM_MESSAGE, field), primaryAction: {
             try deleteField(field)
-        }
-        
+        }, primaryButton: "Delete")
     }
     
     
@@ -167,9 +161,9 @@ struct HashEditorView: View {
             logger.info("redis hset success, update field list")
             
             self.onLoad(redisKeyModel)
-        
+            
         })
-//        hashMap.updateValue(editValue, forKey: editField)
+        //        hashMap.updateValue(editValue, forKey: editField)
         
     }
     

@@ -119,16 +119,13 @@ struct ListEditorView: View {
     
     
     func onDeleteConfirmAction(_ index:Int) -> Void {
-        globalContext.alertVisible = true
-        globalContext.showSecondButton = true
-        globalContext.primaryButtonText = "Delete"
-        
         let item = list[index] ?? "''"
-        globalContext.alertTitle = String(format: Helps.DELETE_LIST_ITEM_CONFIRM_TITLE, item)
-        globalContext.alertMessage = String(format:Helps.DELETE_LIST_ITEM_CONFIRM_MESSAGE, item)
-        globalContext.primaryAction = {
-            try deleteField(index)
-        }
+        
+        globalContext.confirm(String(format: Helps.DELETE_LIST_ITEM_CONFIRM_TITLE, item), alertMessage: String(format:Helps.DELETE_LIST_ITEM_CONFIRM_MESSAGE, item)
+                              , primaryAction: {
+                                try deleteField(index)
+                            }
+        , primaryButton: "Delete")
         
     }
     

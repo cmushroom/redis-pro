@@ -47,7 +47,7 @@ struct VersionManager {
                     
                     // 提示升级
                     if updateType == "hint" {
-                        alert.confirm("New version \(latestVersion) is available", message: releaseNotes,
+                        MAlert.confirm("New version \(latestVersion) is available", message: releaseNotes,
                                       primaryButton: "Upgrade",
                                       primaryAction: {
                                         if let url = URL(string: Constants.RELEASE_URL) {
@@ -62,7 +62,7 @@ struct VersionManager {
                     }
                 } else {
                     if isNoUpgradeHint {
-                        alert.show("Current version \(currentVersion ?? "") is latest!")
+                        MAlert.show("Current version \(currentVersion ?? "") is latest!")
                     }
                 }
                 

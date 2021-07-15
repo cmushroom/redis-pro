@@ -20,6 +20,7 @@ struct FormItemText: View {
             if !label.isEmpty {
                 FormLabel(label: label, width: labelWidth, required: required)
             }
+//            MNSTextField(text: $value)
             MTextField(value: $value, placeholder: placeholder ?? label, disabled: disabled)
         }
     }

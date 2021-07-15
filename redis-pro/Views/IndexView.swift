@@ -12,14 +12,11 @@ struct IndexView: View {
     @StateObject var globalContext:GlobalContext = GlobalContext()
     @StateObject var redisInstanceModel:RedisInstanceModel = RedisInstanceModel(redisModel: RedisModel())
     
-    @AppStorage("versionUpgrade") var versionUpgrade:Int?
-    
     let logger = Logger(label: "index-view")
     
     var body: some View {
         HStack {
             VStack {
-                
                 if (!redisInstanceModel.isConnect) {
                     LoginView()
                         .environmentObject(redisInstanceModel)

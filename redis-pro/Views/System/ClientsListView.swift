@@ -32,7 +32,7 @@ struct ClientsListView: View {
             ClientListTable(datasource: $clientModels, selectRowIndex: $selectRowIndex)
             footer
         }
-        .padding(EdgeInsets(top: 10, leading: 8, bottom: 10, trailing: 8))
+//        .padding(EdgeInsets(top: 10, leading: 8, bottom: 10, trailing: 8))
         .onAppear {
             getClients()
         }

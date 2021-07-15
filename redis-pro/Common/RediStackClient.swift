@@ -1348,3 +1348,137 @@ class RediStackClient{
             }
     }
 }
+
+
+// config
+extension RediStackClient {
+    func getConfigOne(key:String) -> Promise<String?> {
+        logger.info("get redis config ...")
+        
+        let promise =
+            getConnectionAsync().then({ connection in
+                Promise<String?> { resolver in
+                    connection.send(command: "CONFIG", with: [RESPValue(from: "GET"), RESPValue(from: key)])
+                        .whenComplete({completion in
+                            if case .success(let res) = completion {
+                                self.logger.info("get slow log slower than res: \(res)")
+                                resolver.fulfill(res.array?[1].string)
+                            }
+                            else if case .failure(let error) = completion {
+                                resolver.reject(error)
+                            }
+                        })
+                }
+            })
+        
+        return promise
+    }
+    
+    
+    func setConfig(key:String, value:String) -> Promise<Bool> {
+        logger.info("set redis config, key: \(key), value: \(value)")
+        
+        let promise =
+            getConnectionAsync().then({ connection in
+                Promise<Bool> { resolver in
+                    connection.send(command: "CONFIG", with: [RESPValue(from: "SET"), RESPValue(from: key), RESPValue(from: value)])
+                        .whenComplete({completion in
+                            if case .success(let res) = completion {
+                                self.logger.info("set config res: \(res)")
+                                resolver.fulfill(res.string == "OK")
+                            }
+                            else if case .failure(let error) = completion {
+                                resolver.reject(error)
+                            }
+                        })
+                }
+            })
+        
+        return promise
+    }
+    
+}
+
+
+// slow log
+extension RediStackClient {
+    func slowLogReset() -> Promise<Bool> {
+        logger.info("slow log reset ...")
+        let promise =
+            getConnectionAsync().then({ connection in
+                Promise<Bool> { resolver in
+                    connection.send(command: "SLOWLOG", with: [RESPValue(from: "RESET")])
+                        .whenComplete({completion in
+                            if case .success(let res) = completion {
+                                self.logger.info("slow log reset res: \(res)")
+                                resolver.fulfill(res.string == "OK")
+                            }
+                            else if case .failure(let error) = completion {
+                                resolver.reject(error)
+                            }
+                        })
+                }
+            })
+        
+        return promise
+    }
+    
+    func slowLogLen() -> Promise<Int> {
+        logger.info("get slow log len ...")
+        let promise =
+            getConnectionAsync().then({ connection in
+                Promise<Int> { resolver in
+                    connection.send(command: "SLOWLOG", with: [RESPValue(from: "LEN")])
+                        .whenComplete({completion in
+                            if case .success(let res) = completion {
+                                self.logger.info("get slow log len res: \(res)")
+                                resolver.fulfill(res.int ?? 0)
+                            }
+                            else if case .failure(let error) = completion {
+                                resolver.reject(error)
+                            }
+                        })
+                }
+            })
+        
+        return promise
+    }
+    
+    func getSlowLog(_ size:Int) -> Promise<[SlowLogModel]> {
+        logger.info("get slow log list ...")
+        
+        self.globalContext?.loading = true
+        
+        let promise =
+            getConnectionAsync().then({ connection in
+                Promise<[SlowLogModel]> { resolver in
+                    connection.send(command: "SLOWLOG", with: [RESPValue(from: "GET"), RESPValue(from: size)])
+                        .whenComplete({completion in
+                            // line [110,1626313174,1,[type,NEW_KEY_1626251400704],127.0.0.1:56306,]
+                            if case .success(let res) = completion {
+                                self.logger.info("get slow log res: \(res)")
+                                
+                                var slowLogs = [SlowLogModel]()
+                                res.array?.forEach({ item in
+                                    let itemArray = item.array
+
+                                    let cmd = itemArray?[3].array!.map({
+                                        $0.string ?? MTheme.NULL_STRING
+                                    }).joined(separator: " ")
+                                    
+                                    slowLogs.append(SlowLogModel(id: itemArray?[0].string, timestamp: itemArray?[1].int, execTime: itemArray?[2].string, cmd: cmd, client: itemArray?[4].string, clientName: itemArray?[5].string))
+                                })
+                                
+                                resolver.fulfill(slowLogs)
+                            }
+                            else if case .failure(let error) = completion {
+                                resolver.reject(error)
+                            }
+                        })
+                }
+            })
+       
+        afterPromise(promise)
+        return promise
+    }
+}

@@ -29,7 +29,7 @@ struct StringEditorView: View {
             .background(colorScheme == .dark ? Color.clear : Color.white)
 
             // footer
-            HStack(alignment: .center, spacing: 4) {
+            HStack(alignment: .center, spacing: MTheme.H_SPACING) {
                 Spacer()
                 MButton(text: "Json Format", action: onJsonFormat)
                 IconButton(icon: "arrow.clockwise", name: "Refresh", action: onRefreshAction)

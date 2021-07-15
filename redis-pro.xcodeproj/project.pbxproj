@@ -112,6 +112,7 @@
 		43F22EEF269EDF7B00A00F97 /* SlowLogModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F22EEE269EDF7B00A00F97 /* SlowLogModel.swift */; };
 		43F22EF1269EE02500A00F97 /* SlowLogTableController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 43F22EF0269EE02500A00F97 /* SlowLogTableController.xib */; };
 		43F22EF3269EE03400A00F97 /* SlowLogTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F22EF2269EE03400A00F97 /* SlowLogTableController.swift */; };
+		43F22EF5269FCE6000A00F97 /* DateHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F22EF4269FCE6000A00F97 /* DateHelper.swift */; };
 		623704F5265A27760084CCA8 /* AppCenterCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = 623704F4265A27760084CCA8 /* AppCenterCrashes */; };
 		623704F7265A27760084CCA8 /* AppCenterAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 623704F6265A27760084CCA8 /* AppCenterAnalytics */; };
 		623704FA265A27970084CCA8 /* RediStack in Frameworks */ = {isa = PBXBuildFile; productRef = 623704F9265A27970084CCA8 /* RediStack */; };
@@ -245,6 +246,7 @@
 		43F22EEE269EDF7B00A00F97 /* SlowLogModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlowLogModel.swift; sourceTree = "<group>"; };
 		43F22EF0269EE02500A00F97 /* SlowLogTableController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SlowLogTableController.xib; sourceTree = "<group>"; };
 		43F22EF2269EE03400A00F97 /* SlowLogTableController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlowLogTableController.swift; sourceTree = "<group>"; };
+		43F22EF4269FCE6000A00F97 /* DateHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateHelper.swift; sourceTree = "<group>"; };
 		62CB3D712619AE050061E8C3 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		62CB3D742619AEC20061E8C3 /* RedisKeysListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisKeysListView.swift; sourceTree = "<group>"; };
 		62CB3D782619AEEB0061E8C3 /* RedisKeyRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisKeyRowView.swift; sourceTree = "<group>"; };
@@ -425,6 +427,7 @@
 				437BC2442645272E00E2C84D /* DoubleFormatter.swift */,
 				437BC24626452AE400E2C84D /* StringFormatter.swift */,
 				437BC24D26461E2100E2C84D /* NumberHelper.swift */,
+				43F22EF4269FCE6000A00F97 /* DateHelper.swift */,
 				4340E2CD266660FE00F51F19 /* PromiseExt.swift */,
 				43CD286D2670A03800E11876 /* VersionManager.swift */,
 				43CD28AB267B67C600E11876 /* PuppyLogger.swift */,
@@ -709,6 +712,7 @@
 				431266F5261D912500FB6B69 /* StringEditorView.swift in Sources */,
 				43CD28AC267B67C600E11876 /* PuppyLogger.swift in Sources */,
 				431266CF261C4E0900FB6B69 /* RedisKeySearchRowView.swift in Sources */,
+				43F22EF5269FCE6000A00F97 /* DateHelper.swift in Sources */,
 				4314A34126243ED500053FEE /* PageBar.swift in Sources */,
 				62CB3D7D2619AF990061E8C3 /* RedisKeyModel.swift in Sources */,
 				437BC25126467A3D00E2C84D /* SidebarFooter.swift in Sources */,

@@ -22,6 +22,14 @@ class SlowLogTableController: NSViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // 提示
+        for column in tableView.tableColumns {
+            let tip:String = NSLocalizedString("REDIS_SLOW_LOG_\(column.identifier.rawValue)".uppercased(), tableName: nil, bundle: Bundle.main, value: "", comment: "")
+            column.title = column.title + "􀁜"
+            column.headerToolTip = tip
+        }
+        
     }
         
     func setDatasource(_ datasource:[Any]) -> Void {

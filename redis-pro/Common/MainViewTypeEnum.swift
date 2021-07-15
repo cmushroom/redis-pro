@@ -14,4 +14,5 @@ enum MainViewTypeEnum{
     case EDITOR
     case REDIS_INFO
     case CLIENT_LIST
+    case SLOW_LOG
 }

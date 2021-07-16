@@ -41,7 +41,7 @@ struct LoginForm: View {
                             openURL(url)
                         }) {
                             Image(systemName: "questionmark.circle")
-                                .font(.system(size: 18.0))
+                                .font(.system(size: 16.0))
                         }
                         .buttonStyle(PlainButtonStyle())
                     }
@@ -89,12 +89,6 @@ struct LoginForm: View {
             .tabItem {
                 Label("TCP/IP", systemImage: "bolt.fill")
             }
-            
-            //                Text("Another Tab")
-            //                    .tabItem {
-            //                        Image(systemName: "2.square.fill")
-            //                        Text("Second")
-            //                    }
         }
         .padding(20.0)
         .frame(width: 460.0, height: 400.0)

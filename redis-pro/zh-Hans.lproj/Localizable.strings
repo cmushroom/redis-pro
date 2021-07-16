@@ -6,6 +6,29 @@
   
 */
 
+// system
+"UNIT_MICROSECOND" = "1秒 = 1,000,000 微秒";
+
+
+
+// ------------------------------------------------ Redis Slow Log Start...-------------------------------------------------------
+"REDIS_SLOW_LOG_ID" = "唯一性(unique)的日志标识符, 日志的唯一 id 在 Redis 服务器重启的时候会重置";
+"REDIS_SLOW_LOG_TIMESTAMP" = "命令的执行时间点";
+"REDIS_SLOW_LOG_EXEC_TIME" = "执行时间，以微秒为单位";
+"REDIS_SLOW_LOG_CMD" = "执行的命令";
+"REDIS_SLOW_LOG_CLIENT" = "执行命令的客户端 ip 和 port (4.0 only)";
+"REDIS_SLOW_LOG_CLIENT_NAME" = "通过 CLIENT SETNAME 设置的客户端名称 (4.0 only)";
+
+"REDIS_SLOW_LOG_SIZE" = "查询 slowlog 条数";
+"REDIS_SLOW_LOG_TOTAL" = "slowlog 总条数";
+
+"REDIS_SLOW_LOG_RESET" = "使用SLOWLOG reset命令复位慢日志";
+"REDIS_SLOW_LOG_MAX_LEN" = "slowlog-max-len参数, slow log 最多能保存日志条数, 最小为0， slow log 本身是一个 FIFO 队列，当队列大小超过 slowlog-max-len 时，最旧的一条日志将被删除，而最新的一条日志加入到 slow log";
+"REDIS_SLOW_LOG_SLOWER_THAN" = "slowlog-log-slower-than参数，决定要对执行时间大于此参数设置的查询进行记录, 单位微秒(microsecond，1秒 = 1,000,000 微秒)";
+
+// ------------------------------------------------ Redis Slow Log End...-------------------------------------------------------
+
+
 // ------------------------------------------------ Redis Client List Start...-------------------------------------------------------
 "REDIS_CLIENT_LIST_ID" = "客户端唯一ID(64-bit)";
 "REDIS_CLIENT_LIST_NAME" = "the name set by the client with CLIENT SETNAME";

@@ -19,14 +19,21 @@ struct MTextField: View {
     @Environment(\.colorScheme) var colorScheme
     var autoCommit:Bool = true
     
+    // 是否有编辑过，编回过才会触commit
+    @State private var isEdited:Bool = false
+    
     let logger = Logger(label: "text-field")
     
     var body: some View {
         HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 2) {
             TextField(placeholder ?? "", text: $value, onEditingChanged: { isEditing in
                 self.isEditing = isEditing
+                if isEditing {
+                    self.isEdited = true
+                }
             }, onCommit: doCommit)
             .disabled(disabled)
+            .multilineTextAlignment(/*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/)
             .lineLimit(1)
             .font(.body)
             .disableAutocorrection(true)
@@ -36,8 +43,8 @@ struct MTextField: View {
             }
             
             if suffix != nil {
-                MIcon(icon: suffix!, fontSize: 14, action: doAction)
-                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                MIcon(icon: suffix!, fontSize: MTheme.FONT_SIZE_BUTTON, action: doAction)
+                    .padding(0)
             }
         }
         .padding(EdgeInsets(top: 3, leading: 4, bottom: 3, trailing: 4))
@@ -49,7 +56,8 @@ struct MTextField: View {
     }
     
     func doCommit() -> Void {
-        if autoCommit {
+        if autoCommit && self.isEdited {
+            self.isEdited = false
             doAction()
         }
     }

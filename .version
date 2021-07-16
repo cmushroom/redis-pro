@@ -1,6 +1,6 @@
 {
-    "latestVersionNum": 4,
-    "latestVersion": "1.1.2",
+    "latestVersionNum": 5,
+    "latestVersion": "1.2.0",
     "updateType": "hint",
-    "releaseNotes": "1. 文本编辑器修复自动中文双引号，单引号问题 \n2. Key, Redis列表使用table表格，优化界面显示"
+    "releaseNotes": "1. 增加slow log 列表， slow log 相关设置功能 \n2. 修复 json 格式化没有及时刷新bug。 \n3.优化alert弹出框，key过长的情况. \n4.优化原有textField 会在blur, enter 时提交改为只有值被修改过才会提交. \n5.其它界面优化..."
 }

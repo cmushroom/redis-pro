@@ -8,9 +8,11 @@
 import SwiftUI
 import Logging
 import SwiftyJSON
+import Cocoa
 
 struct StringEditorView: View {
     @State var text: String = ""
+    
     @ObservedObject var redisKeyModel:RedisKeyModel
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @EnvironmentObject var globalContext:GlobalContext
@@ -22,15 +24,14 @@ struct StringEditorView: View {
         VStack(alignment: .leading, spacing: 0) {
             VStack(alignment: .leading, spacing: 4){
                 // text editor
-//                MTextEditor(text: $text)
                 MTextView(text: $text)
             }
             .background(colorScheme == .dark ? Color.clear : Color.white)
 
             // footer
-            HStack(alignment: .center, spacing: 4) {
+            HStack(alignment: .center, spacing: MTheme.H_SPACING) {
                 Spacer()
-                MButton(text: "JSON Format", action: onJsonFormat)
+                MButton(text: "Json Format", action: onJsonFormat)
                 IconButton(icon: "arrow.clockwise", name: "Refresh", action: onRefreshAction)
                 IconButton(icon: "checkmark", name: "Submit", isConfirm: false, confirmTitle: "", confirmMessage: "", confirmPrimaryButtonText: "Submit", action: onSubmitAction)
             }

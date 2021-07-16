@@ -9,7 +9,7 @@ import Foundation
 import Logging
 
 class NumberHelper {
-    static let logger = Logger(label: "redis-set-editor")
+    static let logger = Logger(label: "number-helper")
     
     static var formatter:NumberFormatter = {
         logger.info("NumberFormatHelper init number formatter instance ...")
@@ -44,7 +44,7 @@ class NumberHelper {
             return defaultValue!
         }
         
-        let r = formatter.number(from: String(describing: value))?.intValue
+        let r = formatter.number(from: "\(value!)")?.intValue
         
         if r == nil {
             return defaultValue!

@@ -24,6 +24,7 @@ struct SmallButtonStyle: PrimitiveButtonStyle {
 
 struct MButton: View {
     @EnvironmentObject var globalContext:GlobalContext
+    
     var text:String
     var action: () throws -> Void = {}
     var disabled:Bool = false
@@ -41,7 +42,10 @@ struct MButton: View {
     var body: some View {
         Button(action: doAction) {
             Text(text)
-                .padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4))
+                .font(.system(size: MTheme.FONT_SIZE_BUTTON))
+                .multilineTextAlignment(.center)
+                .lineLimit(1)
+                .padding(.horizontal, 4.0)
         }
         .foregroundColor(colorScheme == .dark ? Color.white.opacity(disabled ? 0.4 : 0.9) : nil)
         .disabled(disabled)
@@ -63,14 +67,7 @@ struct MButton: View {
             if !isConfirm {
                 try action()
             } else {
-                globalContext.alertVisible = true
-                globalContext.showSecondButton = true
-                globalContext.alertTitle = confirmTitle ?? ""
-                globalContext.alertMessage = confirmMessage ?? ""
-                globalContext.primaryAction = action
-                if confirmPrimaryButtonText != nil {
-                    globalContext.primaryButtonText = confirmPrimaryButtonText!
-                }
+                globalContext.confirm(confirmTitle ?? "", alertMessage: confirmMessage ?? "", primaryAction: action, primaryButton: confirmPrimaryButtonText ?? globalContext.primaryButtonText)
             }
         } catch {
             globalContext.showError(error)

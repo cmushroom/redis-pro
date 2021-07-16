@@ -19,10 +19,8 @@ struct RedisKeysListView: View {
     @State private var renameModalVisible:Bool = false
     @State private var oldKeyIndex:Int?
     @State private var newKeyName:String = ""
-    @State private var redisInfoVisible:Bool = false
+
     @State private var mainViewType:MainViewTypeEnum = MainViewTypeEnum.EDITOR
-    
-    @State var redisKeyTableRows = [RedisKeyTableRow]()
     
     let logger = Logger(label: "redis-key-list-view")
     
@@ -69,7 +67,8 @@ struct RedisKeysListView: View {
                         .labelStyle(IconOnlyLabelStyle())
             ){
                 Button("Redis Info", action: onRedisInfoAction)
-                Button("Clients", action: onShowClientsAction)
+                Button("Clients List", action: onShowClientsAction)
+                Button("Slow Log", action: onShowSlowLogAction)
                 MButton(text: "Flush DB", action: onFlushDBAction, isConfirm: true, confirmTitle: "Flush DB ?", confirmMessage: "Are you sure you want to flush db? This operation cannot be undone.")
             }
             .frame(width:30)
@@ -112,8 +111,8 @@ struct RedisKeysListView: View {
             //            .padding(.all, 0)
             
             RedisKeysTable(datasource: $redisKeyModels, selectRowIndex: $selectedRedisKeyIndex, deleteAction: onDeleteConfirmAction, renameAction: onRenameConfirmAction)
+            
             // footer
-            //            SidebarFooter(page: page, pageAction: onQueryKeyPageAction)
             sidebarFoot
                 .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 6))
             
@@ -129,12 +128,15 @@ struct RedisKeysListView: View {
                     RedisInfoView()
                 } else if mainViewType == MainViewTypeEnum.CLIENT_LIST {
                     ClientsListView()
+                } else if mainViewType == MainViewTypeEnum.SLOW_LOG {
+                    SlowLogView()
                 } else {
                     EmptyView()
                 }
             }
             Spacer()
         }
+        .padding(4)
         .onChange(of: selectedRedisKeyIndex, perform: { _ in
             if selectedRedisKeyIndex  != nil {
                 self.mainViewType = MainViewTypeEnum.EDITOR
@@ -194,16 +196,14 @@ struct RedisKeysListView: View {
     }
     
     func onDeleteConfirmAction(_ index:Int) -> Void {
-        globalContext.alertVisible = true
-        globalContext.showSecondButton = true
-        globalContext.primaryButtonText = "Delete"
-        
         let item = redisKeyModels[index].key
-        globalContext.alertTitle = String(format: Helps.DELETE_LIST_ITEM_CONFIRM_TITLE, item)
-        globalContext.alertMessage = String(format:Helps.DELETE_LIST_ITEM_CONFIRM_MESSAGE, item)
-        globalContext.primaryAction = {
-            deleteKey(index)
-        }
+        
+        globalContext.confirm(String(format: Helps.DELETE_LIST_ITEM_CONFIRM_TITLE, item)
+                              , alertMessage: String(format:Helps.DELETE_LIST_ITEM_CONFIRM_MESSAGE, item)
+                              , primaryAction: {
+                                deleteKey(index)
+                              }
+                              , primaryButton: "Delete")
     }
     
     func deleteKey(_ index:Int) -> Void {
@@ -219,29 +219,18 @@ struct RedisKeysListView: View {
     }
     
     func onRedisInfoAction() -> Void {
-        //        let _ = redisInstanceModel.getClient().info()
-        //        let window = NSWindow(
-        //            contentRect: NSRect(x: 0, y: 0, width: 800, height: 600),
-        //            styleMask: [.titled, .closable, .resizable],
-        //               backing: .buffered,
-        //               defer: false
-        //        )
-        //        window.center()
-        //        window.setFrameAutosaveName("Redis Info")
-        //        window.title = "Redis Info"
-        //        window.toolbarStyle = .unifiedCompact
-        //        window.isReleasedWhenClosed = true
-        //        window.contentView = NSHostingView(rootView: RedisInfoView(redisInstanceModel: redisInstanceModel).frame(minWidth: 500, minHeight: 600))
-        //        window.makeKeyAndOrderFront(nil)
-        
         self.selectedRedisKeyIndex = nil
-        self.redisInfoVisible = true
         self.mainViewType = MainViewTypeEnum.REDIS_INFO
     }
     
     func onShowClientsAction() -> Void {
         self.selectedRedisKeyIndex = nil
         self.mainViewType = MainViewTypeEnum.CLIENT_LIST
+    }
+    
+    func onShowSlowLogAction() -> Void {
+        self.selectedRedisKeyIndex = nil
+        self.mainViewType = MainViewTypeEnum.SLOW_LOG
     }
     
     func onFlushDBAction() -> Void {
@@ -264,14 +253,11 @@ struct RedisKeysListView: View {
         
         let _ = promise.done({ keysPage in
             self.redisKeyModels = keysPage
-        })
-    }
-    
-    func toRedisKeyRows(redisKeyModels:[RedisKeyModel]) -> Void {
-        self.redisKeyTableRows.removeAll()
-        
-        redisKeyModels.enumerated().forEach({ (index, item) in
-            self.redisKeyTableRows.append(RedisKeyTableRow(no: index + 1, type: item.type, key: item.key))
+            
+            // 如果有key 默认选中第一个
+            if keysPage.count > 0 {
+                self.selectedRedisKeyIndex = 0
+            }
         })
     }
 }

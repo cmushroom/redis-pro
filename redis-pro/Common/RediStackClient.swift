@@ -113,26 +113,33 @@ class RediStackClient{
     }
     
     // zset operator
-    func pageZSet(_ redisKeyModel:RedisKeyModel, page:ScanModel) -> Promise<[(String, Double)?]> {
+    func pageZSet(_ redisKeyModel:RedisKeyModel, page:ScanModel) -> Promise<[RedisZSetItemModel]> {
         if redisKeyModel.isNew {
-            return Promise<[(String, Double)?]>.value([(String, Double)?]())
+            return Promise<[RedisZSetItemModel]>.value([RedisZSetItemModel]())
         }
         return pageZSet(redisKeyModel.key, page: page)
     }
     
-    func pageZSet(_ key:String, page:ScanModel) -> Promise<[(String, Double)?]> {
+    func pageZSet(_ key:String, page:ScanModel) -> Promise<[RedisZSetItemModel]> {
         logger.info("redis zset scan page, key: \(key), page: \(page)")
         
         self.globalContext?.loading = true
         let match = page.keywords.isEmpty ? nil : page.keywords
         
-        var set:[(String, Double)?] = [(String, Double)?]()
+        var set:[RedisZSetItemModel] = [RedisZSetItemModel]()
         var cursor:Int = page.cursor
         
         let scanPromise = zscanAsync(key, cursor: cursor, keywords: match).then({ res in
-            Promise<[(String, Double)?]>{ resolver in
+            Promise<[RedisZSetItemModel]>{ resolver in
                 cursor = res.0
-                set = res.1
+                let zset = res.1
+                
+                if zset.count > 0 {
+                    zset.forEach({ ele in
+                        let item = ele == nil ? RedisZSetItemModel() : RedisZSetItemModel(value: ele!.0, score: "\(ele!.1)")
+                        set.append(item)
+                    })
+                }
                 
                 // 如果取出数量不够 page.size, 继续迭带补满
                 if cursor != 0 && set.count < page.size {
@@ -140,7 +147,15 @@ class RediStackClient{
                         let moreRes:(Int, [(String, Double)?]) = try self.zscan(key, cursor:cursor, count: 1, keywords: match)
                         
                         self.logger.info("zset scan more to fill page, res: \(moreRes)")
-                        set.append(contentsOf: moreRes.1)
+                        let moreZSet = res.1
+                        
+                        if moreZSet.count > 0 {
+                            moreZSet.forEach({ ele in
+                                let item = ele == nil ? RedisZSetItemModel() : RedisZSetItemModel(value: ele!.0, score: "\(ele!.1)")
+                                set.append(item)
+                            })
+                        }
+                        
                         cursor = moreRes.0
                         page.cursor = cursor
                         if cursor == 0 || set.count == page.size {
@@ -173,7 +188,7 @@ class RediStackClient{
         
         
         
-        let promise = Promise<[(String, Double)?]> { resolver in
+        let promise = Promise<[RedisZSetItemModel]> { resolver in
             let _ = when(fulfilled: countPromise,  scanPromise).done({ r1, r2 in
                 let total = r1
                 page.total = total
@@ -625,53 +640,64 @@ class RediStackClient{
     
     // hash operator
     
-    func pageHash(_ redisKeyModel:RedisKeyModel, page:ScanModel) -> Promise<[String:String?]> {
+    func pageHash(_ redisKeyModel:RedisKeyModel, page:ScanModel) -> Promise<[RedisHashEntryModel]> {
         if redisKeyModel.isNew {
-            return Promise<[String:String?]>.value([String:String?]())
+            return Promise<[RedisHashEntryModel]>.value([RedisHashEntryModel]())
         }
         
         return pageHash(redisKeyModel.key, page: page)
     }
     
-    func pageHash(_ key:String, page:ScanModel) -> Promise<[String:String?]> {
+    func pageHash(_ key:String, page:ScanModel) -> Promise<[RedisHashEntryModel]> {
         logger.info("redis hash field page scan, key: \(key), page: \(page)")
         
         self.globalContext?.loading = true
         
         let match = page.keywords.isEmpty ? nil : page.keywords
         
-        var entries:[String:String?] = [String:String?]()
+        var hashEntryModels = [RedisHashEntryModel]()
+        
         var cursor:Int = page.cursor
         
         let scanPromise = hscanAsync(key, cursor: cursor, count: page.size, keywords: match).then({res in
             
-            Promise<[String:String?]>{ resolver in
+            Promise<[RedisHashEntryModel]>{ resolver in
                 cursor = res.0
-                entries = res.1
+                let dic:[String:String?] = res.1
+                if !dic.isEmpty {
+                    dic.keys.forEach({key in
+                        let value:String? = dic[key] ?? ""
+                        hashEntryModels.append(RedisHashEntryModel(field: key, value: value))
+                    })
+                }
                 
                 // 如果取出数量不够 page.size, 继续迭带补满
-                if cursor != 0 && entries.count < page.size {
+                if cursor != 0 && hashEntryModels.count < page.size {
                     while true {
                         let moreRes:(cursor:Int, [String:String?]) = try self.hscan(key, cursor:cursor, count: 1, keywords: match)
-                        
-                        entries = entries.merging(moreRes.1) { (first, _) -> String? in
-                            first
+                       
+                        let moreDic:[String:String?] = moreRes.1
+                        if !moreDic.isEmpty {
+                            moreDic.keys.forEach({key in
+                                let value:String? = moreDic[key] ?? ""
+                                hashEntryModels.append(RedisHashEntryModel(field: key, value: value))
+                            })
                         }
                         
                         cursor = moreRes.0
                         page.cursor = cursor
-                        if cursor == 0 || entries.count == page.size {
-                            resolver.fulfill(entries)
+                        if cursor == 0 || hashEntryModels.count == page.size {
+                            resolver.fulfill(hashEntryModels)
                             break
                         }
                     }
                 } else {
-                    resolver.fulfill(entries)
+                    resolver.fulfill(hashEntryModels)
                 }
             }
         })
         
-        let promise = Promise<[String:String?]> { resolver in
+        let promise = Promise<[RedisHashEntryModel]> { resolver in
             let _ = when(fulfilled: self.hlen(key),  scanPromise).done({ r1, r2 in
                 let total = r1
                 page.total = total
@@ -1346,5 +1372,139 @@ class RediStackClient{
             .finally {
                 self.globalContext?.loading = false
             }
+    }
+}
+
+
+// config
+extension RediStackClient {
+    func getConfigOne(key:String) -> Promise<String?> {
+        logger.info("get redis config ...")
+        
+        let promise =
+            getConnectionAsync().then({ connection in
+                Promise<String?> { resolver in
+                    connection.send(command: "CONFIG", with: [RESPValue(from: "GET"), RESPValue(from: key)])
+                        .whenComplete({completion in
+                            if case .success(let res) = completion {
+                                self.logger.info("get slow log slower than res: \(res)")
+                                resolver.fulfill(res.array?[1].string)
+                            }
+                            else if case .failure(let error) = completion {
+                                resolver.reject(error)
+                            }
+                        })
+                }
+            })
+        
+        return promise
+    }
+    
+    
+    func setConfig(key:String, value:String) -> Promise<Bool> {
+        logger.info("set redis config, key: \(key), value: \(value)")
+        
+        let promise =
+            getConnectionAsync().then({ connection in
+                Promise<Bool> { resolver in
+                    connection.send(command: "CONFIG", with: [RESPValue(from: "SET"), RESPValue(from: key), RESPValue(from: value)])
+                        .whenComplete({completion in
+                            if case .success(let res) = completion {
+                                self.logger.info("set config res: \(res)")
+                                resolver.fulfill(res.string == "OK")
+                            }
+                            else if case .failure(let error) = completion {
+                                resolver.reject(error)
+                            }
+                        })
+                }
+            })
+        
+        return promise
+    }
+    
+}
+
+
+// slow log
+extension RediStackClient {
+    func slowLogReset() -> Promise<Bool> {
+        logger.info("slow log reset ...")
+        let promise =
+            getConnectionAsync().then({ connection in
+                Promise<Bool> { resolver in
+                    connection.send(command: "SLOWLOG", with: [RESPValue(from: "RESET")])
+                        .whenComplete({completion in
+                            if case .success(let res) = completion {
+                                self.logger.info("slow log reset res: \(res)")
+                                resolver.fulfill(res.string == "OK")
+                            }
+                            else if case .failure(let error) = completion {
+                                resolver.reject(error)
+                            }
+                        })
+                }
+            })
+        
+        return promise
+    }
+    
+    func slowLogLen() -> Promise<Int> {
+        logger.info("get slow log len ...")
+        let promise =
+            getConnectionAsync().then({ connection in
+                Promise<Int> { resolver in
+                    connection.send(command: "SLOWLOG", with: [RESPValue(from: "LEN")])
+                        .whenComplete({completion in
+                            if case .success(let res) = completion {
+                                self.logger.info("get slow log len res: \(res)")
+                                resolver.fulfill(res.int ?? 0)
+                            }
+                            else if case .failure(let error) = completion {
+                                resolver.reject(error)
+                            }
+                        })
+                }
+            })
+        
+        return promise
+    }
+    
+    func getSlowLog(_ size:Int) -> Promise<[SlowLogModel]> {
+        logger.info("get slow log list ...")
+        
+        self.globalContext?.loading = true
+        
+        let promise =
+            getConnectionAsync().then({ connection in
+                Promise<[SlowLogModel]> { resolver in
+                    connection.send(command: "SLOWLOG", with: [RESPValue(from: "GET"), RESPValue(from: size)])
+                        .whenComplete({completion in
+                            // line [110,1626313174,1,[type,NEW_KEY_1626251400704],127.0.0.1:56306,]
+                            if case .success(let res) = completion {
+                                self.logger.info("get slow log res: \(res)")
+                                
+                                var slowLogs = [SlowLogModel]()
+                                res.array?.forEach({ item in
+                                    let itemArray = item.array
+
+                                    let cmd = itemArray?[3].array!.map({
+                                        $0.string ?? MTheme.NULL_STRING
+                                    }).joined(separator: " ")
+                                    
+                                    slowLogs.append(SlowLogModel(id: itemArray?[0].string, timestamp: itemArray?[1].int, execTime: itemArray?[2].string, cmd: cmd, client: itemArray?[4].string, clientName: itemArray?[5].string))
+                                })
+                                
+                                resolver.fulfill(slowLogs)
+                            }
+                            else if case .failure(let error) = completion {
+                                resolver.reject(error)
+                            }
+                        })
+                }
+            })
+       
+        afterPromise(promise)
+        return promise
     }
 }

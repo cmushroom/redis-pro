@@ -26,17 +26,14 @@ struct IconButton: View {
     var body: some View {
     
         Button(action: doAction) {
-    
-//            Label(name, systemImage: icon)
-//                .labelStyle(<#T##style: LabelStyle##LabelStyle#>)
-//                .font(.body)
-//                .padding(0)
-            HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 2) {
+            HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 1) {
                 Image(systemName: icon)
-                    .font(.system(size: 12.0))
+                    .font(.system(size: MTheme.FONT_SIZE_BUTTON_ICON))
                     .padding(0)
                 Text(name)
+                    .font(.system(size: MTheme.FONT_SIZE_BUTTON))
             }
+            .padding(.horizontal, 4.0)
             .foregroundColor(colorScheme == .dark ? Color.white.opacity(disabled ? 0.4 : 0.9) : nil)
         }
         .buttonStyle(BorderedButtonStyle())
@@ -57,14 +54,7 @@ struct IconButton: View {
             if !isConfirm {
                 try action()
             } else {
-                globalContext.alertVisible = true
-                globalContext.showSecondButton = true
-                globalContext.alertTitle = confirmTitle ?? ""
-                globalContext.alertMessage = confirmMessage ?? ""
-                globalContext.primaryAction = action
-                if confirmPrimaryButtonText != nil {
-                    globalContext.primaryButtonText = confirmPrimaryButtonText!
-                }
+                globalContext.confirm(confirmTitle ?? "", alertMessage: confirmMessage ?? "", primaryAction: action, primaryButton: confirmPrimaryButtonText ?? globalContext.primaryButtonText)
             }
         } catch {
             globalContext.showError(error)

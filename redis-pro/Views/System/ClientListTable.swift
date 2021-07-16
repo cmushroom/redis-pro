@@ -29,16 +29,11 @@ struct ClientListTable: NSViewControllerRepresentable {
     
     
     func updateNSViewController(_ nsViewController: NSViewController, context: Context) {
-//        logger.info("client list table updateNSViewController, selectRowIndex: \(selectRowIndex)")
             
         guard let controller = nsViewController as? ClientListTableController else {return}
         controller.setDatasource(datasource)
         controller.tableView?.delegate = context.coordinator
         
-//        guard selectRowIndex >= 0 else {
-//            controller.arrayController.removeSelectionIndexes([0])
-//            return
-//        }
         controller.arrayController.setSelectionIndex(selectRowIndex ?? -1)
 //        controller.tableView.scrollRowToVisible(selectRowIndex)
     }

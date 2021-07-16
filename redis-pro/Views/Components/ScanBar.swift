@@ -38,7 +38,7 @@ struct ScanBar: View {
                 scanModel.resetHead()
                 doAction()
             })
-            .font(.footnote)
+            .font(.system(size: 8))
             .frame(width: 65)
             
             HStack(alignment:.center) {

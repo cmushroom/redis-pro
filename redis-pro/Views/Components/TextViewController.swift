@@ -21,9 +21,7 @@ class TextViewController: NSViewController {
             guard selectedRanges.count > 0 else {
                 return
             }
-            
             textView.selectedRanges = selectedRanges
-            //            textView.setSelectedRange(selectedRanges, affinity: .downstream, stillSelecting: true)
         }
     }
     
@@ -36,7 +34,6 @@ class TextViewController: NSViewController {
     func setText(_ text:String) -> Void {
         self.text = text
     }
-    
 }
 
 
@@ -59,12 +56,9 @@ struct MTextView: NSViewControllerRepresentable {
     
     func updateNSViewController(_ nsViewController: NSViewController, context: Context) {
         guard let controller = nsViewController as? TextViewController else {return}
-        
         controller.textView?.delegate = context.coordinator
-        DispatchQueue.main.async {
-            controller.setText(text)
-            controller.selectedRanges = context.coordinator.selectedRanges
-        }
+        controller.setText(text)
+        controller.selectedRanges = context.coordinator.selectedRanges
     }
     
     class Coordinator: NSObject, NSTextViewDelegate {

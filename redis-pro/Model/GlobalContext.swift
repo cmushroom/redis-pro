@@ -18,12 +18,11 @@ class GlobalContext:ObservableObject, CustomStringConvertible {
     var primaryAction:() throws -> Void = {}
     
     @Published var loading:Bool = false
-    @Published var versionUpgrade:Int = 0
 
     
     func showError(_ error:Error) -> Void {
         self.alertVisible = true
-        self.alertTitle = "JSON Format Error!"
+        self.alertTitle = "Error!"
         self.primaryButtonText = "Ok"
         self.secondButtonText = "Cancel"
         
@@ -36,15 +35,22 @@ class GlobalContext:ObservableObject, CustomStringConvertible {
         }
     }
     
-    func showAlert(_ alertTitle:String, alertMessage:String = "", primaryAction: @escaping () throws -> Void = {}, primaryButtonText:String = "Ok", showSecondButton:Bool = false) -> Void {
+    func showAlert(_ alertTitle:String, alertMessage:String = "", primaryAction: @escaping () throws -> Void = {}, primaryButtonText:String = "Ok") -> Void {
         self.alertVisible = true
         self.alertTitle = alertTitle
         self.alertMessage = alertMessage
         self.primaryAction = primaryAction
         self.primaryButtonText = primaryButtonText
-        self.showSecondButton = showSecondButton
     }
-
+    
+    func confirm(_ alertTitle:String, alertMessage:String = "", primaryAction: @escaping () throws -> Void = {}, primaryButton:String = "Ok") -> Void {
+        self.alertVisible = true
+        self.alertTitle = alertTitle
+        self.alertMessage = alertMessage
+        self.primaryAction = primaryAction
+        self.primaryButtonText = primaryButton
+        self.showSecondButton = true
+    }
     
     var description: String {
         return "GlobalContext:[alertVisible:\(alertVisible), loading:\(loading), showSecondButton: \(showSecondButton), primaryButtonText:\(primaryButtonText)]"

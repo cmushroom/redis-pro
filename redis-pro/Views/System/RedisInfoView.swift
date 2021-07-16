@@ -83,7 +83,7 @@ struct RedisInfoView: View {
             }
             Spacer()
         }
-        .padding(EdgeInsets(top: 10, leading: 8, bottom: 10, trailing: 8))
+//        .padding(EdgeInsets(top: 10, leading: 8, bottom: 10, trailing: 8))
         .onAppear {
             getInfo()
         }

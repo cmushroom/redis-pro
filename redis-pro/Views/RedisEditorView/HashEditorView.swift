@@ -10,12 +10,7 @@ import Logging
 import PromiseKit
 
 struct HashEditorView: View {
-    @State var text:String = ""
-    @State var hashMap:[String: String?] = ["":""]
-    @State private var selectField:String?
-    @State private var isEditing:Bool = false
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
-    @EnvironmentObject var globalContext:GlobalContext
     @ObservedObject var redisKeyModel:RedisKeyModel
     @StateObject private var page:ScanModel = ScanModel()
     
@@ -27,9 +22,12 @@ struct HashEditorView: View {
     @State private var editField:String = ""
     @State private var editValue:String = ""
     
+    private var selectField:String {
+        selectIndex == nil ? "" : (datasource[selectIndex!] as! RedisHashEntryModel).field
+    }
     
     var delButtonDisabled:Bool {
-        selectField == nil
+        selectIndex == nil
     }
     
     let logger = Logger(label: "redis-hash-editor")
@@ -39,10 +37,6 @@ struct HashEditorView: View {
             HStack(alignment: .center , spacing: 4) {
                 IconButton(icon: "plus", name: "Add", action: onAddFieldAction)
                 IconButton(icon: "trash", name: "Delete", disabled:delButtonDisabled,
-                           isConfirm: true,
-                           confirmTitle: String(format: Helps.DELETE_HASH_FIELD_CONFIRM_TITLE, selectField ?? ""),
-                           confirmMessage: String(format:Helps.DELETE_HASH_FIELD_CONFIRM_MESSAGE, selectField ?? ""),
-                           confirmPrimaryButtonText: "Delete",
                            action: onDeleteAction)
                 
                 SearchBar(keywords: $page.keywords, placeholder: "Search field...", action: onQueryField)
@@ -54,10 +48,10 @@ struct HashEditorView: View {
             
             HashEntryTable(datasource: $datasource, selectRowIndex: $selectIndex
                            , deleteAction: { index in
-                            onDeleteIndexAction(index: index)
+                            onDeleteIndexAction(index)
                            }
                            , editAction: { index in
-                            onEditIndexAction(index:index)
+                            onEditIndexAction(index)
                            })
             
             // footer
@@ -95,7 +89,7 @@ struct HashEditorView: View {
         }
     }
     
-    func onEditIndexAction(index:Int) -> Void {
+    func onEditIndexAction(_ index:Int) -> Void {
         let entry:RedisHashEntryModel = self.datasource[index] as! RedisHashEntryModel
         let field = entry.field
         
@@ -105,16 +99,14 @@ struct HashEditorView: View {
         editModalVisible = true
     }
     
-    func onDeleteIndexAction(index:Int) -> Void {
+    func onDeleteIndexAction(_ index:Int) -> Void {
         let entry:RedisHashEntryModel = self.datasource[index] as! RedisHashEntryModel
         let field = entry.field
-        
-        globalContext.confirm(String(format: Helps.DELETE_HASH_FIELD_CONFIRM_TITLE, field), alertMessage: String(format:Helps.DELETE_HASH_FIELD_CONFIRM_MESSAGE, field), primaryAction: {
+        MAlert.confirm(String(format: Helps.DELETE_HASH_FIELD_CONFIRM_TITLE, field), message: String(format:Helps.DELETE_HASH_FIELD_CONFIRM_MESSAGE, field), primaryButton: "Delete", primaryAction: {
             let _ = deleteField(field).done({_ in
                 self.datasource.remove(at: index)
             })
-        }, primaryButton: "Delete")
-        
+        })
     }
 
     func onSaveFieldAction() throws -> Void {
@@ -139,7 +131,7 @@ struct HashEditorView: View {
     }
     
     func onDeleteAction() throws -> Void {
-        try deleteField(selectField!)
+        onDeleteIndexAction(selectIndex!)
     }
     func onQueryField() throws -> Void {
         page.resetHead()
@@ -167,8 +159,8 @@ struct HashEditorView: View {
     
     func queryHashPage(_ redisKeyModel:RedisKeyModel) -> Void {
         let _ = redisInstanceModel.getClient().pageHash(redisKeyModel, page: page).done({res in
-            //            self.hashMap = res
             self.datasource = res
+            self.selectIndex = res.count > 0 ? 0 : nil
         })
     }
     

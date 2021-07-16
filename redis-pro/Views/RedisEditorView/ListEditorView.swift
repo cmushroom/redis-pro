@@ -58,45 +58,7 @@ struct ListEditorView: View {
                       }, editAction: { index in
                         onEditAction(index)
                       })
-            
-//            List(selection: $selectIndex) {
-//                ForEach(0..<list.count, id: \.self) { index in
-//                    HStack {
-//                        Text(list[index] ?? "")
-//                            .font(.body)
-//                            .multilineTextAlignment(.leading)
-//                            .frame(alignment: .leading)
-//                        Spacer()
-//                    }
-//                    .contextMenu {
-//                        Button(action: {
-//                            editModalVisible = true
-//                            editNewField = false
-//                            editIndex = index
-//                            editValue = list[index] ?? ""
-//                        }){
-//                            Text("Edit")
-//                        }
-//                        Button(action: {
-//                            onDeleteConfirmAction(index)
-//                        }){
-//                            Text("Delete")
-//                        }
-//                    }
-//                    .padding(EdgeInsets(top: 4, leading: 2, bottom: 4, trailing: 2))
-//                    .overlay(
-//                        Rectangle()
-//                            .frame(height: 1)
-//                            .foregroundColor(Color.gray.opacity(0.1)),
-//                        alignment: .bottom
-//                    )
-//                    .listRowInsets(EdgeInsets())
-//                }
-//
-//            }
-//            .listStyle(PlainListStyle())
-//            .padding(.all, 0)
-            
+
             // footer
             HStack(alignment: .center, spacing: 4) {
                 Spacer()
@@ -128,13 +90,13 @@ struct ListEditorView: View {
     func onEditAction(_ index:Int) -> Void {
         editNewField = false
         editIndex = index
-        editValue = list[index] ?? ""
+        editValue = list[index]
         
         editModalVisible = true
     }
     
     func onDeleteConfirmAction(_ index:Int) -> Void {
-        let item = list[index] ?? "''"
+        let item = list[index]
         
         globalContext.confirm(String(format: Helps.DELETE_LIST_ITEM_CONFIRM_TITLE, item), alertMessage: String(format:Helps.DELETE_LIST_ITEM_CONFIRM_MESSAGE, item)
                               , primaryAction: {
@@ -214,6 +176,7 @@ struct ListEditorView: View {
         
         let _ = redisInstanceModel.getClient().pageList(redisKeyModel, page: page).done({res in
             self.list = res.map{ $0 ?? ""}
+            self.selectIndex = res.count > 0 ? 0 : nil
         })
         
     }

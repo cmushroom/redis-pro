@@ -21,8 +21,8 @@
                 <rect key="frame" x="1" y="1" width="598" height="278"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
-                    <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" tableStyle="fullWidth" alternatingRowBackgroundColors="YES" columnReordering="NO" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="14" rowSizeStyle="automatic" headerView="vbc-nN-53z" viewBased="YES" id="aUb-GO-htw">
-                        <rect key="frame" x="0.0" y="0.0" width="598" height="250"/>
+                    <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" tableStyle="fullWidth" alternatingRowBackgroundColors="YES" columnReordering="NO" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="14" rowSizeStyle="automatic" viewBased="YES" id="aUb-GO-htw">
+                        <rect key="frame" x="0.0" y="0.0" width="598" height="278"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <size key="intercellSpacing" width="10" height="12"/>
                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -78,14 +78,10 @@
                 <rect key="frame" x="1" y="263" width="598" height="16"/>
                 <autoresizingMask key="autoresizingMask"/>
             </scroller>
-            <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="uWt-E7-eKm">
+            <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="uWt-E7-eKm">
                 <rect key="frame" x="224" y="17" width="15" height="102"/>
                 <autoresizingMask key="autoresizingMask"/>
             </scroller>
-            <tableHeaderView key="headerView" wantsLayer="YES" id="vbc-nN-53z">
-                <rect key="frame" x="0.0" y="0.0" width="598" height="28"/>
-                <autoresizingMask key="autoresizingMask"/>
-            </tableHeaderView>
             <point key="canvasLocation" x="86" y="133"/>
         </scrollView>
         <arrayController id="hoM-hG-8nC">

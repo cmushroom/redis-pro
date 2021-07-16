@@ -10,7 +10,7 @@ import Logging
 
 struct ListEditorView: View {
     @State var text:String = ""
-    @State var list:[String?] = [String?]()
+    @State var list:[String] = [String]()
     @State private var selectIndex:Int?
     @State private var isEditing:Bool = false
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
@@ -23,6 +23,7 @@ struct ListEditorView: View {
     @State private var editIndex:Int = 0
     @State private var editValue:String = ""
     
+    @State private var datasource:[Any] = ["1", "2"]
     
     var delButtonDisabled:Bool {
         selectIndex == nil
@@ -51,43 +52,50 @@ struct ListEditorView: View {
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
             
-            List(selection: $selectIndex) {
-                ForEach(0..<list.count, id: \.self) { index in
-                    HStack {
-                        Text(list[index] ?? "")
-                            .font(.body)
-                            .multilineTextAlignment(.leading)
-                            .frame(alignment: .leading)
-                        Spacer()
-                    }
-                    .contextMenu {
-                        Button(action: {
-                            editModalVisible = true
-                            editNewField = false
-                            editIndex = index
-                            editValue = list[index] ?? ""
-                        }){
-                            Text("Edit")
-                        }
-                        Button(action: {
-                            onDeleteConfirmAction(index)
-                        }){
-                            Text("Delete")
-                        }
-                    }
-                    .padding(EdgeInsets(top: 4, leading: 2, bottom: 4, trailing: 2))
-                    .overlay(
-                        Rectangle()
-                            .frame(height: 1)
-                            .foregroundColor(Color.gray.opacity(0.1)),
-                        alignment: .bottom
-                    )
-                    .listRowInsets(EdgeInsets())
-                }
-                
-            }
-            .listStyle(PlainListStyle())
-            .padding(.all, 0)
+            ListTable(datasource: $list, selectRowIndex: $selectIndex
+                      , deleteAction: { index in
+                        onDeleteConfirmAction(index)
+                      }, editAction: { index in
+                        onEditAction(index)
+                      })
+            
+//            List(selection: $selectIndex) {
+//                ForEach(0..<list.count, id: \.self) { index in
+//                    HStack {
+//                        Text(list[index] ?? "")
+//                            .font(.body)
+//                            .multilineTextAlignment(.leading)
+//                            .frame(alignment: .leading)
+//                        Spacer()
+//                    }
+//                    .contextMenu {
+//                        Button(action: {
+//                            editModalVisible = true
+//                            editNewField = false
+//                            editIndex = index
+//                            editValue = list[index] ?? ""
+//                        }){
+//                            Text("Edit")
+//                        }
+//                        Button(action: {
+//                            onDeleteConfirmAction(index)
+//                        }){
+//                            Text("Delete")
+//                        }
+//                    }
+//                    .padding(EdgeInsets(top: 4, leading: 2, bottom: 4, trailing: 2))
+//                    .overlay(
+//                        Rectangle()
+//                            .frame(height: 1)
+//                            .foregroundColor(Color.gray.opacity(0.1)),
+//                        alignment: .bottom
+//                    )
+//                    .listRowInsets(EdgeInsets())
+//                }
+//
+//            }
+//            .listStyle(PlainListStyle())
+//            .padding(.all, 0)
             
             // footer
             HStack(alignment: .center, spacing: 4) {
@@ -117,6 +125,13 @@ struct ListEditorView: View {
         }
     }
     
+    func onEditAction(_ index:Int) -> Void {
+        editNewField = false
+        editIndex = index
+        editValue = list[index] ?? ""
+        
+        editModalVisible = true
+    }
     
     func onDeleteConfirmAction(_ index:Int) -> Void {
         let item = list[index] ?? "''"
@@ -198,7 +213,7 @@ struct ListEditorView: View {
     func queryPage(_ redisKeyModel:RedisKeyModel) throws -> Void {
         
         let _ = redisInstanceModel.getClient().pageList(redisKeyModel, page: page).done({res in
-            self.list = res
+            self.list = res.map{ $0 ?? ""}
         })
         
     }

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Logging
+import PromiseKit
 
 struct HashEditorView: View {
     @State var text:String = ""
@@ -17,6 +18,9 @@ struct HashEditorView: View {
     @EnvironmentObject var globalContext:GlobalContext
     @ObservedObject var redisKeyModel:RedisKeyModel
     @StateObject private var page:ScanModel = ScanModel()
+    
+    @State private var datasource:[Any] = [RedisHashEntryModel]()
+    @State private var selectIndex:Int?
     
     @State private var editModalVisible:Bool = false
     @State private var editNewField:Bool = false
@@ -48,67 +52,13 @@ struct HashEditorView: View {
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
             
-            GeometryReader { geometry in
-                let width0 = geometry.size.width/2
-                let width1 = width0
-                
-                List(selection: $selectField) {
-                    Section(header: HStack {
-                        Text("Field")
-                            .frame(width: width0, alignment: .leading)
-                        Text("Value")
-                            .frame(width: width1, alignment: .leading)
-                            .padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 0))
-                            .border(width:1, edges: [.leading], color: Color.gray)
-                    }) {
-                        
-                        ForEach(hashMap.sorted(by: {$0.0 < $1.0}), id: \.key) { key, value in
-                            HStack {
-                                Text(key)
-                                    .onTapGesture(count:2) { //<- Needed to be first!
-                                        print("doubletap")
-                                    }.onTapGesture(count:1) {
-                                        self.selectField = key
-                                    }
-                                    .font(.body)
-                                    .frame(width: width0, alignment: .leading)
-                                
-                                Text(value ?? "")
-                                    .font(.body)
-                                    .multilineTextAlignment(.leading)
-                                    .frame(width: width1, alignment: .leading)
-                            }
-                            .contextMenu {
-                                Button(action: {
-                                    editModalVisible = true
-                                    editNewField = false
-                                    editField = key
-                                    editValue = value ?? ""
-                                }){
-                                    Text("Edit")
-                                }
-                                Button(action: {
-                                    onDeleteConfirmAction(field: key)
-                                }){
-                                    Text("Delete")
-                                }
-                            }
-                            .padding(EdgeInsets(top: 4, leading: 2, bottom: 4, trailing: 2))
-                            .overlay(
-                                Rectangle()
-                                    .frame(height: 1)
-                                    .foregroundColor(Color.gray.opacity(0.1)),
-                                alignment: .bottom
-                            )
-                            .listRowInsets(EdgeInsets())
-                        }
-                    }
-                    .collapsible(false)
-                    
-                }
-                .listStyle(PlainListStyle())
-                .padding(.all, 0)
-            }
+            HashEntryTable(datasource: $datasource, selectRowIndex: $selectIndex
+                           , deleteAction: { index in
+                            onDeleteIndexAction(index: index)
+                           }
+                           , editAction: { index in
+                            onEditIndexAction(index:index)
+                           })
             
             // footer
             HStack(alignment: .center, spacing: 4) {
@@ -145,13 +95,28 @@ struct HashEditorView: View {
         }
     }
     
-    func onDeleteConfirmAction(field:String) -> Void {
-        globalContext.confirm(String(format: Helps.DELETE_HASH_FIELD_CONFIRM_TITLE, field), alertMessage: String(format:Helps.DELETE_HASH_FIELD_CONFIRM_MESSAGE, field), primaryAction: {
-            try deleteField(field)
-        }, primaryButton: "Delete")
+    func onEditIndexAction(index:Int) -> Void {
+        let entry:RedisHashEntryModel = self.datasource[index] as! RedisHashEntryModel
+        let field = entry.field
+        
+        editNewField = false
+        editField = field
+        editValue = entry.value
+        editModalVisible = true
     }
     
-    
+    func onDeleteIndexAction(index:Int) -> Void {
+        let entry:RedisHashEntryModel = self.datasource[index] as! RedisHashEntryModel
+        let field = entry.field
+        
+        globalContext.confirm(String(format: Helps.DELETE_HASH_FIELD_CONFIRM_TITLE, field), alertMessage: String(format:Helps.DELETE_HASH_FIELD_CONFIRM_MESSAGE, field), primaryAction: {
+            let _ = deleteField(field).done({_ in
+                self.datasource.remove(at: index)
+            })
+        }, primaryButton: "Delete")
+        
+    }
+
     func onSaveFieldAction() throws -> Void {
         let _ = redisInstanceModel.getClient().hset(redisKeyModel.key, field: editField, value: editValue).done({ _ in
             
@@ -163,8 +128,6 @@ struct HashEditorView: View {
             self.onLoad(redisKeyModel)
             
         })
-        //        hashMap.updateValue(editValue, forKey: editField)
-        
     }
     
     
@@ -204,7 +167,8 @@ struct HashEditorView: View {
     
     func queryHashPage(_ redisKeyModel:RedisKeyModel) -> Void {
         let _ = redisInstanceModel.getClient().pageHash(redisKeyModel, page: page).done({res in
-            self.hashMap = res
+            //            self.hashMap = res
+            self.datasource = res
         })
     }
     
@@ -214,13 +178,9 @@ struct HashEditorView: View {
         })
     }
     
-    func deleteField(_ field:String) throws -> Void {
+    func deleteField(_ field:String) -> Promise<Int> {
         logger.info("delete hash field: \(field)")
-        let _ = redisInstanceModel.getClient().hdel(redisKeyModel.key, field: field).done({r in
-            if r > 0 {
-                self.hashMap.removeValue(forKey: field)
-            }
-        })
+        return redisInstanceModel.getClient().hdel(redisKeyModel.key, field: field)
     }
 }
 

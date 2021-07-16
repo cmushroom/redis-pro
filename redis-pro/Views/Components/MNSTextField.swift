@@ -62,11 +62,11 @@ struct MNSTextField: NSViewRepresentable {
         func control(_ control: NSControl, textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
             if (commandSelector == #selector(NSResponder.insertNewline(_:))) {
                 logger.info("text field on enter action, text: \(textView.string)")
-                do {
+//                do {
 //                    try parent.action()
-                } catch {
-                    MAlert.error(error)
-                }
+//                } catch {
+//                    MAlert.error(error)
+//                }
                 
                 return true
             }

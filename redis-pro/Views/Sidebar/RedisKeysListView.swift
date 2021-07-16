@@ -253,6 +253,11 @@ struct RedisKeysListView: View {
         
         let _ = promise.done({ keysPage in
             self.redisKeyModels = keysPage
+            
+            // 如果有key 默认选中第一个
+            if keysPage.count > 0 {
+                self.selectedRedisKeyIndex = 0
+            }
         })
     }
 }

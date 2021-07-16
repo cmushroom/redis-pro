@@ -625,53 +625,64 @@ class RediStackClient{
     
     // hash operator
     
-    func pageHash(_ redisKeyModel:RedisKeyModel, page:ScanModel) -> Promise<[String:String?]> {
+    func pageHash(_ redisKeyModel:RedisKeyModel, page:ScanModel) -> Promise<[RedisHashEntryModel]> {
         if redisKeyModel.isNew {
-            return Promise<[String:String?]>.value([String:String?]())
+            return Promise<[RedisHashEntryModel]>.value([RedisHashEntryModel]())
         }
         
         return pageHash(redisKeyModel.key, page: page)
     }
     
-    func pageHash(_ key:String, page:ScanModel) -> Promise<[String:String?]> {
+    func pageHash(_ key:String, page:ScanModel) -> Promise<[RedisHashEntryModel]> {
         logger.info("redis hash field page scan, key: \(key), page: \(page)")
         
         self.globalContext?.loading = true
         
         let match = page.keywords.isEmpty ? nil : page.keywords
         
-        var entries:[String:String?] = [String:String?]()
+        var hashEntryModels = [RedisHashEntryModel]()
+        
         var cursor:Int = page.cursor
         
         let scanPromise = hscanAsync(key, cursor: cursor, count: page.size, keywords: match).then({res in
             
-            Promise<[String:String?]>{ resolver in
+            Promise<[RedisHashEntryModel]>{ resolver in
                 cursor = res.0
-                entries = res.1
+                let dic:[String:String?] = res.1
+                if !dic.isEmpty {
+                    dic.keys.forEach({key in
+                        let value:String? = dic[key] ?? ""
+                        hashEntryModels.append(RedisHashEntryModel(field: key, value: value))
+                    })
+                }
                 
                 // 如果取出数量不够 page.size, 继续迭带补满
-                if cursor != 0 && entries.count < page.size {
+                if cursor != 0 && hashEntryModels.count < page.size {
                     while true {
                         let moreRes:(cursor:Int, [String:String?]) = try self.hscan(key, cursor:cursor, count: 1, keywords: match)
-                        
-                        entries = entries.merging(moreRes.1) { (first, _) -> String? in
-                            first
+                       
+                        let moreDic:[String:String?] = moreRes.1
+                        if !moreDic.isEmpty {
+                            moreDic.keys.forEach({key in
+                                let value:String? = moreDic[key] ?? ""
+                                hashEntryModels.append(RedisHashEntryModel(field: key, value: value))
+                            })
                         }
                         
                         cursor = moreRes.0
                         page.cursor = cursor
-                        if cursor == 0 || entries.count == page.size {
-                            resolver.fulfill(entries)
+                        if cursor == 0 || hashEntryModels.count == page.size {
+                            resolver.fulfill(hashEntryModels)
                             break
                         }
                     }
                 } else {
-                    resolver.fulfill(entries)
+                    resolver.fulfill(hashEntryModels)
                 }
             }
         })
         
-        let promise = Promise<[String:String?]> { resolver in
+        let promise = Promise<[RedisHashEntryModel]> { resolver in
             let _ = when(fulfilled: self.hlen(key),  scanPromise).done({ r1, r2 in
                 let total = r1
                 page.total = total

@@ -21,17 +21,11 @@ class RedisKeysTableController: NSViewController {
     
     let logger = Logger(label: "redis-keys-table-controller")
     
-    func setUp(deleteAction: @escaping (_ index:Int) -> Void, renameAction: @escaping (_ index:Int) -> Void) -> Void {
-        self.deleteAction = deleteAction
-        self.renameAction = renameAction
-    }
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         let menu = NSMenu()
-        menu.addItem(NSMenuItem(title: "Rename", action: #selector(tableViewRenameItemClicked(_:)), keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: "Rename", action: #selector(tableViewEditItemClicked(_:)), keyEquivalent: ""))
         menu.addItem(NSMenuItem(title: "Delete", action: #selector(tableViewDeleteItemClicked(_:)), keyEquivalent: ""))
         tableView.menu = menu
         
@@ -41,7 +35,12 @@ class RedisKeysTableController: NSViewController {
         self.datasource = datasource
     }
     
-    @objc private func tableViewRenameItemClicked(_ sender: AnyObject) {
+    func setUp(deleteAction: @escaping (_ index:Int) -> Void, renameAction: @escaping (_ index:Int) -> Void) -> Void {
+        self.deleteAction = deleteAction
+        self.renameAction = renameAction
+    }
+    
+    @objc private func tableViewEditItemClicked(_ sender: AnyObject) {
         logger.info("context menu rename index: \(tableView.clickedRow)")
         self.renameAction(tableView.clickedRow)
 //        guard tableView.clickedRow >= 0 else { return }

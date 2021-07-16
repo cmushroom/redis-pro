@@ -22,8 +22,8 @@ class MAlert {
     
     static func confirm(_ title:String, message:String = "", primaryButton:String = "Ok", secondButton:String = "Cancel", primaryAction: @escaping () -> Void = {}, secondAction: @escaping () -> Void = {}, style:NSAlert.Style = NSAlert.Style.warning) -> Void {
         
-        confirmAlert.messageText = title
-        confirmAlert.informativeText = message
+        confirmAlert.messageText = StringHelper.ellipses(title, len: 100)
+        confirmAlert.informativeText = StringHelper.ellipses(message, len: 200)
         
         confirmAlert.buttons[0].title = primaryButton
         confirmAlert.buttons[1].title = secondButton
@@ -71,7 +71,7 @@ class MAlert {
         show("Error!", message: alertMessage, primaryButton: defaultPrimaryButton, style: NSAlert.Style.warning)
     }
     
-    static func initConfirmAlert() -> NSAlert {
+    private static func initConfirmAlert() -> NSAlert {
         let alert = NSAlert()
         
         alert.addButton(withTitle: defaultPrimaryButton)
@@ -81,7 +81,7 @@ class MAlert {
     }
     
     
-    static func initAlert() -> NSAlert {
+    private static func initAlert() -> NSAlert {
         let alert = NSAlert()
         
         alert.addButton(withTitle: defaultPrimaryButton)

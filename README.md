@@ -26,7 +26,7 @@
 ## 功能计划(暂定)
 - [x] client list and kill 
 - [x] homebrew install
-- [ ] slow log
+- [x] slow log
 - [ ] redis config 修改
 - [ ] ssh 登录
 - [ ] ipad os 支持

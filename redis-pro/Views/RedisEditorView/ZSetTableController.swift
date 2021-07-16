@@ -1,20 +1,22 @@
 //
-//  HashEntryTableController.swift
+//  ZSetTableController.swift
 //  redis-pro
 //
 //  Created by chengpanwang on 2021/7/16.
 //
+
 import Foundation
 import Cocoa
 import Logging
 import SwiftUI
 
-class HashEntryTableController: NSViewController {
+class ZSetTableController: NSViewController {
     let logger = Logger(label: "hash-entry-table-controller")
     
     @IBOutlet weak var tableView: NSTableView!
     @IBOutlet var arrayController: NSArrayController!
-    @objc dynamic var datasource: [Any] = []
+    
+    @objc dynamic var datasource: [RedisZSetItemModel] = []
     
     var deleteAction: (_ index:Int) -> Void = {_ in }
     var editAction: (_ index:Int) -> Void = {_ in }
@@ -26,7 +28,7 @@ class HashEntryTableController: NSViewController {
         tableView.menu = menu
     }
         
-    func setDatasource(_ datasource:[Any]) -> Void {
+    func setDatasource(_ datasource:[RedisZSetItemModel]) -> Void {
         self.datasource = datasource
     }
     
@@ -45,10 +47,13 @@ class HashEntryTableController: NSViewController {
         logger.info("context menu delete index: \(tableView.clickedRow)")
         self.deleteAction(tableView.clickedRow)
     }
+    
 }
 
-struct HashEntryTable: NSViewControllerRepresentable {
-    @Binding var datasource: [Any]
+
+
+struct ZSetTable: NSViewControllerRepresentable {
+    @Binding var datasource: [RedisZSetItemModel]
     @Binding var selectRowIndex:Int?
     var refresh:Int = 0
     
@@ -62,9 +67,8 @@ struct HashEntryTable: NSViewControllerRepresentable {
         return Coordinator(self)
     }
     
-    
     func makeNSViewController(context: Context) -> NSViewController {
-        let controller = HashEntryTableController()
+        let controller = ZSetTableController()
         
         controller.setUp(deleteAction: deleteAction, editAction: editAction)
         
@@ -74,27 +78,27 @@ struct HashEntryTable: NSViewControllerRepresentable {
     
     func updateNSViewController(_ nsViewController: NSViewController, context: Context) {
             
-        guard let controller = nsViewController as? HashEntryTableController else {return}
+        guard let controller = nsViewController as? ZSetTableController else {return}
         controller.setDatasource(datasource)
         controller.tableView?.delegate = context.coordinator
-        
         controller.arrayController.setSelectionIndex(selectRowIndex ?? -1)
 //        controller.tableView.scrollRowToVisible(selectRowIndex)
     }
     
     class Coordinator: NSObject, NSTableViewDelegate {
         
-        var table: HashEntryTable
+        var table: ZSetTable
         
         let logger = Logger(label: "hash-table-coordinator")
         
         
-        init(_ table: HashEntryTable) {
+        init(_ table: ZSetTable) {
             self.table = table
         
         }
         
         func tableViewSelectionIsChanging(_ notification: Notification) {
+            
             guard let tableView = notification.object as? NSTableView else {return}
             guard self.table.datasource.count > 0 else {return}
             

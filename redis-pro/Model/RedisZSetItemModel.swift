@@ -7,9 +7,9 @@
 
 import Foundation
 
-class RedisZSetItemModel:NSObject, Identifiable {
-    @objc var value:String = ""
-    @objc var score:String = "0"
+class RedisZSetItemModel:NSObject, ObservableObject, Identifiable {
+    @objc @Published var value:String = ""
+    @objc @Published var score:String = ""
     
     var id:String {
         self.value
@@ -21,5 +21,10 @@ class RedisZSetItemModel:NSObject, Identifiable {
     init(value:String, score:String) {
         self.score = score
         self.value = value
+    }
+    
+    
+    override var description: String {
+        return "ZSetItem:[value:\(value), score:\(score)]"
     }
 }

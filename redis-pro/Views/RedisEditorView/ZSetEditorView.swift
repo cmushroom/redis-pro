@@ -9,12 +9,10 @@ import SwiftUI
 import Logging
 
 struct ZSetEditorView: View {
-    @State var text:String = ""
-    @State var list:[(String, Double)?] = [(String, Double)?]()
+    @State private var datasource:[RedisZSetItemModel] = [RedisZSetItemModel]()
     @State private var selectIndex:Int?
-    @State private var isEditing:Bool = false
+    @State private var refresh:Int = 0
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
-    @EnvironmentObject var globalContext:GlobalContext
     @ObservedObject var redisKeyModel:RedisKeyModel
     @StateObject private var page:ScanModel = ScanModel()
     
@@ -27,12 +25,6 @@ struct ZSetEditorView: View {
     var delButtonDisabled:Bool {
         selectIndex == nil
     }
-    var selectEle:(String, Double)? {
-        selectIndex == nil || selectIndex! >= list.count ? nil : list[selectIndex!]
-    }
-    var selectEleValue:String {
-        selectEle == nil ? "" : selectEle!.0
-    }
     
     let logger = Logger(label: "redis-set-editor")
     
@@ -41,10 +33,6 @@ struct ZSetEditorView: View {
             HStack(alignment: .center , spacing: 4) {
                 IconButton(icon: "plus", name: "Add", action: onAddAction)
                 IconButton(icon: "trash", name: "Delete", disabled:delButtonDisabled,
-                           isConfirm: true,
-                           confirmTitle: String(format: Helps.DELETE_LIST_ITEM_CONFIRM_TITLE, "selectEleValue"),
-                           confirmMessage: String(format:Helps.DELETE_LIST_ITEM_CONFIRM_MESSAGE, "selectEleValue"),
-                           confirmPrimaryButtonText: "Delete",
                            action: onDeleteAction)
                 SearchBar(keywords: $page.keywords, placeholder: "Search set...", action: onQueryField)
                 Spacer()
@@ -52,66 +40,19 @@ struct ZSetEditorView: View {
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
             
-            GeometryReader { geometry in
-                let width0 = geometry.size.width/2
-                let width1 = width0
-                List(selection: $selectIndex) {
-                    Section(header: HStack {
-                        Text("Value")
-                            .frame(width: width0, alignment: .leading)
-                        Text("Score")
-                            .frame(width: width1, alignment: .leading)
-                            .padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 0))
-                            .border(width:1, edges: [.leading], color: Color.gray)
-                    }) {
-                        ForEach(0..<list.count, id: \.self) { index in
-                            HStack {
-                                Text(list[index]?.0 ?? "")
-                                    .font(.body)
-                                    .multilineTextAlignment(.leading)
-                                    .frame(width: width0, alignment: .leading)
-                                
-                                Text(NumberHelper.formatDouble(list[index]?.1))
-                                    .font(.body)
-                                    .multilineTextAlignment(.leading)
-                                    .frame(width: width1, alignment: .leading)
-                            }
-                            .contextMenu {
-                                Button(action: {
-                                    editModalVisible = true
-                                    editNewField = false
-                                    editIndex = index
-                                    editValue = list[index]?.0 ?? ""
-                                    editScore = NumberHelper.formatDouble(list[index]?.1)
-                                }){
-                                    Text("Edit")
-                                }
-                                Button(action: {
-                                    onDeleteConfirmAction(index)
-                                }){
-                                    Text("Delete")
-                                }
-                            }
-                            .padding(EdgeInsets(top: 4, leading: 2, bottom: 4, trailing: 2))
-                            .overlay(
-                                Rectangle()
-                                    .frame(height: 1)
-                                    .foregroundColor(Color.gray.opacity(0.1)),
-                                alignment: .bottom
-                            )
-                            .listRowInsets(EdgeInsets())
-                        }
-                    }
-                }
-                .listStyle(PlainListStyle())
-                .padding(.all, 0)
-            }
+            ZSetTable(datasource: $datasource, selectRowIndex: $selectIndex, refresh: refresh
+                      , deleteAction: { index in
+                        onDeleteConfirmAction(index)
+                      }
+                      , editAction: { index in
+                        onEditAction(index)
+                      })
             
             // footer
             HStack(alignment: .center, spacing: 4) {
                 Spacer()
                 IconButton(icon: "arrow.clockwise", name: "Refresh", action: onRefreshAction)
-//                IconButton(icon: "checkmark", name: "Submit", confirmPrimaryButtonText: "Submit", action: onSubmitAction)
+                //                IconButton(icon: "checkmark", name: "Submit", confirmPrimaryButtonText: "Submit", action: onSubmitAction)
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
         }
@@ -120,7 +61,7 @@ struct ZSetEditorView: View {
         }) {
             ModalView("Edit element", action: onUpdateItemAction) {
                 VStack(alignment:.leading, spacing: 8) {
-//                    TextField("", value: $editScore, formatter: NumberFormatter())
+                    //                    TextField("", value: $editScore, formatter: NumberFormatter())
                     FormItemNumber(label: "Score", placeholder: "score", value: $editScore)
                     FormItemTextArea(label: "Value", placeholder: "value", value: $editValue)
                 }
@@ -138,18 +79,6 @@ struct ZSetEditorView: View {
         
     }
     
-    func onDeleteConfirmAction(_ index:Int) -> Void {
-        let item = list[index] ?? ("", 0)
-        
-        globalContext.confirm(String(format: Helps.DELETE_LIST_ITEM_CONFIRM_TITLE, item.0)
-                              , alertMessage: String(format:Helps.DELETE_LIST_ITEM_CONFIRM_MESSAGE, item.0)
-                              , primaryAction: {
-                                try deleteEle(index)
-                              }
-                              , primaryButton: "Delete")
-        
-    }
-    
     func onAddAction() throws -> Void {
         editModalVisible = true
         editNewField = true
@@ -158,17 +87,29 @@ struct ZSetEditorView: View {
         editScore = "0"
     }
     
+    func onEditAction(_ index:Int) -> Void {
+        editModalVisible = true
+        editNewField = false
+        editIndex = index
+        editValue = self.datasource[index].value
+        editScore = self.datasource[index].score
+    }
+    
     func onUpdateItemAction() throws -> Void {
         let score:Double = Double(editScore) ?? 0
         if editIndex == -1 {
             let _ = redisInstanceModel.getClient().zadd(redisKeyModel.key, score: score, ele: editValue).done({ _ in
-                try onRefreshAction()
+                self.datasource.insert(RedisZSetItemModel(value: editValue, score: editScore), at: 0)
             })
         } else {
-            let editEle = list[editIndex] ?? ("", 0)
-            let _ = try redisInstanceModel.getClient().zupdate(redisKeyModel.key, from: editEle.0, to: editValue, score: score ).done({_ in
+            let editEle = datasource[editIndex]
+            let _ = try redisInstanceModel.getClient().zupdate(redisKeyModel.key, from: editEle.value, to: editValue, score: score ).done({_ in
                 self.logger.info("redis zset update success, update list")
-                self.list[editIndex] = (editValue, score)
+                
+                self.datasource[editIndex].value = editValue
+                self.datasource[editIndex].score = editScore
+                self.refresh += 1
+                
             })
         }
         
@@ -176,11 +117,7 @@ struct ZSetEditorView: View {
             redisKeyModel.isNew = false
         }
     }
-    
-    func onDeleteAction() throws -> Void {
-        try deleteEle(selectIndex!)
-        try onRefreshAction()
-    }
+
     
     func onSubmitAction() throws -> Void {
         logger.info("redis hash value editor on submit")
@@ -208,7 +145,8 @@ struct ZSetEditorView: View {
     
     func queryPage(_ redisKeyModel:RedisKeyModel) -> Void {
         let _ = redisInstanceModel.getClient().pageZSet(redisKeyModel, page: page).done({ res in
-            self.list = res
+            self.datasource = res
+            self.selectIndex = res.count > 0 ? 0 : nil
         })
     }
     
@@ -218,17 +156,28 @@ struct ZSetEditorView: View {
         })
     }
     
-    func deleteEle(_ index:Int) throws -> Void {
-        logger.info("delete set item, index: \(index)")
-        let ele = list[index]
-        if ele == nil {
-            list.remove(at: index)
-            return
-        }
+    // delete
+    func onDeleteAction() throws -> Void {
+        onDeleteConfirmAction(selectIndex!)
+    }
+    
+    func onDeleteConfirmAction(_ index:Int) -> Void {
+        let item = self.datasource[index]
+        let text = item.value
         
-        let _ = redisInstanceModel.getClient().zrem(redisKeyModel.key, ele: ele!.0).done({ r in
+        MAlert.confirm(String(format: Helps.DELETE_LIST_ITEM_CONFIRM_TITLE, text), message: String(format:Helps.DELETE_LIST_ITEM_CONFIRM_MESSAGE, text), primaryButton: "Delete", primaryAction: {
+            deleteEle(index)
+          })
+        
+    }
+    
+    func deleteEle(_ index:Int) -> Void {
+        logger.info("delete set item, index: \(index)")
+        let ele = self.datasource[index]
+        
+        let _ = redisInstanceModel.getClient().zrem(redisKeyModel.key, ele: ele.value).done({ r in
             if r > 0 {
-                list.remove(at: index)
+                datasource.remove(at: index)
             }
         })
     }

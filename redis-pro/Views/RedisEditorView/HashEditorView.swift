@@ -16,9 +16,11 @@ struct HashEditorView: View {
     
     @State private var datasource:[Any] = [RedisHashEntryModel]()
     @State private var selectIndex:Int?
+    @State private var refresh:Int = 0
     
     @State private var editModalVisible:Bool = false
     @State private var editNewField:Bool = false
+    @State private var editIndex:Int = 0
     @State private var editField:String = ""
     @State private var editValue:String = ""
     
@@ -46,7 +48,7 @@ struct HashEditorView: View {
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
             
-            HashEntryTable(datasource: $datasource, selectRowIndex: $selectIndex
+            HashEntryTable(datasource: $datasource, selectRowIndex: $selectIndex, refresh: refresh
                            , deleteAction: { index in
                             onDeleteIndexAction(index)
                            }
@@ -89,24 +91,24 @@ struct HashEditorView: View {
         }
     }
     
+    // add and update
+    func onAddFieldAction() throws -> Void {
+        editNewField = true
+        editIndex = -1
+        editField = ""
+        editValue = ""
+        editModalVisible = true
+    }
+    
     func onEditIndexAction(_ index:Int) -> Void {
         let entry:RedisHashEntryModel = self.datasource[index] as! RedisHashEntryModel
         let field = entry.field
         
         editNewField = false
+        editIndex = index
         editField = field
         editValue = entry.value
         editModalVisible = true
-    }
-    
-    func onDeleteIndexAction(_ index:Int) -> Void {
-        let entry:RedisHashEntryModel = self.datasource[index] as! RedisHashEntryModel
-        let field = entry.field
-        MAlert.confirm(String(format: Helps.DELETE_HASH_FIELD_CONFIRM_TITLE, field), message: String(format:Helps.DELETE_HASH_FIELD_CONFIRM_MESSAGE, field), primaryButton: "Delete", primaryAction: {
-            let _ = deleteField(field).done({_ in
-                self.datasource.remove(at: index)
-            })
-        })
     }
 
     func onSaveFieldAction() throws -> Void {
@@ -117,22 +119,18 @@ struct HashEditorView: View {
             }
             logger.info("redis hset success, update field list")
             
-            self.onLoad(redisKeyModel)
+            if editIndex == -1 {
+                self.datasource.insert(RedisHashEntryModel(field: editField, value: editValue), at: 0)
+            } else {
+                (self.datasource[editIndex] as! RedisHashEntryModel).value = editValue
+                self.refresh += 1
+            }
+            
             
         })
     }
     
     
-    func onAddFieldAction() throws -> Void {
-        editModalVisible = true
-        editNewField = true
-        editField = ""
-        editValue = ""
-    }
-    
-    func onDeleteAction() throws -> Void {
-        onDeleteIndexAction(selectIndex!)
-    }
     func onQueryField() throws -> Void {
         page.resetHead()
         queryHashPage(redisKeyModel)
@@ -168,6 +166,21 @@ struct HashEditorView: View {
         let _  = redisInstanceModel.getClient().ttl(key: redisKeyModel.key).done({r in
             redisKeyModel.ttl = r
         })
+    }
+    
+    // delete
+    func onDeleteIndexAction(_ index:Int) -> Void {
+        let entry:RedisHashEntryModel = self.datasource[index] as! RedisHashEntryModel
+        let field = entry.field
+        MAlert.confirm(String(format: Helps.DELETE_HASH_FIELD_CONFIRM_TITLE, field), message: String(format:Helps.DELETE_HASH_FIELD_CONFIRM_MESSAGE, field), primaryButton: "Delete", primaryAction: {
+            let _ = deleteField(field).done({_ in
+                self.datasource.remove(at: index)
+            })
+        })
+    }
+    
+    func onDeleteAction() throws -> Void {
+        onDeleteIndexAction(selectIndex!)
     }
     
     func deleteField(_ field:String) -> Promise<Int> {

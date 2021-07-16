@@ -113,26 +113,33 @@ class RediStackClient{
     }
     
     // zset operator
-    func pageZSet(_ redisKeyModel:RedisKeyModel, page:ScanModel) -> Promise<[(String, Double)?]> {
+    func pageZSet(_ redisKeyModel:RedisKeyModel, page:ScanModel) -> Promise<[RedisZSetItemModel]> {
         if redisKeyModel.isNew {
-            return Promise<[(String, Double)?]>.value([(String, Double)?]())
+            return Promise<[RedisZSetItemModel]>.value([RedisZSetItemModel]())
         }
         return pageZSet(redisKeyModel.key, page: page)
     }
     
-    func pageZSet(_ key:String, page:ScanModel) -> Promise<[(String, Double)?]> {
+    func pageZSet(_ key:String, page:ScanModel) -> Promise<[RedisZSetItemModel]> {
         logger.info("redis zset scan page, key: \(key), page: \(page)")
         
         self.globalContext?.loading = true
         let match = page.keywords.isEmpty ? nil : page.keywords
         
-        var set:[(String, Double)?] = [(String, Double)?]()
+        var set:[RedisZSetItemModel] = [RedisZSetItemModel]()
         var cursor:Int = page.cursor
         
         let scanPromise = zscanAsync(key, cursor: cursor, keywords: match).then({ res in
-            Promise<[(String, Double)?]>{ resolver in
+            Promise<[RedisZSetItemModel]>{ resolver in
                 cursor = res.0
-                set = res.1
+                let zset = res.1
+                
+                if zset.count > 0 {
+                    zset.forEach({ ele in
+                        let item = ele == nil ? RedisZSetItemModel() : RedisZSetItemModel(value: ele!.0, score: "\(ele!.1)")
+                        set.append(item)
+                    })
+                }
                 
                 // 如果取出数量不够 page.size, 继续迭带补满
                 if cursor != 0 && set.count < page.size {
@@ -140,7 +147,15 @@ class RediStackClient{
                         let moreRes:(Int, [(String, Double)?]) = try self.zscan(key, cursor:cursor, count: 1, keywords: match)
                         
                         self.logger.info("zset scan more to fill page, res: \(moreRes)")
-                        set.append(contentsOf: moreRes.1)
+                        let moreZSet = res.1
+                        
+                        if moreZSet.count > 0 {
+                            moreZSet.forEach({ ele in
+                                let item = ele == nil ? RedisZSetItemModel() : RedisZSetItemModel(value: ele!.0, score: "\(ele!.1)")
+                                set.append(item)
+                            })
+                        }
+                        
                         cursor = moreRes.0
                         page.cursor = cursor
                         if cursor == 0 || set.count == page.size {
@@ -173,7 +188,7 @@ class RediStackClient{
         
         
         
-        let promise = Promise<[(String, Double)?]> { resolver in
+        let promise = Promise<[RedisZSetItemModel]> { resolver in
             let _ = when(fulfilled: countPromise,  scanPromise).done({ r1, r2 in
                 let total = r1
                 page.total = total

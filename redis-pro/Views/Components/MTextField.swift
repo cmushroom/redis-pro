@@ -19,12 +19,18 @@ struct MTextField: View {
     @Environment(\.colorScheme) var colorScheme
     var autoCommit:Bool = true
     
+    // 是否有编辑过，编回过才会触commit
+    @State private var isEdited:Bool = false
+    
     let logger = Logger(label: "text-field")
     
     var body: some View {
         HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 2) {
             TextField(placeholder ?? "", text: $value, onEditingChanged: { isEditing in
                 self.isEditing = isEditing
+                if isEditing {
+                    self.isEdited = true
+                }
             }, onCommit: doCommit)
             .disabled(disabled)
             .multilineTextAlignment(/*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/)
@@ -50,7 +56,8 @@ struct MTextField: View {
     }
     
     func doCommit() -> Void {
-        if autoCommit {
+        if autoCommit && self.isEdited {
+            self.isEdited = false
             doAction()
         }
     }

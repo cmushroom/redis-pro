@@ -1226,7 +1226,8 @@ class RediStackClient{
                                     }
                                     if line.contains(":") {
                                         let infoArr = line.components(separatedBy: ":")
-                                        item?.infos.append((infoArr[0].trimmingCharacters(in: .whitespacesAndNewlines), infoArr[1].trimmingCharacters(in: .whitespacesAndNewlines)))
+                                        let redisInfoItemModel = RedisInfoItemModel(section: item?.section ?? "", key: infoArr[0].trimmingCharacters(in: .whitespacesAndNewlines), value: infoArr[1].trimmingCharacters(in: .whitespacesAndNewlines))
+                                        item?.infos.append(redisInfoItemModel)
                                     }
                                 })
                                 resolver.fulfill(redisInfoModels)

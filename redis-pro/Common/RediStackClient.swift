@@ -1242,6 +1242,27 @@ class RediStackClient{
         return promise
     }
     
+    func resetState() -> Promise<Bool> {
+        logger.info("reset state...")
+        let promise =
+            getConnectionAsync().then({ connection in
+                Promise<Bool> { resolver in
+                    connection.send(command: "CONFIG", with: [RESPValue(from: "RESETSTAT")])
+                        .whenComplete({completion in
+                            if case .success(let res) = completion {
+                                self.logger.info("reset state res: \(res)")
+                                resolver.fulfill(res.string == "OK")
+                            }
+                            else if case .failure(let error) = completion {
+                                resolver.reject(error)
+                            }
+                        })
+                }
+            })
+        
+        return promise
+    }
+    
     private func dbsize() throws -> Int {
         do {
             let res:RESPValue = try getConnection().send(command: "dbsize").wait()

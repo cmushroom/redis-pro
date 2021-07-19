@@ -55,8 +55,9 @@ struct RedisInfoView: View {
     }
     
     private var footer: some View {
-        HStack(alignment: .center , spacing: 8) {
+        HStack(alignment: .center , spacing: MTheme.H_SPACING) {
             Spacer()
+            MButton(text: "Reset State", action: onResetStateAction)
             MButton(text: "Refresh", action: onRefrehAction)
         }
     }
@@ -101,6 +102,12 @@ struct RedisInfoView: View {
                     self.redisInfoModels[index].infos = redisInfoModel.infos
                 }
             }
+        })
+    }
+    
+    func onResetStateAction() -> Void {
+        let _ = redisInstanceModel.getClient().resetState().done({_ in
+            self.onRefrehAction()
         })
     }
 }

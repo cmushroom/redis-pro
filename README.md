@@ -1,5 +1,7 @@
 #  Redis Pro
 
+English | [简体中文](./README.zh_CN.md) 
+
 ![Swift5.0+](https://img.shields.io/badge/Swift-5.0%2B-orange.svg?style=flat)
 [![release](https://img.shields.io/github/v/release/cmushroom/redis-pro?include_prereleases)](https://github.com/cmushroom/redis-pro/releases)
 [![license](https://img.shields.io/badge/license-Apache%202-blue)](https://github.com/cmushroom/redis-pro/blob/main/LICENSE)

@@ -15,6 +15,11 @@
 ## 安装
 * 到release页面下载安装
 [下载地址](https://github.com/cmushroom/redis-pro/releases)
+* homebrew
+    ```
+    brew install redis-pro
+    ```
+
 
 
 
@@ -23,11 +28,11 @@
 
 ## 功能计划(暂定)
 - [x] client list and kill 
-- [ ] homebrew install
-- [ ] slow log
-- [ ] redis config 修改
-- [ ] ssh 登录
-- [ ] ipad os 支持
+- [x] homebrew install
+- [x] slow log
+- [ ] redis config update
+- [ ] ssh login
+- [ ] ipad os support
     
 
 ## 版本要求

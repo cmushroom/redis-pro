@@ -46,7 +46,6 @@ struct MButton: View {
                 .lineLimit(1)
                 .padding(.horizontal, 4.0)
         }
-        .foregroundColor(Color.primary)
         .disabled(disabled)
         .onHover { inside in
             if !disabled && inside {

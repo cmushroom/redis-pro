@@ -15,6 +15,8 @@ class TextViewController: NSViewController {
     @objc dynamic var text: String = "hello"
     
     @IBOutlet var textView: NSTextView!
+    @IBOutlet var scrollView: NSScrollView!
+    @IBOutlet weak var clipView: NSClipView!
     
     var selectedRanges: [NSValue] = [] {
         didSet {
@@ -27,8 +29,7 @@ class TextViewController: NSViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.textView.enabledTextCheckingTypes = 0
-        self.textView.layer?.cornerRadius = 4
+        self.textView.enabledTextCheckingTypes = 0        
     }
     
     func setText(_ text:String) -> Void {

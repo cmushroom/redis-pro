@@ -49,7 +49,7 @@ struct SetEditorView: View {
                       })
             
             // footer
-            HStack(alignment: .center, spacing: 4) {
+            HStack(alignment: .center, spacing: MTheme.H_SPACING) {
                 Spacer()
                 IconButton(icon: "arrow.clockwise", name: "Refresh", action: onRefreshAction)
             }
@@ -59,8 +59,8 @@ struct SetEditorView: View {
             print("on dismiss")
         }) {
             ModalView("Edit element", action: onUpdateItemAction) {
-                VStack(alignment:.leading, spacing: 8) {
-                    FormItemTextArea(label: "", placeholder: "value", value: $editValue)
+                VStack(alignment:.leading, spacing: MTheme.V_SPACING) {
+                    MTextView(text: $editValue)
                 }
                 .frame(minWidth:500, minHeight:300)
             }

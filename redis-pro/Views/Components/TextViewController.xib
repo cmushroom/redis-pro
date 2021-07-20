@@ -7,6 +7,8 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="TextViewController" customModule="redis_pro" customModuleProvider="target">
             <connections>
+                <outlet property="clipView" destination="dB7-dm-mrD" id="FOc-69-2QO"/>
+                <outlet property="scrollView" destination="eOh-TL-jT7" id="88b-gc-ID5"/>
                 <outlet property="textView" destination="8wH-QM-roy" id="QBd-ZW-w0Z"/>
                 <outlet property="view" destination="eOh-TL-jT7" id="pBD-0J-004"/>
             </connections>
@@ -15,17 +17,17 @@
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <scrollView borderType="line" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" horizontalScrollElasticity="none" id="eOh-TL-jT7">
             <rect key="frame" x="0.0" y="0.0" width="600" height="400"/>
-            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <clipView key="contentView" drawsBackground="NO" id="dB7-dm-mrD">
                 <rect key="frame" x="1" y="1" width="598" height="398"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
                     <textView importsGraphics="NO" richText="NO" horizontallyResizable="YES" verticallyResizable="YES" findStyle="panel" continuousSpellChecking="YES" allowsCharacterPickerTouchBarItem="NO" allowsUndo="YES" textCompletion="NO" spellingCorrection="YES" grammarChecking="YES" smartInsertDelete="YES" id="8wH-QM-roy">
-                        <rect key="frame" x="0.0" y="0.0" width="594" height="394"/>
+                        <rect key="frame" x="0.0" y="0.0" width="596" height="396"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                        <size key="minSize" width="594" height="394"/>
+                        <size key="minSize" width="596" height="396"/>
                         <size key="maxSize" width="1000" height="10000000"/>
                         <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
                         <connections>
@@ -33,8 +35,8 @@
                         </connections>
                     </textView>
                 </subviews>
-                <edgeInsets key="contentInsets" left="2" right="2" top="2" bottom="2"/>
             </clipView>
+            <edgeInsets key="contentInsets" left="2" right="2" top="2" bottom="2"/>
             <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="sbB-9z-arG">
                 <rect key="frame" x="-100" y="-100" width="240" height="16"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -45,6 +47,5 @@
             </scroller>
             <point key="canvasLocation" x="115" y="111"/>
         </scrollView>
-        <userDefaultsController representsSharedInstance="YES" id="JRi-RU-846"/>
     </objects>
 </document>

@@ -60,7 +60,7 @@ struct ListEditorView: View {
                       })
 
             // footer
-            HStack(alignment: .center, spacing: 4) {
+            HStack(alignment: .center, spacing: MTheme.H_SPACING) {
                 Spacer()
                 IconButton(icon: "arrow.clockwise", name: "Refresh", action: onRefreshAction)
 //                IconButton(icon: "checkmark", name: "Submit", confirmPrimaryButtonText: "Submit", action: onSubmitAction)
@@ -71,8 +71,9 @@ struct ListEditorView: View {
             print("on dismiss")
         }) {
             ModalView("Edit item", action: onUpdateItemAction) {
-                VStack(alignment:.leading, spacing: 8) {
-                    FormItemTextArea(label: "", placeholder: "value", value: $editValue)
+                VStack(alignment:.leading, spacing: MTheme.V_SPACING) {
+//                    FormItemTextArea(label: "", placeholder: "value", value: $editValue)
+                    MTextView(text: $editValue)
                 }
                 .frame(minWidth:500, minHeight:300)
             }

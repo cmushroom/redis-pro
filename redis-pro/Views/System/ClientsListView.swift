@@ -27,7 +27,7 @@ struct ClientsListView: View {
     
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: MTheme.V_SPACING) {
             
             ClientListTable(datasource: $clientModels, selectRowIndex: $selectRowIndex)
             footer

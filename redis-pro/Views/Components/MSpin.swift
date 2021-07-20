@@ -11,7 +11,6 @@ import Foundation
 
 struct MSpin: View {
     var loading:Bool = false
-    @Environment(\.colorScheme) var colorScheme
     
     var spin: some View {
         loading ?

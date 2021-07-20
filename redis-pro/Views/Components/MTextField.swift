@@ -16,7 +16,6 @@ struct MTextField: View {
     var onCommit:() throws -> Void = {}
     var disabled:Bool = false
     @EnvironmentObject var globalContext:GlobalContext
-    @Environment(\.colorScheme) var colorScheme
     var autoCommit:Bool = true
     
     // 是否有编辑过，编回过才会触commit
@@ -48,7 +47,7 @@ struct MTextField: View {
             }
         }
         .padding(EdgeInsets(top: 3, leading: 4, bottom: 3, trailing: 4))
-        .background(colorScheme == .dark ? Color.clear : Color.white)
+        .background(Color.init(NSColor.textBackgroundColor))
         .cornerRadius(4)
         .overlay(
             RoundedRectangle(cornerRadius: 4).stroke(Color.gray.opacity(!disabled && isEditing ?  0.4 : 0.2), lineWidth: 1)

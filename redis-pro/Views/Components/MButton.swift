@@ -33,7 +33,6 @@ struct MButton: View {
     var confirmMessage:String?
     var confirmPrimaryButtonText:String?
     var size:String = "normal"
-    @Environment(\.colorScheme) var colorScheme
     
     var width:CGFloat {
         100
@@ -47,7 +46,7 @@ struct MButton: View {
                 .lineLimit(1)
                 .padding(.horizontal, 4.0)
         }
-        .foregroundColor(colorScheme == .dark ? Color.white.opacity(disabled ? 0.4 : 0.9) : nil)
+        .foregroundColor(Color.primary)
         .disabled(disabled)
         .onHover { inside in
             if !disabled && inside {

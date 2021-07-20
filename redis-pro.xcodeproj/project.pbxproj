@@ -39,6 +39,7 @@
 		4320AAF425B6740900A8E214 /* redis_proApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4320AAF325B6740900A8E214 /* redis_proApp.swift */; };
 		4320AAF825B6740A00A8E214 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4320AAF725B6740A00A8E214 /* Assets.xcassets */; };
 		4320AAFB25B6740A00A8E214 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4320AAFA25B6740A00A8E214 /* Preview Assets.xcassets */; };
+		432A6ADD26A6B7FA00F6DB64 /* SecureTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 432A6ADC26A6B7FA00F6DB64 /* SecureTextField.swift */; };
 		433FC19E2667B3530091CB32 /* FileManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433FC19D2667B3530091CB32 /* FileManagerTests.swift */; };
 		434047FA2611C828001519F9 /* RedisFavoriteModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434047F92611C828001519F9 /* RedisFavoriteModel.swift */; };
 		4340E2BD2666236200F51F19 /* redisProTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4340E2BC2666236200F51F19 /* redisProTests.swift */; };
@@ -187,6 +188,7 @@
 		4320AAFA25B6740A00A8E214 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		4320AAFC25B6740A00A8E214 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4320AAFD25B6740A00A8E214 /* redis_pro.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = redis_pro.entitlements; sourceTree = "<group>"; };
+		432A6ADC26A6B7FA00F6DB64 /* SecureTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureTextField.swift; sourceTree = "<group>"; };
 		433FC19D2667B3530091CB32 /* FileManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerTests.swift; sourceTree = "<group>"; };
 		434047F92611C828001519F9 /* RedisFavoriteModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisFavoriteModel.swift; sourceTree = "<group>"; };
 		4340E2BA2666236200F51F19 /* redisProTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = redisProTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -322,6 +324,7 @@
 				4313576A263AB6400077EE46 /* FormItemTextArea.swift */,
 				43DFEF3625C29288006EF535 /* FormItemInt.swift */,
 				436BB6962644EED8008B4866 /* FormItemNumber.swift */,
+				432A6ADC26A6B7FA00F6DB64 /* SecureTextField.swift */,
 				4373C4FD25C2DEC8002B700E /* MButton.swift */,
 				43EADB0726200540003B8310 /* IconButton.swift */,
 				43F22F1826A6690600A00F97 /* MLabel.swift */,
@@ -789,6 +792,7 @@
 				430A09E225C1559400B60DFC /* FormLabel.swift in Sources */,
 				43CD28B0267C6A9D00E11876 /* MainViewTypeEnum.swift in Sources */,
 				43F22F1126A1603F00A00F97 /* StringHelper.swift in Sources */,
+				432A6ADD26A6B7FA00F6DB64 /* SecureTextField.swift in Sources */,
 				43BB012326390BC20039565E /* ModalView.swift in Sources */,
 				43CD28712670C3DD00E11876 /* ColorSchemeEnum.swift in Sources */,
 				434047FA2611C828001519F9 /* RedisFavoriteModel.swift in Sources */,

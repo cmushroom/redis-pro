@@ -7,9 +7,9 @@
 
 import SwiftUI
 import Logging
+import Cocoa
 
 struct IconButton: View {
-    @EnvironmentObject var globalContext:GlobalContext
     var icon:String
     var name:String
     var disabled:Bool = false
@@ -18,23 +18,24 @@ struct IconButton: View {
     var confirmMessage:String?
     var confirmPrimaryButtonText:String?
     
-    var action: () throws -> Void = {print("icon button action")}
-    @Environment(\.colorScheme) var colorScheme
+    var action: () throws -> Void = {}
     
     let logger = Logger(label: "icon-button")
     
     var body: some View {
-    
+        
         Button(action: doAction) {
-            HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 1) {
-                Image(systemName: icon)
-                    .font(.system(size: MTheme.FONT_SIZE_BUTTON_ICON))
-                    .padding(0)
-                Text(name)
-                    .font(.system(size: MTheme.FONT_SIZE_BUTTON))
-            }
+//            HStack(alignment: .center, spacing: 1) {
+//                Image(systemName: icon)
+//                    .font(.system(size: MTheme.FONT_SIZE_BUTTON_ICON))
+//                    .padding(0)
+//                    .foregroundColor(Color.init(NSColor.textColor))
+//                Text(name)
+//                    .font(.system(size: MTheme.FONT_SIZE_BUTTON))
+//                    .foregroundColor(Color.init(NSColor.textColor))
+//            }
+            MLabel(name: name, icon: icon)
             .padding(.horizontal, 4.0)
-            .foregroundColor(colorScheme == .dark ? Color.white.opacity(disabled ? 0.4 : 0.9) : nil)
         }
         .buttonStyle(BorderedButtonStyle())
         .disabled(disabled)
@@ -54,16 +55,33 @@ struct IconButton: View {
             if !isConfirm {
                 try action()
             } else {
-                globalContext.confirm(confirmTitle ?? "", alertMessage: confirmMessage ?? "", primaryAction: action, primaryButton: confirmPrimaryButtonText ?? globalContext.primaryButtonText)
+                MAlert.confirm(confirmTitle ?? "", message: confirmMessage ?? "", primaryButton: confirmPrimaryButtonText ?? "Ok"
+                               , primaryAction: {
+                                try? action()
+                               })
             }
         } catch {
-            globalContext.showError(error)
+            MAlert.error(error)
         }
     }
 }
 
 struct IconButton_Previews: PreviewProvider {
     static var previews: some View {
-        IconButton(icon: "plus", name: "Add")
+        VStack(alignment: .center, spacing: 10) {
+            IconButton(icon: "plus", name: "Add")
+            
+            Label("Add", systemImage: "plus")
+            
+            Label {
+                Text("Add")
+                    .font(.system(size: 12))
+            } icon: {
+                Image(systemName: "plus")
+                    .font(.system(size: 11))
+                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 2, trailing: -5))
+            }
+        }.padding(/*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
+        
     }
 }

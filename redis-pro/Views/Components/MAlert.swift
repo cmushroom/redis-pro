@@ -17,7 +17,7 @@ class MAlert {
     
     private static let alert: NSAlert = initAlert()
     private static let confirmAlert: NSAlert = initConfirmAlert()
-    
+
     static let logger = Logger(label: "alert")
     
     static func confirm(_ title:String, message:String = "", primaryButton:String = "Ok", secondButton:String = "Cancel", primaryAction: @escaping () -> Void = {}, secondAction: @escaping () -> Void = {}, style:NSAlert.Style = NSAlert.Style.warning) -> Void {

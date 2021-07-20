@@ -19,7 +19,7 @@ struct RedisKeysListView: View {
     @State private var renameModalVisible:Bool = false
     @State private var oldKeyIndex:Int?
     @State private var newKeyName:String = ""
-
+    
     @State private var mainViewType:MainViewTypeEnum = MainViewTypeEnum.EDITOR
     
     let logger = Logger(label: "redis-key-list-view")
@@ -62,17 +62,19 @@ struct RedisKeysListView: View {
     
     private var sidebarFoot: some View {
         HStack(alignment: .center, spacing: 4) {
-            MenuButton(label:
-                        Label("", systemImage: "ellipsis.circle")
-                        .labelStyle(IconOnlyLabelStyle())
-            ){
+            Menu(content: {
                 Button("Redis Info", action: onRedisInfoAction)
                 Button("Clients List", action: onShowClientsAction)
                 Button("Slow Log", action: onShowSlowLogAction)
                 MButton(text: "Flush DB", action: onFlushDBAction, isConfirm: true, confirmTitle: "Flush DB ?", confirmMessage: "Are you sure you want to flush db? This operation cannot be undone.")
-            }
+            }, label: {
+                Label("", systemImage: "ellipsis.circle")
+                .foregroundColor(.primary)
+                // @since 11.0
+                .labelStyle(IconOnlyLabelStyle())
+            })
             .frame(width:30)
-            .menuButtonStyle(BorderlessPullDownMenuButtonStyle())
+            .menuStyle(BorderlessButtonMenuStyle())
             
             MIcon(icon: "arrow.clockwise", fontSize: 12, action: onRefreshAction)
                 .help(Helps.REFRESH)
@@ -85,30 +87,6 @@ struct RedisKeysListView: View {
         VStack(alignment: .leading, spacing: 0) {
             // header area
             sidebarHeader
-            
-            // list
-            //            List(selection: $selectedRedisKeyIndex) {
-            //                ForEach(redisKeyModels.indices, id:\.self) { index in
-            //                    RedisKeyRowView(index: index, redisKeyModel: redisKeyModels[index])
-            //                        .contextMenu {
-            //                            Button("Rename", action: {
-            //                                self.oldKeyIndex = index
-            //                                self.renameModalVisible = true
-            //                            })
-            //                            MButton(text: "Delete Key", action: {try onDeleteConfirmAction(index)})
-            //                        }
-            //                        .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-            //                }
-            //
-            //            }
-            //            .onChange(of: selectedRedisKeyIndex, perform: {_ in
-            //                if selectedRedisKeyIndex  != nil {
-            //                    self.mainViewType = MainViewTypeEnum.EDITOR
-            //                }
-            //            })
-            //            .listStyle(PlainListStyle())
-            //            .frame(minWidth:150)
-            //            .padding(.all, 0)
             
             RedisKeysTable(datasource: $redisKeyModels, selectRowIndex: $selectedRedisKeyIndex, deleteAction: onDeleteConfirmAction, renameAction: onRenameConfirmAction)
             
@@ -198,12 +176,12 @@ struct RedisKeysListView: View {
     func onDeleteConfirmAction(_ index:Int) -> Void {
         let item = redisKeyModels[index].key
         
-        globalContext.confirm(String(format: Helps.DELETE_LIST_ITEM_CONFIRM_TITLE, item)
-                              , alertMessage: String(format:Helps.DELETE_LIST_ITEM_CONFIRM_MESSAGE, item)
-                              , primaryAction: {
-                                deleteKey(index)
-                              }
-                              , primaryButton: "Delete")
+        MAlert.confirm(String(format: Helps.DELETE_LIST_ITEM_CONFIRM_TITLE, item)
+                       , message: String(format:Helps.DELETE_LIST_ITEM_CONFIRM_MESSAGE, item)
+                       , primaryButton: "Delete"
+                       , primaryAction: {
+                        deleteKey(index)
+                       })
     }
     
     func deleteKey(_ index:Int) -> Void {

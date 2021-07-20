@@ -19,7 +19,11 @@ struct MTheme {
     
     // font size
     static var FONT_SIZE_BUTTON:CGFloat = 12
-    static var FONT_SIZE_BUTTON_ICON:CGFloat = 10
+    static var FONT_SIZE_BUTTON_ICON:CGFloat = 11
+    static var FONT_SIZE_BUTTON_S:CGFloat = 10
+    static var FONT_SIZE_BUTTON_ICON_S:CGFloat = 9
+    static var FONT_SIZE_BUTTON_L:CGFloat = 14
+    static var FONT_SIZE_BUTTON_ICON_L:CGFloat = 12
     
     // table cell null
     static var NULL_STRING = "-"

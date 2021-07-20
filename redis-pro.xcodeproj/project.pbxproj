@@ -126,6 +126,7 @@
 		43F22F1326A5546000A00F97 /* RedisInfoItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F22F1226A5546000A00F97 /* RedisInfoItemModel.swift */; };
 		43F22F1526A5583D00A00F97 /* RedisInfoTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F22F1426A5583D00A00F97 /* RedisInfoTableController.swift */; };
 		43F22F1726A5584C00A00F97 /* RedisInfoTableController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 43F22F1626A5584C00A00F97 /* RedisInfoTableController.xib */; };
+		43F22F1926A6690600A00F97 /* MLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F22F1826A6690600A00F97 /* MLabel.swift */; };
 		623704F5265A27760084CCA8 /* AppCenterCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = 623704F4265A27760084CCA8 /* AppCenterCrashes */; };
 		623704F7265A27760084CCA8 /* AppCenterAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 623704F6265A27760084CCA8 /* AppCenterAnalytics */; };
 		623704FA265A27970084CCA8 /* RediStack in Frameworks */ = {isa = PBXBuildFile; productRef = 623704F9265A27970084CCA8 /* RediStack */; };
@@ -273,6 +274,7 @@
 		43F22F1226A5546000A00F97 /* RedisInfoItemModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisInfoItemModel.swift; sourceTree = "<group>"; };
 		43F22F1426A5583D00A00F97 /* RedisInfoTableController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisInfoTableController.swift; sourceTree = "<group>"; };
 		43F22F1626A5584C00A00F97 /* RedisInfoTableController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RedisInfoTableController.xib; sourceTree = "<group>"; };
+		43F22F1826A6690600A00F97 /* MLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLabel.swift; sourceTree = "<group>"; };
 		62CB3D712619AE050061E8C3 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		62CB3D742619AEC20061E8C3 /* RedisKeysListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisKeysListView.swift; sourceTree = "<group>"; };
 		62CB3D782619AEEB0061E8C3 /* RedisKeyRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisKeyRowView.swift; sourceTree = "<group>"; };
@@ -322,6 +324,7 @@
 				436BB6962644EED8008B4866 /* FormItemNumber.swift */,
 				4373C4FD25C2DEC8002B700E /* MButton.swift */,
 				43EADB0726200540003B8310 /* IconButton.swift */,
+				43F22F1826A6690600A00F97 /* MLabel.swift */,
 				431266CB261C450300FB6B69 /* Tag.swift */,
 				431266DD261D45C500FB6B69 /* MIcon.swift */,
 				431266ED261D517500FB6B69 /* RedisKeyTypePicker.swift */,
@@ -751,6 +754,7 @@
 				43F22EDF269BEB6800A00F97 /* RedisListTableDemo.swift in Sources */,
 				4385D32E261ED26200BA8ED1 /* IndexView.swift in Sources */,
 				4320AAF425B6740900A8E214 /* redis_proApp.swift in Sources */,
+				43F22F1926A6690600A00F97 /* MLabel.swift in Sources */,
 				43CD28AE267B6E0E00E11876 /* LoggerFactory.swift in Sources */,
 				43CD286E2670A03800E11876 /* VersionManager.swift in Sources */,
 				430A09DC25BEAD2700B60DFC /* RedisInsanceModel.swift in Sources */,
@@ -972,7 +976,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_ASSET_PATHS = "\"redis-pro/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "redis-pro/Info.plist";
@@ -981,7 +985,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.cmushroom.redis-pro";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -997,7 +1001,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_ASSET_PATHS = "\"redis-pro/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
@@ -1007,7 +1011,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.cmushroom.redis-pro";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

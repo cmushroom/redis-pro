@@ -22,6 +22,7 @@ struct MIcon: View {
                 .frame(height: fontSize)
                 .contentShape(Circle())
         }
+        .foregroundColor(.primary)
         .contentShape(Circle())
         .buttonStyle(PlainButtonStyle())
         .disabled(disabled)

@@ -21,11 +21,11 @@
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
                     <textView importsGraphics="NO" richText="NO" horizontallyResizable="YES" verticallyResizable="YES" findStyle="panel" continuousSpellChecking="YES" allowsCharacterPickerTouchBarItem="NO" allowsUndo="YES" textCompletion="NO" spellingCorrection="YES" grammarChecking="YES" smartInsertDelete="YES" id="8wH-QM-roy">
-                        <rect key="frame" x="0.0" y="0.0" width="598" height="398"/>
+                        <rect key="frame" x="0.0" y="0.0" width="594" height="394"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                        <size key="minSize" width="598" height="398"/>
+                        <size key="minSize" width="594" height="394"/>
                         <size key="maxSize" width="1000" height="10000000"/>
                         <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
                         <connections>
@@ -33,13 +33,14 @@
                         </connections>
                     </textView>
                 </subviews>
+                <edgeInsets key="contentInsets" left="2" right="2" top="2" bottom="2"/>
             </clipView>
             <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="sbB-9z-arG">
                 <rect key="frame" x="-100" y="-100" width="240" height="16"/>
                 <autoresizingMask key="autoresizingMask"/>
             </scroller>
             <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="rg3-LN-qMq">
-                <rect key="frame" x="-100" y="-100" width="16" height="400"/>
+                <rect key="frame" x="583" y="1" width="16" height="398"/>
                 <autoresizingMask key="autoresizingMask"/>
             </scroller>
             <point key="canvasLocation" x="115" y="111"/>

@@ -23,7 +23,7 @@ struct SetEditorView: View {
     
     
     var delButtonDisabled:Bool {
-        selectIndex == nil
+        list.count <= 0 || selectIndex == nil
     }
     
     let logger = Logger(label: "redis-set-editor")

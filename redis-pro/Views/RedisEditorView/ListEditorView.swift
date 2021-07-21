@@ -23,10 +23,8 @@ struct ListEditorView: View {
     @State private var editIndex:Int = 0
     @State private var editValue:String = ""
     
-    @State private var datasource:[Any] = ["1", "2"]
-    
     var delButtonDisabled:Bool {
-        selectIndex == nil
+        list.count <= 0 || selectIndex == nil
     }
     
     var selectValue:String? {
@@ -63,7 +61,6 @@ struct ListEditorView: View {
             HStack(alignment: .center, spacing: MTheme.H_SPACING) {
                 Spacer()
                 IconButton(icon: "arrow.clockwise", name: "Refresh", action: onRefreshAction)
-//                IconButton(icon: "checkmark", name: "Submit", confirmPrimaryButtonText: "Submit", action: onSubmitAction)
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
         }

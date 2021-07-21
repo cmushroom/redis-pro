@@ -23,7 +23,7 @@ struct ZSetEditorView: View {
     @State private var editScore:String = "0"
     
     var delButtonDisabled:Bool {
-        selectIndex == nil
+        datasource.count <= 0 || selectIndex == nil
     }
     
     let logger = Logger(label: "redis-set-editor")

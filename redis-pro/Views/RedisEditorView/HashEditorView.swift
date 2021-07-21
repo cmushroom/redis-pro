@@ -29,7 +29,7 @@ struct HashEditorView: View {
     }
     
     var delButtonDisabled:Bool {
-        selectIndex == nil
+        datasource.count <= 0 || selectIndex == nil
     }
     
     let logger = Logger(label: "redis-hash-editor")

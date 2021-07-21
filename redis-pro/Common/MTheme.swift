@@ -17,6 +17,8 @@ struct MTheme {
     static var H_SPACING_L:CGFloat = 10
     static var V_SPACING:CGFloat = 6
     
+    static var HEADER_PADDING:EdgeInsets = EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0)
+    
     // font size
     static var FONT_SIZE_BUTTON:CGFloat = 12
     static var FONT_SIZE_BUTTON_ICON:CGFloat = 11

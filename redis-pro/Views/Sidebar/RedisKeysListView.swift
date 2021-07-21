@@ -64,6 +64,7 @@ struct RedisKeysListView: View {
         HStack(alignment: .center, spacing: 4) {
             Menu(content: {
                 Button("Redis Info", action: onRedisInfoAction)
+                Button("Redis Config", action: onRedisConfigAction)
                 Button("Clients List", action: onShowClientsAction)
                 Button("Slow Log", action: onShowSlowLogAction)
                 MButton(text: "Flush DB", action: onFlushDBAction, isConfirm: true, confirmTitle: "Flush DB ?", confirmMessage: "Are you sure you want to flush db? This operation cannot be undone.")
@@ -108,6 +109,8 @@ struct RedisKeysListView: View {
                     ClientsListView()
                 } else if mainViewType == MainViewTypeEnum.SLOW_LOG {
                     SlowLogView()
+                } else if mainViewType == MainViewTypeEnum.REDIS_CONFIG {
+                    RedisConfigView()
                 } else {
                     EmptyView()
                 }
@@ -199,6 +202,10 @@ struct RedisKeysListView: View {
     func onRedisInfoAction() -> Void {
         self.selectedRedisKeyIndex = nil
         self.mainViewType = MainViewTypeEnum.REDIS_INFO
+    }
+    func onRedisConfigAction() -> Void {
+        self.selectedRedisKeyIndex = nil
+        self.mainViewType = MainViewTypeEnum.REDIS_CONFIG
     }
     
     func onShowClientsAction() -> Void {

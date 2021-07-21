@@ -151,7 +151,7 @@
                     </tableView>
                 </subviews>
             </clipView>
-            <scroller key="horizontalScroller" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="0.90000000000000002" horizontal="YES" id="WpU-4R-chg">
+            <scroller key="horizontalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="WpU-4R-chg">
                 <rect key="frame" x="1" y="282" width="618" height="16"/>
                 <autoresizingMask key="autoresizingMask"/>
             </scroller>

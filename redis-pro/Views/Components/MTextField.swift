@@ -15,17 +15,25 @@ struct MTextField: View {
     @State private var isEditing = false
     var onCommit:() throws -> Void = {}
     var disabled:Bool = false
-    @EnvironmentObject var globalContext:GlobalContext
     var autoCommit:Bool = true
     
     // 是否有编辑过，编回过才会触commit
     @State private var isEdited:Bool = false
+    var autoTrim:Bool = false
+    
+    private var adapterValue: Binding<String> {
+        Binding<String>(get: {
+            return self.value
+        }, set: {
+            self.value = autoTrim ? $0.trimmingCharacters(in: .whitespacesAndNewlines) : $0
+        })
+    }
     
     let logger = Logger(label: "text-field")
     
     var body: some View {
         HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 2) {
-            TextField(placeholder ?? "", text: $value, onEditingChanged: { isEditing in
+            TextField(placeholder ?? "", text: adapterValue, onEditingChanged: { isEditing in
                 self.isEditing = isEditing
                 if isEditing {
                     self.isEdited = true
@@ -66,7 +74,7 @@ struct MTextField: View {
         do {
             try onCommit()
         } catch {
-            globalContext.showError(error)
+            MAlert.error(error)
         }
     }
 }

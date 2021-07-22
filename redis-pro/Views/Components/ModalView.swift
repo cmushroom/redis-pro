@@ -39,7 +39,7 @@ struct ModalView<Content: View>: View {
             HStack(alignment: .center, spacing: 6) {
                 Spacer()
                 MButton(text: "Cancel", action: onCancel).keyboardShortcut(.cancelAction)
-                MButton(text: "Ok", action: doAction).keyboardShortcut(.defaultAction)
+                MButton(text: "Submit", action: doAction, isDefaultAction: true).keyboardShortcut(.defaultAction)
             }
             .padding(EdgeInsets(top: 0, leading: 8, bottom: 6, trailing: 8))
         }

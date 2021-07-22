@@ -24,20 +24,12 @@ struct IconButton: View {
     
     var body: some View {
         
-        Button(action: doAction) {
-//            HStack(alignment: .center, spacing: 1) {
-//                Image(systemName: icon)
-//                    .font(.system(size: MTheme.FONT_SIZE_BUTTON_ICON))
-//                    .padding(0)
-//                    .foregroundColor(Color.init(NSColor.textColor))
-//                Text(name)
-//                    .font(.system(size: MTheme.FONT_SIZE_BUTTON))
-//                    .foregroundColor(Color.init(NSColor.textColor))
-//            }
-            MLabel(name: name, icon: icon)
-            .padding(.horizontal, 4.0)
-        }
-        .buttonStyle(BorderedButtonStyle())
+//        Button(action: doAction) {
+//            MLabel(name: name, icon: icon)
+//            .padding(.horizontal, 4.0)
+//        }
+        NativeButton(title: name, action: doAction, icon: icon, disabled: disabled)
+//        .buttonStyle(BorderedButtonStyle())
         .disabled(disabled)
         .onHover { inside in
             if !disabled && inside {

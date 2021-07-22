@@ -67,7 +67,7 @@ struct RedisKeysListView: View {
                 Button("Redis Config", action: onRedisConfigAction)
                 Button("Clients List", action: onShowClientsAction)
                 Button("Slow Log", action: onShowSlowLogAction)
-                MButton(text: "Flush DB", action: onFlushDBAction, isConfirm: true, confirmTitle: "Flush DB ?", confirmMessage: "Are you sure you want to flush db? This operation cannot be undone.")
+                Button("Flush DB", action: onConfirmFlushDBAction)
             }, label: {
                 Label("", systemImage: "ellipsis.circle")
                 .foregroundColor(.primary)
@@ -216,6 +216,10 @@ struct RedisKeysListView: View {
     func onShowSlowLogAction() -> Void {
         self.selectedRedisKeyIndex = nil
         self.mainViewType = MainViewTypeEnum.SLOW_LOG
+    }
+    
+    func onConfirmFlushDBAction() -> Void {
+        MAlert.confirm("Flush DB ?", message: "Are you sure you want to flush db? This operation cannot be undone.", primaryAction: onFlushDBAction)
     }
     
     func onFlushDBAction() -> Void {

@@ -9,7 +9,7 @@ English | [简体中文](./README.zh_CN.md)
 
 ## Intro
 * redis-pro is a simple and easy to use management of redis， written in SwiftUI.
-* [Sequel-Ace](https://github.com/Sequel-Ace/Sequel-Ace) and Aliyun DMS was borrowed from the development process，Sequel-Ace (Sequel-Pro) is a simple and easy to use mysql management
+* [Sequel-Ace](https://github.com/Sequel-Ace/Sequel-Ace) and Aliyun DMS was borrowed in the development process，Sequel-Ace (Sequel-Pro) is a simple and easy to use mysql management
 
 ## Install
 * download package in release page

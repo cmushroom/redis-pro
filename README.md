@@ -30,6 +30,7 @@ support macos (Intel, Apple Silicon) platform,  will support ipad os in the futu
 - [x] homebrew install
 - [x] slow log
 - [x] redis config update
+- [ ] delete batch
 - [ ] ssh login
 - [ ] ipad os support
     

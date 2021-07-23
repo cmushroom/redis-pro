@@ -63,6 +63,11 @@ struct IconButton_Previews: PreviewProvider {
         VStack(alignment: .center, spacing: 10) {
             IconButton(icon: "plus", name: "Add")
             
+            Text("Hello \(Image(systemName: "globe"))")
+            Text("Aaa \(Image(systemName: "questionmark.circle"))").multilineTextAlignment(.center).frame(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+            
+            Button("aaa \(Image(systemName: "questionmark.circle"))", action: {})
+            
             Label("Add", systemImage: "plus")
             
             Label {

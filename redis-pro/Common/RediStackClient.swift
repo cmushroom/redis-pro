@@ -1226,7 +1226,8 @@ class RediStackClient{
                                     }
                                     if line.contains(":") {
                                         let infoArr = line.components(separatedBy: ":")
-                                        item?.infos.append((infoArr[0].trimmingCharacters(in: .whitespacesAndNewlines), infoArr[1].trimmingCharacters(in: .whitespacesAndNewlines)))
+                                        let redisInfoItemModel = RedisInfoItemModel(section: item?.section ?? "", key: infoArr[0].trimmingCharacters(in: .whitespacesAndNewlines), value: infoArr[1].trimmingCharacters(in: .whitespacesAndNewlines))
+                                        item?.infos.append(redisInfoItemModel)
                                     }
                                 })
                                 resolver.fulfill(redisInfoModels)
@@ -1239,6 +1240,27 @@ class RediStackClient{
             })
         
         afterPromise(promise)
+        return promise
+    }
+    
+    func resetState() -> Promise<Bool> {
+        logger.info("reset state...")
+        let promise =
+            getConnectionAsync().then({ connection in
+                Promise<Bool> { resolver in
+                    connection.send(command: "CONFIG", with: [RESPValue(from: "RESETSTAT")])
+                        .whenComplete({completion in
+                            if case .success(let res) = completion {
+                                self.logger.info("reset state res: \(res)")
+                                resolver.fulfill(res.string == "OK")
+                            }
+                            else if case .failure(let error) = completion {
+                                resolver.reject(error)
+                            }
+                        })
+                }
+            })
+        
         return promise
     }
     
@@ -1378,6 +1400,70 @@ class RediStackClient{
 
 // config
 extension RediStackClient {
+    func getConfigList(_ pattern:String = "*") -> Promise<[RedisConfigItemModel]> {
+        logger.info("get redis config list, pattern: \(pattern)...")
+        globalContext?.loading = true
+        
+        var _pattern = pattern
+        if pattern.isEmpty {
+            _pattern = "*"
+        }
+    
+        let promise =
+            getConnectionAsync().then({ connection in
+                Promise<[RedisConfigItemModel]> { resolver in
+                    connection.send(command: "CONFIG", with: [RESPValue(from: "GET"), RESPValue(from: _pattern)])
+                        .whenComplete({completion in
+                            if case .success(let res) = completion {
+                                self.logger.info("get redis config list res: \(res)")
+                                
+                                let configs = res.array ?? []
+                                
+                                var configList = [RedisConfigItemModel]()
+                                
+                                let max:Int = configs.count / 2
+                                
+                                for index in (0..<max) {
+                                    configList.append(RedisConfigItemModel(key: configs[ index * 2].string, value: configs[index * 2 + 1].string))
+                                }
+                                
+                                resolver.fulfill(configList)
+                            }
+                            else if case .failure(let error) = completion {
+                                resolver.reject(error)
+                            }
+                        })
+                }
+            })
+        
+        afterPromise(promise)
+        return promise
+    }
+    
+    func configRewrite() -> Promise<Bool> {
+        logger.info("redis config rewrite ...")
+        globalContext?.loading = true
+        
+        let promise =
+            getConnectionAsync().then({ connection in
+                Promise<Bool> { resolver in
+                    connection.send(command: "CONFIG", with: [RESPValue(from: "REWRITE")])
+                        .whenComplete({completion in
+                            if case .success(let res) = completion {
+                                self.logger.info("redis config rewrite res: \(res)")
+                                resolver.fulfill(res.string == "OK")
+                            }
+                            else if case .failure(let error) = completion {
+                                resolver.reject(error)
+                            }
+                        })
+                }
+            })
+        
+        afterPromise(promise)
+        return promise
+    }
+    
     func getConfigOne(key:String) -> Promise<String?> {
         logger.info("get redis config ...")
         
@@ -1387,7 +1473,7 @@ extension RediStackClient {
                     connection.send(command: "CONFIG", with: [RESPValue(from: "GET"), RESPValue(from: key)])
                         .whenComplete({completion in
                             if case .success(let res) = completion {
-                                self.logger.info("get slow log slower than res: \(res)")
+                                self.logger.info("get redis config one res: \(res)")
                                 resolver.fulfill(res.array?[1].string)
                             }
                             else if case .failure(let error) = completion {
@@ -1420,6 +1506,7 @@ extension RediStackClient {
                 }
             })
         
+        afterPromise(promise)
         return promise
     }
     

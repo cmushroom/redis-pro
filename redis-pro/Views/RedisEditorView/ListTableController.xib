@@ -41,11 +41,11 @@
                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                 <prototypeCellViews>
                                     <tableCellView id="63P-A6-ACY">
-                                        <rect key="frame" x="5" y="6" width="581" height="14"/>
+                                        <rect key="frame" x="5" y="6" width="588" height="14"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pRD-fa-byV">
-                                                <rect key="frame" x="0.0" y="0.0" width="581" height="14"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="588" height="14"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                 <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="bEB-cE-foM">
                                                     <font key="font" metaFont="smallSystem"/>

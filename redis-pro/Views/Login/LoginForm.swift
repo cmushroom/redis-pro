@@ -53,7 +53,7 @@ struct LoginForm: View {
                     
                     Spacer()
                     
-                    MButton(text: "Connect", action: onConnect, disabled: self.globalContext.loading)
+                    MButton(text: "Connect", action: onConnect, disabled: self.globalContext.loading, isDefaultAction: true)
                         .buttonStyle(BorderedButtonStyle())
                         .keyboardShortcut(.defaultAction)
                     
@@ -75,10 +75,11 @@ struct LoginForm: View {
             Form {
                 Section {
                     VStack(alignment: .leading, spacing: 14) {
-                        FormItemText(label: "Name", placeholder: "name", value: $redisModel.name)
+                        FormItemText(label: "Name", placeholder: "name", value: $redisModel.name, autoTrim: true)
                         FormItemText(label: "Host", placeholder: "host", value: $redisModel.host)
                         FormItemInt(label: "Port", placeholder: "port", value: $redisModel.port)
-                        FormItemText(label: "Password", value: $redisModel.password)
+//                        FormItemText(label: "Password", value: $redisModel.password)
+                        FormItemSecure(label: "Password", value: $redisModel.password)
                         FormItemInt(label: "Database", value: $redisModel.database)
                     }
                 }

@@ -1,8 +1,8 @@
 //
-//  SlowLogTableController.swift
+//  RedisInfoTableController.swift
 //  redis-pro
 //
-//  Created by chengpanwang on 2021/7/14.
+//  Created by chengpanwang on 2021/7/19.
 //
 
 import Foundation
@@ -10,38 +10,29 @@ import Cocoa
 import Logging
 import SwiftUI
 
-class SlowLogTableController: NSViewController {
-    @objc dynamic var datasource: [Any] = []
+class RedisInfoTableController: NSViewController {
+    @objc dynamic var datasource: [RedisInfoItemModel] = []
     
     @IBOutlet weak var tableView: NSTableView!
     @IBOutlet var arrayController: NSArrayController!
     
-    override func viewWillAppear() {
-     
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // 提示
-        for column in tableView.tableColumns {
-            let tip:String = NSLocalizedString("REDIS_SLOW_LOG_\(column.identifier.rawValue)".uppercased(), tableName: nil, bundle: Bundle.main, value: "", comment: "")
-            column.title = column.title + " ?"
-            column.headerToolTip = tip
-        }
-        
     }
         
-    func setDatasource(_ datasource:[Any]) -> Void {
+    func setDatasource(_ datasource:[RedisInfoItemModel]) -> Void {
         self.datasource = datasource
     }
 }
 
-struct SlowLogTable: NSViewControllerRepresentable {
-    @Binding var datasource: [Any]
+
+
+
+struct RedisInfoTable: NSViewControllerRepresentable {
+    @Binding var datasource: [RedisInfoItemModel]
     @Binding var selectRowIndex:Int?
     
-    let logger = Logger(label: "slow-log-table")
+    let logger = Logger(label: "redis-info-table")
     
     func makeCoordinator() -> Coordinator {
         return Coordinator(self)
@@ -49,7 +40,7 @@ struct SlowLogTable: NSViewControllerRepresentable {
     
     
     func makeNSViewController(context: Context) -> NSViewController {
-        let controller = SlowLogTableController()
+        let controller = RedisInfoTableController()
         
         return controller
     }
@@ -57,7 +48,7 @@ struct SlowLogTable: NSViewControllerRepresentable {
     
     func updateNSViewController(_ nsViewController: NSViewController, context: Context) {
             
-        guard let controller = nsViewController as? SlowLogTableController else {return}
+        guard let controller = nsViewController as? RedisInfoTableController else {return}
         controller.setDatasource(datasource)
         controller.tableView?.delegate = context.coordinator
         
@@ -67,12 +58,12 @@ struct SlowLogTable: NSViewControllerRepresentable {
     
     class Coordinator: NSObject, NSTableViewDelegate {
         
-        var table: SlowLogTable
+        var table: RedisInfoTable
         
-        let logger = Logger(label: "slow-log-table-coordinator")
+        let logger = Logger(label: "redis-info-table-coordinator")
         
         
-        init(_ table: SlowLogTable) {
+        init(_ table: RedisInfoTable) {
             self.table = table
         
         }

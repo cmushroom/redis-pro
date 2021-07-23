@@ -13,6 +13,8 @@ enum MainViewTypeEnum{
     // 编辑器
     case EDITOR
     case REDIS_INFO
+    case REDIS_CONFIG
     case CLIENT_LIST
     case SLOW_LOG
+    
 }

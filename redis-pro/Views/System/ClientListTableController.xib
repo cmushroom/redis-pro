@@ -21,7 +21,7 @@
                 <rect key="frame" x="1" y="1" width="1696" height="354"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
-                    <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="14" headerView="R1G-fs-Zwo" viewBased="YES" id="hIO-5W-eZR">
+                    <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" tableStyle="fullWidth" alternatingRowBackgroundColors="YES" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="14" headerView="R1G-fs-Zwo" viewBased="YES" id="hIO-5W-eZR">
                         <rect key="frame" x="0.0" y="0.0" width="1696" height="326"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <size key="intercellSpacing" width="10" height="12"/>
@@ -801,7 +801,7 @@
                                     </tableCellView>
                                 </prototypeCellViews>
                             </tableColumn>
-                            <tableColumn identifier="user" width="102" minWidth="10" maxWidth="3.4028234663852886e+38" id="MPA-Fh-x4p">
+                            <tableColumn identifier="user" width="88" minWidth="10" maxWidth="3.4028234663852886e+38" id="MPA-Fh-x4p">
                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="user">
                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -814,11 +814,11 @@
                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                 <prototypeCellViews>
                                     <tableCellView id="soc-TG-Q6U">
-                                        <rect key="frame" x="1588" y="6" width="103" height="17"/>
+                                        <rect key="frame" x="1588" y="6" width="89" height="17"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="S4V-PT-g1s">
-                                                <rect key="frame" x="0.0" y="1" width="103" height="14"/>
+                                                <rect key="frame" x="0.0" y="1" width="89" height="14"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                 <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="E9J-OO-BIo">
                                                     <font key="font" metaFont="smallSystem"/>

@@ -6,8 +6,15 @@
 //
 import Foundation
 
-struct RedisInfoModel:Identifiable {
+class RedisInfoModel:NSObject, Identifiable {
     var id = UUID()
-    var section:String
-    var infos:[(String, String)] = [(String, String)]()
+    var section:String = ""
+    var infos:[RedisInfoItemModel] = [RedisInfoItemModel]()
+    
+    override init() {
+    }
+    
+    init(section:String) {
+        self.section = section
+    }
 }

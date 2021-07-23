@@ -10,6 +10,9 @@
 "UNIT_MICROSECOND" = "1 second = 1,000,000 microsecond";
 
 
+// ------------------------------------------------ Redis Config Start...-------------------------------------------------------
+"REDIS_CONFIG_REWRITE" = "The CONFIG REWRITE command rewrites the redis.conf file the server was started with, applying the minimal changes needed to make it reflect the configuration currently used by the server, which may be different compared to the original one because of the use of the CONFIG SET command.";
+// ------------------------------------------------ Redis Config End...-------------------------------------------------------
 
 // ------------------------------------------------ Redis Slow Log Start...-------------------------------------------------------
 "REDIS_SLOW_LOG_ID" = "A unique progressive identifier for every slow log entry, The ID is never reset in the course of the Redis server execution, only a server restart will reset it";

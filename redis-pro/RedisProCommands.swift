@@ -49,7 +49,7 @@ struct RedisProCommands: Commands {
             })
             .keyboardShortcut("t", modifiers: [.command])
         }
-        
+
         CommandGroup(replacing: CommandGroupPlacement.help) {
             HelpCommands()
             HomePageCommands()

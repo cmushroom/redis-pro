@@ -15,18 +15,16 @@ struct StringEditorView: View {
     
     @ObservedObject var redisKeyModel:RedisKeyModel
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
-    @EnvironmentObject var globalContext:GlobalContext
-    @Environment(\.colorScheme) var colorScheme
     
     let logger = Logger(label: "redis-string-editor")
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            VStack(alignment: .leading, spacing: 4){
+            VStack(alignment: .leading, spacing: MTheme.V_SPACING){
                 // text editor
                 MTextView(text: $text)
             }
-            .background(colorScheme == .dark ? Color.clear : Color.white)
+            .background(Color.init(NSColor.textBackgroundColor))
 
             // footer
             HStack(alignment: .center, spacing: MTheme.H_SPACING) {

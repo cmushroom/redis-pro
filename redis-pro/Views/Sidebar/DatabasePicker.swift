@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct DatabasePicker: View {
-    @EnvironmentObject var globalContext:GlobalContext
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @State private var databases:Int = 16
     @State var database:Int = 0
@@ -16,33 +15,21 @@ struct DatabasePicker: View {
     var action: () -> Void = {}
     
     var body: some View {
-//        Picker(selection: $selection, label: Text("􀡓 DB\(selection)")) {
-//                    ForEach(0 ..< databases) { item in
-//                            Text("DB\(item)")
-//                        }
-//                    }
-//        .labelsHidden()
-//                    .pickerStyle(DefaultPickerStyle())
-  
-        //                    Button("􀡓 DB\(database)", action: {})
-        //                   Label("DB\(database)", systemImage: "cylinder.split.1x2")
-        MenuButton(label:
-                    Text("􀡓 DB\(database)")
-//                    .foregroundColor(.primary)
-//                    .disabled(false)
-                    .font(.system(size: 10.0))
-        ){
+        Menu(content: {
             ForEach(0 ..< databases) { item in
                 Button("DB\(item)", action: {onSelectDatabaseAction(item)})
                     .font(.system(size: 10.0))
+                    .foregroundColor(.primary)
             }
-        }
-        .frame(width:50)
-        .menuButtonStyle(BorderlessPullDownMenuButtonStyle())
+        }, label: {
+            MLabel(name: "DB\(database)", icon: "cylinder.split.1x2").font(.system(size: 8))
+        })
+        .scaleEffect(0.9)
+        .frame(width:56)
+        .menuStyle(BorderlessButtonMenuStyle())
         .onAppear{
             queryDBList()
         }
-        
     }
     
     
@@ -62,8 +49,10 @@ struct DatabasePicker: View {
 
 
 struct DatabasePicker_Previews: PreviewProvider {
+    @State static var redisInstanceModel:RedisInstanceModel = RedisInstanceModel(redisModel: RedisModel())
+    
     static var previews: some View {
-        DatabasePicker()
+        DatabasePicker().environmentObject(redisInstanceModel)
     }
 }
 

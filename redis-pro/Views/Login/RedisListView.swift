@@ -44,32 +44,7 @@ struct RedisListView: View {
             VStack(alignment: .leading,
                    spacing: 0) {
                 redisTable
-//                List(selection: $selectedRedisModelId) {
-//                    ForEach(quickRedisModel) { redisModel in
-//                        RedisQuickRow(redisModel: redisModel)
-//                            .listRowInsets(EdgeInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0)))
-//                    }
-//
-//                    Section(header: Text("FAVORITES")) {
-//                        ForEach(filteredRedisModel) { redisModel in
-//                            RedisRow(redisModel: redisModel)
-//                                .tag(redisModel.id)
-//                                .contentShape(Rectangle())
-//                                .gesture(TapGesture(count: 2).onEnded {
-//                                    onConnect()
-//                                })
-//                                .simultaneousGesture(TapGesture().onEnded {
-//                                    self.selectedRedisModelId = redisModel.id
-//                                })
-//                        }
-//                    }
-//                    .collapsible(false)
-//
-//                }
-//                .listStyle(PlainListStyle())
-//                .padding(.all, 0)
-                
-                
+
                 // footer
                 HStack(alignment: .center) {
                     MIcon(icon: "plus", fontSize: 13, action: onAddAction)

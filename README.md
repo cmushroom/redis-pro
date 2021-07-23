@@ -29,7 +29,7 @@ support macos (Intel, Apple Silicon) platform,  will support ipad os in the futu
 - [x] client list and kill 
 - [x] homebrew install
 - [x] slow log
-- [ ] redis config update
+- [x] redis config update
 - [ ] ssh login
 - [ ] ipad os support
     

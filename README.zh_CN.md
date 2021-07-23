@@ -30,7 +30,8 @@
 - [x] client list and kill 
 - [x] homebrew install
 - [x] slow log
-- [ ] redis config update
+- [x] redis config update
+- [ ] delete batch
 - [ ] ssh login
 - [ ] ipad os support
     

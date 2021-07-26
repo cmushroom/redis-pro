@@ -10,6 +10,7 @@ import NIO
 import RediStack
 import Logging
 import PromiseKit
+import NIOSSH
 
 class RediStackClient{
     var redisModel:RedisModel
@@ -1053,6 +1054,93 @@ class RediStackClient{
         return promise
     }
     
+    func getConnectionAsync() -> Promise<RedisConnection> {
+        if self.connection != nil && self.connection!.isConnected{
+            self.logger.info("get redis exist connection...")
+            return Promise<RedisConnection>.value(self.connection!)
+        } else {
+            self.close()
+        }
+        
+        return Promise<RedisConnection>{ resolver in
+            self.logger.info("start get new redis connection...")
+            
+            let eventLoop = MultiThreadedEventLoopGroup(numberOfThreads: 1).next()
+            var configuration: RedisConnection.Configuration
+            do {
+                if (self.redisModel.password.isEmpty) {
+                    configuration = try RedisConnection.Configuration(hostname: self.redisModel.host, port: self.redisModel.port, initialDatabase: self.redisModel.database, defaultLogger: logger)
+                } else {
+                    configuration = try RedisConnection.Configuration(hostname: self.redisModel.host, port: self.redisModel.port, password: self.redisModel.password, initialDatabase: self.redisModel.database, defaultLogger: logger)
+                }
+                
+                let future = RedisConnection.make(
+                    configuration: configuration
+                    , boundEventLoop: eventLoop
+                )
+                
+                future.whenSuccess({ redisConnection in
+                    self.connection = redisConnection
+                    resolver.fulfill(redisConnection)
+                    self.logger.info("get new redis connection success")
+                })
+                future.whenFailure({ error in
+                    self.logger.info("get new redis connection error: \(error)")
+                    
+                    resolver.reject(error)
+                })
+                
+            } catch {
+                self.logger.error("get new redis connection error \(error)")
+                resolver.reject(error)
+            }
+        }
+    }
+    
+    func getConnection() -> RedisConnection{
+        return self.connection!
+    }
+    
+    func getSSH() -> Void {
+
+//            .channelInitializer { channel in
+//                // important: The handler must be initialized _inside_ the `channelInitializer`
+//                let handler = try NIOSSLClientHandler(context: sslContext)
+
+//                [...]
+//                channel.pipeline.addHandler(handler)
+//                [...]
+//            }
+        
+//        RedisConnection.make(configuration: <#T##RedisConnection.Configuration#>, boundEventLoop: <#T##EventLoop#>, configuredTCPClient: <#T##ClientBootstrap?#>)
+    }
+    
+    func close() -> Void {
+        if connection == nil {
+            logger.info("close redis connection, connection is nil, over...")
+            return
+        }
+        
+        connection!.close().whenComplete({completion in
+            self.connection = nil
+            self.logger.info("redis connection close success")
+        })
+    }
+    
+    func afterPromise<T:CatchMixin>(_ promise:T) -> Void {
+        promise
+            .catch({error in
+                self.globalContext?.showError(error)
+            })
+            .finally {
+                self.globalContext?.loading = false
+            }
+    }
+}
+
+// system
+extension RediStackClient {
+    
     func selectDB(_ database: Int) -> Promise<Void> {
         let promise = getConnectionAsync().then({connection in
             Promise<Void> {resolver in
@@ -1096,7 +1184,6 @@ class RediStackClient{
         afterPromise(promise)
         return promise
     }
-    
     
     private func dbsizeAsync() -> Promise<Int> {
         let promise =
@@ -1327,76 +1414,7 @@ class RediStackClient{
         }
     }
     
-    func getConnectionAsync() -> Promise<RedisConnection> {
-        if self.connection != nil && self.connection!.isConnected{
-            self.logger.info("get redis exist connection...")
-            return Promise<RedisConnection>.value(self.connection!)
-        } else {
-            self.close()
-        }
-        
-        return Promise<RedisConnection>{ resolver in
-            self.logger.info("start get new redis connection...")
-            let eventLoop = MultiThreadedEventLoopGroup(numberOfThreads: 1).next()
-            var configuration: RedisConnection.Configuration
-            do {
-                if (self.redisModel.password.isEmpty) {
-                    configuration = try RedisConnection.Configuration(hostname: self.redisModel.host, port: self.redisModel.port, initialDatabase: self.redisModel.database)
-                } else {
-                    configuration = try RedisConnection.Configuration(hostname: self.redisModel.host, port: self.redisModel.port, password: self.redisModel.password, initialDatabase: self.redisModel.database)
-                }
-                
-                
-                let future = RedisConnection.make(
-                    configuration: configuration
-                    , boundEventLoop: eventLoop
-                )
-                
-                future.whenSuccess({ redisConnection in
-                    self.connection = redisConnection
-                    resolver.fulfill(redisConnection)
-                    self.logger.info("get new redis connection success")
-                })
-                future.whenFailure({ error in
-                    self.logger.info("get new redis connection error: \(error)")
-                    
-                    resolver.reject(error)
-                })
-                
-            } catch {
-                self.logger.error("get new redis connection error \(error)")
-                resolver.reject(error)
-            }
-        }
-    }
-    
-    func getConnection() -> RedisConnection{
-        return self.connection!
-    }
-    
-    func close() -> Void {
-        if connection == nil {
-            logger.info("close redis connection, connection is nil, over...")
-            return
-        }
-        
-        connection!.close().whenComplete({completion in
-            self.connection = nil
-            self.logger.info("redis connection close success")
-        })
-    }
-    
-    func afterPromise<T:CatchMixin>(_ promise:T) -> Void {
-        promise
-            .catch({error in
-                self.globalContext?.showError(error)
-            })
-            .finally {
-                self.globalContext?.loading = false
-            }
-    }
 }
-
 
 // config
 extension RediStackClient {

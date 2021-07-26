@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4301C82826AE8DE500C08E19 /* Crypto in Frameworks */ = {isa = PBXBuildFile; productRef = 4301C82726AE8DE500C08E19 /* Crypto */; };
+		4301C82B26AE8E0400C08E19 /* NIOSSH in Frameworks */ = {isa = PBXBuildFile; productRef = 4301C82A26AE8E0400C08E19 /* NIOSSH */; };
+		4301C82D26AEAE8900C08E19 /* NIOSSHTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4301C82C26AEAE8900C08E19 /* NIOSSHTests.swift */; };
 		430A09D325BEA91700B60DFC /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430A09D225BEA91700B60DFC /* LoginView.swift */; };
 		430A09D625BEA98300B60DFC /* RedisListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430A09D525BEA98300B60DFC /* RedisListView.swift */; };
 		430A09D925BEA9A700B60DFC /* RedisRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430A09D825BEA9A700B60DFC /* RedisRow.swift */; };
@@ -161,6 +164,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4301C82C26AEAE8900C08E19 /* NIOSSHTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NIOSSHTests.swift; sourceTree = "<group>"; };
 		430A09D225BEA91700B60DFC /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		430A09D525BEA98300B60DFC /* RedisListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisListView.swift; sourceTree = "<group>"; };
 		430A09D825BEA9A700B60DFC /* RedisRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisRow.swift; sourceTree = "<group>"; };
@@ -305,11 +309,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4301C82B26AE8E0400C08E19 /* NIOSSH in Frameworks */,
 				438BBEB52655015D00B458BF /* CrashReporter in Frameworks */,
 				623704F5265A27760084CCA8 /* AppCenterCrashes in Frameworks */,
 				436BB68726440584008B4866 /* CoreMetrics in Frameworks */,
 				43CD28AA267B64FA00E11876 /* Puppy in Frameworks */,
 				62C48932265A138D00D68D06 /* Logging in Frameworks */,
+				4301C82826AE8DE500C08E19 /* Crypto in Frameworks */,
 				62C48938265A13E500D68D06 /* NIO in Frameworks */,
 				4340E2C82666257500F51F19 /* SwiftyJSON in Frameworks */,
 				436BB68926440584008B4866 /* Metrics in Frameworks */,
@@ -497,6 +503,7 @@
 		4340E2BB2666236200F51F19 /* redisProTests */ = {
 			isa = PBXGroup;
 			children = (
+				4301C82C26AEAE8900C08E19 /* NIOSSHTests.swift */,
 				43CD28692670933F00E11876 /* CheckUpdateTests.swift */,
 				433FC19D2667B3530091CB32 /* FileManagerTests.swift */,
 				43650AED26677BBC00D11CE7 /* LogTests.swift */,
@@ -631,6 +638,8 @@
 				4340E2C72666257500F51F19 /* SwiftyJSON */,
 				43CD28A9267B64FA00E11876 /* Puppy */,
 				438BE52D268C5A660058D164 /* PromiseKit */,
+				4301C82726AE8DE500C08E19 /* Crypto */,
+				4301C82A26AE8E0400C08E19 /* NIOSSH */,
 			);
 			productName = "redis-pro";
 			productReference = 4320AAF025B6740900A8E214 /* redis-pro.app */;
@@ -692,6 +701,8 @@
 				4340E2C62666257500F51F19 /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
 				43CD28A8267B64FA00E11876 /* XCRemoteSwiftPackageReference "Puppy" */,
 				438BE52C268C5A650058D164 /* XCRemoteSwiftPackageReference "PromiseKit" */,
+				4301C82626AE8DE500C08E19 /* XCRemoteSwiftPackageReference "swift-crypto" */,
+				4301C82926AE8E0400C08E19 /* XCRemoteSwiftPackageReference "swift-nio-ssh" */,
 			);
 			productRefGroup = 4320AAF125B6740900A8E214 /* Products */;
 			projectDirPath = "";
@@ -854,6 +865,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4301C82D26AEAE8900C08E19 /* NIOSSHTests.swift in Sources */,
 				432A6AE726A7CE9C00F6DB64 /* NumberTests.swift in Sources */,
 				43CD286A2670933F00E11876 /* CheckUpdateTests.swift in Sources */,
 				4340E2C52666239F00F51F19 /* JsonPrettyFormatTests.swift in Sources */,
@@ -1012,7 +1024,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_ASSET_PATHS = "\"redis-pro/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "redis-pro/Info.plist";
@@ -1021,7 +1033,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.cmushroom.redis-pro";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -1037,7 +1049,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_ASSET_PATHS = "\"redis-pro/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
@@ -1047,7 +1059,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.cmushroom.redis-pro";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1128,6 +1140,22 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		4301C82626AE8DE500C08E19 /* XCRemoteSwiftPackageReference "swift-crypto" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://gitee.com/mirrors_apple/swift-crypto.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.6;
+			};
+		};
+		4301C82926AE8E0400C08E19 /* XCRemoteSwiftPackageReference "swift-nio-ssh" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://gitee.com/mirrors_apple/swift-nio-ssh.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.3.0;
+			};
+		};
 		4340E2C62666257500F51F19 /* XCRemoteSwiftPackageReference "SwiftyJSON" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://gitee.com/chengpan168_admin/SwiftyJSON.git";
@@ -1212,6 +1240,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		4301C82726AE8DE500C08E19 /* Crypto */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4301C82626AE8DE500C08E19 /* XCRemoteSwiftPackageReference "swift-crypto" */;
+			productName = Crypto;
+		};
+		4301C82A26AE8E0400C08E19 /* NIOSSH */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4301C82926AE8E0400C08E19 /* XCRemoteSwiftPackageReference "swift-nio-ssh" */;
+			productName = NIOSSH;
+		};
 		4340E2C72666257500F51F19 /* SwiftyJSON */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4340E2C62666257500F51F19 /* XCRemoteSwiftPackageReference "SwiftyJSON" */;

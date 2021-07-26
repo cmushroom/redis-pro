@@ -6,6 +6,7 @@ English | [简体中文](./README.zh_CN.md)
 [![release](https://img.shields.io/github/v/release/cmushroom/redis-pro?include_prereleases)](https://github.com/cmushroom/redis-pro/releases)
 [![license](https://img.shields.io/badge/license-Apache%202-blue)](https://github.com/cmushroom/redis-pro/blob/main/LICENSE)
 ![platforms](https://img.shields.io/badge/Platforms-macOS%20-orange.svg?style=flat)
+[![Gitter](https://badges.gitter.im/redis-pro/community.svg)](https://gitter.im/redis-pro/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 ## Intro
 * redis-pro is a simple and easy to use management of redis， written in SwiftUI.

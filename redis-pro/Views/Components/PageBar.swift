@@ -12,16 +12,19 @@ struct PageBar: View {
     @EnvironmentObject var globalContext:GlobalContext
     @ObservedObject var page:Page
     var action:() throws -> Void = {}
+    var showTotal:Bool = true
     
     let logger = Logger(label: "page-bar")
     
     var body: some View {
         HStack(alignment:.center, spacing: 4) {
             Spacer()
-            Text("Total: \(page.total)")
-                .font(.footnote)
-                .lineLimit(1)
-                .multilineTextAlignment(.trailing)
+            if showTotal {
+                Text("Total: \(page.total)")
+                    .font(MTheme.FONT_FOOTER)
+                    .lineLimit(1)
+                    .multilineTextAlignment(.trailing)
+            }
             
             Picker("", selection: $page.size) {
                 Text("10").tag(10)
@@ -34,18 +37,19 @@ struct PageBar: View {
                 page.firstPage()
                 doAction()
             })
-            .font(.footnote)
+            .font(MTheme.FONT_FOOTER)
             .frame(width: 65)
             
-            HStack(alignment:.center) {
-                MIcon(icon: "chevron.left", action: onPrevPageAction).disabled(!page.hasPrevPage && !globalContext.loading)
+            HStack(alignment:.center, spacing: 2) {
+                MIcon(icon: "chevron.left", action: onPrevPageAction).disabled(!page.hasPrev && !globalContext.loading)
                 Text("\(page.current)/\(page.totalPage)")
-                    .font(.footnote)
+                    .font(MTheme.FONT_FOOTER)
                     .multilineTextAlignment(.center)
                     .lineLimit(1)
-                MIcon(icon: "chevron.right", action: onNextPageAction).disabled(!page.hasNextPage && !globalContext.loading)
+                    .layoutPriority(1)
+                MIcon(icon: "chevron.right", action: onNextPageAction).disabled(!page.hasNext && !globalContext.loading)
             }
-            .layoutPriority(1)
+            .frame(minWidth: 60, idealWidth: 60)
         }
     }
     

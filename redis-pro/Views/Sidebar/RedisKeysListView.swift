@@ -15,10 +15,13 @@ struct RedisKeysListView: View {
     @EnvironmentObject var globalContext:GlobalContext
     @State var redisKeyModels:[RedisKeyModel] = [RedisKeyModel]()
     @State var selectedRedisKeyIndex:Int?
-    @StateObject var scanModel:ScanModel = ScanModel()
+    @StateObject var scanModel:Page = Page()
+    
     @State private var renameModalVisible:Bool = false
     @State private var oldKeyIndex:Int?
     @State private var newKeyName:String = ""
+    
+    @State private var dbsize:Int = 0
     
     @State private var mainViewType:MainViewTypeEnum = MainViewTypeEnum.EDITOR
     
@@ -80,7 +83,11 @@ struct RedisKeysListView: View {
             MIcon(icon: "arrow.clockwise", fontSize: 12, action: onRefreshAction)
                 .help(Helps.REFRESH)
             
-            ScanBar(scanModel: scanModel, action: onQueryKeyPageAction, totalLabel: "dbsize")
+            Spacer(minLength: 0)
+            Text("dbsize: \(dbsize)")
+                .font(MTheme.FONT_FOOTER)
+                .lineLimit(1)
+            PageBar(page: scanModel, action: onQueryKeyPageAction, showTotal: false)
         }
     }
     
@@ -132,7 +139,7 @@ struct RedisKeysListView: View {
             // sidebar
             sidebar
                 .padding(0)
-                .frame(minWidth:240, idealWidth: 240, maxWidth: .infinity)
+                .frame(minWidth:280, idealWidth: 360, maxWidth: .infinity)
                 .layoutPriority(0)
             
             // content
@@ -197,6 +204,9 @@ struct RedisKeysListView: View {
     
     func onRefreshAction() -> Void {
         self.onSearchKeyAction()
+        let _ = self.redisInstanceModel.getClient().dbsizeAsync().done { r in
+            self.dbsize = r
+        }
     }
     
     func onRedisInfoAction() -> Void {
@@ -229,7 +239,7 @@ struct RedisKeysListView: View {
     }
     
     func onSearchKeyAction() -> Void {
-        scanModel.resetHead()
+        scanModel.reset()
         onQueryKeyPageAction()
     }
     

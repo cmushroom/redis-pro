@@ -10,6 +10,8 @@
 		4301C82826AE8DE500C08E19 /* Crypto in Frameworks */ = {isa = PBXBuildFile; productRef = 4301C82726AE8DE500C08E19 /* Crypto */; };
 		4301C82B26AE8E0400C08E19 /* NIOSSH in Frameworks */ = {isa = PBXBuildFile; productRef = 4301C82A26AE8E0400C08E19 /* NIOSSH */; };
 		4301C82D26AEAE8900C08E19 /* NIOSSHTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4301C82C26AEAE8900C08E19 /* NIOSSHTests.swift */; };
+		4301C82F26B0EEB800C08E19 /* Stopwatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4301C82E26B0EEB800C08E19 /* Stopwatch.swift */; };
+		4301C83426B125B800C08E19 /* RediStackClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4301C83026B1244900C08E19 /* RediStackClientTests.swift */; };
 		430A09D325BEA91700B60DFC /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430A09D225BEA91700B60DFC /* LoginView.swift */; };
 		430A09D625BEA98300B60DFC /* RedisListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430A09D525BEA98300B60DFC /* RedisListView.swift */; };
 		430A09D925BEA9A700B60DFC /* RedisRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430A09D825BEA9A700B60DFC /* RedisRow.swift */; };
@@ -165,6 +167,8 @@
 
 /* Begin PBXFileReference section */
 		4301C82C26AEAE8900C08E19 /* NIOSSHTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NIOSSHTests.swift; sourceTree = "<group>"; };
+		4301C82E26B0EEB800C08E19 /* Stopwatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stopwatch.swift; sourceTree = "<group>"; };
+		4301C83026B1244900C08E19 /* RediStackClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RediStackClientTests.swift; sourceTree = "<group>"; };
 		430A09D225BEA91700B60DFC /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		430A09D525BEA98300B60DFC /* RedisListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisListView.swift; sourceTree = "<group>"; };
 		430A09D825BEA9A700B60DFC /* RedisRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisRow.swift; sourceTree = "<group>"; };
@@ -496,6 +500,7 @@
 				43CD28AB267B67C600E11876 /* PuppyLogger.swift */,
 				43CD28AD267B6E0E00E11876 /* LoggerFactory.swift */,
 				43CD28B5267C7CF400E11876 /* Objects.swift */,
+				4301C82E26B0EEB800C08E19 /* Stopwatch.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -503,6 +508,7 @@
 		4340E2BB2666236200F51F19 /* redisProTests */ = {
 			isa = PBXGroup;
 			children = (
+				4301C83026B1244900C08E19 /* RediStackClientTests.swift */,
 				4301C82C26AEAE8900C08E19 /* NIOSSHTests.swift */,
 				43CD28692670933F00E11876 /* CheckUpdateTests.swift */,
 				433FC19D2667B3530091CB32 /* FileManagerTests.swift */,
@@ -818,6 +824,7 @@
 				430A09D625BEA98300B60DFC /* RedisListView.swift in Sources */,
 				431266E5261D4E2700FB6B69 /* RedisValueView.swift in Sources */,
 				4370CE702685C4B2001E5787 /* ClientListTable.swift in Sources */,
+				4301C82F26B0EEB800C08E19 /* Stopwatch.swift in Sources */,
 				62CB3D752619AEC20061E8C3 /* RedisKeysListView.swift in Sources */,
 				432A6ADF26A7C3D200F6DB64 /* RedisConfigView.swift in Sources */,
 				43F22EFF26A129B300A00F97 /* RedisHashEntryModel.swift in Sources */,
@@ -866,6 +873,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4301C82D26AEAE8900C08E19 /* NIOSSHTests.swift in Sources */,
+				4301C83426B125B800C08E19 /* RediStackClientTests.swift in Sources */,
 				432A6AE726A7CE9C00F6DB64 /* NumberTests.swift in Sources */,
 				43CD286A2670933F00E11876 /* CheckUpdateTests.swift in Sources */,
 				4340E2C52666239F00F51F19 /* JsonPrettyFormatTests.swift in Sources */,

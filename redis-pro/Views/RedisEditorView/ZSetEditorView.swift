@@ -125,13 +125,13 @@ struct ZSetEditorView: View {
     }
     
     func onRefreshAction() throws -> Void {
-        page.resetHead()
+        page.reset()
         queryPage(redisKeyModel)
         try ttl(redisKeyModel)
     }
     
     func onQueryField() -> Void {
-        page.resetHead()
+        page.reset()
         queryPage(redisKeyModel)
     }
     

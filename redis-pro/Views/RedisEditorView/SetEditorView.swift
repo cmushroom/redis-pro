@@ -115,13 +115,13 @@ struct SetEditorView: View {
     }
     
     func onRefreshAction() throws -> Void {
-        page.resetHead()
+        page.reset()
         queryPage(redisKeyModel)
         ttl(redisKeyModel)
     }
     
     func onQueryField() throws -> Void {
-        page.resetHead()
+        page.reset()
         queryPage(redisKeyModel)
     }
     

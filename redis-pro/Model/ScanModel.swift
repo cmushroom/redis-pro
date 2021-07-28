@@ -18,12 +18,26 @@ class ScanModel:ObservableObject, CustomStringConvertible {
     
     let logger = Logger(label: "scan-model")
     
+    var totalPage:Int {
+        if total <= 0 {
+            return 1
+        }
+        
+        if total % size == 0 {
+            return total / size
+        } else {
+            return total / size + 1
+        }
+    }
+    
     var hasNext:Bool {
         self.cursor != 0
+//        self.current < totalPage
     }
     
     var hasPrev:Bool {
         self.cursorHistory.count > 0
+//        self.current > 1
     }
     
     
@@ -31,7 +45,7 @@ class ScanModel:ObservableObject, CustomStringConvertible {
         return "ScanModel:[cursor:\(cursor), size:\(size), keywords:\(keywords), history: \(cursorHistory), current: \(current)]"
     }
     
-    func resetHead() -> Void {
+    func reset() -> Void {
         self.current = 1
         self.cursor = 0
         self.cursorHistory.removeAll()
@@ -42,16 +56,15 @@ class ScanModel:ObservableObject, CustomStringConvertible {
         self.cursorHistory.append(self.cursor)
     }
     
-    // 0 - 18 - 5
     func prevPage() -> Void {
         self.current -= 1
-        
+//
         if self.current <= 1 {
             self.current = 1
             self.cursor = 0
             cursorHistory.removeAll()
         }
-        
+
         let index = self.current - 1
         self.cursor = (index == 0 || cursorHistory.count == 0) ? 0 : cursorHistory[index - 1]
         self.cursorHistory.removeSubrange(index...)

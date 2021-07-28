@@ -132,7 +132,7 @@ struct HashEditorView: View {
     
     
     func onQueryField() throws -> Void {
-        page.resetHead()
+        page.reset()
         queryHashPage(redisKeyModel)
     }
     

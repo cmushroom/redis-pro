@@ -27,6 +27,8 @@ struct MTheme {
     static var FONT_SIZE_BUTTON_L:CGFloat = 14
     static var FONT_SIZE_BUTTON_ICON_L:CGFloat = 12
     
+    static var FONT_FOOTER:Font = .footnote
+    
     // table cell null
     static var NULL_STRING = "-"
 }

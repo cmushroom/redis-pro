@@ -35,56 +35,409 @@ class RediStackClient{
             return Promise<Bool>.value(true)
         })
     }
-    
-    
-    func pageKeys(_ page:ScanModel) -> Promise<[RedisKeyModel]> {
+
+    // string operator
+    func set(_ key:String, value:String, ex:Int?) -> Promise<Void> {
+        logger.info("set value, key:\(key), value:\(value), ex:\(ex ?? -1)")
         self.globalContext?.loading = true
+        let promise = getConnectionAsync().then({connection in
+            Promise<Void> {resolver in
+                if (ex == nil || ex! == -1) {
+                    connection.set(RedisKey(key), to: value)
+                        .whenComplete({completion in
+                            if case .success(let r) = completion {
+                                resolver.fulfill(r)
+                            }
+                            else if case .failure(let error) = completion {
+                                self.logger.error("redis string set error \(error)")
+                                resolver.reject(error)
+                            }
+                        })
+                } else {
+                    connection.setex(RedisKey(key), to: value, expirationInSeconds: ex!)
+                        .whenComplete({completion in
+                            if case .success(let r) = completion {
+                                resolver.fulfill(r)
+                            }
+                            else if case .failure(let error) = completion {
+                                self.logger.error("redis string set error \(error)")
+                                resolver.reject(error)
+                            }
+                        })
+                }
+            }
+        })
+        
+        afterPromise(promise)
+            
+        return promise
+       
+    }
+    
+    func get(key:String) -> Promise<String> {
+        self.globalContext?.loading = true
+        let promise = getConnectionAsync().then({connection in
+            Promise<String>{resolver in
+                connection.get(RedisKey(key)).whenComplete({completion in
+                    if case .success(let r) = completion {
+                        self.logger.info("get value key: \(key) complete, r: \(r)")
+                        if r.isNull {
+                            resolver.reject(BizError(message: "Key `\(key)` is not exist!"))
+                        } else {
+                            resolver.fulfill(r.string!)
+                        }
+                    }
+                    else if case .failure(let error) = completion {
+                        self.logger.error("redis get string error \(error)")
+                        resolver.reject(error)
+                    }
+                })
+            }
+        })
+        
+        afterPromise(promise)
+        return promise
+    }
+    
+    func del(key:String) -> Promise<Int> {
+        self.logger.info("delete key \(key)")
+        self.globalContext?.loading = true
+        let promise = getConnectionAsync().then({connection in
+            Promise<Int>{resolver in
+                connection.delete(RedisKey(key)).whenComplete({completion in
+                    if case .success(let r) = completion {
+                        self.logger.info("delete redis key \(key) complete, r: \(r)")
+                        resolver.fulfill(r)
+                    }
+                    else if case .failure(let error) = completion {
+                        self.logger.error("redis get string error \(error)")
+                        resolver.reject(error)
+                    }
+                })
+            }
+        })
+        
+        afterPromise(promise)
+        return promise
+    }
+    
+    func expire(_ key:String, seconds:Int) -> Promise<Bool> {
+        logger.info("set key expire key:\(key), seconds:\(seconds)")
+        self.globalContext?.loading = true
+        
+        let promise = getConnectionAsync().then({connection in
+            Promise<Bool>{resolver in
+                if seconds < 0 {
+                    connection.send(command: "PERSIST", with: [RESPValue(from: key)]).whenComplete({completion in
+                        if case .success(let r) = completion {
+                            self.logger.info("clear key expire time \(key) complete, r: \(r)")
+                            resolver.fulfill(true)
+                        }
+                        else if case .failure(let error) = completion {
+                            self.logger.error("clear key expire time error \(error)")
+                            resolver.reject(error)
+                        }
+                    })
+                } else {
+                    connection.expire(RedisKey(key), after: TimeAmount.seconds(Int64(seconds))).whenComplete({completion in
+                        if case .success(let r) = completion {
+                            self.logger.info("set key expire time \(key) complete, r: \(r)")
+                            resolver.fulfill(true)
+                        }
+                        else if case .failure(let error) = completion {
+                            self.logger.error("set key expire time error \(error)")
+                            resolver.reject(error)
+                        }
+                    })
+                }
+            }
+        })
+        
+        afterPromise(promise)
+        return promise
+    }
+    
+    func ttl(_ redisKeyModel:RedisKeyModel) -> Void {
+        if redisKeyModel.isNew {
+            return
+        }
+
+        let _ = ttl(key: redisKeyModel.key).done({r in
+            redisKeyModel.ttl = r
+        })
+    }
+    
+    func ttl(key:String) -> Promise<Int> {
+        logger.info("get ttl key: \(key)")
+        
+        let promise = getConnectionAsync().then({connection in
+            Promise<Int>{resolver in
+                connection.ttl(RedisKey(key)).whenComplete({completion in
+                    if case .success(let r) = completion {
+                        self.logger.info("query redis key ttl, key: \(key), r:\(r)")
+                        if r == RedisKey.Lifetime.keyDoesNotExist {
+                            resolver.reject(BizError(message: "redis key: \(key) does not exist!"))
+                        } else if r == RedisKey.Lifetime.unlimited {
+                            resolver.fulfill(-1)
+                        } else {
+                            resolver.fulfill(Int(r.timeAmount!.nanoseconds / 1000000000))
+                        }
+                    }
+                    else if case .failure(let error) = completion {
+                        self.logger.error("redis get key type error \(error)")
+                        resolver.reject(error)
+                    }
+                })
+            }
+        })
+        return promise
+    }
+    
+    private func type(_ key:String) -> Promise<String> {
+        let promise = getConnectionAsync().then({connection in
+            Promise<String>{resolver in
+                connection.send(command: "type", with: [RESPValue.init(from: key)]).whenComplete({completion in
+                    if case .success(let r) = completion {
+                        resolver.fulfill(r.string!)
+                    }
+                    else if case .failure(let error) = completion {
+                        self.logger.error("redis get key type error \(error)")
+                        resolver.fulfill(RedisKeyTypeEnum.NONE.rawValue)
+                    }
+                })
+            }
+        })
+        
+        return promise
+    }
+    
+    func rename(_ oldKey:String, newKey:String) -> Promise<Bool> {
+        logger.info("rename key, old key:\(oldKey), new key: \(newKey)")
+        self.globalContext?.loading = true
+        
+        let promise = getConnectionAsync().then({connection in
+            Promise<Bool> {resolver in
+                connection.send(command: "RENAME", with: [RESPValue(from: oldKey), RESPValue(from: newKey)]).whenComplete({completion in
+                    if case .success(let r) = completion {
+                        resolver.fulfill(r.string == "OK")
+                    }
+                    else if case .failure(let error) = completion {
+                        self.logger.error("redis keys scan error \(error)")
+                        resolver.reject(error)
+                    }
+                })
+            }
+        })
+        
+        afterPromise(promise)
+        return promise
+    }
+    
+    func getConnectionAsync() -> Promise<RedisConnection> {
+        if self.connection != nil && self.connection!.isConnected{
+//            self.logger.info("get redis exist connection...")
+            return Promise<RedisConnection>.value(self.connection!)
+        } else {
+            self.logger.info("get redis connection, but connection is not available...")
+            self.close()
+        }
+        
+        return Promise<RedisConnection>{ resolver in
+            self.logger.info("start get new redis connection...")
+            
+            let eventLoop = MultiThreadedEventLoopGroup(numberOfThreads: 1).next()
+            var configuration: RedisConnection.Configuration
+            do {
+                if (self.redisModel.password.isEmpty) {
+                    configuration = try RedisConnection.Configuration(hostname: self.redisModel.host, port: self.redisModel.port, initialDatabase: self.redisModel.database, defaultLogger: logger)
+                } else {
+                    configuration = try RedisConnection.Configuration(hostname: self.redisModel.host, port: self.redisModel.port, password: self.redisModel.password, initialDatabase: self.redisModel.database, defaultLogger: logger)
+                }
+                
+                let future = RedisConnection.make(
+                    configuration: configuration
+                    , boundEventLoop: eventLoop
+                )
+                
+                future.whenSuccess({ redisConnection in
+                    self.connection = redisConnection
+                    resolver.fulfill(redisConnection)
+                    self.logger.info("get new redis connection success")
+                })
+                future.whenFailure({ error in
+                    self.logger.info("get new redis connection error: \(error)")
+                    
+                    resolver.reject(error)
+                })
+                
+            } catch {
+                self.logger.error("get new redis connection error \(error)")
+                resolver.reject(error)
+            }
+        }
+    }
+    
+    func getConnection() -> RedisConnection{
+        return self.connection!
+    }
+    
+    func close() -> Void {
+        if connection == nil {
+            logger.info("close redis connection, connection is nil, over...")
+            return
+        }
+        
+        connection!.close().whenComplete({completion in
+            self.connection = nil
+            self.logger.info("redis connection close success")
+        })
+    }
+    
+    func afterPromise<T:CatchMixin>(_ promise:T) -> Void {
+        promise
+            .catch({error in
+                self.globalContext?.showError(error)
+            })
+            .finally {
+                self.globalContext?.loading = false
+            }
+    }
+}
+
+// key
+extension RediStackClient {
+    
+    
+    private func scanAsync(cursor:Int, keywords:String?, count:Int? = 1) -> Promise<(cursor:Int, keys:[String])> {
+        logger.debug("redis keys scan, cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
+        
+        let promise =
+            getConnectionAsync().then({ connection in
+                Promise<(cursor:Int, keys:[String])> { resolver in
+                    connection.scan(startingFrom: cursor, matching: keywords, count: count)
+                        .whenComplete({ completion in
+                            if case .success(let r) = completion {
+                                resolver.fulfill(r)
+                            }
+                            else if case .failure(let error) = completion {
+                                self.logger.error("redis keys scan error \(error)")
+                                resolver.reject(error)
+                            }
+                        })
+                }
+                
+            })
+        
+        return promise
+    }
+    
+    private func scan(cursor:Int, keywords:String?, count:Int? = 1) throws -> (cursor:Int, keys:[String]) {
+        logger.debug("redis keys scan, cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
+        
+        return try getConnection().scan(startingFrom: cursor, matching: keywords, count: count).wait()
+    }
+    
+    // 递归取出包含分页的数据
+    private func recursionScan(_ keywords:String?, cursor:Int, maxCount:Int, keys:[String]) -> Promise<(cursor:Int, keys:[String])> {
+        if keys.count >= maxCount {
+            self.logger.info("recursion scan get keys enough, max count: \(maxCount), current count: \(keys.count)")
+            return Promise<(cursor:Int, keys:[String])> { resolver in
+                resolver.fulfill((cursor, keys))
+            }
+        } else {
+            return scanAsync(cursor: cursor, keywords: keywords, count: 3000).then{ res -> Promise<(cursor:Int, keys:[String])> in
+                
+                let newKeys = keys + res.keys
+                
+                if res.cursor == 0 {
+                    self.logger.info("recursion scan reach end, max count: \(maxCount), current count: \(keys.count)")
+                    
+                    return Promise<(cursor:Int, keys:[String])> { resolver in
+                        resolver.fulfill((res.cursor, newKeys))
+                    }
+                }
+                
+                self.logger.info("recursion scan get more keys, current count: \(newKeys.count)")
+                return self.recursionScan(keywords, cursor: res.cursor, maxCount: maxCount, keys: newKeys)
+            }
+        }
+    }
+    
+    private func scanTotal(_ keywords:String?, cursor:Int, total:Int) -> Promise<Int> {
+        return scanAsync(cursor: cursor, keywords: keywords, count: 3000).then{ res -> Promise<Int> in
+            let newTotal:Int = total + res.keys.count
+            if res.cursor == 0 {
+                self.logger.info("recursion scan total reach end, total: \(newTotal)")
+                
+                return Promise<Int> { resolver in
+                    resolver.fulfill(newTotal)
+                }
+            }
+            
+            self.logger.info("recursion scan total get more, current total: \(newTotal)")
+            return self.scanTotal(keywords, cursor: res.cursor, total: newTotal)
+        }
+    }
+    
+    private func isMatchAll(_ keywords:String?) -> Bool {
+        return keywords == nil || keywords == "*" || keywords!.trimmingCharacters(in: .whitespacesAndNewlines) == "*"
+    }
+    
+    private func recursionScanTotal(_ keywords:String?) -> Promise<Int> {
+        if isMatchAll(keywords) {
+            logger.info("keywords is match all, use dbsize...")
+            return dbsizeAsync()
+        }
+        
+        let cursor:Int = 0
+        let total:Int = 0
+        
+        return scanTotal(keywords, cursor: cursor, total: total)
+    }
+   
+    func pageKeys(_ page:Page) -> Promise<[RedisKeyModel]> {
+        self.globalContext?.loading = true
+        
+        let stopwatch = Stopwatch.createStarted()
         
         logger.info("redis keys page scan, page: \(page)")
         
         let match = page.keywords.isEmpty ? nil : page.keywords
         
-        var keys:[String] = [String]()
-        var cursor:Int = page.cursor
+        let keys:[String] = [String]()
+        let cursor:Int = 0
+        let total:Int = page.current * page.size
         
-        let scanPromise = scanAsync(cursor:cursor, keywords: match, count: page.size)
-            .then({ res in
-                Promise<[RedisKeyModel]> { resolver in
-                    keys.append(contentsOf: res.1)
-                    cursor = res.0
-                    
-                    // 如果取出数量不够 page.size, 继续迭带补满
-                    if cursor != 0 && keys.count < page.size {
-                        while true {
-                            let moreRes = try self.scan(cursor:cursor, keywords: match, count: 1)
-                            keys.append(contentsOf: moreRes.1)
-                            cursor = moreRes.0
-                            if cursor == 0 || keys.count == page.size {
-                                let _ = self.toRedisKeyModels(keys).done({r in
-                                    resolver.fulfill(r)
-                                })
-                                break
-                            }
-                        }
-                    } else {
-                        let _ = self.toRedisKeyModels(keys).done({r in
-                            resolver.fulfill(r)
-                        })
-                    }
-                    
+        let scanPromise = Promise<[RedisKeyModel]> { resolver in
+            let _ = self.recursionScan(match, cursor: cursor, maxCount: total, keys: keys).done {res in
+
+                let start = (page.current - 1) * page.size
+                
+                if res.keys.count <= start {
+                    resolver.fulfill([])
+                    return
                 }
-            })
-        
+                
+                let end = min(start + page.size - 1, res.keys.count)
+                let pageData:[String] = Array(res.keys[start..<end])
+                
+                let _ = self.toRedisKeyModels(pageData).done { r in
+                    resolver.fulfill(r)
+                }
+            }
+        }
         
         let promise = Promise<[RedisKeyModel]> { resolver in
-            let _ = when(fulfilled: dbsizeAsync(),  scanPromise).done({ r1, r2 in
+            let _ = when(fulfilled: recursionScanTotal(match),  scanPromise).done({ r1, r2 in
                 let total = r1
                 page.total = total
-                page.cursor = cursor
+//                page.cursor = cursor
                 
+                self.logger.info("keys scan complete, spend: \(stopwatch.elapsedMillis()) ms")
                 resolver.fulfill(r2)
             })
         }
+        
         afterPromise(promise)
         return promise
     }
@@ -112,6 +465,229 @@ class RediStackClient{
             }))
         })
     }
+    
+}
+
+// hash
+extension RediStackClient {
+    
+    // hash operator
+    func pageHash(_ redisKeyModel:RedisKeyModel, page:ScanModel) -> Promise<[RedisHashEntryModel]> {
+        if redisKeyModel.isNew {
+            return Promise<[RedisHashEntryModel]>.value([RedisHashEntryModel]())
+        }
+        
+        return pageHash(redisKeyModel.key, page: page)
+    }
+    
+    func pageHash(_ key:String, page:ScanModel) -> Promise<[RedisHashEntryModel]> {
+        logger.info("redis hash field page scan, key: \(key), page: \(page)")
+        
+        self.globalContext?.loading = true
+        
+        let match = page.keywords.isEmpty ? nil : page.keywords
+        
+        let cursor:Int = page.cursor
+        let fields:[(String, String?)] = []
+        
+        let scanPromise = Promise<[RedisHashEntryModel]> { resolver in
+            let _ = self.recursionHScan(key, keywords: match, cursor: cursor, maxCount: page.size, fields: fields).done {res in
+
+                page.cursor = res.0
+                
+                let pageData:[(String, String?)] = res.1
+                let r:[RedisHashEntryModel] = pageData.map({
+                    RedisHashEntryModel(field: $0.0, value: $0.1)
+                })
+                resolver.fulfill(r)
+            }
+        }
+        
+        let promise = Promise<[RedisHashEntryModel]> { resolver in
+            let _ = when(fulfilled: self.recursionHScanTotal(key, keywords: match),  scanPromise).done({ r1, r2 in
+                let total = r1
+                page.total = total
+                page.cursor = cursor
+                
+                resolver.fulfill(r2)
+            })
+        }
+        afterPromise(promise)
+        return promise
+    }
+    
+    func hset(_ key:String, field:String, value:String) -> Promise<Bool> {
+        logger.info("redis hash hset key:\(key), field:\(field), value:\(value)")
+        self.globalContext?.loading = true
+        
+        let promise = getConnectionAsync().then({connection in
+            Promise<Bool> {resolver in
+                connection.hset(field, to: value, in: RedisKey(key))
+                    .whenComplete({completion in
+                        if case .success(let r) = completion {
+                            resolver.fulfill(r)
+                        }
+                        else if case .failure(let error) = completion {
+                            self.logger.error("redis hash set error \(error)")
+                            resolver.reject(error)
+                        }
+                    })
+            }
+        })
+        
+        afterPromise(promise)
+        return promise
+    }
+    
+    func hdel(_ key:String, field:String) -> Promise<Int> {
+        logger.info("redis hash hdel key:\(key), field:\(field)")
+        self.globalContext?.loading = true
+        
+        let promise = getConnectionAsync().then({connection in
+            Promise<Int> {resolver in
+                connection.hdel(field, from: RedisKey(key))
+                    .whenComplete({completion in
+                        if case .success(let r) = completion {
+                            resolver.fulfill(r)
+                        }
+                        else if case .failure(let error) = completion {
+                            self.logger.error("redis hash del error \(error)")
+                            resolver.reject(error)
+                        }
+                    })
+            }
+        })
+        
+        afterPromise(promise)
+        return promise
+    }
+    
+    // 递归取出包含分页的数据
+    private func recursionHScan(_ key:String, keywords:String?, cursor:Int, maxCount:Int, fields:[(String, String?)]) -> Promise<(Int, [(String, String?)])> {
+        if fields.count >= maxCount {
+            self.logger.info("recursion scan get keys enough, max count: \(maxCount), current count: \(fields.count)")
+            return Promise<(Int, [(String, String?)])> { resolver in
+                resolver.fulfill((cursor, fields))
+            }
+        } else {
+            return hscanAsync(key, keywords: keywords, cursor: cursor, count: 1000).then{ res -> Promise<(Int, [(String, String?)])> in
+                
+                let newFields:[(String, String?)] = fields + res.1.map{$0}
+
+                if res.0 == 0 {
+                    self.logger.info("recursion hscan reach end, max count: \(maxCount), current count: \(newFields.count)")
+                    
+                    return Promise<(Int, [(String, String?)])> { resolver in
+                        resolver.fulfill((res.0, newFields))
+                    }
+                }
+                
+                self.logger.info("recursion hscan get more keys, current count: \(newFields.count)")
+                return self.recursionHScan(key, keywords: keywords, cursor: res.0, maxCount: maxCount, fields: newFields)
+            }
+        }
+    }
+    
+    private func hscanTotal(_ key:String, keywords:String?, cursor:Int, total:Int) -> Promise<Int> {
+        return hscanAsync(key, keywords: keywords, cursor: cursor, count: 1000).then{ res -> Promise<Int> in
+            let newTotal:Int = total + res.1.count
+            if res.0 == 0 {
+                self.logger.info("recursion scan total reach end, total: \(newTotal)")
+                
+                return Promise<Int> { resolver in
+                    resolver.fulfill(newTotal)
+                }
+            }
+            
+            self.logger.info("recursion scan total get more, current total: \(newTotal)")
+            return self.hscanTotal(key, keywords: keywords, cursor: res.0, total: newTotal)
+        }
+    }
+    
+    private func recursionHScanTotal(_ key:String, keywords:String?) -> Promise<Int> {
+        if isMatchAll(keywords) {
+            logger.info("hscan total key: \(key), keywords is match all, use hlen...")
+            return hlen(key)
+        }
+        
+        let cursor:Int = 0
+        let total:Int = 0
+        
+        return hscanTotal(key, keywords: keywords, cursor: cursor, total: total)
+    }
+    
+    private func hlen(_ key:String) -> Promise<Int> {
+        return getConnectionAsync().then({connection in
+            Promise<Int> {resolver in
+                connection.hlen(of: RedisKey(key))
+                    .whenComplete({completion in
+                        if case .success(let r) = completion {
+                            resolver.fulfill(r)
+                        }
+                        else if case .failure(let error) = completion {
+                            self.logger.error("redis hash hlen error \(error)")
+                            resolver.reject(error)
+                        }
+                    })
+            }
+        })
+    }
+    
+    private func hscanAsync(_ key:String, keywords:String?, cursor:Int, count:Int? = 1) -> Promise<(Int, [String: String?])> {
+        logger.debug("redis hash scan, key: \(key) cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
+        return getConnectionAsync().then({connection in
+            Promise<(Int, [String: String?])>{ resolver in
+                connection.hscan(RedisKey(key), startingFrom: cursor, matching: keywords, count: count, valueType: String.self)
+                    .whenComplete({completion in
+                        if case .success(let r) = completion {
+                            resolver.fulfill(r)
+                        }
+                        else if case .failure(let error) = completion {
+                            self.logger.error("redis hash scan error \(error)")
+                            resolver.reject(error)
+                        }
+                    })
+            }
+        })
+    }
+    
+    private func hscan(_ key:String, cursor:Int, count:Int? = 1, keywords:String?) throws -> (Int, [String: String?]) {
+        do {
+            logger.debug("redis hash scan, key: \(key) cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
+            
+            return try getConnection().hscan(RedisKey(key), startingFrom: cursor, matching: keywords, count: count, valueType: String.self).wait()
+            
+        } catch {
+            logger.error("redis hash scan key:\(key) error: \(error)")
+            throw error
+        }
+    }
+    
+    func hget(_ key:String, field:String) -> Promise<String> {
+        logger.info("get hash field value, key:\(key), field: \(field)")
+        self.globalContext?.loading = true
+        let promise = getConnectionAsync().then({connection in
+            Promise<String> {resolver in
+                connection.hget(field, from: RedisKey(key)).whenComplete({completion in
+                    if case .success(let r) = completion {
+                        self.logger.info("hget value key: \(key), field: \(field) complete, r: \(r)")
+                        resolver.fulfill(r.string!)
+                    }
+                    else if case .failure(let error) = completion {
+                        self.logger.error("redis hash get field error, key: \(key), field: \(field), error: \(error)")
+                        resolver.reject(error)
+                    }
+                })
+            }
+        })
+        
+        afterPromise(promise)
+        return promise
+    }
+}
+
+// zset
+extension RediStackClient {
     
     // zset operator
     func pageZSet(_ redisKeyModel:RedisKeyModel, page:ScanModel) -> Promise<[RedisZSetItemModel]> {
@@ -201,7 +777,6 @@ class RediStackClient{
         afterPromise(promise)
         return promise
     }
-    
     
     func zscanAsync(_ key:String, cursor:Int, count:Int? = 1, keywords:String?) -> Promise<(Int, [(String, Double)?])> {
         
@@ -304,8 +879,10 @@ class RediStackClient{
             }
         })
     }
-    
-    // set operator
+}
+
+// set
+extension RediStackClient {
     func pageSet(_ redisKeyModel:RedisKeyModel, page:ScanModel) -> Promise<[String?]> {
         if redisKeyModel.isNew {
             return Promise<[String?]>.value([String?]())
@@ -476,7 +1053,11 @@ class RediStackClient{
         })
     }
     
-    // list operator
+    
+}
+
+// list
+extension RediStackClient {
     func pageList(_ redisKeyModel:RedisKeyModel, page:Page) -> Promise<[String?]> {
         if redisKeyModel.isNew {
             return Promise<[String?]>.value([String?]())
@@ -637,505 +1218,6 @@ class RediStackClient{
             }
         })
     }
-    
-    
-    // hash operator
-    
-    func pageHash(_ redisKeyModel:RedisKeyModel, page:ScanModel) -> Promise<[RedisHashEntryModel]> {
-        if redisKeyModel.isNew {
-            return Promise<[RedisHashEntryModel]>.value([RedisHashEntryModel]())
-        }
-        
-        return pageHash(redisKeyModel.key, page: page)
-    }
-    
-    func pageHash(_ key:String, page:ScanModel) -> Promise<[RedisHashEntryModel]> {
-        logger.info("redis hash field page scan, key: \(key), page: \(page)")
-        
-        self.globalContext?.loading = true
-        
-        let match = page.keywords.isEmpty ? nil : page.keywords
-        
-        var hashEntryModels = [RedisHashEntryModel]()
-        
-        var cursor:Int = page.cursor
-        
-        let scanPromise = hscanAsync(key, cursor: cursor, count: page.size, keywords: match).then({res in
-            
-            Promise<[RedisHashEntryModel]>{ resolver in
-                cursor = res.0
-                let dic:[String:String?] = res.1
-                if !dic.isEmpty {
-                    dic.keys.forEach({key in
-                        let value:String? = dic[key] ?? ""
-                        hashEntryModels.append(RedisHashEntryModel(field: key, value: value))
-                    })
-                }
-                
-                // 如果取出数量不够 page.size, 继续迭带补满
-                if cursor != 0 && hashEntryModels.count < page.size {
-                    while true {
-                        let moreRes:(cursor:Int, [String:String?]) = try self.hscan(key, cursor:cursor, count: 1, keywords: match)
-                       
-                        let moreDic:[String:String?] = moreRes.1
-                        if !moreDic.isEmpty {
-                            moreDic.keys.forEach({key in
-                                let value:String? = moreDic[key] ?? ""
-                                hashEntryModels.append(RedisHashEntryModel(field: key, value: value))
-                            })
-                        }
-                        
-                        cursor = moreRes.0
-                        page.cursor = cursor
-                        if cursor == 0 || hashEntryModels.count == page.size {
-                            resolver.fulfill(hashEntryModels)
-                            break
-                        }
-                    }
-                } else {
-                    resolver.fulfill(hashEntryModels)
-                }
-            }
-        })
-        
-        let promise = Promise<[RedisHashEntryModel]> { resolver in
-            let _ = when(fulfilled: self.hlen(key),  scanPromise).done({ r1, r2 in
-                let total = r1
-                page.total = total
-                page.cursor = cursor
-                
-                resolver.fulfill(r2)
-            })
-        }
-        afterPromise(promise)
-        return promise
-    }
-    
-    func hset(_ key:String, field:String, value:String) -> Promise<Bool> {
-        logger.info("redis hash hset key:\(key), field:\(field), value:\(value)")
-        self.globalContext?.loading = true
-        
-        let promise = getConnectionAsync().then({connection in
-            Promise<Bool> {resolver in
-                connection.hset(field, to: value, in: RedisKey(key))
-                    .whenComplete({completion in
-                        if case .success(let r) = completion {
-                            resolver.fulfill(r)
-                        }
-                        else if case .failure(let error) = completion {
-                            self.logger.error("redis hash set error \(error)")
-                            resolver.reject(error)
-                        }
-                    })
-            }
-        })
-        
-        afterPromise(promise)
-        return promise
-    }
-    
-    func hdel(_ key:String, field:String) -> Promise<Int> {
-        logger.info("redis hash hdel key:\(key), field:\(field)")
-        self.globalContext?.loading = true
-        
-        let promise = getConnectionAsync().then({connection in
-            Promise<Int> {resolver in
-                connection.hdel(field, from: RedisKey(key))
-                    .whenComplete({completion in
-                        if case .success(let r) = completion {
-                            resolver.fulfill(r)
-                        }
-                        else if case .failure(let error) = completion {
-                            self.logger.error("redis hash del error \(error)")
-                            resolver.reject(error)
-                        }
-                    })
-            }
-        })
-        
-        afterPromise(promise)
-        return promise
-    }
-    
-    private func hlen(_ key:String) -> Promise<Int> {
-        return getConnectionAsync().then({connection in
-            Promise<Int> {resolver in
-                connection.hlen(of: RedisKey(key))
-                    .whenComplete({completion in
-                        if case .success(let r) = completion {
-                            resolver.fulfill(r)
-                        }
-                        else if case .failure(let error) = completion {
-                            self.logger.error("redis hash hlen error \(error)")
-                            resolver.reject(error)
-                        }
-                    })
-            }
-        })
-    }
-    
-    private func hscanAsync(_ key:String, cursor:Int, count:Int? = 1, keywords:String?) -> Promise<(Int, [String: String?])> {
-        logger.debug("redis hash scan, key: \(key) cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
-        return getConnectionAsync().then({connection in
-            Promise<(Int, [String: String?])>{ resolver in
-                connection.hscan(RedisKey(key), startingFrom: cursor, matching: keywords, count: count, valueType: String.self)
-                    .whenComplete({completion in
-                        if case .success(let r) = completion {
-                            resolver.fulfill(r)
-                        }
-                        else if case .failure(let error) = completion {
-                            self.logger.error("redis hash scan error \(error)")
-                            resolver.reject(error)
-                        }
-                    })
-            }
-        })
-    }
-    
-    private func hscan(_ key:String, cursor:Int, count:Int? = 1, keywords:String?) throws -> (Int, [String: String?]) {
-        do {
-            logger.debug("redis hash scan, key: \(key) cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
-            
-            return try getConnection().hscan(RedisKey(key), startingFrom: cursor, matching: keywords, count: count, valueType: String.self).wait()
-            
-        } catch {
-            logger.error("redis hash scan key:\(key) error: \(error)")
-            throw error
-        }
-    }
-    
-    func hget(_ key:String, field:String) -> Promise<String> {
-        logger.info("get hash field value, key:\(key), field: \(field)")
-        self.globalContext?.loading = true
-        let promise = getConnectionAsync().then({connection in
-            Promise<String> {resolver in
-                connection.hget(field, from: RedisKey(key)).whenComplete({completion in
-                    if case .success(let r) = completion {
-                        self.logger.info("hget value key: \(key), field: \(field) complete, r: \(r)")
-                        resolver.fulfill(r.string!)
-                    }
-                    else if case .failure(let error) = completion {
-                        self.logger.error("redis hash get field error, key: \(key), field: \(field), error: \(error)")
-                        resolver.reject(error)
-                    }
-                })
-            }
-        })
-        
-        afterPromise(promise)
-        return promise
-    }
-    
-    // string operator
-    func set(_ key:String, value:String, ex:Int?) -> Promise<Void> {
-        logger.info("set value, key:\(key), value:\(value), ex:\(ex ?? -1)")
-        self.globalContext?.loading = true
-        let promise = getConnectionAsync().then({connection in
-            Promise<Void> {resolver in
-                if (ex == nil || ex! == -1) {
-                    connection.set(RedisKey(key), to: value)
-                        .whenComplete({completion in
-                            if case .success(let r) = completion {
-                                resolver.fulfill(r)
-                            }
-                            else if case .failure(let error) = completion {
-                                self.logger.error("redis string set error \(error)")
-                                resolver.reject(error)
-                            }
-                        })
-                } else {
-                    connection.setex(RedisKey(key), to: value, expirationInSeconds: ex!)
-                        .whenComplete({completion in
-                            if case .success(let r) = completion {
-                                resolver.fulfill(r)
-                            }
-                            else if case .failure(let error) = completion {
-                                self.logger.error("redis string set error \(error)")
-                                resolver.reject(error)
-                            }
-                        })
-                }
-            }
-        })
-        
-        afterPromise(promise)
-            
-        return promise
-       
-    }
-    
-    func get(key:String) -> Promise<String> {
-        self.globalContext?.loading = true
-        let promise = getConnectionAsync().then({connection in
-            Promise<String>{resolver in
-                connection.get(RedisKey(key)).whenComplete({completion in
-                    if case .success(let r) = completion {
-                        self.logger.info("get value key: \(key) complete, r: \(r)")
-                        if r.isNull {
-                            resolver.reject(BizError(message: "Key `\(key)` is not exist!"))
-                        } else {
-                            resolver.fulfill(r.string!)
-                        }
-                    }
-                    else if case .failure(let error) = completion {
-                        self.logger.error("redis get string error \(error)")
-                        resolver.reject(error)
-                    }
-                })
-            }
-        })
-        
-        afterPromise(promise)
-        return promise
-    }
-    
-    func del(key:String) -> Promise<Int> {
-        self.logger.info("delete key \(key)")
-        self.globalContext?.loading = true
-        let promise = getConnectionAsync().then({connection in
-            Promise<Int>{resolver in
-                connection.delete(RedisKey(key)).whenComplete({completion in
-                    if case .success(let r) = completion {
-                        self.logger.info("delete redis key \(key) complete, r: \(r)")
-                        resolver.fulfill(r)
-                    }
-                    else if case .failure(let error) = completion {
-                        self.logger.error("redis get string error \(error)")
-                        resolver.reject(error)
-                    }
-                })
-            }
-        })
-        
-        afterPromise(promise)
-        return promise
-    }
-    
-    func expire(_ key:String, seconds:Int) -> Promise<Bool> {
-        logger.info("set key expire key:\(key), seconds:\(seconds)")
-        self.globalContext?.loading = true
-        
-        let promise = getConnectionAsync().then({connection in
-            Promise<Bool>{resolver in
-                if seconds < 0 {
-                    connection.send(command: "PERSIST", with: [RESPValue(from: key)]).whenComplete({completion in
-                        if case .success(let r) = completion {
-                            self.logger.info("clear key expire time \(key) complete, r: \(r)")
-                            resolver.fulfill(true)
-                        }
-                        else if case .failure(let error) = completion {
-                            self.logger.error("clear key expire time error \(error)")
-                            resolver.reject(error)
-                        }
-                    })
-                } else {
-                    connection.expire(RedisKey(key), after: TimeAmount.seconds(Int64(seconds))).whenComplete({completion in
-                        if case .success(let r) = completion {
-                            self.logger.info("set key expire time \(key) complete, r: \(r)")
-                            resolver.fulfill(true)
-                        }
-                        else if case .failure(let error) = completion {
-                            self.logger.error("set key expire time error \(error)")
-                            resolver.reject(error)
-                        }
-                    })
-                }
-            }
-        })
-        
-        afterPromise(promise)
-        return promise
-    }
-    
-    func ttl(_ redisKeyModel:RedisKeyModel) -> Void {
-        if redisKeyModel.isNew {
-            return
-        }
-
-        let _ = ttl(key: redisKeyModel.key).done({r in
-            redisKeyModel.ttl = r
-        })
-    }
-    
-    
-    func ttl(key:String) -> Promise<Int> {
-        logger.info("get ttl key: \(key)")
-        
-        let promise = getConnectionAsync().then({connection in
-            Promise<Int>{resolver in
-                connection.ttl(RedisKey(key)).whenComplete({completion in
-                    if case .success(let r) = completion {
-                        self.logger.info("query redis key ttl, key: \(key), r:\(r)")
-                        if r == RedisKey.Lifetime.keyDoesNotExist {
-                            resolver.reject(BizError(message: "redis key: \(key) does not exist!"))
-                        } else if r == RedisKey.Lifetime.unlimited {
-                            resolver.fulfill(-1)
-                        } else {
-                            resolver.fulfill(Int(r.timeAmount!.nanoseconds / 1000000000))
-                        }
-                    }
-                    else if case .failure(let error) = completion {
-                        self.logger.error("redis get key type error \(error)")
-                        resolver.reject(error)
-                    }
-                })
-            }
-        })
-        return promise
-    }
-    
-    private func type(_ key:String) -> Promise<String> {
-        let promise = getConnectionAsync().then({connection in
-            Promise<String>{resolver in
-                connection.send(command: "type", with: [RESPValue.init(from: key)]).whenComplete({completion in
-                    if case .success(let r) = completion {
-                        resolver.fulfill(r.string!)
-                    }
-                    else if case .failure(let error) = completion {
-                        self.logger.error("redis get key type error \(error)")
-                        resolver.fulfill(RedisKeyTypeEnum.NONE.rawValue)
-                    }
-                })
-            }
-        })
-        
-        return promise
-    }
-    
-    func scanAsync(cursor:Int, keywords:String?, count:Int? = 1) -> Promise<(cursor:Int, keys:[String])> {
-        logger.debug("redis keys scan, cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
-        
-        let promise =
-            getConnectionAsync().then({ connection in
-                Promise<(cursor:Int, keys:[String])> { resolver in
-                    connection.scan(startingFrom: cursor, matching: keywords, count: count)
-                        .whenComplete({ completion in
-                            if case .success(let r) = completion {
-                                resolver.fulfill(r)
-                            }
-                            else if case .failure(let error) = completion {
-                                self.logger.error("redis keys scan error \(error)")
-                                resolver.reject(error)
-                            }
-                        })
-                }
-                
-            })
-        
-        return promise
-    }
-    
-    
-    func scan(cursor:Int, keywords:String?, count:Int? = 1) throws -> (cursor:Int, keys:[String]) {
-        logger.debug("redis keys scan, cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
-        
-        return try getConnection().scan(startingFrom: cursor, matching: keywords, count: count).wait()
-    }
-    
-    func rename(_ oldKey:String, newKey:String) -> Promise<Bool> {
-        logger.info("rename key, old key:\(oldKey), new key: \(newKey)")
-        self.globalContext?.loading = true
-        
-        let promise = getConnectionAsync().then({connection in
-            Promise<Bool> {resolver in
-                connection.send(command: "RENAME", with: [RESPValue(from: oldKey), RESPValue(from: newKey)]).whenComplete({completion in
-                    if case .success(let r) = completion {
-                        resolver.fulfill(r.string == "OK")
-                    }
-                    else if case .failure(let error) = completion {
-                        self.logger.error("redis keys scan error \(error)")
-                        resolver.reject(error)
-                    }
-                })
-            }
-        })
-        
-        afterPromise(promise)
-        return promise
-    }
-    
-    func getConnectionAsync() -> Promise<RedisConnection> {
-        if self.connection != nil && self.connection!.isConnected{
-            self.logger.info("get redis exist connection...")
-            return Promise<RedisConnection>.value(self.connection!)
-        } else {
-            self.close()
-        }
-        
-        return Promise<RedisConnection>{ resolver in
-            self.logger.info("start get new redis connection...")
-            
-            let eventLoop = MultiThreadedEventLoopGroup(numberOfThreads: 1).next()
-            var configuration: RedisConnection.Configuration
-            do {
-                if (self.redisModel.password.isEmpty) {
-                    configuration = try RedisConnection.Configuration(hostname: self.redisModel.host, port: self.redisModel.port, initialDatabase: self.redisModel.database, defaultLogger: logger)
-                } else {
-                    configuration = try RedisConnection.Configuration(hostname: self.redisModel.host, port: self.redisModel.port, password: self.redisModel.password, initialDatabase: self.redisModel.database, defaultLogger: logger)
-                }
-                
-                let future = RedisConnection.make(
-                    configuration: configuration
-                    , boundEventLoop: eventLoop
-                )
-                
-                future.whenSuccess({ redisConnection in
-                    self.connection = redisConnection
-                    resolver.fulfill(redisConnection)
-                    self.logger.info("get new redis connection success")
-                })
-                future.whenFailure({ error in
-                    self.logger.info("get new redis connection error: \(error)")
-                    
-                    resolver.reject(error)
-                })
-                
-            } catch {
-                self.logger.error("get new redis connection error \(error)")
-                resolver.reject(error)
-            }
-        }
-    }
-    
-    func getConnection() -> RedisConnection{
-        return self.connection!
-    }
-    
-    func getSSH() -> Void {
-
-//            .channelInitializer { channel in
-//                // important: The handler must be initialized _inside_ the `channelInitializer`
-//                let handler = try NIOSSLClientHandler(context: sslContext)
-
-//                [...]
-//                channel.pipeline.addHandler(handler)
-//                [...]
-//            }
-        
-//        RedisConnection.make(configuration: <#T##RedisConnection.Configuration#>, boundEventLoop: <#T##EventLoop#>, configuredTCPClient: <#T##ClientBootstrap?#>)
-    }
-    
-    func close() -> Void {
-        if connection == nil {
-            logger.info("close redis connection, connection is nil, over...")
-            return
-        }
-        
-        connection!.close().whenComplete({completion in
-            self.connection = nil
-            self.logger.info("redis connection close success")
-        })
-    }
-    
-    func afterPromise<T:CatchMixin>(_ promise:T) -> Void {
-        promise
-            .catch({error in
-                self.globalContext?.showError(error)
-            })
-            .finally {
-                self.globalContext?.loading = false
-            }
-    }
 }
 
 // system
@@ -1185,7 +1267,7 @@ extension RediStackClient {
         return promise
     }
     
-    private func dbsizeAsync() -> Promise<Int> {
+    func dbsizeAsync() -> Promise<Int> {
         let promise =
             getConnectionAsync().then({connection in
                 Promise<Int> { resolver in

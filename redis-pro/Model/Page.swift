@@ -33,7 +33,7 @@ class Page:ObservableObject, CustomStringConvertible {
     
     func reset() {
         self.current = 1
-        self.keywords = ""
+//        self.keywords = ""
     }
     
     func firstPage() {

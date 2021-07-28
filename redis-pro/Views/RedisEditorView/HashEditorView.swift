@@ -142,6 +142,7 @@ struct HashEditorView: View {
     }
     
     func onRefreshAction() throws -> Void {
+        page.reset()
         queryHashPage(redisKeyModel)
         try ttl(redisKeyModel)
     }
@@ -159,6 +160,7 @@ struct HashEditorView: View {
         let _ = redisInstanceModel.getClient().pageHash(redisKeyModel, page: page).done({res in
             self.datasource = res
             self.selectIndex = res.count > 0 ? 0 : nil
+            
         })
     }
     

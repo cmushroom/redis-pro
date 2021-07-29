@@ -16,6 +16,7 @@ struct RedisKeysListView: View {
     @State var redisKeyModels:[RedisKeyModel] = [RedisKeyModel]()
     @State var selectedRedisKeyIndex:Int?
     @StateObject var scanModel:Page = Page()
+    @StateObject var page:ScanModel = ScanModel()
     
     @State private var renameModalVisible:Bool = false
     @State private var oldKeyIndex:Int?
@@ -88,6 +89,7 @@ struct RedisKeysListView: View {
                 .font(MTheme.FONT_FOOTER)
                 .lineLimit(1)
             PageBar(page: scanModel, action: onQueryKeyPageAction, showTotal: false)
+//            ScanBar(scanModel: page, action: onQueryKeyPageAction, showTotal: false)
         }
     }
     

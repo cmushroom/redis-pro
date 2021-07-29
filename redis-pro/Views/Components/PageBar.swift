@@ -18,7 +18,6 @@ struct PageBar: View {
     
     var body: some View {
         HStack(alignment:.center, spacing: 4) {
-            Spacer()
             if showTotal {
                 Text("Total: \(page.total)")
                     .font(MTheme.FONT_FOOTER)
@@ -37,17 +36,16 @@ struct PageBar: View {
                 page.firstPage()
                 doAction()
             })
-            .font(MTheme.FONT_FOOTER)
             .frame(width: 65)
             
             HStack(alignment:.center, spacing: 2) {
-                MIcon(icon: "chevron.left", action: onPrevPageAction).disabled(!page.hasPrev && !globalContext.loading)
+                MIcon(icon: "chevron.left", disabled: !page.hasPrev || globalContext.loading, action: onPrevPageAction)
                 Text("\(page.current)/\(page.totalPage)")
                     .font(MTheme.FONT_FOOTER)
                     .multilineTextAlignment(.center)
                     .lineLimit(1)
                     .layoutPriority(1)
-                MIcon(icon: "chevron.right", action: onNextPageAction).disabled(!page.hasNext && !globalContext.loading)
+                MIcon(icon: "chevron.right", disabled: !page.hasNext && !globalContext.loading, action: onNextPageAction)
             }
             .frame(minWidth: 60, idealWidth: 60)
         }

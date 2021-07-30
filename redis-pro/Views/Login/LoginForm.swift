@@ -53,7 +53,7 @@ struct LoginForm: View {
                     
                     Spacer()
                     
-                    MButton(text: "Connect", action: onConnect, disabled: self.globalContext.loading, isDefaultAction: true)
+                    MButton(text: "Connect", action: onConnect, disabled: self.globalContext.loading, keyEquivalent: .return)
                         .buttonStyle(BorderedButtonStyle())
                         .keyboardShortcut(.defaultAction)
                     

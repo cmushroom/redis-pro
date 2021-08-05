@@ -38,6 +38,26 @@
                ReferencedContainer = "container:redis-pro.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "4301C84926BBE86800C08E19"
+               BuildableName = "redis-proTests.xctest"
+               BlueprintName = "redis-proTests"
+               ReferencedContainer = "container:redis-pro.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "4301C85826BBEB5000C08E19"
+               BuildableName = "redisProUnitTests.xctest"
+               BlueprintName = "redisProUnitTests"
+               ReferencedContainer = "container:redis-pro.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

@@ -47,7 +47,7 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         
         logger.info("get new redis client ...")
         rediStackClient = RediStackClient(redisModel:redisModel)
-        rediStackClient?.setUp(self.globalContext!)
+        rediStackClient?.setUp(self.globalContext)
         return rediStackClient!
     }
     

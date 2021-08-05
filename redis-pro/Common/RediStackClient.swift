@@ -23,7 +23,7 @@ class RediStackClient{
         self.redisModel = redisModel
     }
     
-    func setUp(_ globalContext:GlobalContext) -> Void {
+    func setUp(_ globalContext:GlobalContext?) -> Void {
         self.globalContext = globalContext
     }
     

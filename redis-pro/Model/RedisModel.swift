@@ -18,6 +18,12 @@ class RedisModel:NSObject, ObservableObject, Identifiable {
     @Published var isFavorite: Bool = false
     @Published var ping: Bool = false
     
+    @Published var useSSH:Bool = false
+    @Published var sshHost:String = ""
+    @Published var sshPort:Int = 22
+    @Published var sshUser:String = ""
+    @Published var sshPass:String = ""
+    
     var image:Image  = Image("icon-redis")
     
     var dictionary: [String: Any] {

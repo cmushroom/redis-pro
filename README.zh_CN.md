@@ -32,8 +32,8 @@
 - [x] homebrew install
 - [x] slow log
 - [x] redis config update
+- [x] ssh login
 - [ ] delete batch
-- [ ] ssh login
 - [ ] ipad os support
     
 

@@ -1,6 +1,6 @@
 {
-    "latestVersionNum": 6,
-    "latestVersion": "1.3.0",
+    "latestVersionNum": 7,
+    "latestVersion": "1.4.0",
     "updateType": "hint",
-    "releaseNotes": "1. 增加Redis Config 功能， 列表展示， 修改， Rewrite 等 \n2. 登录页密码使用新的Secure组件 \n3. 列表为空时删除按钮禁用状态异常修复 \n4. Redis Info 页面展示优化 \n5. Redis Info 增加 reset 功能 \n6. 修复 dark mode 下部分按钮显示问题"
+    "releaseNotes": "1. 增加SSH Tunnel Login功能, 目前支持SSH账号密码登录 \n2. 分页逻辑重写，提供key列表, list, set精确分页， hash 游标分页。"
 }

@@ -12,7 +12,6 @@ class Page:ObservableObject, CustomStringConvertible {
     @Published var size:Int = 50
     @Published var total:Int = 0
     @Published var keywords:String = ""
-    private var cursorHistory:[Int] = [Int]()
     
     var totalPage:Int {
         get {
@@ -20,10 +19,10 @@ class Page:ObservableObject, CustomStringConvertible {
         }
     }
     
-    var hasPrevPage:Bool {
+    var hasPrev:Bool {
         totalPage > 1 && current > 1
     }
-    var hasNextPage:Bool {
+    var hasNext:Bool {
         totalPage > 1 && current < totalPage
     }
     
@@ -34,7 +33,7 @@ class Page:ObservableObject, CustomStringConvertible {
     
     func reset() {
         self.current = 1
-        self.keywords = ""
+//        self.keywords = ""
     }
     
     func firstPage() {

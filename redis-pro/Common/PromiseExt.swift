@@ -12,4 +12,5 @@ extension Promise {
     static func reject() -> Promise<T> {
         return Promise<T>(error: BizError("promise reject"))
     }
+    
 }

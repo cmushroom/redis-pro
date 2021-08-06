@@ -9,21 +9,7 @@ import SwiftUI
 import Cocoa
 import Foundation
 
-struct SmallButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            //            .font(.body)
-            .environment(\.sizeCategory, .extraSmall)
-            .padding(EdgeInsets(top: 2, leading: 8, bottom: 2, trailing: 8))
-            .foregroundColor(.primary)
-            .background(Color(NSColor.controlBackgroundColor))
-            .shadow(color: /*@START_MENU_TOKEN@*/.black/*@END_MENU_TOKEN@*/.opacity(0.2), radius: 1, x: 1, y: 1)
-    }
-}
-
 struct MButton: View {
-    @EnvironmentObject var globalContext:GlobalContext
-    
     var text:String
     var action: () throws -> Void = {}
     var disabled:Bool = false
@@ -31,16 +17,11 @@ struct MButton: View {
     var confirmTitle:String?
     var confirmMessage:String?
     var confirmPrimaryButtonText:String?
-    var size:String = "normal"
     
-    var isDefaultAction:Bool = false
-    
-    var width:CGFloat {
-        100
-    }
+    var keyEquivalent:KeyEquivalent?
     
     var body: some View {
-        NativeButton(title: text, keyEquivalent: isDefaultAction ? NativeButton.KeyEquivalent.return : nil, action: doAction, disabled: disabled)
+        NativeButton(title: text, keyEquivalent: keyEquivalent, action: doAction, disabled: disabled)
             //        Button(action: doAction) {
             //            Text(text)
             //                .font(.system(size: MTheme.FONT_SIZE_BUTTON))
@@ -68,12 +49,15 @@ struct MButton: View {
             if !isConfirm {
                 try action()
             } else {
-                globalContext.confirm(confirmTitle ?? "", alertMessage: confirmMessage ?? "", primaryAction: action, primaryButton: confirmPrimaryButtonText ?? globalContext.primaryButtonText)
+                MAlert.confirm(confirmTitle ?? "", message: confirmMessage ?? "", primaryButton: confirmPrimaryButtonText ?? "Ok", primaryAction: primaryAction)
             }
         } catch {
-            globalContext.showError(error)
+            MAlert.error(error)
         }
-        
+    }
+    
+    func primaryAction() -> Void {
+        try? action()
     }
     
     struct MButton_Previews: PreviewProvider {
@@ -84,8 +68,6 @@ struct MButton: View {
                     Text(LocalizedStringKey("hello"))
                     Text("hello")
                     MButton(text: "Hello", action: {})
-                    
-                    MButton(text: "SmallButton ", action: {}).buttonStyle(SmallButtonStyle())
                     
                     Button("default", action: {})
                     
@@ -106,6 +88,10 @@ struct MButton: View {
     }
 }
 
+enum KeyEquivalent: String {
+    case escape = "\u{1b}"
+    case `return` = "\r"
+}
 
 @available(macOS 10.15, *)
 struct NativeButton: NSViewRepresentable {
@@ -116,11 +102,6 @@ struct NativeButton: NSViewRepresentable {
     var icon:String?
     var disabled:Bool = false
     
-    enum KeyEquivalent: String {
-        case escape = "\u{1b}"
-        case `return` = "\r"
-    }
-    
     func makeNSView(context: NSViewRepresentableContext<Self>) -> NSButton {
         let button = NSButton(title: "", target: nil, action: nil)
 
@@ -128,12 +109,6 @@ struct NativeButton: NSViewRepresentable {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setContentHuggingPriority(.defaultHigh, for: .vertical)
         button.setContentHuggingPriority(.defaultHigh, for: .horizontal)
-  
-        button.frame.size.width = 180
-//        button.wantsLayer = true
-//        button.layer?.resize(withOldSuperlayerSize: CGSize(width: 180, height: 40))
-//        button.setBoundsSize(NSSize(width: 180, height: 40))
-//        button.frame = CGRect(x: 0, y: 0, width: 140, height: 80)
         
         if icon != nil {
             button.image = NSImage(systemSymbolName: icon!, accessibilityDescription: nil)

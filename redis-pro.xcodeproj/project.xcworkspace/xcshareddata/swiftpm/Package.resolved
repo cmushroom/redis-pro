@@ -47,6 +47,15 @@
         }
       },
       {
+        "package": "swift-crypto",
+        "repositoryURL": "https://gitee.com/mirrors_apple/swift-crypto.git",
+        "state": {
+          "branch": null,
+          "revision": "3bea268b223651c4ab7b7b9ad62ef9b2d4143eb6",
+          "version": "1.1.6"
+        }
+      },
+      {
         "package": "swift-log",
         "repositoryURL": "https://gitee.com/mirrors_apple/swift-log.git",
         "state": {
@@ -69,8 +78,17 @@
         "repositoryURL": "https://gitee.com/mirrors_apple/swift-nio.git",
         "state": {
           "branch": null,
-          "revision": "d161bf658780b209c185994528e7e24376cf7283",
-          "version": "2.29.0"
+          "revision": "d79e33308b0ac83326b0ead0ea6446e604b8162d",
+          "version": "2.30.0"
+        }
+      },
+      {
+        "package": "swift-nio-ssh",
+        "repositoryURL": "https://gitee.com/mirrors_apple/swift-nio-ssh.git",
+        "state": {
+          "branch": null,
+          "revision": "bc1a91daf3ae35134fbca5655ed221668d0369d3",
+          "version": "0.3.0"
         }
       },
       {

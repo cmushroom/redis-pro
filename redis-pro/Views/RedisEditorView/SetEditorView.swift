@@ -14,7 +14,7 @@ struct SetEditorView: View {
     
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @ObservedObject var redisKeyModel:RedisKeyModel
-    @StateObject private var page:ScanModel = ScanModel()
+    @StateObject private var page:Page = Page()
     
     @State private var editModalVisible:Bool = false
     @State private var editNewField:Bool = false
@@ -36,7 +36,7 @@ struct SetEditorView: View {
                            action: onDeleteAction)
                 SearchBar(keywords: $page.keywords, placeholder: "Search set...", action: onQueryField)
                 Spacer()
-                ScanBar(scanModel:page, action: onPageAction)
+                PageBar(page:page, action: onPageAction)
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
             
@@ -115,13 +115,13 @@ struct SetEditorView: View {
     }
     
     func onRefreshAction() throws -> Void {
-        page.resetHead()
+        page.reset()
         queryPage(redisKeyModel)
         ttl(redisKeyModel)
     }
     
     func onQueryField() throws -> Void {
-        page.resetHead()
+        page.reset()
         queryPage(redisKeyModel)
     }
     

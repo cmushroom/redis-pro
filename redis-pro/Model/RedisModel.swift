@@ -18,6 +18,14 @@ class RedisModel:NSObject, ObservableObject, Identifiable {
     @Published var isFavorite: Bool = false
     @Published var ping: Bool = false
     
+    @Published var connectionType:String = "tcp"
+    
+    // ssh
+    @Published var sshHost:String = ""
+    @Published var sshPort:Int = 22
+    @Published var sshUser:String = ""
+    @Published var sshPass:String = ""
+    
     var image:Image  = Image("icon-redis")
     
     var dictionary: [String: Any] {
@@ -26,7 +34,12 @@ class RedisModel:NSObject, ObservableObject, Identifiable {
                 "host": host,
                 "port": port,
                 "database": database,
-                "password": password
+                "password": password,
+                "connectionType": connectionType,
+                "sshHost": sshHost,
+                "sshPort": sshPort,
+                "sshUser": sshUser,
+                "sshPass": sshPass,
         ]
     }
     
@@ -48,10 +61,20 @@ class RedisModel:NSObject, ObservableObject, Identifiable {
         self.port = dictionary["port"] as! Int
         self.database = dictionary["database"] as! Int
         self.password = dictionary["password"] as! String
+        // ssh
+        let connectionType:String = dictionary["connectionType"] as? String ?? RedisConnectionTypeEnum.TCP.rawValue
+        self.connectionType = connectionType
+        
+        if (connectionType == RedisConnectionTypeEnum.SSH.rawValue) {
+            self.sshHost = dictionary["sshHost"] as? String ?? ""
+            self.sshPort = dictionary["sshPort"] as? Int ?? 22
+            self.sshUser = dictionary["sshUser"] as? String ?? ""
+            self.sshPass = dictionary["sshPass"] as? String ?? ""
+        }
     }
     
     
     override var description: String {
-        return "RedisModel:[id:\(id), name:\(name), host:\(host), port:\(port), password:\(password), database:\(database)]"
+        return "RedisModel:[id:\(id), name:\(name), host:\(host), port:\(port), password:\(password), database:\(database), type:\(connectionType), sshHost:\(sshHost), sshPort:\(sshPort),sshUser:\(sshUser)]"
     }
 }

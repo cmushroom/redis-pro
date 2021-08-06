@@ -1,13 +1,17 @@
 //
-//  FileManagerTests.swift
+//  SSHTunnelTests.swift
 //  redisProTests
 //
-//  Created by chengpanwang on 2021/6/2.
+//  Created by chengpanwang on 2021/8/4.
 //
 
 import XCTest
+import NIOSSH
+import NIO
+import RediStack
+@testable import redis_pro
 
-class FileManagerTests: XCTestCase {
+class SSHTunnelTests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -15,6 +19,21 @@ class FileManagerTests: XCTestCase {
 
     override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
+    }
+    
+    func testSSHConnection() -> Void {
+        let redisModel = RedisModel()
+        redisModel.password = ""
+        redisModel.sshHost = "192.168.15.120"
+        redisModel.sshUser = ""
+        redisModel.sshPass = ""
+        
+        let redisInstance = RedisInstanceModel(redisModel: redisModel)
+        do {
+            let _ = try redisInstance.getClient().getSSHConnection().wait()
+        } catch {
+            print("error \(error)")
+        }
     }
 
     func testExample() throws {

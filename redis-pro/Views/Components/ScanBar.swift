@@ -15,41 +15,41 @@ struct ScanBar: View {
     @ObservedObject var scanModel:ScanModel
     var action: (() throws -> Void)
     var totalLabel:String = "Total"
+    var showTotal:Bool = true
     
     let logger = Logger(label: "scan-bar")
     
     var body: some View {
         HStack(alignment:.center, spacing: 4) {
-            Spacer()
-            Text("\(totalLabel): \(scanModel.total)")
-                .font(.footnote)
-                .lineLimit(1)
-                .multilineTextAlignment(.trailing)
-            
+            if showTotal {
+                Text("\(totalLabel): \(scanModel.total)")
+                    .font(MTheme.FONT_FOOTER)
+                    .lineLimit(1)
+                    .multilineTextAlignment(.trailing)
+            }
             Picker("", selection: $scanModel.size) {
                 Text("10").tag(10)
                 Text("50").tag(50)
                 Text("100").tag(100)
                 Text("200").tag(200)
             }
-            .help(Helps.SCAN_COUNT)
             .onChange(of: scanModel.size, perform: { value in
                 logger.info("on scan size change: \(value)")
-                scanModel.resetHead()
+                scanModel.reset()
                 doAction()
             })
-            .font(.system(size: 8))
             .frame(width: 65)
             
-            HStack(alignment:.center) {
+            HStack(alignment:.center, spacing: 2) {
                 MIcon(icon: "chevron.left", disabled: !scanModel.hasPrev || globalContext.loading, action: onPrevPageAction)
                 Text("\(scanModel.current)")
-                    .font(.footnote)
+                    .font(MTheme.FONT_FOOTER)
                     .multilineTextAlignment(.center)
                     .lineLimit(1)
+                    .layoutPriority(1)
                 MIcon(icon: "chevron.right", disabled: !scanModel.hasNext || globalContext.loading, action: onNextPageAction)
             }
-            .layoutPriority(1)
+            .frame(minWidth: 60, idealWidth: 60)
         }
     }
     
@@ -65,7 +65,7 @@ struct ScanBar: View {
     
     func doAction() -> Void {
         logger.info("scan bar on change action, scanModel: \(scanModel)")
-        scanModel.resetHead()
+        scanModel.reset()
         try! action()
     }
 }

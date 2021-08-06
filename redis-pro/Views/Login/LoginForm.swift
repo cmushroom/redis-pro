@@ -12,6 +12,8 @@ import PromiseKit
 import Logging
 
 struct LoginForm: View {
+    let logger = Logger(label: "redis-login")
+    
     @Environment(\.openURL) var openURL
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @EnvironmentObject var globalContext:GlobalContext
@@ -20,11 +22,12 @@ struct LoginForm: View {
     @ObservedObject var redisModel:RedisModel
     @State private var pingState:String = ""
     
-    let logger = Logger(label: "redis-login")
-    
     
     var saveBtnDisable: Bool {
         !redisModel.isFavorite
+    }
+    var height:CGFloat {
+        self.redisModel.connectionType == RedisConnectionTypeEnum.SSH.rawValue ? 500 : 380
     }
     
     private var footer: some View {
@@ -53,9 +56,17 @@ struct LoginForm: View {
                     
                     Spacer()
                     
-                    MButton(text: "Connect", action: onConnect, disabled: self.globalContext.loading, isDefaultAction: true)
+                    MButton(text: "Connect", action: onConnect, disabled: self.globalContext.loading, keyEquivalent: .return)
                         .buttonStyle(BorderedButtonStyle())
                         .keyboardShortcut(.defaultAction)
+//                    MButton(text: "test ssh", action: {
+////                        self.redisInstanceModel.redisModel = self.redisModel
+//                        self.redisInstanceModel.getClient().getSSHConnection().done { connection in
+//                            let _ = connection.ping().whenSuccess { r in
+//                                print("ping  \(r)")
+//                            }
+//                        }
+//                    })
                     
                 }
                 
@@ -69,30 +80,62 @@ struct LoginForm: View {
             }
         }
     }
-    
-    var body: some View {
-        TabView{
+    private var tcpTab: some View {
+        Form {
+            Section {
+                VStack(alignment: .leading, spacing: 14) {
+                    FormItemText(label: "Name", placeholder: "name", value: $redisModel.name, autoTrim: true)
+                    FormItemText(label: "Host", placeholder: "host", value: $redisModel.host)
+                    FormItemInt(label: "Port", placeholder: "port", value: $redisModel.port)
+                    FormItemSecure(label: "Password", value: $redisModel.password)
+                    FormItemInt(label: "Database", value: $redisModel.database)
+                }
+            }
+            
+            footer
+        }
+        .padding(.horizontal, 18.0)
+        .tabItem {
+            Text("TCP/IP")
+        }.tag(RedisConnectionTypeEnum.TCP.rawValue)
+    }
+    private var sshTab: some View {
             Form {
                 Section {
-                    VStack(alignment: .leading, spacing: 14) {
+                    VStack(alignment: .leading, spacing: 12) {
                         FormItemText(label: "Name", placeholder: "name", value: $redisModel.name, autoTrim: true)
-                        FormItemText(label: "Host", placeholder: "host", value: $redisModel.host)
+                        FormItemText(label: "Host", placeholder: "host", value: $redisModel.host, autoTrim: true)
                         FormItemInt(label: "Port", placeholder: "port", value: $redisModel.port)
-//                        FormItemText(label: "Password", value: $redisModel.password)
                         FormItemSecure(label: "Password", value: $redisModel.password)
                         FormItemInt(label: "Database", value: $redisModel.database)
                     }
                 }
                 
+                Section() {
+                        Divider().padding(.vertical, 2)
+                        
+                        VStack(alignment: .leading, spacing: 12) {
+                            FormItemText(label: "SSH Host", placeholder: "name", value: $redisModel.sshHost, autoTrim: true)
+                            FormItemInt(label: "SSH Port", placeholder: "port", value: $redisModel.sshPort)
+                            FormItemText(label: "SSH User", placeholder: "host", value: $redisModel.sshUser, autoTrim: true)
+                            FormItemSecure(label: "SSH Pass", value: $redisModel.sshPass)
+                        }
+                    }
                 footer
             }
             .padding(.horizontal, 18.0)
             .tabItem {
-                Label("TCP/IP", systemImage: "bolt.fill")
-            }
+                Label("SSH", systemImage: "bolt.fill")
+            }.tag(RedisConnectionTypeEnum.SSH.rawValue)
+    }
+    
+    var body: some View {
+        TabView(selection: $redisModel.connectionType) {
+            tcpTab
+            sshTab
         }
         .padding(20.0)
-        .frame(width: 460.0, height: 400.0)
+        .frame(width: 500.0, height: height)
     }
     
     

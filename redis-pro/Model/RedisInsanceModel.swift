@@ -47,7 +47,7 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         
         logger.info("get new redis client ...")
         rediStackClient = RediStackClient(redisModel:redisModel)
-        rediStackClient?.setUp(self.globalContext!)
+        rediStackClient?.setUp(self.globalContext)
         return rediStackClient!
     }
     
@@ -87,10 +87,10 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         let promise = self.getClient().pingAsync()
         
         promise
-            .catch({error in
-                self.globalContext?.showError(error)
-            })
-            .finally {
+            .done { _ in
+                self.close()
+            }
+            .catch { _ in
                 self.close()
             }
         return promise

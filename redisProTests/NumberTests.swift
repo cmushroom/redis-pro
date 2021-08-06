@@ -20,9 +20,12 @@ class NumberTests: XCTestCase {
     func testExample() throws {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
-        for index in (1..<3){
-            print(index)
-        }
+//        for index in (1..<3){
+//            print(index)
+//        }
+        
+        let dict:[String:Any] = ["a" : 1]
+        print(dict["b"] ?? "ssss")
     }
     
 

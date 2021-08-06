@@ -13,11 +13,17 @@ import PromiseKit
 import NIOSSH
 
 class RediStackClient{
+    let logger = Logger(label: "redis-client")
+    
     var redisModel:RedisModel
     var connection:RedisConnection?
     var globalContext:GlobalContext?
     
-    let logger = Logger(label: "redis-client")
+    // ssh
+    var sshChannel:Channel?
+    var sshLocalChannel:Channel?
+    var sshServer:PortForwardingServer?
+    
     
     init(redisModel:RedisModel) {
         self.redisModel = redisModel
@@ -235,11 +241,14 @@ class RediStackClient{
     
     func getConnectionAsync() -> Promise<RedisConnection> {
         if self.connection != nil && self.connection!.isConnected{
-//            self.logger.info("get redis exist connection...")
             return Promise<RedisConnection>.value(self.connection!)
         } else {
             self.logger.info("get redis connection, but connection is not available...")
             self.close()
+        }
+        
+        if self.redisModel.connectionType == RedisConnectionTypeEnum.SSH.rawValue {
+            return getSSHConnection()
         }
         
         return Promise<RedisConnection>{ resolver in
@@ -291,6 +300,8 @@ class RediStackClient{
             self.connection = nil
             self.logger.info("redis connection close success")
         })
+        
+        self.closeSSH()
     }
     
     func afterPromise<T:CatchMixin>(_ promise:T) -> Void {

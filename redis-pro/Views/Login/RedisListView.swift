@@ -13,6 +13,8 @@ func onAppear() {
 }
 
 struct RedisListView: View {
+    let logger = Logger(label: "redis-login")
+    
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @EnvironmentObject var globalContext:GlobalContext
     @StateObject var redisFavoriteModel: RedisFavoriteModel = RedisFavoriteModel()
@@ -22,8 +24,6 @@ struct RedisListView: View {
     
     @AppStorage("User.defaultFavorite")
     private var defaultFavorite:String = "last"
-    
-    let logger = Logger(label: "redis-login")
     
     var quickRedisModel:[RedisModel] = [RedisModel](repeating: RedisModel(name: "QUICK CONNECT"), count: 1)
     
@@ -62,17 +62,8 @@ struct RedisListView: View {
                 selectFavoriteRedisModel()
             }
             
-            VStack{
-                Spacer()
-                HStack {
-                    Spacer()
-                    LoginForm(redisFavoriteModel: redisFavoriteModel, redisModel: selectRedisModel)
-                    Spacer()
-                }
-                Spacer()
-            }
-            .frame(minWidth: 500, idealWidth:500, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
-            .layoutPriority(1)
+            LoginForm(redisFavoriteModel: redisFavoriteModel, redisModel: selectRedisModel)
+            .frame(minWidth: 500, idealWidth:500, maxWidth: .infinity, minHeight: 400, idealHeight: 400, maxHeight: .infinity)
         }
     }
     

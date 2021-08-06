@@ -23,15 +23,17 @@ class SSHTunnelTests: XCTestCase {
     
     func testSSHConnection() -> Void {
         let redisModel = RedisModel()
-
+        redisModel.password = ""
+        redisModel.sshHost = "192.168.15.120"
+        redisModel.sshUser = ""
+        redisModel.sshPass = ""
         
         let redisInstance = RedisInstanceModel(redisModel: redisModel)
-        let _ = redisInstance.getClient().getSSHConnection().done { connection in
-            connection.ping().whenSuccess { r in
-                print("ping: \(r)")
-            }
+        do {
+            let _ = try redisInstance.getClient().getSSHConnection().wait()
+        } catch {
+            print("error \(error)")
         }
-        sleep(5)
     }
 
     func testExample() throws {

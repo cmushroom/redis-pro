@@ -71,16 +71,6 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         return promise
     }
     
-    func testConnect(redisModel:RedisModel) throws -> Bool {
-        self.redisModel = redisModel
-        
-        defer {
-            close()
-        }
-        
-        return try getClient().ping()
-    }
-    
     func testConnectAsync(_ redisModel:RedisModel) -> Promise<Bool> {
         self.redisModel = redisModel
         

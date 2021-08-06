@@ -342,12 +342,6 @@ extension RediStackClient {
         return promise
     }
     
-    private func scan(cursor:Int, keywords:String?, count:Int? = 1) throws -> (cursor:Int, keys:[String]) {
-        logger.debug("redis keys scan, cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
-        
-        return try getConnection().scan(startingFrom: cursor, matching: keywords, count: count).wait()
-    }
-    
     // 递归取出包含分页的数据
     private func recursionScan(_ keywords:String?, cursor:Int, maxCount:Int, keys:[String]) -> Promise<(cursor:Int, keys:[String])> {
         if keys.count >= maxCount {
@@ -662,18 +656,6 @@ extension RediStackClient {
         })
     }
     
-    private func hscan(_ key:String, cursor:Int, count:Int? = 1, keywords:String?) throws -> (Int, [String: String?]) {
-        do {
-            logger.debug("redis hash scan, key: \(key) cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
-            
-            return try getConnection().hscan(RedisKey(key), startingFrom: cursor, matching: keywords, count: count, valueType: String.self).wait()
-            
-        } catch {
-            logger.error("redis hash scan key:\(key) error: \(error)")
-            throw error
-        }
-    }
-    
     func hget(_ key:String, field:String) -> Promise<String> {
         logger.info("get hash field value, key:\(key), field: \(field)")
         self.globalContext?.loading = true
@@ -827,18 +809,6 @@ extension RediStackClient {
         })
         
         return promise
-    }
-    
-    func zscan(_ key:String, cursor:Int, count:Int? = 1, keywords:String?) throws -> (Int, [(String, Double)?]) {
-        do {
-            logger.debug("redis set scan, key: \(key) cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
-
-            return try getConnection().zscan(RedisKey(key), startingFrom: cursor, matching: keywords, count: count, valueType: String.self).wait()
-
-        } catch {
-            logger.error("redis set scan key:\(key) error: \(error)")
-            throw error
-        }
     }
     
     func zupdate(_ key:String, from:String, to:String, score:Double) throws -> Promise<Bool> {
@@ -1092,18 +1062,6 @@ extension RediStackClient {
                     })
             }
         })
-    }
-    
-    func sscan(_ key:String, cursor:Int, count:Int? = 1, keywords:String?) throws -> (Int, [String?]) {
-        do {
-            logger.debug("redis set scan, key: \(key) cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
-            
-            return try getConnection().sscan(RedisKey(key), startingFrom: cursor, matching: keywords, count: count, valueType: String.self).wait()
-            
-        } catch {
-            logger.error("redis set scan key:\(key) error: \(error)")
-            throw error
-        }
     }
     
     func supdate(_ key:String, from:String, to:String) -> Promise<Int> {
@@ -1569,18 +1527,6 @@ extension RediStackClient {
         return promise
     }
     
-    private func dbsize() throws -> Int {
-        do {
-            let res:RESPValue = try getConnection().send(command: "dbsize").wait()
-            
-            logger.info("query redis dbsize success: \(res.int!)")
-            return res.int!
-        } catch {
-            logger.info("query redis dbsize error: \(error)")
-            throw error
-        }
-    }
-    
     func pingAsync() -> Promise<Bool> {
         self.globalContext?.loading = true
         
@@ -1610,26 +1556,6 @@ extension RediStackClient {
         afterPromise(promise)
         
         return promise
-    }
-    
-    func ping() throws -> Bool {
-        do {
-            let pong = try getConnection().ping().wait()
-            
-            logger.info("ping redis server: \(pong)")
-            
-            if ("PONG".caseInsensitiveCompare(pong) == .orderedSame) {
-                redisModel.ping = true
-                return true
-            }
-            
-            redisModel.ping = false
-            return false
-        } catch {
-            redisModel.ping = false
-            logger.error("ping redis server error \(error)")
-            throw error
-        }
     }
     
 }

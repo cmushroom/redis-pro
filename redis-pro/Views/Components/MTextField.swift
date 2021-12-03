@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Logging
+import NIOCore
 
 struct MTextField: View {
     @Binding var value:String
@@ -33,21 +34,28 @@ struct MTextField: View {
     
     var body: some View {
         HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 2) {
+
+//            if #available(macOS 12.0, *) {
+//                TextField("", text: adapterValue, prompt: Text(placeholder ?? ""))
+//            } else {
+//                // Fallback on earlier versions
+//
+//            }
             TextField(placeholder ?? "", text: adapterValue, onEditingChanged: { isEditing in
                 self.isEditing = isEditing
                 if isEditing {
                     self.isEdited = true
                 }
             }, onCommit: doCommit)
-            .disabled(disabled)
-            .multilineTextAlignment(/*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/)
-            .lineLimit(1)
-            .font(.body)
-            .disableAutocorrection(true)
-            .textFieldStyle(PlainTextFieldStyle())
-            .onHover { inside in
-                self.isEditing = inside
-            }
+                .disabled(disabled)
+                .multilineTextAlignment(.leading)
+                .lineLimit(1)
+                .font(.body)
+                .disableAutocorrection(true)
+                .textFieldStyle(PlainTextFieldStyle())
+                .onHover { inside in
+                    self.isEditing = inside
+                }
             
             if suffix != nil {
                 MIcon(icon: suffix!, fontSize: MTheme.FONT_SIZE_BUTTON, action: doAction)

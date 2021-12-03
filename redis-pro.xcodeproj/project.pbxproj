@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 55;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -90,7 +90,6 @@
 		43822042265763D400DA7F9E /* RedisProCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43822041265763D400DA7F9E /* RedisProCommands.swift */; };
 		4385D32E261ED26200BA8ED1 /* IndexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4385D32D261ED26200BA8ED1 /* IndexView.swift */; };
 		438BBEB52655015D00B458BF /* CrashReporter in Frameworks */ = {isa = PBXBuildFile; productRef = 438BBEB42655015D00B458BF /* CrashReporter */; };
-		438BE52E268C5A660058D164 /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 438BE52D268C5A660058D164 /* PromiseKit */; };
 		43915809268075490019D2D0 /* Demo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43915808268075490019D2D0 /* Demo.swift */; };
 		4397288C2643E43800803BE9 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4397288B2643E43800803BE9 /* Constants.swift */; };
 		43BB012326390BC20039565E /* ModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BB012226390BC20039565E /* ModalView.swift */; };
@@ -144,18 +143,27 @@
 		43F22F1526A5583D00A00F97 /* RedisInfoTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F22F1426A5583D00A00F97 /* RedisInfoTableController.swift */; };
 		43F22F1726A5584C00A00F97 /* RedisInfoTableController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 43F22F1626A5584C00A00F97 /* RedisInfoTableController.xib */; };
 		43F22F1926A6690600A00F97 /* MLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F22F1826A6690600A00F97 /* MLabel.swift */; };
-		623704F5265A27760084CCA8 /* AppCenterCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = 623704F4265A27760084CCA8 /* AppCenterCrashes */; };
-		623704F7265A27760084CCA8 /* AppCenterAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 623704F6265A27760084CCA8 /* AppCenterAnalytics */; };
 		623704FA265A27970084CCA8 /* RediStack in Frameworks */ = {isa = PBXBuildFile; productRef = 623704F9265A27970084CCA8 /* RediStack */; };
 		623704FC265A27970084CCA8 /* RedisTypes in Frameworks */ = {isa = PBXBuildFile; productRef = 623704FB265A27970084CCA8 /* RedisTypes */; };
-		62C48932265A138D00D68D06 /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 62C48931265A138D00D68D06 /* Logging */; };
 		62C48935265A13BB00D68D06 /* ServiceDiscovery in Frameworks */ = {isa = PBXBuildFile; productRef = 62C48934265A13BB00D68D06 /* ServiceDiscovery */; };
-		62C48938265A13E500D68D06 /* NIO in Frameworks */ = {isa = PBXBuildFile; productRef = 62C48937265A13E500D68D06 /* NIO */; };
 		62CB3D722619AE050061E8C3 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62CB3D712619AE050061E8C3 /* HomeView.swift */; };
 		62CB3D752619AEC20061E8C3 /* RedisKeysListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62CB3D742619AEC20061E8C3 /* RedisKeysListView.swift */; };
 		62CB3D792619AEEB0061E8C3 /* RedisKeyRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62CB3D782619AEEB0061E8C3 /* RedisKeyRowView.swift */; };
 		62CB3D7D2619AF990061E8C3 /* RedisKeyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62CB3D7C2619AF990061E8C3 /* RedisKeyModel.swift */; };
 		62CB3D802619B09B0061E8C3 /* RedisKeyTypeEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62CB3D7F2619B09B0061E8C3 /* RedisKeyTypeEnum.swift */; };
+		CE14E2AA27561BE1004862F7 /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = CE14E2A927561BE1004862F7 /* Logging */; };
+		CE83D51527563931000DF09D /* PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = CE83D51427563931000DF09D /* PromiseKit */; };
+		CE83D51827563C28000DF09D /* AppCenterAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = CE83D51727563C28000DF09D /* AppCenterAnalytics */; };
+		CE83D51A27563C28000DF09D /* AppCenterCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = CE83D51927563C28000DF09D /* AppCenterCrashes */; };
+		CE83D51C2758E8D1000DF09D /* FocusableTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE83D51B2758E8D1000DF09D /* FocusableTextField.swift */; };
+		CEB37531275618B900276E8C /* NIO in Frameworks */ = {isa = PBXBuildFile; productRef = CEB37530275618B900276E8C /* NIO */; };
+		CEB37533275618B900276E8C /* NIOConcurrencyHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = CEB37532275618B900276E8C /* NIOConcurrencyHelpers */; };
+		CEB37535275618B900276E8C /* NIOCore in Frameworks */ = {isa = PBXBuildFile; productRef = CEB37534275618B900276E8C /* NIOCore */; };
+		CEB37537275618B900276E8C /* NIOEmbedded in Frameworks */ = {isa = PBXBuildFile; productRef = CEB37536275618B900276E8C /* NIOEmbedded */; };
+		CEB37539275618B900276E8C /* NIOFoundationCompat in Frameworks */ = {isa = PBXBuildFile; productRef = CEB37538275618B900276E8C /* NIOFoundationCompat */; };
+		CEB3753B275618B900276E8C /* NIOHTTP1 in Frameworks */ = {isa = PBXBuildFile; productRef = CEB3753A275618B900276E8C /* NIOHTTP1 */; };
+		CEB3753D275618B900276E8C /* NIOPosix in Frameworks */ = {isa = PBXBuildFile; productRef = CEB3753C275618B900276E8C /* NIOPosix */; };
+		CEB3753F275618B900276E8C /* NIOTLS in Frameworks */ = {isa = PBXBuildFile; productRef = CEB3753E275618B900276E8C /* NIOTLS */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -312,6 +320,11 @@
 		62CB3D782619AEEB0061E8C3 /* RedisKeyRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisKeyRowView.swift; sourceTree = "<group>"; };
 		62CB3D7C2619AF990061E8C3 /* RedisKeyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisKeyModel.swift; sourceTree = "<group>"; };
 		62CB3D7F2619B09B0061E8C3 /* RedisKeyTypeEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisKeyTypeEnum.swift; sourceTree = "<group>"; };
+		CE83D51B2758E8D1000DF09D /* FocusableTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusableTextField.swift; sourceTree = "<group>"; };
+		CEB3752B275614B800276E8C /* OHHTTPStubs */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OHHTTPStubs; path = ../OHHTTPStubs; sourceTree = "<group>"; };
+		CEB3752C275614DF00276E8C /* OHHTTPStubs */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OHHTTPStubs; path = ../OHHTTPStubs; sourceTree = "<group>"; };
+		CEB3752D275614FD00276E8C /* OHHTTPStubs */ = {isa = PBXFileReference; lastKnownFileType = folder; name = OHHTTPStubs; path = ../OHHTTPStubs; sourceTree = "<group>"; };
+		CEB3752E275617BD00276E8C /* swift-log */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "swift-log"; path = "../swift-log"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -320,20 +333,27 @@
 			buildActionMask = 2147483647;
 			files = (
 				4301C82B26AE8E0400C08E19 /* NIOSSH in Frameworks */,
+				CEB37539275618B900276E8C /* NIOFoundationCompat in Frameworks */,
 				438BBEB52655015D00B458BF /* CrashReporter in Frameworks */,
-				623704F5265A27760084CCA8 /* AppCenterCrashes in Frameworks */,
+				CE83D51527563931000DF09D /* PromiseKit in Frameworks */,
 				436BB68726440584008B4866 /* CoreMetrics in Frameworks */,
 				43CD28AA267B64FA00E11876 /* Puppy in Frameworks */,
-				62C48932265A138D00D68D06 /* Logging in Frameworks */,
+				CEB3753F275618B900276E8C /* NIOTLS in Frameworks */,
 				4301C82826AE8DE500C08E19 /* Crypto in Frameworks */,
-				62C48938265A13E500D68D06 /* NIO in Frameworks */,
+				CE83D51827563C28000DF09D /* AppCenterAnalytics in Frameworks */,
+				CE83D51A27563C28000DF09D /* AppCenterCrashes in Frameworks */,
 				4340E2C82666257500F51F19 /* SwiftyJSON in Frameworks */,
 				436BB68926440584008B4866 /* Metrics in Frameworks */,
-				623704F7265A27760084CCA8 /* AppCenterAnalytics in Frameworks */,
-				438BE52E268C5A660058D164 /* PromiseKit in Frameworks */,
 				62C48935265A13BB00D68D06 /* ServiceDiscovery in Frameworks */,
+				CEB37531275618B900276E8C /* NIO in Frameworks */,
+				CEB3753D275618B900276E8C /* NIOPosix in Frameworks */,
+				CEB37537275618B900276E8C /* NIOEmbedded in Frameworks */,
+				CEB37533275618B900276E8C /* NIOConcurrencyHelpers in Frameworks */,
 				623704FC265A27970084CCA8 /* RedisTypes in Frameworks */,
+				CE14E2AA27561BE1004862F7 /* Logging in Frameworks */,
 				623704FA265A27970084CCA8 /* RediStack in Frameworks */,
+				CEB37535275618B900276E8C /* NIOCore in Frameworks */,
+				CEB3753B275618B900276E8C /* NIOHTTP1 in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -361,6 +381,7 @@
 		430A09E025C1557900B60DFC /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				CE83D51B2758E8D1000DF09D /* FocusableTextField.swift */,
 				430A09E125C1559400B60DFC /* FormLabel.swift */,
 				4313576E263ABB1C0077EE46 /* FormWrapper.swift */,
 				430A09E525C155F800B60DFC /* FormItemText.swift */,
@@ -400,6 +421,7 @@
 		4320AAE725B6740900A8E214 = {
 			isa = PBXGroup;
 			children = (
+				CEB3752A275614B800276E8C /* Packages */,
 				4320AAF225B6740900A8E214 /* redis-pro */,
 				4340E2BB2666236200F51F19 /* redisProTests */,
 				4320AAF125B6740900A8E214 /* Products */,
@@ -631,6 +653,17 @@
 			path = Login;
 			sourceTree = "<group>";
 		};
+		CEB3752A275614B800276E8C /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				CEB3752B275614B800276E8C /* OHHTTPStubs */,
+				CEB3752C275614DF00276E8C /* OHHTTPStubs */,
+				CEB3752D275614FD00276E8C /* OHHTTPStubs */,
+				CEB3752E275617BD00276E8C /* swift-log */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -651,18 +684,25 @@
 				436BB68626440584008B4866 /* CoreMetrics */,
 				436BB68826440584008B4866 /* Metrics */,
 				438BBEB42655015D00B458BF /* CrashReporter */,
-				62C48931265A138D00D68D06 /* Logging */,
 				62C48934265A13BB00D68D06 /* ServiceDiscovery */,
-				62C48937265A13E500D68D06 /* NIO */,
-				623704F4265A27760084CCA8 /* AppCenterCrashes */,
-				623704F6265A27760084CCA8 /* AppCenterAnalytics */,
 				623704F9265A27970084CCA8 /* RediStack */,
 				623704FB265A27970084CCA8 /* RedisTypes */,
 				4340E2C72666257500F51F19 /* SwiftyJSON */,
 				43CD28A9267B64FA00E11876 /* Puppy */,
-				438BE52D268C5A660058D164 /* PromiseKit */,
 				4301C82726AE8DE500C08E19 /* Crypto */,
 				4301C82A26AE8E0400C08E19 /* NIOSSH */,
+				CEB37530275618B900276E8C /* NIO */,
+				CEB37532275618B900276E8C /* NIOConcurrencyHelpers */,
+				CEB37534275618B900276E8C /* NIOCore */,
+				CEB37536275618B900276E8C /* NIOEmbedded */,
+				CEB37538275618B900276E8C /* NIOFoundationCompat */,
+				CEB3753A275618B900276E8C /* NIOHTTP1 */,
+				CEB3753C275618B900276E8C /* NIOPosix */,
+				CEB3753E275618B900276E8C /* NIOTLS */,
+				CE14E2A927561BE1004862F7 /* Logging */,
+				CE83D51427563931000DF09D /* PromiseKit */,
+				CE83D51727563C28000DF09D /* AppCenterAnalytics */,
+				CE83D51927563C28000DF09D /* AppCenterCrashes */,
 			);
 			productName = "redis-pro";
 			productReference = 4320AAF025B6740900A8E214 /* redis-pro.app */;
@@ -705,27 +745,28 @@
 				};
 			};
 			buildConfigurationList = 4320AAEB25B6740900A8E214 /* Build configuration list for PBXProject "redis-pro" */;
-			compatibilityVersion = "Xcode 12.0";
+			compatibilityVersion = "Xcode 13.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				"zh-Hans",
+				Base,
 			);
 			mainGroup = 4320AAE725B6740900A8E214;
 			packageReferences = (
 				436BB68526440584008B4866 /* XCRemoteSwiftPackageReference "swift-metrics" */,
 				438BBEB32655015D00B458BF /* XCRemoteSwiftPackageReference "plcrashreporter" */,
-				62C48930265A138D00D68D06 /* XCRemoteSwiftPackageReference "swift-log" */,
 				62C48933265A13BB00D68D06 /* XCRemoteSwiftPackageReference "swift-service-discovery" */,
-				62C48936265A13E500D68D06 /* XCRemoteSwiftPackageReference "swift-nio" */,
-				623704F3265A27760084CCA8 /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */,
 				623704F8265A27970084CCA8 /* XCRemoteSwiftPackageReference "RediStack" */,
 				4340E2C62666257500F51F19 /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
 				43CD28A8267B64FA00E11876 /* XCRemoteSwiftPackageReference "Puppy" */,
-				438BE52C268C5A650058D164 /* XCRemoteSwiftPackageReference "PromiseKit" */,
 				4301C82626AE8DE500C08E19 /* XCRemoteSwiftPackageReference "swift-crypto" */,
 				4301C82926AE8E0400C08E19 /* XCRemoteSwiftPackageReference "swift-nio-ssh" */,
+				CEB3752F275618B900276E8C /* XCRemoteSwiftPackageReference "swift-nio" */,
+				CE14E2A827561BE1004862F7 /* XCRemoteSwiftPackageReference "swift-log" */,
+				CE83D51327563931000DF09D /* XCRemoteSwiftPackageReference "PromiseKit" */,
+				CE83D51627563C28000DF09D /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */,
 			);
 			productRefGroup = 4320AAF125B6740900A8E214 /* Products */;
 			projectDirPath = "";
@@ -867,6 +908,7 @@
 				43CD28712670C3DD00E11876 /* ColorSchemeEnum.swift in Sources */,
 				434047FA2611C828001519F9 /* RedisFavoriteModel.swift in Sources */,
 				43F22EED269ED9D500A00F97 /* SlowLogView.swift in Sources */,
+				CE83D51C2758E8D1000DF09D /* FocusableTextField.swift in Sources */,
 				4373C50925C3F218002B700E /* RedisModel.swift in Sources */,
 				43F22ED92697FC5800A00F97 /* RedisKeysTableDemo.swift in Sources */,
 				43F22EE5269C2E0900A00F97 /* TextViewController.swift in Sources */,
@@ -1208,29 +1250,12 @@
 				minimumVersion = 1.8.1;
 			};
 		};
-		438BE52C268C5A650058D164 /* XCRemoteSwiftPackageReference "PromiseKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://gitee.com/chengpan168_admin/PromiseKit.git";
-			requirement = {
-				kind = versionRange;
-				maximumVersion = 7.0.0;
-				minimumVersion = 6.15.3;
-			};
-		};
 		43CD28A8267B64FA00E11876 /* XCRemoteSwiftPackageReference "Puppy" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://gitee.com/chengpan168_admin/Puppy.git";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 0.2.0;
-			};
-		};
-		623704F3265A27760084CCA8 /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://gitee.com/chengpan168_admin/appcenter-sdk-apple.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 4.1.1;
 			};
 		};
 		623704F8265A27970084CCA8 /* XCRemoteSwiftPackageReference "RediStack" */ = {
@@ -1241,14 +1266,6 @@
 				minimumVersion = 1.1.2;
 			};
 		};
-		62C48930265A138D00D68D06 /* XCRemoteSwiftPackageReference "swift-log" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://gitee.com/mirrors_apple/swift-log.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.4.2;
-			};
-		};
 		62C48933265A13BB00D68D06 /* XCRemoteSwiftPackageReference "swift-service-discovery" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://gitee.com/mirrors_apple/swift-service-discovery.git";
@@ -1257,12 +1274,37 @@
 				minimumVersion = 1.0.0;
 			};
 		};
-		62C48936265A13E500D68D06 /* XCRemoteSwiftPackageReference "swift-nio" */ = {
+		CE14E2A827561BE1004862F7 /* XCRemoteSwiftPackageReference "swift-log" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://gitee.com/mirrors_apple/swift-nio.git";
+			repositoryURL = "git@github.com:apple/swift-log.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 2.29.0;
+				minimumVersion = 1.0.0;
+			};
+		};
+		CE83D51327563931000DF09D /* XCRemoteSwiftPackageReference "PromiseKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mxcl/PromiseKit.git";
+			requirement = {
+				kind = versionRange;
+				maximumVersion = 7.0.0;
+				minimumVersion = 6.16.0;
+			};
+		};
+		CE83D51627563C28000DF09D /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://gitee.com/chengpan168_admin/appcenter-sdk-apple.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.3.0;
+			};
+		};
+		CEB3752F275618B900276E8C /* XCRemoteSwiftPackageReference "swift-nio" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@gitee.com:chengpan168_admin/swift-nio.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -1298,25 +1340,10 @@
 			package = 438BBEB32655015D00B458BF /* XCRemoteSwiftPackageReference "plcrashreporter" */;
 			productName = CrashReporter;
 		};
-		438BE52D268C5A660058D164 /* PromiseKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 438BE52C268C5A650058D164 /* XCRemoteSwiftPackageReference "PromiseKit" */;
-			productName = PromiseKit;
-		};
 		43CD28A9267B64FA00E11876 /* Puppy */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 43CD28A8267B64FA00E11876 /* XCRemoteSwiftPackageReference "Puppy" */;
 			productName = Puppy;
-		};
-		623704F4265A27760084CCA8 /* AppCenterCrashes */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 623704F3265A27760084CCA8 /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
-			productName = AppCenterCrashes;
-		};
-		623704F6265A27760084CCA8 /* AppCenterAnalytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 623704F3265A27760084CCA8 /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
-			productName = AppCenterAnalytics;
 		};
 		623704F9265A27970084CCA8 /* RediStack */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -1328,20 +1355,70 @@
 			package = 623704F8265A27970084CCA8 /* XCRemoteSwiftPackageReference "RediStack" */;
 			productName = RedisTypes;
 		};
-		62C48931265A138D00D68D06 /* Logging */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 62C48930265A138D00D68D06 /* XCRemoteSwiftPackageReference "swift-log" */;
-			productName = Logging;
-		};
 		62C48934265A13BB00D68D06 /* ServiceDiscovery */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 62C48933265A13BB00D68D06 /* XCRemoteSwiftPackageReference "swift-service-discovery" */;
 			productName = ServiceDiscovery;
 		};
-		62C48937265A13E500D68D06 /* NIO */ = {
+		CE14E2A927561BE1004862F7 /* Logging */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 62C48936265A13E500D68D06 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			package = CE14E2A827561BE1004862F7 /* XCRemoteSwiftPackageReference "swift-log" */;
+			productName = Logging;
+		};
+		CE83D51427563931000DF09D /* PromiseKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CE83D51327563931000DF09D /* XCRemoteSwiftPackageReference "PromiseKit" */;
+			productName = PromiseKit;
+		};
+		CE83D51727563C28000DF09D /* AppCenterAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CE83D51627563C28000DF09D /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
+			productName = AppCenterAnalytics;
+		};
+		CE83D51927563C28000DF09D /* AppCenterCrashes */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CE83D51627563C28000DF09D /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
+			productName = AppCenterCrashes;
+		};
+		CEB37530275618B900276E8C /* NIO */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEB3752F275618B900276E8C /* XCRemoteSwiftPackageReference "swift-nio" */;
 			productName = NIO;
+		};
+		CEB37532275618B900276E8C /* NIOConcurrencyHelpers */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEB3752F275618B900276E8C /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOConcurrencyHelpers;
+		};
+		CEB37534275618B900276E8C /* NIOCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEB3752F275618B900276E8C /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOCore;
+		};
+		CEB37536275618B900276E8C /* NIOEmbedded */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEB3752F275618B900276E8C /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOEmbedded;
+		};
+		CEB37538275618B900276E8C /* NIOFoundationCompat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEB3752F275618B900276E8C /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOFoundationCompat;
+		};
+		CEB3753A275618B900276E8C /* NIOHTTP1 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEB3752F275618B900276E8C /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOHTTP1;
+		};
+		CEB3753C275618B900276E8C /* NIOPosix */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEB3752F275618B900276E8C /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOPosix;
+		};
+		CEB3753E275618B900276E8C /* NIOTLS */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEB3752F275618B900276E8C /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOTLS;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

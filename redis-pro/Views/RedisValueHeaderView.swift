@@ -40,7 +40,7 @@ struct RedisValueHeaderView: View {
         }
     }
     
-    func onTTLCommit() throws -> Void {
+    func onTTLCommit() -> Void {
         if redisKeyModel.isNew {
             return
         }

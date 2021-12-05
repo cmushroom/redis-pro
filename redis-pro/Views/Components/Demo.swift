@@ -15,7 +15,7 @@ struct Demo: View {
     
     var body: some View {
         VStack(spacing: 10) {
-            FocusableTextField(stringValue: $value, placeholder: "placeholder")
+            NTextField(stringValue: $value, placeholder: "placeholder")
             if #available(macOS 12.0, *) {
                 TextField("label", text: $value, prompt: Text("placeholder"))
             }

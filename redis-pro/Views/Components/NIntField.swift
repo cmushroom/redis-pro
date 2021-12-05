@@ -1,17 +1,18 @@
 //
-//  FocusableTextField.swift
+//  NIntField.swift
 //  redis-pro
 //
-//  Created by chenpanwang on 2021/12/2.
+//  Created by chengpan on 2021/12/5.
 //
 
-import Foundation
 import SwiftUI
 
-struct FocusableTextField: NSViewRepresentable {
-    @Binding var stringValue: String
+
+struct NIntField: NSViewRepresentable {
+    @Binding var value: Int
     var placeholder: String
     var autoFocus = false
+    var disable = false
     var tag: Int = 0
     var focusTag: Binding<Int>?
     var onChange: (() -> Void)?
@@ -21,12 +22,14 @@ struct FocusableTextField: NSViewRepresentable {
     
     func makeNSView(context: Context) -> NSTextField {
         let textField = NSTextField()
-        textField.stringValue = stringValue
+        textField.integerValue = value
         textField.placeholderString = placeholder
         textField.delegate = context.coordinator
+//        textField.formatter
 //        textField.alignment = .center
 //        textField.bezelStyle = .roundedBezel
         textField.tag = tag
+        textField.isEnabled = !disable
         return textField
     }
     
@@ -67,9 +70,9 @@ struct FocusableTextField: NSViewRepresentable {
     
     
     class Coordinator: NSObject, NSTextFieldDelegate {
-        let parent: FocusableTextField
+        let parent: NIntField
         
-        init(with parent: FocusableTextField) {
+        init(with parent: NIntField) {
             self.parent = parent
             super.init()
             
@@ -93,15 +96,18 @@ struct FocusableTextField: NSViewRepresentable {
         
         func controlTextDidChange(_ obj: Notification) {
             guard let textField = obj.object as? NSTextField else { return }
-            parent.stringValue = textField.stringValue
+            parent.value = textField.integerValue
+            print("int filed change ")
+            print(textField.integerValue)
+            print(textField.intValue)
             parent.onChange?()
         }
         
-        func control(_ control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
-            parent.stringValue = fieldEditor.string
-            parent.onCommit?()
-            return true
-        }
+//        func control(_ control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
+//            parent.value = fieldEditor.string
+//            parent.onCommit?()
+//            return true
+//        }
         
         func control(_ control: NSControl, textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
             if commandSelector == #selector(NSStandardKeyBindingResponding.insertTab(_:)) {
@@ -113,4 +119,22 @@ struct FocusableTextField: NSViewRepresentable {
     }
     
     
+}
+
+
+class NumberOnlyFormattter : NSNumberFormatter
+{
+    public override bool IsPartialStringValid(string partialString, out string newString, out NSString error)
+    {
+        newString = partialString;
+        error = new NSString("");
+        if (partialString.Length == 0)
+            return true;
+
+        // you could allow use partialString.All(c => c >= '0' && c <= '9') if internationalization is not a concern
+        if (partialString.All(char.IsDigit))
+            return true;
+        newString = new string(partialString.Where(char.IsDigit).ToArray());
+        return false;
+    }
 }

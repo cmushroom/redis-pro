@@ -57,7 +57,7 @@
       },
       {
         "package": "swift-log",
-        "repositoryURL": "git@github.com:apple/swift-log.git",
+        "repositoryURL": "https://github.com/apple/swift-log.git",
         "state": {
           "branch": null,
           "revision": "5d66f7ba25daf4f94100e7022febf3c75e37a6c7",
@@ -75,11 +75,11 @@
       },
       {
         "package": "swift-nio",
-        "repositoryURL": "git@gitee.com:chengpan168_admin/swift-nio.git",
+        "repositoryURL": "https://github.com/apple/swift-nio.git",
         "state": {
           "branch": null,
-          "revision": "37e7a33de45bac894c0b08b56a2f755ebe4884e6",
-          "version": "2.35.0"
+          "revision": "addf69cfe60376c325397c8926589415576b1dd1",
+          "version": "2.34.0"
         }
       },
       {
@@ -87,8 +87,8 @@
         "repositoryURL": "https://gitee.com/mirrors_apple/swift-nio-ssh.git",
         "state": {
           "branch": null,
-          "revision": "bc1a91daf3ae35134fbca5655ed221668d0369d3",
-          "version": "0.3.0"
+          "revision": "09778e0388bda898c7592887f2ec84bb81ef21eb",
+          "version": "0.3.3"
         }
       },
       {

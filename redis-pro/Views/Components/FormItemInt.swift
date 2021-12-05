@@ -13,7 +13,7 @@ struct FormItemInt: View {
     var placeholder:String?
     @Binding var value:Int
     var suffix:String?
-    var onCommit:() throws -> Void = {}
+    var onCommit:() -> Void = {}
     var autoCommit:Bool = true
     
     var body: some View {
@@ -30,7 +30,8 @@ struct FormItemInt: View {
             if !label.isEmpty {
                 FormLabel(label: label, width: labelWidth)
             }
-            MTextField(value: valueProxy, placeholder: placeholder ?? label, suffix: suffix, onCommit: onCommit, autoCommit: autoCommit)
+            NIntField(value: $value, placeholder: placeholder ?? label, onCommit: onCommit)
+//            MTextField(value: valueProxy, placeholder: placeholder ?? label, suffix: suffix, onCommit: onCommit, autoCommit: autoCommit)
         }
     }
 }

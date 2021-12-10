@@ -17,14 +17,6 @@ struct FormItemInt: View {
     var autoCommit:Bool = true
     
     var body: some View {
-        let valueProxy = Binding<String>(
-            get: { String(Int(self.value)) },
-            set: {
-                if let value = NumberFormatter().number(from: $0) {
-                    self.value = value.intValue
-                }
-            }
-        )
         
         HStack(alignment: .center) {
             if !label.isEmpty {

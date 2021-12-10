@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Cocoa
 
 
 struct NIntField: NSViewRepresentable {
@@ -25,7 +26,8 @@ struct NIntField: NSViewRepresentable {
         textField.integerValue = value
         textField.placeholderString = placeholder
         textField.delegate = context.coordinator
-//        textField.formatter
+        
+        textField.formatter = NumberHelper.intFormatter
 //        textField.alignment = .center
 //        textField.bezelStyle = .roundedBezel
         textField.tag = tag
@@ -94,20 +96,28 @@ struct NIntField: NSViewRepresentable {
         
         // MARK: - NSTextFieldDelegate Methods
         
+        // change
         func controlTextDidChange(_ obj: Notification) {
             guard let textField = obj.object as? NSTextField else { return }
-            parent.value = textField.integerValue
-            print("int filed change ")
-            print(textField.integerValue)
-            print(textField.intValue)
+            
+            if NumberHelper.isInt(textField.stringValue) {
+                parent.value = textField.integerValue
+            } else {
+                textField.stringValue = String(parent.value)
+            }
+            
             parent.onChange?()
         }
         
-//        func control(_ control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
-//            parent.value = fieldEditor.string
-//            parent.onCommit?()
-//            return true
-//        }
+        // commit
+        func controlTextDidEndEditing(_ obj: Notification) {
+            parent.onCommit?()
+        }
+        
+        // editing
+        func controlTextDidBeginEditing(_ obj: Notification) {
+            
+        }
         
         func control(_ control: NSControl, textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
             if commandSelector == #selector(NSStandardKeyBindingResponding.insertTab(_:)) {
@@ -118,23 +128,4 @@ struct NIntField: NSViewRepresentable {
         }
     }
     
-    
-}
-
-
-class NumberOnlyFormattter : NSNumberFormatter
-{
-    public override bool IsPartialStringValid(string partialString, out string newString, out NSString error)
-    {
-        newString = partialString;
-        error = new NSString("");
-        if (partialString.Length == 0)
-            return true;
-
-        // you could allow use partialString.All(c => c >= '0' && c <= '9') if internationalization is not a concern
-        if (partialString.All(char.IsDigit))
-            return true;
-        newString = new string(partialString.Where(char.IsDigit).ToArray());
-        return false;
-    }
 }

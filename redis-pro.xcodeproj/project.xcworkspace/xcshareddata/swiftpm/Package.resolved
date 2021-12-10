@@ -12,7 +12,7 @@
       },
       {
         "package": "PLCrashReporter",
-        "repositoryURL": "https://gitee.com/chengpan168_admin/plcrashreporter.git",
+        "repositoryURL": "https://github.com/microsoft/PLCrashReporter.git",
         "state": {
           "branch": null,
           "revision": "59513acde6194d93617afcf7b2c81c88638a6af2",
@@ -39,11 +39,11 @@
       },
       {
         "package": "RediStack",
-        "repositoryURL": "https://gitee.com/chengpan168_admin/RediStack.git",
+        "repositoryURL": "https://github.com/Mordil/RediStack.git",
         "state": {
           "branch": null,
-          "revision": "edadec93a18c4514b33b932c4957c9672b93d6cf",
-          "version": "1.1.2"
+          "revision": "0c3beee7eb7704e50e81d4a89740101b87d02833",
+          "version": "1.2.0"
         }
       },
       {
@@ -78,8 +78,8 @@
         "repositoryURL": "https://github.com/apple/swift-nio.git",
         "state": {
           "branch": null,
-          "revision": "addf69cfe60376c325397c8926589415576b1dd1",
-          "version": "2.34.0"
+          "revision": "37e7a33de45bac894c0b08b56a2f755ebe4884e6",
+          "version": "2.35.0"
         }
       },
       {
@@ -87,8 +87,8 @@
         "repositoryURL": "https://gitee.com/mirrors_apple/swift-nio-ssh.git",
         "state": {
           "branch": null,
-          "revision": "09778e0388bda898c7592887f2ec84bb81ef21eb",
-          "version": "0.3.3"
+          "revision": "bc1a91daf3ae35134fbca5655ed221668d0369d3",
+          "version": "0.3.0"
         }
       },
       {

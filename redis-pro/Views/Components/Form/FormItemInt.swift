@@ -24,6 +24,7 @@ struct FormItemInt: View {
             }
             NIntField(value: $value, placeholder: placeholder ?? label, onCommit: onCommit)
 //            MTextField(value: valueProxy, placeholder: placeholder ?? label, suffix: suffix, onCommit: onCommit, autoCommit: autoCommit)
+//            MIntField(value: $value, placeholder: placeholder ?? label, suffix: suffix, onCommit: onCommit, autoCommit: autoCommit)
         }
     }
 }

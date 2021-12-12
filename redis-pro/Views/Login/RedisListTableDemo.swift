@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct RedisListTableDemo: View {
-    @State var datasource:[RedisModel] = [RedisModel(), RedisModel()]
+    @State var datasource:[NSRedisModel] = [NSRedisModel(), NSRedisModel()]
     @State var selectIndex:Int?
     
     var body: some View {

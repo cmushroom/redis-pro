@@ -25,7 +25,7 @@ class RedisListTableController: NSViewController {
         self.doubleAction()
     }
     
-    @objc dynamic var datasource: [RedisModel] = []
+    @objc dynamic var datasource: [NSRedisModel] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,16 +35,16 @@ class RedisListTableController: NSViewController {
         self.doubleAction = doubleAction
     }
     
-    func setDatasource(_ datasource:[RedisModel]) -> Void {
+    func setDatasource(_ datasource:[NSRedisModel]) -> Void {
         self.datasource = datasource
     }
 }
 
 
 struct RedisListTable: NSViewControllerRepresentable {
-    @Binding var datasource: [RedisModel]
+    @Binding var datasource: [NSRedisModel]
     @Binding var selectRowIndex:Int?
-    
+    var onChange: ((Int) -> Void)?
     var doubleAction: () -> Void = {}
     
     let logger = Logger(label: "redis-list-table")
@@ -89,7 +89,7 @@ struct RedisListTable: NSViewControllerRepresentable {
             self.logger.info("redis list table Coordinator tableViewSelectionIsChanging, selectedRow: \(tableView.selectedRow)")
             
             self.table.selectRowIndex = tableView.selectedRow == -1 ? nil : tableView.selectedRow
-            
+            self.table.onChange?(self.table.selectRowIndex!)  
         }
         
     }

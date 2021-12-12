@@ -22,21 +22,28 @@ struct RedisListView: View {
     @State private var selectedRedisModelId: String?
     @State private var selectIndex:Int?
     
+    @State private var selectRedisModel = RedisModel()
+    
+//    @StateObject private var selectRedisModel = RedisModel()
+    
     @AppStorage("User.defaultFavorite")
     private var defaultFavorite:String = "last"
     
     var quickRedisModel:[RedisModel] = [RedisModel](repeating: RedisModel(name: "QUICK CONNECT"), count: 1)
     
-    var selectRedisModel: RedisModel {
-        redisFavoriteModel.redisModels[selectIndex ?? 0]
-    }
-    
+//    var selectRedisModel: RedisModel {
+//        return redisFavoriteModel.redisModels[selectIndex ?? 0]
+//    }
+
     var filteredRedisModel: [RedisModel] {
         redisFavoriteModel.redisModels
     }
     
     var redisTable:some View {
-        RedisListTable(datasource: $redisFavoriteModel.redisModels, selectRowIndex: $selectIndex, doubleAction: self.onConnect)
+        RedisListTable(datasource: $redisFavoriteModel.nsRedisModels, selectRowIndex: $selectIndex, onChange: {
+            logger.info("on table select change \($0)")
+            self.selectRedisModel = redisFavoriteModel.redisModels[$0 ?? 0]
+        }, doubleAction: self.onConnect)
     }
     
     var body: some View {
@@ -54,7 +61,7 @@ struct RedisListView: View {
                 .padding(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
             }
             .padding(0)
-            .frame(minWidth:200, idealWidth: 180, maxWidth: .infinity)
+            .frame(minWidth:200)
             .layoutPriority(0)
             .onAppear{
                 logger.info("load all redis favorite list")
@@ -62,7 +69,7 @@ struct RedisListView: View {
                 selectFavoriteRedisModel()
             }
             
-            LoginForm(redisFavoriteModel: redisFavoriteModel, redisModel: selectRedisModel)
+            LoginForm(redisFavoriteModel: redisFavoriteModel, redisModel: $selectRedisModel)
             .frame(minWidth: 500, idealWidth:500, maxWidth: .infinity, minHeight: 400, idealHeight: 400, maxHeight: .infinity)
         }
     }

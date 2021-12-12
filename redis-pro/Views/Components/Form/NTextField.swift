@@ -1,19 +1,26 @@
 //
-//  NIntField.swift
+//  NTextField.swift
 //  redis-pro
 //
-//  Created by chengpan on 2021/12/5.
+//  Created by chenpanwang on 2021/12/2.
 //
 
+import Foundation
 import SwiftUI
-import Cocoa
+import Logging
 
 
-struct NIntField: NSViewRepresentable {
-    @Binding var value: Int
+enum NTextFieldType: String {
+    case NORMAL = "normal"
+    case PLAIN = "plain"
+}
+
+struct NTextField: NSViewRepresentable {
+    @Binding var stringValue: String
     var placeholder: String
     var autoFocus = false
     var disable = false
+    var type: NTextFieldType = .NORMAL
     var tag: Int = 0
     var focusTag: Binding<Int>?
     var onChange: (() -> Void)?
@@ -21,22 +28,30 @@ struct NIntField: NSViewRepresentable {
     var onTabKeystroke: (() -> Void)?
     @State private var didFocus = false
     
+    let logger = Logger(label: "text-field")
+    
     func makeNSView(context: Context) -> NSTextField {
         let textField = NSTextField()
-        textField.integerValue = value
+        textField.stringValue = stringValue
         textField.placeholderString = placeholder
         textField.delegate = context.coordinator
-        
-        textField.formatter = NumberHelper.intFormatter
+    
+        logger.info("text field init \(stringValue)")
+//        print("text field init")
 //        textField.alignment = .center
 //        textField.bezelStyle = .roundedBezel
-        textField.tag = tag
+//        textField.tag = tag
         textField.isEnabled = !disable
+        
+//        textField.bezelStyle = .roundedBezel
+        style(textField)
         return textField
     }
     
     
     func updateNSView(_ nsView: NSTextField, context: Context) {
+        nsView.stringValue = stringValue
+        
         if autoFocus && !didFocus {
             NSApplication.shared.mainWindow?.perform(
                 #selector(NSApplication.shared.mainWindow?.makeFirstResponder(_:)),
@@ -65,6 +80,13 @@ struct NIntField: NSViewRepresentable {
         }
     }
     
+    func style(_ textField:NSTextField) {
+        if self.type == .NORMAL {
+            
+        } else if self.type == .PLAIN {
+            textField.isBordered = false
+        }
+    }
     
     func makeCoordinator() -> Coordinator {
         Coordinator(with: self)
@@ -72,9 +94,12 @@ struct NIntField: NSViewRepresentable {
     
     
     class Coordinator: NSObject, NSTextFieldDelegate {
-        let parent: NIntField
+        let parent: NTextField
         
-        init(with parent: NIntField) {
+        
+        let logger = Logger(label: "text-field-coordinator")
+        
+        init(with parent: NTextField) {
             self.parent = parent
             super.init()
             
@@ -83,6 +108,7 @@ struct NIntField: NSViewRepresentable {
                                                    name: NSApplication.didBecomeActiveNotification,
                                                    object: nil)
         }
+        
         
         @objc
         func handleAppDidBecomeActive(notification: Notification) {
@@ -96,27 +122,26 @@ struct NIntField: NSViewRepresentable {
         
         // MARK: - NSTextFieldDelegate Methods
         
-        // change
         func controlTextDidChange(_ obj: Notification) {
             guard let textField = obj.object as? NSTextField else { return }
+            parent.stringValue = textField.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
             
-            if NumberHelper.isInt(textField.stringValue) {
-                parent.value = textField.integerValue
-            } else {
-                textField.stringValue = String(parent.value)
-            }
-            
+            logger.info("text field change, value: \(textField.stringValue)")
             parent.onChange?()
         }
         
-        // commit
         func controlTextDidEndEditing(_ obj: Notification) {
-            parent.onCommit?()
+            guard let textField = obj.object as? NSTextField else { return }
+            parent.stringValue = textField.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
+            
+            logger.info("text field end change, value: \(textField.stringValue)")
+            parent.onChange?()
         }
         
-        // editing
-        func controlTextDidBeginEditing(_ obj: Notification) {
-            
+        func control(_ control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
+            parent.stringValue = fieldEditor.string.trimmingCharacters(in: .whitespacesAndNewlines)
+            parent.onCommit?()
+            return true
         }
         
         func control(_ control: NSControl, textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
@@ -127,5 +152,6 @@ struct NIntField: NSViewRepresentable {
             return false
         }
     }
+    
     
 }

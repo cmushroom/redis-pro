@@ -8,9 +8,11 @@
 import Foundation
 import SwiftUI
 import Logging
+import Combine
 
 class RedisFavoriteModel:ObservableObject {
     @Published var redisModels: [RedisModel] = [RedisModel](repeating: RedisModel(), count: 1)
+    @Published var nsRedisModels: [NSRedisModel] = [NSRedisModel]()
     var lastRedisModelId:String?
     
     let userDefaults = UserDefaults.standard
@@ -26,16 +28,29 @@ class RedisFavoriteModel:ObservableObject {
     
     func loadAll() -> Void {
         redisModels.removeAll()
+        nsRedisModels.removeAll()
         
         let redisDicts = getAll()
         
         redisDicts.forEach{ (element) in
-            redisModels.append(RedisModel(dictionary: element))
+            let item = RedisModel(dictionary: element)
+            redisModels.append(item)
+            nsRedisModels.append(NSRedisModel(item))
         }
         
         if redisModels.count == 0 {
-            redisModels.append(RedisModel())
+            let item = RedisModel()
+            redisModels.append(item)
+            nsRedisModels.append(NSRedisModel(item))
         }
+        
+//        self.redisModels.forEach({
+//                   let c = $0.objectWillChange.sink(receiveValue: { self.objectWillChange.send() })
+//
+//                   // Important: You have to keep the returned value allocated,
+//                   // otherwise the sink subscription gets cancelled
+//                   self.cancellables.append(c)
+//               })
         
         self.lastRedisModelId = userDefaults.string(forKey: UserDefaulsKeysEnum.RedisLastUseIdKey.rawValue)
         logger.info("last select redis model id: \(String(describing: lastRedisModelId))")
@@ -82,8 +97,8 @@ class RedisFavoriteModel:ObservableObject {
             savedRedisList.remove(at: index)
             userDefaults.set(savedRedisList, forKey: UserDefaulsKeysEnum.RedisFavoriteListKey.rawValue)
             logger.info("remove redis from favorite complete, id:\(id)")
-          
-        
+            
+            
             loadAll()
         }
         return nextId

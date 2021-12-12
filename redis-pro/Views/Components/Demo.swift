@@ -12,10 +12,13 @@ import Cocoa
 struct Demo: View {
     @State var selection:Int?
     @State var value:String = ""
+    @State var redisModel:RedisModel = RedisModel()
     
     var body: some View {
         VStack(spacing: 10) {
-            NTextField(stringValue: $value, placeholder: "placeholder")
+            NTextField(stringValue: $redisModel.name, placeholder: "placeholder", onChange: {
+                print("text field change, \(redisModel)")
+            })
             if #available(macOS 12.0, *) {
                 TextField("label", text: $value, prompt: Text("placeholder"))
             }

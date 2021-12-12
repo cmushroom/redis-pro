@@ -8,23 +8,22 @@
 import Foundation
 import SwiftUI
 
-class RedisModel:NSObject, ObservableObject, Identifiable {
-    @Published var id: String = UUID().uuidString
-    @objc @Published var name: String = "New Favorite"
-    @Published var host: String = "127.0.0.1"
-    @Published var port: Int = 6379
-    @Published var database: Int = 0
-    @Published var password: String = ""
-    @Published var isFavorite: Bool = false
-    @Published var ping: Bool = false
-    
-    @Published var connectionType:String = "tcp"
+struct RedisModel: Identifiable {
+    var id: String = UUID().uuidString
+    var name: String = "New Favorite"
+    var host: String = "127.0.0.1"
+    var port: Int = 6379
+    var database: Int = 0
+    var password: String = ""
+    var isFavorite: Bool = false
+    var ping: Bool = false
+    var connectionType:String = "tcp"
     
     // ssh
-    @Published var sshHost:String = ""
-    @Published var sshPort:Int = 22
-    @Published var sshUser:String = ""
-    @Published var sshPass:String = ""
+    var sshHost:String = ""
+    var sshPort:Int = 22
+    var sshUser:String = ""
+    var sshPass:String = ""
     
     var image:Image  = Image("icon-redis")
     
@@ -43,18 +42,23 @@ class RedisModel:NSObject, ObservableObject, Identifiable {
         ]
     }
     
-    override init() {
+    
+    init() {
     }
     
     init(name: String) {
+        self.init()
         self.name = name
     }
     
     init(password: String) {
+        self.init()
         self.password = password
     }
     
     init(dictionary: [String: Any]) {
+        self.init()
+        
         self.id = dictionary["id"] as! String
         self.name = dictionary["name"] as! String
         self.host = dictionary["host"] as! String
@@ -73,8 +77,26 @@ class RedisModel:NSObject, ObservableObject, Identifiable {
         }
     }
     
+    static func ==(a: RedisModel, b: RedisModel) -> Bool {
+        return a.id == b.id
+    }
     
-    override var description: String {
+    var description: String {
         return "RedisModel:[id:\(id), name:\(name), host:\(host), port:\(port), password:\(password), database:\(database), type:\(connectionType), sshHost:\(sshHost), sshPort:\(sshPort),sshUser:\(sshUser)]"
     }
+}
+
+class NSRedisModel:NSObject, ObservableObject, Identifiable {
+    @Published var id: String = UUID().uuidString
+    @objc @Published var name: String = "New Favorite"
+    
+    override init() {
+    }
+    
+    init( _ redisModel: RedisModel) {
+        super.init()
+        self.id = redisModel.id
+        self.name = redisModel.name
+    }
+    
 }

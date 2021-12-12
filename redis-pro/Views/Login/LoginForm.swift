@@ -19,7 +19,8 @@ struct LoginForm: View {
     @EnvironmentObject var globalContext:GlobalContext
     
     @ObservedObject var redisFavoriteModel: RedisFavoriteModel
-    @ObservedObject var redisModel:RedisModel
+    @Binding var redisModel:RedisModel
+    
     @State private var pingState:String = ""
     
     
@@ -170,12 +171,10 @@ struct LoginForm: View {
     }
     
     func onSaveRedisInstanceAction()  throws -> Void {
+        logger.info("save favorite redis: \(redisModel)")
+//        redisFavoriteModel.save(redisModel: redisModel)
         
-        logger.info("save redis to favorite, id: \(redisModel.id), name: \(redisModel.name), host: \(redisModel.host), port: \(redisModel.port), password: \(redisModel.password)")
-        
-        redisFavoriteModel.save(redisModel: redisModel)
-        
-        redisFavoriteModel.loadAll()
+//        redisFavoriteModel.loadAll()
     }
     
     func onConnect() throws -> Void {
@@ -187,8 +186,8 @@ struct LoginForm: View {
     
 }
 
-struct LoginForm_Previews: PreviewProvider {
-    static var previews: some View {
-        LoginForm(redisFavoriteModel: RedisFavoriteModel(), redisModel: RedisModel())
-    }
-}
+//struct LoginForm_Previews: PreviewProvider {
+//    static var previews: some View {
+//        LoginForm(redisFavoriteModel: RedisFavoriteModel(), redisModel: RedisModel())
+//    }
+//}

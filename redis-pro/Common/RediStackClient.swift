@@ -12,7 +12,7 @@ import Logging
 import PromiseKit
 import NIOSSH
 
-class RediStackClient{
+class RediStackClient {
     let logger = Logger(label: "redis-client")
     
     var redisModel:RedisModel
@@ -23,6 +23,9 @@ class RediStackClient{
     var sshChannel:Channel?
     var sshLocalChannel:Channel?
     var sshServer:PortForwardingServer?
+    
+    // 递归查询每页大小
+    private var recursionSize:Int = 500
     
     
     init(redisModel:RedisModel) {
@@ -369,7 +372,7 @@ extension RediStackClient {
     }
     
     private func scanTotal(_ keywords:String?, cursor:Int, total:Int) -> Promise<Int> {
-        return scanAsync(cursor: cursor, keywords: keywords, count: 3000).then{ res -> Promise<Int> in
+        return scanAsync(cursor: cursor, keywords: keywords, count: recursionSize).then{ res -> Promise<Int> in
             let newTotal:Int = total + res.keys.count
             if res.cursor == 0 {
                 self.logger.info("recursion scan total reach end, total: \(newTotal)")
@@ -407,6 +410,7 @@ extension RediStackClient {
         
         logger.info("redis keys page scan, page: \(page)")
         
+        let isScan = page.keywords.isEmpty || page.keywords.contains("*") || page.keywords.contains("?")
         let match = page.keywords.isEmpty ? nil : page.keywords
         
         let keys:[String] = [String]()
@@ -414,32 +418,51 @@ extension RediStackClient {
         let total:Int = page.current * page.size
         
         let scanPromise = Promise<[RedisKeyModel]> { resolver in
-            let _ = self.recursionScan(match, cursor: cursor, maxCount: total, keys: keys).done {res in
+            if isScan {
+                let _ = self.recursionScan(match, cursor: cursor, maxCount: total, keys: keys).done {res in
 
-                let start = (page.current - 1) * page.size
-                
-                if res.keys.count <= start {
-                    resolver.fulfill([])
-                    return
+                    let start = (page.current - 1) * page.size
+                    
+                    if res.keys.count <= start {
+                        resolver.fulfill([])
+                        return
+                    }
+                    
+                    let end = min(start + page.size - 1, res.keys.count)
+                    let pageData:[String] = Array(res.keys[start..<end])
+                    
+                    let _ = self.toRedisKeyModels(pageData).done { r in
+                        resolver.fulfill(r)
+                    }
                 }
-                
-                let end = min(start + page.size - 1, res.keys.count)
-                let pageData:[String] = Array(res.keys[start..<end])
-                
-                let _ = self.toRedisKeyModels(pageData).done { r in
-                    resolver.fulfill(r)
-                }
+            } else {
+                let _ = self.get(key: page.keywords).done({v in
+                    page.total = 1
+                    let _ = self.toRedisKeyModels([v]).done { r in
+                        resolver.fulfill(r)
+                    }
+                }).catch({error in
+                    resolver.reject(error)
+                })
             }
         }
+    
+        
+        let countPromise = isScan ? recursionScanTotal(match) : Promise.value(0)
         
         let promise = Promise<[RedisKeyModel]> { resolver in
-            let _ = when(fulfilled: recursionScanTotal(match),  scanPromise).done({ r1, r2 in
+            let _ = when(fulfilled: countPromise, scanPromise).done({ r1, r2 in
                 let total = r1
-                page.total = total
+                
+                if isScan {
+                    page.total = total
+                }
 //                page.cursor = cursor
                 
                 self.logger.info("keys scan complete, spend: \(stopwatch.elapsedMillis()) ms")
                 resolver.fulfill(r2)
+            }).catch({ error in
+                resolver.reject(error)
             })
         }
         
@@ -999,7 +1022,7 @@ extension RediStackClient {
                 resolver.fulfill((cursor, items))
             }
         } else {
-            return sscanAsync(key, keywords: keywords, cursor: cursor, count: 3000).then{ res -> Promise<(Int, [String?])> in
+            return sscanAsync(key, keywords: keywords, cursor: cursor, count: recursionSize).then{ res -> Promise<(Int, [String?])> in
                 
                 let newItems:[String?] = items + res.1
                 

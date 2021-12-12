@@ -8,7 +8,23 @@
 import Foundation
 import Cocoa
 
-class RedisKeyModel:NSObject, ObservableObject, Identifiable {
+struct RedisKeyModel:Identifiable {
+    var no:Int = 0
+    var key: String
+    var type: String
+    var ttl: Int = -1
+    var isNew: Bool = false
+    
+    var id:String {
+        key
+    }
+    
+    var description: String {
+        return "RedisKeyModel:[key:\(key), type:\(type), ttl:\(ttl)]"
+    }
+}
+
+class NSRedisKeyModel:NSObject, ObservableObject, Identifiable {
     @objc var no:Int = 0
     @objc @Published var key: String
     @objc @Published var type: String
@@ -47,7 +63,13 @@ class RedisKeyModel:NSObject, ObservableObject, Identifiable {
         self.isNew = isNew
     }
     
-    public static func == (lhs: RedisKeyModel, rhs: RedisKeyModel) -> Bool {
+    init(redisKeyModel:RedisKeyModel) {
+        self.key = redisKeyModel.key
+        self.type = redisKeyModel.type
+        self.isNew = redisKeyModel.isNew
+    }
+    
+    public static func == (lhs: NSRedisKeyModel, rhs: NSRedisKeyModel) -> Bool {
            // 需要比较的值
            return lhs.id == rhs.id
        }

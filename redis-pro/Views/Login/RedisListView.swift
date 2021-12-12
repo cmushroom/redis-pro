@@ -86,6 +86,7 @@ struct RedisListView: View {
         }) {
             self.selectIndex = index
         }
+        self.selectRedisModel = self.redisFavoriteModel.redisModels[self.selectIndex ?? 0]
     }
     
     func onAddAction() -> Void {

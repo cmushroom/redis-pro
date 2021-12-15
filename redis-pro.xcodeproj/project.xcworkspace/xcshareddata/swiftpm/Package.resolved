@@ -32,9 +32,9 @@
         "package": "Puppy",
         "repositoryURL": "https://gitee.com/chengpan168_admin/Puppy.git",
         "state": {
-          "branch": null,
-          "revision": "95ce04b0e778b8d7c351876bc98bbf68328dfc9b",
-          "version": "0.3.1"
+          "branch": "main",
+          "revision": "1c9f96e607022d1ccacb34252ac5205e89d6d3e4",
+          "version": null
         }
       },
       {
@@ -68,9 +68,9 @@
         "package": "swift-log",
         "repositoryURL": "https://github.com/apple/swift-log.git",
         "state": {
-          "branch": null,
-          "revision": "5d66f7ba25daf4f94100e7022febf3c75e37a6c7",
-          "version": "1.4.2"
+          "branch": "main",
+          "revision": "4e75f88c6ab63bf47a8780ac4adfce830e8478a6",
+          "version": null
         }
       },
       {
@@ -86,9 +86,9 @@
         "package": "swift-nio",
         "repositoryURL": "https://github.com/apple/swift-nio.git",
         "state": {
-          "branch": null,
-          "revision": "37e7a33de45bac894c0b08b56a2f755ebe4884e6",
-          "version": "2.35.0"
+          "branch": "main",
+          "revision": "213eb6887e526e0dfac526a2eae559a1893ebbac",
+          "version": null
         }
       },
       {

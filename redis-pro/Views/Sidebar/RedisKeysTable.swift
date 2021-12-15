@@ -10,8 +10,9 @@ import SwiftUI
 import Logging
 
 struct RedisKeysTable: NSViewControllerRepresentable {
-    @Binding var datasource: [RedisKeyModel]
+    @Binding var datasource: [NSRedisKeyModel]
     @Binding var selectRowIndex:Int?
+    var onChange: ((Int) -> Void)?
     
     var deleteAction: (_ index:Int) -> Void = {_ in }
     var renameAction: (_ index:Int) -> Void = {_ in }
@@ -59,6 +60,7 @@ struct RedisKeysTable: NSViewControllerRepresentable {
             self.logger.info("redis key table Coordinator tableViewSelectionIsChanging, selectedRow: \(tableView.selectedRow)")
             
             self.table.selectRowIndex = tableView.selectedRow == -1 ? nil : tableView.selectedRow
+            self.table.onChange?(self.table.selectRowIndex ?? 0)
             
         }
 

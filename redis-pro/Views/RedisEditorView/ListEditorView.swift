@@ -15,7 +15,7 @@ struct ListEditorView: View {
     @State private var isEditing:Bool = false
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @EnvironmentObject var globalContext:GlobalContext
-    @ObservedObject var redisKeyModel:RedisKeyModel
+    @Binding var redisKeyModel:RedisKeyModel
     @StateObject private var page:Page = Page()
     
     @State private var editModalVisible:Bool = false
@@ -153,7 +153,7 @@ struct ListEditorView: View {
     func onRefreshAction() throws -> Void {
         page.firstPage()
         try queryPage(redisKeyModel)
-        try ttl(redisKeyModel)
+        ttl()
     }
     
     
@@ -172,6 +172,9 @@ struct ListEditorView: View {
     
     func queryPage(_ redisKeyModel:RedisKeyModel) throws -> Void {
         
+        if redisKeyModel.key.isEmpty {
+            return
+        }
         let _ = redisInstanceModel.getClient().pageList(redisKeyModel, page: page).done({res in
             self.list = res.map{ $0 ?? ""}
             self.selectIndex = res.count > 0 ? 0 : nil
@@ -179,9 +182,13 @@ struct ListEditorView: View {
         
     }
     
-    func ttl(_ redisKeyModel:RedisKeyModel) throws -> Void {
-        let _  = redisInstanceModel.getClient().ttl(key: redisKeyModel.key).done({r in
-            redisKeyModel.ttl = r
+    func ttl() -> Void {
+        
+        if redisKeyModel.key.isEmpty {
+            return
+        }
+        let _  = redisInstanceModel.getClient().ttl(self.redisKeyModel.key).done({r in
+            self.redisKeyModel.ttl = r
         })
     }
     
@@ -195,9 +202,9 @@ struct ListEditorView: View {
     }
 }
 
-struct ListEditorView_Previews: PreviewProvider {
-    static var redisKeyModel:RedisKeyModel = RedisKeyModel(key: "tes", type: "string")
-    static var previews: some View {
-        ListEditorView(redisKeyModel: redisKeyModel)
-    }
-}
+//struct ListEditorView_Previews: PreviewProvider {
+//    static var redisKeyModel:RedisKeyModel = RedisKeyModel(key: "tes", type: "string")
+//    static var previews: some View {
+//        ListEditorView(redisKeyModel: redisKeyModel)
+//    }
+//}

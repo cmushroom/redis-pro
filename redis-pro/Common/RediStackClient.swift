@@ -166,17 +166,38 @@ class RediStackClient {
         return promise
     }
     
-    func ttl(_ redisKeyModel:RedisKeyModel) -> Void {
-        if redisKeyModel.isNew {
-            return
-        }
-
-        let _ = ttl(key: redisKeyModel.key).done({r in
-            redisKeyModel.ttl = r
+//    func ttl(_ redisKeyModel:RedisKeyModel) -> Void {
+//        if redisKeyModel.isNew {
+//            return
+//        }
+//
+//        ttl(key: redisKeyModel.key).done({r in
+////            redisKeyModel.ttl = r
+//        })
+//    }
+    
+    
+    func exist(_ key:String) -> Promise<Bool> {
+        logger.info("get key exist: \(key)")
+        
+        let promise = getConnectionAsync().then({connection in
+            Promise<Bool>{resolver in
+                connection.exists(RedisKey(key)).whenComplete({completion in
+                    if case .success(let r) = completion {
+                        self.logger.info("query redis key exist, key: \(key), r:\(r)")
+                        resolver.fulfill(r > 0)
+                    }
+                    else if case .failure(let error) = completion {
+                        self.logger.error("redis get key type error \(error)")
+                        resolver.reject(error)
+                    }
+                })
+            }
         })
+        return promise
     }
     
-    func ttl(key:String) -> Promise<Int> {
+    func ttl(_ key:String) -> Promise<Int> {
         logger.info("get ttl key: \(key)")
         
         let promise = getConnectionAsync().then({connection in
@@ -241,6 +262,11 @@ class RediStackClient {
         afterPromise(promise)
         return promise
     }
+
+//    func getConn() async -> RedisConnection {
+//        withCheckedContinuation(<#T##body: (CheckedContinuation<T, Never>) -> Void##(CheckedContinuation<T, Never>) -> Void#>)
+//        Task.init(priority: <#T##TaskPriority?#>, operation: <#T##() async -> _#>)
+//    }
     
     func getConnectionAsync() -> Promise<RedisConnection> {
         if self.connection != nil && self.connection!.isConnected{
@@ -403,7 +429,7 @@ extension RediStackClient {
         return scanTotal(keywords, cursor: cursor, total: total)
     }
    
-    func pageKeys(_ page:Page) -> Promise<[RedisKeyModel]> {
+    func pageKeys(_ page:Page) -> Promise<[NSRedisKeyModel]> {
         self.globalContext?.loading = true
         
         let stopwatch = Stopwatch.createStarted()
@@ -417,7 +443,7 @@ extension RediStackClient {
         let cursor:Int = 0
         let total:Int = page.current * page.size
         
-        let scanPromise = Promise<[RedisKeyModel]> { resolver in
+        let scanPromise = Promise<[NSRedisKeyModel]> { resolver in
             if isScan {
                 let _ = self.recursionScan(match, cursor: cursor, maxCount: total, keys: keys).done {res in
 
@@ -436,21 +462,29 @@ extension RediStackClient {
                     }
                 }
             } else {
-                let _ = self.get(key: page.keywords).done({v in
+                let _ = self.exist(page.keywords).done({ r in
                     page.total = 1
-                    let _ = self.toRedisKeyModels([v]).done { r in
+                    let _ = self.toRedisKeyModels([page.keywords]).done { r in
                         resolver.fulfill(r)
                     }
                 }).catch({error in
                     resolver.reject(error)
                 })
+//                let _ = self.get(key: page.keywords).done({v in
+//                    page.total = 1
+//                    let _ = self.toRedisKeyModels([v]).done { r in
+//                        resolver.fulfill(r)
+//                    }
+//                }).catch({error in
+//                    resolver.reject(error)
+//                })
             }
         }
     
         
         let countPromise = isScan ? recursionScanTotal(match) : Promise.value(0)
         
-        let promise = Promise<[RedisKeyModel]> { resolver in
+        let promise = Promise<[NSRedisKeyModel]> { resolver in
             let _ = when(fulfilled: countPromise, scanPromise).done({ r1, r2 in
                 let total = r1
                 
@@ -470,25 +504,25 @@ extension RediStackClient {
         return promise
     }
     
-    private func toRedisKeyModels(_ keys:[String]) -> Promise<[RedisKeyModel]> {
+    private func toRedisKeyModels(_ keys:[String]) -> Promise<[NSRedisKeyModel]> {
         if keys.isEmpty {
-            return Promise<[RedisKeyModel]>.value([RedisKeyModel]())
+            return Promise<[NSRedisKeyModel]>.value([NSRedisKeyModel]())
         }
         
-        var promises = [Promise<RedisKeyModel>]()
+        var promises = [Promise<NSRedisKeyModel>]()
         
         for key in keys {
             promises.append(type(key).then({type in
-                Promise<RedisKeyModel>.value(RedisKeyModel(key: key, type: type))
+                Promise<NSRedisKeyModel>.value(NSRedisKeyModel(key, type: type))
             }))
         }
         
         return when(resolved: promises).then({ r in
-            Promise<[RedisKeyModel]>.value(r.map({
+            Promise<[NSRedisKeyModel]>.value(r.map({
                 if case .fulfilled(let v) = $0 {
                     return v
                 } else {
-                    return RedisKeyModel(key: "ERROR", type: RedisKeyTypeEnum.NONE.rawValue)
+                    return NSRedisKeyModel("ERROR", type: RedisKeyTypeEnum.NONE.rawValue)
                 }
             }))
         })

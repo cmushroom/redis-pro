@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct RedisKeysTableDemo: View {
-    @State var datasource = [RedisKeyModel]()
+    @State var datasource = [NSRedisKeyModel]()
     @State var selectRowIndex:Int?
     
     var body: some View {
@@ -25,7 +25,7 @@ struct RedisKeysTableDemo: View {
 //        datasource.append(RedisKeyTableRow(no: 2, type: RedisKeyTypeEnum.ZSET.rawValue, key: "user_token-2"))
 //        datasource.append(RedisKeyTableRow(no: 100, type: RedisKeyTypeEnum.HASH.rawValue, key: "user_session-1"))
         
-        datasource.append(RedisKeyModel(key: "aaaa", type: RedisKeyTypeEnum.STRING.rawValue))
+        datasource.append(NSRedisKeyModel("aaaa", type: RedisKeyTypeEnum.STRING.rawValue))
     }
 }
 

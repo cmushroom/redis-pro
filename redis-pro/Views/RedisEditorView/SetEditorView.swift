@@ -13,7 +13,7 @@ struct SetEditorView: View {
     @State private var selectIndex:Int?
     
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
-    @ObservedObject var redisKeyModel:RedisKeyModel
+    @Binding var redisKeyModel:RedisKeyModel
     @StateObject private var page:Page = Page()
     
     @State private var editModalVisible:Bool = false
@@ -134,6 +134,11 @@ struct SetEditorView: View {
     }
     
     func queryPage(_ redisKeyModel:RedisKeyModel) -> Void {
+        
+        if redisKeyModel.key.isEmpty {
+            return
+        }
+        
         let _ = redisInstanceModel.getClient().pageSet(redisKeyModel, page: page).done({res in
             list = res.map{ $0 ?? ""}
             self.selectIndex = res.count > 0 ? 0 : nil
@@ -141,8 +146,13 @@ struct SetEditorView: View {
     }
     
     func ttl(_ redisKeyModel:RedisKeyModel) -> Void {
-        let _ = redisInstanceModel.getClient().ttl(key: redisKeyModel.key).done({r in
-            redisKeyModel.ttl = r
+        
+        if redisKeyModel.key.isEmpty {
+            return
+        }
+        
+        let _ = redisInstanceModel.getClient().ttl(redisKeyModel.key).done({r in
+            self.redisKeyModel.ttl = r
         })
     }
     
@@ -171,9 +181,9 @@ struct SetEditorView: View {
     }
 }
 
-struct SetEditorView_Previews: PreviewProvider {
-    static var redisKeyModel:RedisKeyModel = RedisKeyModel(key: "tes", type: "string")
-    static var previews: some View {
-        SetEditorView(redisKeyModel: redisKeyModel)
-    }
-}
+//struct SetEditorView_Previews: PreviewProvider {
+//    static var redisKeyModel:RedisKeyModel = RedisKeyModel(key: "tes", type: "string")
+//    static var previews: some View {
+//        SetEditorView(redisKeyModel: redisKeyModel)
+//    }
+//}

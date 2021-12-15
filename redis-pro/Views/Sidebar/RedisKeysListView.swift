@@ -13,10 +13,12 @@ import AppKit
 struct RedisKeysListView: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @EnvironmentObject var globalContext:GlobalContext
-    @State var redisKeyModels:[RedisKeyModel] = [RedisKeyModel]()
+    @State var redisKeyModels:[NSRedisKeyModel] = [NSRedisKeyModel]()
     @State var selectedRedisKeyIndex:Int?
     @StateObject var scanModel:Page = Page()
     @StateObject var page:ScanModel = ScanModel()
+    
+    @State private var selectRedisKeyModel:RedisKeyModel = RedisKeyModel()
     
     @State private var renameModalVisible:Bool = false
     @State private var oldKeyIndex:Int?
@@ -28,14 +30,14 @@ struct RedisKeysListView: View {
     
     let logger = Logger(label: "redis-key-list-view")
     
-    var selectRedisKeyModel:RedisKeyModel? {
-        get {
-            return (selectedRedisKeyIndex == nil || redisKeyModels.isEmpty || redisKeyModels.count <= selectedRedisKeyIndex!) ? nil : redisKeyModels[selectedRedisKeyIndex!]
-        }
-    }
+//    var selectRedisKeyModel:RedisKeyModel? {
+//        get {
+//            return (selectedRedisKeyIndex == nil || redisKeyModels.isEmpty || redisKeyModels.count <= selectedRedisKeyIndex!) ? nil : redisKeyModels[selectedRedisKeyIndex!]
+//        }
+//    }
     
-    var selectRedisKey:String? {
-        selectRedisKeyModel?.id
+    var selectRedisKey:String {
+        selectRedisKeyModel.key
     }
     
     private var sidebarHeader: some View {
@@ -49,8 +51,8 @@ struct RedisKeysListView: View {
                 HStack {
                     IconButton(icon: "plus", name: "Add", action: onAddAction)
                     IconButton(icon: "trash", name: "Delete", disabled: selectedRedisKeyIndex == nil, isConfirm: true,
-                               confirmTitle: String(format: Helps.DELETE_KEY_CONFIRM_TITLE, selectRedisKey ?? ""),
-                               confirmMessage: String(format:Helps.DELETE_KEY_CONFIRM_MESSAGE, selectRedisKey ?? ""),
+                               confirmTitle: String(format: Helps.DELETE_KEY_CONFIRM_TITLE, selectRedisKey),
+                               confirmMessage: String(format:Helps.DELETE_KEY_CONFIRM_MESSAGE, selectRedisKey),
                                confirmPrimaryButtonText: "Delete",
                                action: onDeleteAction)
                     
@@ -98,7 +100,9 @@ struct RedisKeysListView: View {
             // header area
             sidebarHeader
             
-            RedisKeysTable(datasource: $redisKeyModels, selectRowIndex: $selectedRedisKeyIndex, deleteAction: onDeleteConfirmAction, renameAction: onRenameConfirmAction)
+            RedisKeysTable(datasource: $redisKeyModels, selectRowIndex: $selectedRedisKeyIndex, onChange: {
+                self.selectRedisKeyModel = RedisKeyModel(redisKeyModels[$0])
+            }, deleteAction: onDeleteConfirmAction, renameAction: onRenameConfirmAction)
             
             // footer
             sidebarFoot
@@ -109,21 +113,20 @@ struct RedisKeysListView: View {
     
     private var rightMainView: some View {
         VStack(alignment: .leading, spacing: 0){
-            if selectRedisKeyModel != nil {
-                RedisValueView(redisKeyModel: selectRedisKeyModel!)
+            if mainViewType == MainViewTypeEnum.EDITOR {
+                RedisValueView(redisKeyModel: $selectRedisKeyModel)
+            } else if mainViewType == MainViewTypeEnum.REDIS_INFO {
+                RedisInfoView()
+            }  else if mainViewType == MainViewTypeEnum.CLIENT_LIST {
+                ClientsListView()
+            } else if mainViewType == MainViewTypeEnum.SLOW_LOG {
+                SlowLogView()
+            } else if mainViewType == MainViewTypeEnum.REDIS_CONFIG {
+                RedisConfigView()
             } else {
-                if mainViewType == MainViewTypeEnum.REDIS_INFO {
-                    RedisInfoView()
-                } else if mainViewType == MainViewTypeEnum.CLIENT_LIST {
-                    ClientsListView()
-                } else if mainViewType == MainViewTypeEnum.SLOW_LOG {
-                    SlowLogView()
-                } else if mainViewType == MainViewTypeEnum.REDIS_CONFIG {
-                    RedisConfigView()
-                } else {
-                    EmptyView()
-                }
+                EmptyView()
             }
+            
             Spacer()
         }
         .padding(4)
@@ -161,10 +164,12 @@ struct RedisKeysListView: View {
     }
     
     func onAddAction() -> Void {
-        let newRedisKeyModel = RedisKeyModel(key: "NEW_KEY_\(Date().millis)", type: RedisKeyTypeEnum.STRING.rawValue, isNew: true)
+//        let newRedisKeyModel = RedisKeyModel(key: "NEW_KEY_\(Date().millis)", type: RedisKeyTypeEnum.STRING.rawValue)
         
-        self.redisKeyModels.insert(newRedisKeyModel, at: 0)
-        self.selectedRedisKeyIndex = 0
+        self.selectRedisKeyModel = RedisKeyModel("NEW_KEY_\(Date().millis)", type: RedisKeyTypeEnum.STRING.rawValue)
+        
+//        self.redisKeyModels.insert(newRedisKeyModel, at: 0)
+//        self.selectedRedisKeyIndex = 0
     }
     
     func onRenameConfirmAction(_ index:Int) -> Void {
@@ -265,8 +270,8 @@ struct RedisKeysListView: View {
 
 
 
-func testData() -> [RedisKeyModel] {
-    let redisKeys:[RedisKeyModel] = [RedisKeyModel](repeating: RedisKeyModel(key: UUID().uuidString.lowercased(), type: "string"), count: 0)
+func testData() -> [NSRedisKeyModel] {
+    let redisKeys:[NSRedisKeyModel] = [NSRedisKeyModel](repeating: NSRedisKeyModel(UUID().uuidString.lowercased(), type: "string"), count: 0)
     return redisKeys
 }
 

@@ -13,7 +13,7 @@ import Cocoa
 struct StringEditorView: View {
     @State var text: String = ""
     
-    @ObservedObject var redisKeyModel:RedisKeyModel
+    @Binding var redisKeyModel:RedisKeyModel
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     
     let logger = Logger(label: "redis-string-editor")
@@ -69,8 +69,13 @@ struct StringEditorView: View {
     }
     
     func onRefreshAction() -> Void {
+        if redisKeyModel.key.isEmpty {
+            return
+        }
         getValue(redisKeyModel)
-        redisInstanceModel.getClient().ttl(redisKeyModel)
+        let _ = redisInstanceModel.getClient().ttl(redisKeyModel.key).done({r in
+            self.redisKeyModel.ttl = r
+        })
     }
     
     func onLoad(_ redisKeyModel:RedisKeyModel) -> Void {
@@ -78,6 +83,10 @@ struct StringEditorView: View {
     }
     
     func getValue(_ redisKeyModel:RedisKeyModel) -> Void {
+        
+        if redisKeyModel.key.isEmpty {
+            return
+        }
         if redisKeyModel.isNew {
             text = ""
         } else {
@@ -87,9 +96,10 @@ struct StringEditorView: View {
         }
     }
 }
-struct StringEditView_Previews: PreviewProvider {
-    static var redisKeyModel:RedisKeyModel = RedisKeyModel(key: "tes", type: "string")
-    static var previews: some View {
-        StringEditorView(redisKeyModel: redisKeyModel)
-    }
-}
+
+//struct StringEditView_Previews: PreviewProvider {
+//    static var redisKeyModel:RedisKeyModel = RedisKeyModel(key: "tes", type: "string")
+//    static var previews: some View {
+//        StringEditorView(redisKeyModel: redisKeyModel)
+//    }
+//}

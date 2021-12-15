@@ -8,10 +8,10 @@
 import Foundation
 import Cocoa
 
-struct RedisKeyModel:Identifiable {
+struct RedisKeyModel:Identifiable, Equatable {
     var no:Int = 0
-    var key: String
-    var type: String
+    var key: String = ""
+    var type: String = RedisKeyTypeEnum.STRING.rawValue
     var ttl: Int = -1
     var isNew: Bool = false
     
@@ -19,8 +19,24 @@ struct RedisKeyModel:Identifiable {
         key
     }
     
+    init() {}
+    
+    init(_ key:String, type:String) {
+        self.init()
+        self.key = key
+        self.type = type
+    }
+    init(_ nsRedisKeyModel:NSRedisKeyModel) {
+        self.init(nsRedisKeyModel.key, type: nsRedisKeyModel.type)
+    }
+    
     var description: String {
         return "RedisKeyModel:[key:\(key), type:\(type), ttl:\(ttl)]"
+    }
+    
+    public static func == (lhs: RedisKeyModel, rhs: RedisKeyModel) -> Bool {
+        // 需要比较的值
+        return lhs.id == rhs.id
     }
 }
 
@@ -53,28 +69,19 @@ class NSRedisKeyModel:NSObject, ObservableObject, Identifiable {
         }
     }
     
-    convenience init(key:String, type:String) {
-        self.init(key: key, type: type, isNew: false)
+    override init() {
+        self.key = ""
+        self.type = RedisKeyTypeEnum.STRING.rawValue
+        super.init()
     }
-    
-    init(key:String, type:String, isNew:Bool) {
+    convenience init(_ key:String, type:String) {
+        self.init()
         self.key = key
         self.type = type
-        self.isNew = isNew
     }
     
-    init(redisKeyModel:RedisKeyModel) {
-        self.key = redisKeyModel.key
-        self.type = redisKeyModel.type
-        self.isNew = redisKeyModel.isNew
-    }
-    
-    public static func == (lhs: NSRedisKeyModel, rhs: NSRedisKeyModel) -> Bool {
-           // 需要比较的值
-           return lhs.id == rhs.id
-       }
-    
+
     override var description: String {
-        return "RedisKeyModel:[key:\(key), type:\(type), ttl:\(ttl)]"
+        return "RedisKeyModel:[key:\(key), type:\(type)]"
     }
 }

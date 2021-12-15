@@ -14,7 +14,7 @@ class RedisKeysTableController: NSViewController {
     @IBOutlet weak var tableView: NSTableView!
     @IBOutlet var arrayController: NSArrayController!
     
-    @objc dynamic var datasource: [RedisKeyModel] = []
+    @objc dynamic var datasource: [NSRedisKeyModel] = []
     
     var deleteAction: (_ index:Int) -> Void = {_ in }
     var renameAction: (_ index:Int) -> Void = {_ in }
@@ -31,7 +31,7 @@ class RedisKeysTableController: NSViewController {
         
     }
     
-    func setDatasource(_ datasource:[RedisKeyModel]) -> Void {
+    func setDatasource(_ datasource:[NSRedisKeyModel]) -> Void {
         self.datasource = datasource
     }
     

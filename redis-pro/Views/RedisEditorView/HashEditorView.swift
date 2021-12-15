@@ -11,7 +11,7 @@ import PromiseKit
 
 struct HashEditorView: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
-    @ObservedObject var redisKeyModel:RedisKeyModel
+    @Binding var redisKeyModel:RedisKeyModel
     @StateObject private var page:ScanModel = ScanModel()
     
     @State private var datasource:[Any] = [RedisHashEntryModel]()
@@ -50,11 +50,11 @@ struct HashEditorView: View {
             
             HashEntryTable(datasource: $datasource, selectRowIndex: $selectIndex, refresh: refresh
                            , deleteAction: { index in
-                            onDeleteIndexAction(index)
-                           }
+                onDeleteIndexAction(index)
+            }
                            , editAction: { index in
-                            onEditIndexAction(index)
-                           })
+                onEditIndexAction(index)
+            })
             
             // footer
             HStack(alignment: .center, spacing: 4) {
@@ -110,7 +110,7 @@ struct HashEditorView: View {
         editValue = entry.value
         editModalVisible = true
     }
-
+    
     func onSaveFieldAction() throws -> Void {
         let _ = redisInstanceModel.getClient().hset(redisKeyModel.key, field: editField, value: editValue).done({ _ in
             
@@ -142,13 +142,22 @@ struct HashEditorView: View {
     }
     
     func onRefreshAction() throws -> Void {
+        
+        if redisKeyModel.key.isEmpty {
+            return
+        }
         page.reset()
         queryHashPage(redisKeyModel)
-        try ttl(redisKeyModel)
+        ttl()
     }
     
     
     func onLoad(_ redisKeyModel:RedisKeyModel) -> Void {
+        
+        if redisKeyModel.key.isEmpty {
+            return
+        }
+        
         queryHashPage(redisKeyModel)
     }
     
@@ -157,6 +166,11 @@ struct HashEditorView: View {
     }
     
     func queryHashPage(_ redisKeyModel:RedisKeyModel) -> Void {
+        
+        if redisKeyModel.key.isEmpty {
+            return
+        }
+        
         let _ = redisInstanceModel.getClient().pageHash(redisKeyModel, page: page).done({res in
             self.datasource = res
             self.selectIndex = res.count > 0 ? 0 : nil
@@ -164,9 +178,9 @@ struct HashEditorView: View {
         })
     }
     
-    func ttl(_ redisKeyModel:RedisKeyModel) throws -> Void {
-        let _  = redisInstanceModel.getClient().ttl(key: redisKeyModel.key).done({r in
-            redisKeyModel.ttl = r
+    func ttl() -> Void {
+        let _  = redisInstanceModel.getClient().ttl(redisKeyModel.key).done({r in
+            self.redisKeyModel.ttl = r
         })
     }
     
@@ -192,9 +206,9 @@ struct HashEditorView: View {
 }
 
 
-struct KeyValueRowEditorView_Previews: PreviewProvider {
-    static var redisKeyModel:RedisKeyModel = RedisKeyModel(key: "tes", type: "string")
-    static var previews: some View {
-        HashEditorView(redisKeyModel: redisKeyModel)
-    }
-}
+//struct KeyValueRowEditorView_Previews: PreviewProvider {
+//    static var redisKeyModel:RedisKeyModel = RedisKeyModel("tes", type: "string")
+//    static var previews: some View {
+//        HashEditorView(redisKeyModel: redisKeyModel)
+//    }
+//}

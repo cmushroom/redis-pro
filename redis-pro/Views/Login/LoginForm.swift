@@ -162,8 +162,6 @@ struct LoginForm: View {
         
         savedRedisList.append(redisModel.dictionary)
         
-        print("save list \(savedRedisList)")
-        
         defaults.set(savedRedisList, forKey: UserDefaulsKeysEnum.RedisFavoriteListKey.rawValue)
         logger.info("add redis to favorite complete")
         
@@ -172,9 +170,9 @@ struct LoginForm: View {
     
     func onSaveRedisInstanceAction()  throws -> Void {
         logger.info("save favorite redis: \(redisModel)")
-//        redisFavoriteModel.save(redisModel: redisModel)
+        redisFavoriteModel.save(redisModel: redisModel)
         
-//        redisFavoriteModel.loadAll()
+        redisFavoriteModel.loadAll()
     }
     
     func onConnect() throws -> Void {

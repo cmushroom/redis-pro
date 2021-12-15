@@ -65,11 +65,7 @@ struct MSecureField: View {
     
     func doAction() -> Void {
         logger.info("on textField commit, value: \(value)")
-        do {
-            try onCommit()
-        } catch {
-            MAlert.error(error)
-        }
+        onCommit()
     }
 }
 struct MSecureField_Previews: PreviewProvider {

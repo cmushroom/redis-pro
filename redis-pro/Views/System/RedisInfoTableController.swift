@@ -18,6 +18,13 @@ class RedisInfoTableController: NSViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+//        tableView.tableColumns.forEach({column in
+//            let cell = column.dataCell as! NSCell
+//            cell.controlSize = .large
+//            cell.font = NSFont.systemFont(ofSize: 14)
+//            //            return cell
+//        })
     }
         
     func setDatasource(_ datasource:[RedisInfoItemModel]) -> Void {
@@ -65,7 +72,6 @@ struct RedisInfoTable: NSViewControllerRepresentable {
         
         init(_ table: RedisInfoTable) {
             self.table = table
-        
         }
         
         func tableViewSelectionIsChanging(_ notification: Notification) {
@@ -75,6 +81,40 @@ struct RedisInfoTable: NSViewControllerRepresentable {
             self.table.selectRowIndex = tableView.selectedRow == -1 ? nil : tableView.selectedRow
 
         }
+        func tableView(_ tableView: NSTableView,
+                willDisplayCell cell: Any,
+                            for tableColumn: NSTableColumn?,
+                       row: Int) {
+            print("celll      \(cell)")
+        }
+//        func tableView(_ tableView: NSTableView,
+//                        viewFor tableColumn: NSTableColumn?,
+//                       row: Int) -> NSView? {
+//            print("...................... \(tableColumn)")
+//            let view = NSTextFieldCell()
+//            let v = NSTableCellView()
+//            v.textField?.stringValue = "hello"
+//            return v
+//        }
+//        func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+//            print("...................... \(tableColumn)")
+//            // Assuming that you have set the cell view's Identifier in Interface Builder
+//            tableColumn?.dataCell
+//            let cell = NSTableCellView()
+//
+//            cell.textField?.stringValue = "helllo"
+//
+//            cell.textField?.font = NSFont.systemFont(ofSize: 14)
+//
+//            return cell
+//        }
+//        func tableView(_ tableView: NSTableView,
+//                        viewFor tableColumn: NSTableColumn?,
+//                       row: Int) -> NSView? {
+//            let cell = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "mcell"), owner: self) as!NSTableCellView
+//            cell.textField?.font = NSFont.systemFont(ofSize: 14)
+//            return cell
+//        }
     }
     
     

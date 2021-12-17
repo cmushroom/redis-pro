@@ -16,6 +16,7 @@ struct Demo: View {
     
     var body: some View {
         VStack(spacing: 10) {
+            NSearchField(value: $value, placeholder: "search...")
             NTextField(stringValue: $redisModel.name, placeholder: "placeholder", onChange: {
                 print("text field change, \(redisModel)")
             })

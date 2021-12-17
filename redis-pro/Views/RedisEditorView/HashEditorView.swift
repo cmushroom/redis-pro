@@ -15,7 +15,7 @@ struct HashEditorView: View {
     @StateObject private var page:ScanModel = ScanModel()
     
     @State private var datasource:[Any] = [RedisHashEntryModel]()
-    @State private var selectIndex:Int?
+    @State private var selectIndex:Int = -1
     @State private var refresh:Int = 0
     
     @State private var editModalVisible:Bool = false
@@ -25,11 +25,11 @@ struct HashEditorView: View {
     @State private var editValue:String = ""
     
     private var selectField:String {
-        selectIndex == nil ? "" : (datasource[selectIndex!] as! RedisHashEntryModel).field
+        selectIndex == -1 ? "" : (datasource[selectIndex] as! RedisHashEntryModel).field
     }
     
     var delButtonDisabled:Bool {
-        datasource.count <= 0 || selectIndex == nil
+        datasource.count <= 0 || selectIndex == -1
     }
     
     let logger = Logger(label: "redis-hash-editor")
@@ -41,7 +41,7 @@ struct HashEditorView: View {
                 IconButton(icon: "trash", name: "Delete", disabled:delButtonDisabled,
                            action: onDeleteAction)
                 
-                SearchBar(keywords: $page.keywords, placeholder: "Search field...", action: onQueryField)
+                SearchBar(keywords: $page.keywords, placeholder: "Search field...", onCommit: onQueryField)
                 
                 Spacer()
                 ScanBar(scanModel:page, action: onPageAction)
@@ -131,7 +131,7 @@ struct HashEditorView: View {
     }
     
     
-    func onQueryField() throws -> Void {
+    func onQueryField() -> Void {
         page.reset()
         queryHashPage(redisKeyModel)
     }
@@ -154,7 +154,8 @@ struct HashEditorView: View {
     
     func onLoad(_ redisKeyModel:RedisKeyModel) -> Void {
         
-        if redisKeyModel.key.isEmpty {
+        
+        if redisKeyModel.type != RedisKeyTypeEnum.HASH.rawValue {
             return
         }
         
@@ -173,7 +174,7 @@ struct HashEditorView: View {
         
         let _ = redisInstanceModel.getClient().pageHash(redisKeyModel, page: page).done({res in
             self.datasource = res
-            self.selectIndex = res.count > 0 ? 0 : nil
+            self.selectIndex = res.count > 0 ? 0 : -1
             
         })
     }
@@ -196,7 +197,7 @@ struct HashEditorView: View {
     }
     
     func onDeleteAction() throws -> Void {
-        onDeleteIndexAction(selectIndex!)
+        onDeleteIndexAction(selectIndex)
     }
     
     func deleteField(_ field:String) -> Promise<Int> {

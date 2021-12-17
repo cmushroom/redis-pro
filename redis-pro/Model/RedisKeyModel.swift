@@ -21,6 +21,10 @@ struct RedisKeyModel:Identifiable, Equatable {
     
     init() {}
     
+    init(_ isNew:Bool) {
+        self.init()
+        self.isNew = isNew
+    }
     init(_ key:String, type:String) {
         self.init()
         self.key = key

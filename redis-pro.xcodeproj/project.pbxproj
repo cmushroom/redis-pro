@@ -166,6 +166,7 @@
 		CE83D51827563C28000DF09D /* AppCenterAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = CE83D51727563C28000DF09D /* AppCenterAnalytics */; };
 		CE83D51A27563C28000DF09D /* AppCenterCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = CE83D51927563C28000DF09D /* AppCenterCrashes */; };
 		CE83D51C2758E8D1000DF09D /* NTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE83D51B2758E8D1000DF09D /* NTextField.swift */; };
+		CE916155276B60650026C625 /* NSearchField.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE916154276B60650026C625 /* NSearchField.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -325,6 +326,7 @@
 		62E8F9D52765EC97006A5326 /* NSecureField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSecureField.swift; sourceTree = "<group>"; };
 		62E8F9D82765F197006A5326 /* MPasswordField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPasswordField.swift; sourceTree = "<group>"; };
 		CE83D51B2758E8D1000DF09D /* NTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NTextField.swift; sourceTree = "<group>"; };
+		CE916154276B60650026C625 /* NSearchField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSearchField.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -649,6 +651,7 @@
 				43DFEF3625C29288006EF535 /* FormItemInt.swift */,
 				436BB6962644EED8008B4866 /* FormItemNumber.swift */,
 				CE83D51B2758E8D1000DF09D /* NTextField.swift */,
+				CE916154276B60650026C625 /* NSearchField.swift */,
 				6237D033275CFF1F000ACD6A /* NIntField.swift */,
 				62E8F9D52765EC97006A5326 /* NSecureField.swift */,
 				62E8F9D82765F197006A5326 /* MPasswordField.swift */,
@@ -821,6 +824,7 @@
 				4340E2CC266649D000F51F19 /* ScanBar.swift in Sources */,
 				4313576B263AB6400077EE46 /* FormItemTextArea.swift in Sources */,
 				43915809268075490019D2D0 /* Demo.swift in Sources */,
+				CE916155276B60650026C625 /* NSearchField.swift in Sources */,
 				436BB6952644E8D6008B4866 /* ZSetEditorView.swift in Sources */,
 				4314A3472625484100053FEE /* MTextField.swift in Sources */,
 				436BB6932644D126008B4866 /* SetEditorView.swift in Sources */,

@@ -79,6 +79,9 @@ struct StringEditorView: View {
     }
     
     func onLoad(_ redisKeyModel:RedisKeyModel) -> Void {
+        if redisKeyModel.type != RedisKeyTypeEnum.STRING.rawValue {
+            return
+        }
         getValue(redisKeyModel)
     }
     

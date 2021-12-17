@@ -34,7 +34,7 @@ struct SetEditorView: View {
                 IconButton(icon: "plus", name: "Add", action: onAddAction)
                 IconButton(icon: "trash", name: "Delete", disabled:delButtonDisabled,
                            action: onDeleteAction)
-                SearchBar(keywords: $page.keywords, placeholder: "Search set...", action: onQueryField)
+                SearchBar(keywords: $page.keywords, placeholder: "Search set...", onCommit: onQueryField)
                 Spacer()
                 PageBar(page:page, action: onPageAction)
             }
@@ -120,7 +120,7 @@ struct SetEditorView: View {
         ttl(redisKeyModel)
     }
     
-    func onQueryField() throws -> Void {
+    func onQueryField() -> Void {
         page.reset()
         queryPage(redisKeyModel)
     }
@@ -130,6 +130,11 @@ struct SetEditorView: View {
     }
     
     func onLoad(_ redisKeyModel:RedisKeyModel) -> Void {
+        
+        if redisKeyModel.type != RedisKeyTypeEnum.SET.rawValue {
+            return
+        }
+    
         queryPage(redisKeyModel)
     }
     

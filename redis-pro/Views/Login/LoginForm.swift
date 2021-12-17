@@ -85,9 +85,8 @@ struct LoginForm: View {
         Form {
             Section {
                 VStack(alignment: .leading, spacing: 14) {
-                    FormItemText(label: "Name", placeholder: "name", value: $redisModel.name, autoTrim: true)
-                        .focusable()
-                    FormItemText(label: "Host", placeholder: "host", value: $redisModel.host).focusable()
+                    FormItemText(label: "Name", placeholder: "name", value: $redisModel.name)
+                    FormItemText(label: "Host", placeholder: "host", value: $redisModel.host)
                     FormItemInt(label: "Port", placeholder: "port", value: $redisModel.port).focusable()
                     FormItemSecure(label: "Password", value: $redisModel.password).focusable()
                     FormItemInt(label: "Database", value: $redisModel.database).focusable()

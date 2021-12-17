@@ -13,11 +13,16 @@ class RedisKeysTableController: NSViewController {
     
     @IBOutlet weak var tableView: NSTableView!
     @IBOutlet var arrayController: NSArrayController!
+    @IBAction func action(_ sender: NSTableView) {
+        logger.info("table view click, row: \(sender.clickedRow)")
+        self.action?(sender.clickedRow)
+    }
     
     @objc dynamic var datasource: [NSRedisKeyModel] = []
     
-    var deleteAction: (_ index:Int) -> Void = {_ in }
-    var renameAction: (_ index:Int) -> Void = {_ in }
+    var deleteAction: ((_ index:Int) -> Void)?
+    var renameAction: ((_ index:Int) -> Void)?
+    var action: ((_ index:Int) -> Void)?
     
     let logger = Logger(label: "redis-keys-table-controller")
     
@@ -35,20 +40,21 @@ class RedisKeysTableController: NSViewController {
         self.datasource = datasource
     }
     
-    func setUp(deleteAction: @escaping (_ index:Int) -> Void, renameAction: @escaping (_ index:Int) -> Void) -> Void {
+    func setUp(action: ((_ index:Int) -> Void)?, deleteAction: @escaping (_ index:Int) -> Void, renameAction: @escaping (_ index:Int) -> Void) -> Void {
         self.deleteAction = deleteAction
         self.renameAction = renameAction
+        self.action = action
     }
     
     @objc private func tableViewEditItemClicked(_ sender: AnyObject) {
         logger.info("context menu rename index: \(tableView.clickedRow)")
-        self.renameAction(tableView.clickedRow)
+        self.renameAction?(tableView.clickedRow)
 //        guard tableView.clickedRow >= 0 else { return }
     }
     
     @objc private func tableViewDeleteItemClicked(_ sender: AnyObject) {
         logger.info("context menu delete index: \(tableView.clickedRow)")
-        self.deleteAction(tableView.clickedRow)
+        self.deleteAction?(tableView.clickedRow)
     }
 }
 

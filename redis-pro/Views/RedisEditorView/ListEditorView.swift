@@ -162,6 +162,11 @@ struct ListEditorView: View {
     }
     
     func onLoad(_ redisKeyModel:RedisKeyModel) -> Void {
+        
+        if redisKeyModel.type != RedisKeyTypeEnum.LIST.rawValue {
+            return
+        }
+        
         do {
             try queryPage(redisKeyModel)
         } catch {

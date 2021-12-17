@@ -13,10 +13,10 @@ import AppKit
 struct RedisKeysListView: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @EnvironmentObject var globalContext:GlobalContext
-    @State var redisKeyModels:[NSRedisKeyModel] = [NSRedisKeyModel]()
-    @State var selectedRedisKeyIndex:Int?
-    @StateObject var scanModel:Page = Page()
-    @StateObject var page:ScanModel = ScanModel()
+    @State private var redisKeyModels:[NSRedisKeyModel] = [NSRedisKeyModel]()
+    @State private var selectedRedisKeyIndex:Int = -1
+    @StateObject private var scanModel:Page = Page()
+    @StateObject private var page:ScanModel = ScanModel()
     
     @State private var selectRedisKeyModel:RedisKeyModel = RedisKeyModel()
     
@@ -44,13 +44,13 @@ struct RedisKeysListView: View {
         VStack(alignment: .center, spacing: 0) {
             VStack(alignment: .center, spacing: 2) {
                 // redis search ...
-                SearchBar(keywords: $scanModel.keywords, showFuzzy: false, placeholder: "Search keys...", action: onSearchKeyAction)
+                SearchBar(keywords: $scanModel.keywords, placeholder: "Search keys...", onCommit: onSearchKeyAction)
                     .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
                 
                 // redis key operate ...
                 HStack {
                     IconButton(icon: "plus", name: "Add", action: onAddAction)
-                    IconButton(icon: "trash", name: "Delete", disabled: selectedRedisKeyIndex == nil, isConfirm: true,
+                    IconButton(icon: "trash", name: "Delete", disabled: selectedRedisKeyIndex == -1, isConfirm: true,
                                confirmTitle: String(format: Helps.DELETE_KEY_CONFIRM_TITLE, selectRedisKey),
                                confirmMessage: String(format:Helps.DELETE_KEY_CONFIRM_MESSAGE, selectRedisKey),
                                confirmPrimaryButtonText: "Delete",
@@ -101,20 +101,33 @@ struct RedisKeysListView: View {
             sidebarHeader
             
             RedisKeysTable(datasource: $redisKeyModels, selectRowIndex: $selectedRedisKeyIndex, onChange: {
-                self.selectRedisKeyModel = RedisKeyModel(redisKeyModels[$0])
+                let select = RedisKeyModel(redisKeyModels[$0])
+                self.selectRedisKeyModel = select
+                logger.info("set redis model \(self.selectRedisKeyModel)")
+                if self.mainViewType != MainViewTypeEnum.EDITOR {
+                    self.mainViewType = MainViewTypeEnum.EDITOR
+                }
+            }, onClick: {_ in
+                if self.mainViewType != MainViewTypeEnum.EDITOR {
+                    self.mainViewType = MainViewTypeEnum.EDITOR
+                }
             }, deleteAction: onDeleteConfirmAction, renameAction: onRenameConfirmAction)
             
             // footer
             sidebarFoot
                 .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 6))
             
+        }.onTapGesture {
+            self.mainViewType = MainViewTypeEnum.EDITOR
         }
     }
     
     private var rightMainView: some View {
         VStack(alignment: .leading, spacing: 0){
             if mainViewType == MainViewTypeEnum.EDITOR {
-                RedisValueView(redisKeyModel: $selectRedisKeyModel)
+                if selectedRedisKeyIndex != -1 {
+                    RedisValueView(redisKeyModel: $selectRedisKeyModel)
+                }
             } else if mainViewType == MainViewTypeEnum.REDIS_INFO {
                 RedisInfoView()
             }  else if mainViewType == MainViewTypeEnum.CLIENT_LIST {
@@ -130,11 +143,6 @@ struct RedisKeysListView: View {
             Spacer()
         }
         .padding(4)
-        .onChange(of: selectedRedisKeyIndex, perform: { _ in
-            if selectedRedisKeyIndex  != nil {
-                self.mainViewType = MainViewTypeEnum.EDITOR
-            }
-        })
         .frame(minWidth: 600, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
         .layoutPriority(1)
     }
@@ -187,7 +195,7 @@ struct RedisKeysListView: View {
     }
     
     func onDeleteAction() -> Void {
-        deleteKey(selectedRedisKeyIndex!)
+        deleteKey(selectedRedisKeyIndex)
     }
     
     func onDeleteConfirmAction(_ index:Int) -> Void {
@@ -202,6 +210,10 @@ struct RedisKeysListView: View {
     }
     
     func deleteKey(_ index:Int) -> Void {
+        if index == -1 {
+            return
+        }
+        
         let redisKeyModel = self.redisKeyModels[index]
         let _ = redisInstanceModel.getClient().del(key: redisKeyModel.key).done({r in
             self.logger.info("on delete redis key: \(index), r:\(r)")
@@ -217,21 +229,21 @@ struct RedisKeysListView: View {
     }
     
     func onRedisInfoAction() -> Void {
-        self.selectedRedisKeyIndex = nil
+//        self.selectedRedisKeyIndex = -1
         self.mainViewType = MainViewTypeEnum.REDIS_INFO
     }
     func onRedisConfigAction() -> Void {
-        self.selectedRedisKeyIndex = nil
+//        self.selectedRedisKeyIndex = -1
         self.mainViewType = MainViewTypeEnum.REDIS_CONFIG
     }
     
     func onShowClientsAction() -> Void {
-        self.selectedRedisKeyIndex = nil
+//        self.selectedRedisKeyIndex = -1
         self.mainViewType = MainViewTypeEnum.CLIENT_LIST
     }
     
     func onShowSlowLogAction() -> Void {
-        self.selectedRedisKeyIndex = nil
+//        self.selectedRedisKeyIndex = -1
         self.mainViewType = MainViewTypeEnum.SLOW_LOG
     }
     
@@ -262,7 +274,8 @@ struct RedisKeysListView: View {
             
             // 如果有key 默认选中第一个
             if keysPage.count > 0 {
-                self.selectedRedisKeyIndex = 0
+//                self.selectedRedisKeyIndex = 0
+//                self.selectRedisKeyModel = self.redisKeyModels
             }
         })
     }
@@ -275,10 +288,10 @@ func testData() -> [NSRedisKeyModel] {
     return redisKeys
 }
 
-struct RedisKeysList_Previews: PreviewProvider {
-    static var redisInstanceModel:RedisInstanceModel = RedisInstanceModel(redisModel: RedisModel())
-    static var previews: some View {
-        RedisKeysListView(redisKeyModels: testData())
-            .environmentObject(redisInstanceModel)
-    }
-}
+//struct RedisKeysList_Previews: PreviewProvider {
+//    static var redisInstanceModel:RedisInstanceModel = RedisInstanceModel(redisModel: RedisModel())
+//    static var previews: some View {
+//        RedisKeysListView(redisKeyModels: testData(), selectedRedisKeyIndex: -1)
+//            .environmentObject(redisInstanceModel)
+//    }
+//}

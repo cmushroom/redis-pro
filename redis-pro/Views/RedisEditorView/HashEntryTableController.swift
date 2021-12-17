@@ -49,7 +49,7 @@ class HashEntryTableController: NSViewController {
 
 struct HashEntryTable: NSViewControllerRepresentable {
     @Binding var datasource: [Any]
-    @Binding var selectRowIndex:Int?
+    @Binding var selectRowIndex:Int
     var refresh:Int = 0
     
     
@@ -78,7 +78,7 @@ struct HashEntryTable: NSViewControllerRepresentable {
         controller.setDatasource(datasource)
         controller.tableView?.delegate = context.coordinator
         
-        controller.arrayController.setSelectionIndex(selectRowIndex ?? -1)
+        controller.arrayController.setSelectionIndex(selectRowIndex)
 //        controller.tableView.scrollRowToVisible(selectRowIndex)
     }
     
@@ -98,7 +98,7 @@ struct HashEntryTable: NSViewControllerRepresentable {
             guard let tableView = notification.object as? NSTableView else {return}
             guard self.table.datasource.count > 0 else {return}
             
-            self.table.selectRowIndex = tableView.selectedRow == -1 ? nil : tableView.selectedRow
+            self.table.selectRowIndex = tableView.selectedRow
 
         }
     }

@@ -462,10 +462,15 @@ extension RediStackClient {
                     }
                 }
             } else {
-                let _ = self.exist(page.keywords).done({ r in
-                    page.total = 1
-                    let _ = self.toRedisKeyModels([page.keywords]).done { r in
-                        resolver.fulfill(r)
+                let _ = self.exist(page.keywords).done({ existR in
+                    if existR {
+                        page.total = 1
+                        let _ = self.toRedisKeyModels([page.keywords]).done { r in
+                            resolver.fulfill(r)
+                        }
+                    } else {
+                        page.total = 0
+                        resolver.fulfill([])
                     }
                 }).catch({error in
                     resolver.reject(error)

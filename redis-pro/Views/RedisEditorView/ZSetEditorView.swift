@@ -34,7 +34,7 @@ struct ZSetEditorView: View {
                 IconButton(icon: "plus", name: "Add", action: onAddAction)
                 IconButton(icon: "trash", name: "Delete", disabled:delButtonDisabled,
                            action: onDeleteAction)
-                SearchBar(keywords: $page.keywords, placeholder: "Search set...", action: onQueryField)
+                SearchBar(keywords: $page.keywords, placeholder: "Search set...", onCommit: onQueryField)
                 Spacer()
                 PageBar(page:page, action: onPageAction)
             }
@@ -42,11 +42,11 @@ struct ZSetEditorView: View {
             
             ZSetTable(datasource: $datasource, selectRowIndex: $selectIndex, refresh: refresh
                       , deleteAction: { index in
-                        onDeleteConfirmAction(index)
-                      }
+                onDeleteConfirmAction(index)
+            }
                       , editAction: { index in
-                        onEditAction(index)
-                      })
+                onEditAction(index)
+            })
             
             // footer
             HStack(alignment: .center, spacing: 4) {
@@ -117,7 +117,7 @@ struct ZSetEditorView: View {
             redisKeyModel.isNew = false
         }
     }
-
+    
     
     func onSubmitAction() throws -> Void {
         logger.info("redis hash value editor on submit")
@@ -140,6 +140,10 @@ struct ZSetEditorView: View {
     }
     
     func onLoad(_ redisKeyModel:RedisKeyModel) -> Void {
+        
+        if redisKeyModel.type != RedisKeyTypeEnum.ZSET.rawValue {
+            return
+        }
         queryPage(redisKeyModel)
     }
     
@@ -175,7 +179,7 @@ struct ZSetEditorView: View {
         
         MAlert.confirm(String(format: Helps.DELETE_LIST_ITEM_CONFIRM_TITLE, text), message: String(format:Helps.DELETE_LIST_ITEM_CONFIRM_MESSAGE, text), primaryButton: "Delete", primaryAction: {
             deleteEle(index)
-          })
+        })
         
     }
     

@@ -41,7 +41,7 @@ struct RedisValueHeaderView: View {
     }
     
     func onTTLCommit() -> Void {
-        if redisKeyModel.key.isEmpty {
+        if redisKeyModel.isNew {
             return
         }
         logger.info("update redis key ttl: \(redisKeyModel)")
@@ -49,11 +49,9 @@ struct RedisValueHeaderView: View {
     }
     
     func ttl(_ key:String) -> Void {
-        if key.isEmpty {
+        if self.redisKeyModel.isNew {
             return
         }
-        
-        let key:String = redisKeyModel.key
         let _ = redisInstanceModel.getClient().ttl(key).done({r in
             self.redisKeyModel.ttl = r
         })

@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct RedisKeysTableDemo: View {
-    @State var datasource = [NSRedisKeyModel]()
-    @State var selectRowIndex:Int?
+    @State private var datasource = [NSRedisKeyModel]()
+    @State private var selectRowIndex:Int = -1
     
     var body: some View {
         RedisKeysTable(datasource: $datasource, selectRowIndex: $selectRowIndex)

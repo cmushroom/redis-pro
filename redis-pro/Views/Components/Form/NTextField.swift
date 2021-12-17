@@ -40,10 +40,9 @@ struct NTextField: NSViewRepresentable {
 //        print("text field init")
 //        textField.alignment = .center
 //        textField.bezelStyle = .roundedBezel
-//        textField.tag = tag
+        textField.tag = tag
         textField.isEnabled = !disable
         
-//        textField.bezelStyle = .roundedBezel
         style(textField)
         return textField
     }
@@ -139,18 +138,19 @@ struct NTextField: NSViewRepresentable {
         }
         
         func control(_ control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
+            logger.info("on text field commit")
             parent.stringValue = fieldEditor.string.trimmingCharacters(in: .whitespacesAndNewlines)
             parent.onCommit?()
             return true
         }
         
-        func control(_ control: NSControl, textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
-            if commandSelector == #selector(NSStandardKeyBindingResponding.insertTab(_:)) {
-                parent.onTabKeystroke?()
-                return true
-            }
-            return false
-        }
+//        func control(_ control: NSControl, textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
+//            if commandSelector == #selector(NSStandardKeyBindingResponding.insertTab(_:)) {
+//                parent.onTabKeystroke?()
+//                return true
+//            }
+//            return false
+//        }
     }
     
     

@@ -11,7 +11,7 @@ import PromiseKit
 
 struct HashEditorView: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
-    @Binding var redisKeyModel:RedisKeyModel
+    @EnvironmentObject var redisKeyModel:RedisKeyModel
     @StateObject private var page:ScanModel = ScanModel()
     
     @State private var datasource:[Any] = [RedisHashEntryModel]()

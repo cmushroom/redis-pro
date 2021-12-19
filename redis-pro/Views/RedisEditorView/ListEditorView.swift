@@ -15,7 +15,7 @@ struct ListEditorView: View {
     @State private var isEditing:Bool = false
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @EnvironmentObject var globalContext:GlobalContext
-    @Binding var redisKeyModel:RedisKeyModel
+    @EnvironmentObject var redisKeyModel:RedisKeyModel
     @StateObject private var page:Page = Page()
     
     @State private var editModalVisible:Bool = false

@@ -20,7 +20,8 @@ struct NSecureField: NSViewRepresentable {
         textField.stringValue = value
         textField.placeholderString = placeholder
         textField.delegate = context.coordinator
-        textField.isBordered = false
+//        textField.isBordered = true
+//        textField.bezelStyle = .roundedBezel
         return textField
     }
     

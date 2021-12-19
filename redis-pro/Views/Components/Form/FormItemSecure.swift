@@ -20,7 +20,8 @@ struct FormItemSecure: View {
             }
             //            MNSTextField(text: $value)
             //            MSecureField(value: $value)/Users/chengpan/work/dream/redis-pro/redis-pro/Views/Components/FormItemTextArea.swift
-            MPasswordField(value: $value)
+//            MPasswordField(value: $value)
+            NPasswordField(value: $value)
         }
     }
 }

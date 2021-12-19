@@ -140,6 +140,8 @@
 		43F22F1526A5583D00A00F97 /* RedisInfoTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F22F1426A5583D00A00F97 /* RedisInfoTableController.swift */; };
 		43F22F1726A5584C00A00F97 /* RedisInfoTableController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 43F22F1626A5584C00A00F97 /* RedisInfoTableController.xib */; };
 		43F22F1926A6690600A00F97 /* MLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F22F1826A6690600A00F97 /* MLabel.swift */; };
+		621EFD8C276CB7510079D1E3 /* NTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 621EFD8B276CB7510079D1E3 /* NTable.swift */; };
+		621EFD8E276CC52E0079D1E3 /* NPasswordField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 621EFD8D276CC52E0079D1E3 /* NPasswordField.swift */; };
 		6237D021275C93AD000ACD6A /* NIO in Frameworks */ = {isa = PBXBuildFile; productRef = 6237D020275C93AD000ACD6A /* NIO */; };
 		6237D023275C93AD000ACD6A /* NIOConcurrencyHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 6237D022275C93AD000ACD6A /* NIOConcurrencyHelpers */; };
 		6237D025275C93AD000ACD6A /* NIOCore in Frameworks */ = {isa = PBXBuildFile; productRef = 6237D024275C93AD000ACD6A /* NIOCore */; };
@@ -316,6 +318,8 @@
 		43F22F1426A5583D00A00F97 /* RedisInfoTableController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisInfoTableController.swift; sourceTree = "<group>"; };
 		43F22F1626A5584C00A00F97 /* RedisInfoTableController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RedisInfoTableController.xib; sourceTree = "<group>"; };
 		43F22F1826A6690600A00F97 /* MLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLabel.swift; sourceTree = "<group>"; };
+		621EFD8B276CB7510079D1E3 /* NTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NTable.swift; sourceTree = "<group>"; };
+		621EFD8D276CC52E0079D1E3 /* NPasswordField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NPasswordField.swift; sourceTree = "<group>"; };
 		6237D033275CFF1F000ACD6A /* NIntField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NIntField.swift; sourceTree = "<group>"; };
 		62CB3D712619AE050061E8C3 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		62CB3D742619AEC20061E8C3 /* RedisKeysListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisKeysListView.swift; sourceTree = "<group>"; };
@@ -398,6 +402,7 @@
 				4382203D265668CC00DA7F9E /* MLoading.swift */,
 				4382203F26574E3F00DA7F9E /* MSpin.swift */,
 				4314A343262546DF00053FEE /* Extensions.swift */,
+				621EFD8B276CB7510079D1E3 /* NTable.swift */,
 				43915808268075490019D2D0 /* Demo.swift */,
 				43F22EE4269C2E0900A00F97 /* TextViewController.swift */,
 				43F22EE2269C2D6600A00F97 /* TextViewController.xib */,
@@ -654,6 +659,7 @@
 				CE916154276B60650026C625 /* NSearchField.swift */,
 				6237D033275CFF1F000ACD6A /* NIntField.swift */,
 				62E8F9D52765EC97006A5326 /* NSecureField.swift */,
+				621EFD8D276CC52E0079D1E3 /* NPasswordField.swift */,
 				62E8F9D82765F197006A5326 /* MPasswordField.swift */,
 				432A6ADC26A6B7FA00F6DB64 /* SecureTextField.swift */,
 				4314A3462625484100053FEE /* MTextField.swift */,
@@ -821,6 +827,7 @@
 				43F22EEF269EDF7B00A00F97 /* SlowLogModel.swift in Sources */,
 				43EADB052620043F003B8310 /* HashEditorView.swift in Sources */,
 				4313576F263ABB1C0077EE46 /* FormWrapper.swift in Sources */,
+				621EFD8C276CB7510079D1E3 /* NTable.swift in Sources */,
 				4340E2CC266649D000F51F19 /* ScanBar.swift in Sources */,
 				4313576B263AB6400077EE46 /* FormItemTextArea.swift in Sources */,
 				43915809268075490019D2D0 /* Demo.swift in Sources */,
@@ -884,6 +891,7 @@
 				4340E2CE266660FE00F51F19 /* PromiseExt.swift in Sources */,
 				4373C50C25C3FC81002B700E /* LoginForm.swift in Sources */,
 				430A09D625BEA98300B60DFC /* RedisListView.swift in Sources */,
+				621EFD8E276CC52E0079D1E3 /* NPasswordField.swift in Sources */,
 				431266E5261D4E2700FB6B69 /* RedisValueView.swift in Sources */,
 				4370CE702685C4B2001E5787 /* ClientListTable.swift in Sources */,
 				4301C82F26B0EEB800C08E19 /* Stopwatch.swift in Sources */,

@@ -11,7 +11,7 @@ import Foundation
 
 struct MButton: View {
     var text:String
-    var action: () throws -> Void = {}
+    var action: (() throws -> Void)?
     var disabled:Bool = false
     var isConfirm:Bool = false
     var confirmTitle:String?
@@ -47,7 +47,7 @@ struct MButton: View {
     func doAction() -> Void {
         do {
             if !isConfirm {
-                try action()
+                try action?()
             } else {
                 MAlert.confirm(confirmTitle ?? "", message: confirmMessage ?? "", primaryButton: confirmPrimaryButtonText ?? "Ok", primaryAction: primaryAction)
             }
@@ -57,7 +57,7 @@ struct MButton: View {
     }
     
     func primaryAction() -> Void {
-        try? action()
+        try? action?()
     }
     
     struct MButton_Previews: PreviewProvider {

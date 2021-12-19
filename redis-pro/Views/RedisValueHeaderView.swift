@@ -9,7 +9,7 @@ import SwiftUI
 import Logging
 
 struct RedisValueHeaderView: View {
-    @Binding var redisKeyModel:RedisKeyModel
+    @EnvironmentObject var redisKeyModel:RedisKeyModel
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     
     let logger = Logger(label: "redis-value-header")

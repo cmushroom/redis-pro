@@ -51,39 +51,22 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         return rediStackClient!
     }
     
-    func connect(redisModel:RedisModel) -> Promise<Bool> {
+    func connect(redisModel:RedisModel) async -> Bool {
         logger.info("connect to redis server: \(redisModel)")
-        
-        self.globalContext?.loading = true
-        
         self.redisModel = redisModel
-        let promise = self.getClient().initConnection()
-            
-        promise.done({ r in
-            self.globalContext?.loading = false
+        let r = await self.getClient().initConnection()
+        DispatchQueue.main.async {
             self.isConnect = r
-        })
-        .catch({ error in
-            self.globalContext?.loading = false
-            self.globalContext?.showError(error)
-            self.close()
-        })
-        return promise
+        }
+        return r
     }
     
-    func testConnectAsync(_ redisModel:RedisModel) -> Promise<Bool> {
+    func testConnect(_ redisModel:RedisModel) async -> Bool {
         self.redisModel = redisModel
         
-        let promise = self.getClient().pingAsync()
-        
-        promise
-            .done { _ in
-                self.close()
-            }
-            .catch { _ in
-                self.close()
-            }
-        return promise
+        let pong =  await self.getClient().ping()
+        self.close()
+        return pong
     }
     
     func close() -> Void {

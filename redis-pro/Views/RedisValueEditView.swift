@@ -10,22 +10,23 @@ import Logging
 
 struct RedisValueEditView: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
-    @Binding var redisKeyModel:RedisKeyModel
+    @EnvironmentObject var redisKeyModel:RedisKeyModel
+    var onSubmit: (() -> Void)?
     
     let logger = Logger(label: "redis-value-edit-view")
     
     var body: some View {
         VStack(alignment: .leading, spacing: 4)  {
             if RedisKeyTypeEnum.STRING.rawValue == redisKeyModel.type {
-                StringEditorView(redisKeyModel: $redisKeyModel)
+                StringEditorView(onSubmit: onSubmit)
             } else if RedisKeyTypeEnum.HASH.rawValue == redisKeyModel.type {
-                HashEditorView(redisKeyModel: $redisKeyModel)
+                HashEditorView()
             } else if RedisKeyTypeEnum.LIST.rawValue == redisKeyModel.type {
-                ListEditorView(redisKeyModel: $redisKeyModel)
+                ListEditorView()
             } else if RedisKeyTypeEnum.SET.rawValue == redisKeyModel.type {
-                SetEditorView(redisKeyModel: $redisKeyModel)
+                SetEditorView()
             } else if RedisKeyTypeEnum.ZSET.rawValue == redisKeyModel.type {
-                ZSetEditorView(redisKeyModel: $redisKeyModel)
+                ZSetEditorView()
             } else {
                 EmptyView()
             }

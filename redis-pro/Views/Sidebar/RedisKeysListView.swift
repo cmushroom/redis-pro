@@ -18,7 +18,7 @@ struct RedisKeysListView: View {
     @StateObject private var scanModel:Page = Page()
     @StateObject private var page:ScanModel = ScanModel()
     
-    @State private var selectRedisKeyModel:RedisKeyModel = RedisKeyModel()
+    @StateObject private var selectRedisKeyModel:RedisKeyModel = RedisKeyModel()
     
     @State private var renameModalVisible:Bool = false
     @State private var oldKeyIndex:Int?
@@ -26,7 +26,7 @@ struct RedisKeysListView: View {
     
     @State private var dbsize:Int = 0
     
-    @State private var mainViewType:MainViewTypeEnum = MainViewTypeEnum.EDITOR
+    @State private var mainViewType:MainViewTypeEnum = MainViewTypeEnum.NONE
     
     let logger = Logger(label: "redis-key-list-view")
     
@@ -101,16 +101,13 @@ struct RedisKeysListView: View {
             sidebarHeader
             
             RedisKeysTable(datasource: $redisKeyModels, selectRowIndex: $selectedRedisKeyIndex, onChange: {
-                let select = RedisKeyModel(redisKeyModels[$0])
-                self.selectRedisKeyModel = select
+//                let select = redisKeyModels[$0]
+                self.selectRedisKeyModel.initKey(redisKeyModels[$0])
+//                self.selectRedisKeyModel.key = select.key
                 logger.info("set redis model \(self.selectRedisKeyModel)")
-                if self.mainViewType != MainViewTypeEnum.EDITOR {
-                    self.mainViewType = MainViewTypeEnum.EDITOR
-                }
+                self.showEditor()
             }, onClick: {_ in
-                if self.mainViewType != MainViewTypeEnum.EDITOR {
-                    self.mainViewType = MainViewTypeEnum.EDITOR
-                }
+                self.showEditor()
             }, deleteAction: onDeleteConfirmAction, renameAction: onRenameConfirmAction)
             
             // footer
@@ -118,16 +115,15 @@ struct RedisKeysListView: View {
                 .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 6))
             
         }.onTapGesture {
-            self.mainViewType = MainViewTypeEnum.EDITOR
+            self.showEditor()
         }
     }
     
     private var rightMainView: some View {
         VStack(alignment: .leading, spacing: 0){
             if mainViewType == MainViewTypeEnum.EDITOR {
-                if selectedRedisKeyIndex != -1 {
-                    RedisValueView(redisKeyModel: $selectRedisKeyModel)
-                }
+                RedisValueView(onSubmit: onRedisValueSubmit)
+                    .environmentObject(selectRedisKeyModel)
             } else if mainViewType == MainViewTypeEnum.REDIS_INFO {
                 RedisInfoView()
             }  else if mainViewType == MainViewTypeEnum.CLIENT_LIST {
@@ -158,6 +154,9 @@ struct RedisKeysListView: View {
             // content
             rightMainView
         }
+        .onChange(of: selectRedisKeyModel.isNew) {newValue in
+            print("newnew..... \(selectRedisKeyModel)")
+        }
         .onAppear{
             onRefreshAction()
         }
@@ -171,12 +170,27 @@ struct RedisKeysListView: View {
         }
     }
     
+    func showEditor() -> Void {
+        if self.mainViewType != MainViewTypeEnum.EDITOR {
+            self.mainViewType = MainViewTypeEnum.EDITOR
+        }
+    }
+    
+    func onRedisValueSubmit() -> Void {
+        if self.selectRedisKeyModel.isNew {
+            let newItem = NSRedisKeyModel(selectRedisKeyModel.key, type: selectRedisKeyModel.type)
+            self.redisKeyModels.insert(newItem, at: 0)
+            self.selectedRedisKeyIndex = 0
+            self.selectRedisKeyModel.isNew = false
+        }
+    }
+    
     func onAddAction() -> Void {
 //        let newRedisKeyModel = RedisKeyModel(key: "NEW_KEY_\(Date().millis)", type: RedisKeyTypeEnum.STRING.rawValue)
         
-        self.selectRedisKeyModel = RedisKeyModel("NEW_KEY_\(Date().millis)", type: RedisKeyTypeEnum.STRING.rawValue)
-        
-//        self.redisKeyModels.insert(newRedisKeyModel, at: 0)
+        self.selectRedisKeyModel.initNew()
+        showEditor()
+//        self.redi sKeyModels.insert(newRedisKeyModel, at: 0)
 //        self.selectedRedisKeyIndex = 0
     }
     

@@ -13,7 +13,7 @@ struct ZSetEditorView: View {
     @State private var selectIndex:Int?
     @State private var refresh:Int = 0
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
-    @Binding var redisKeyModel:RedisKeyModel
+    @EnvironmentObject var redisKeyModel:RedisKeyModel
     @StateObject private var page:Page = Page()
     
     @State private var editModalVisible:Bool = false

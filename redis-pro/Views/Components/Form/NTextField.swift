@@ -19,7 +19,7 @@ struct NTextField: NSViewRepresentable {
     @Binding var stringValue: String
     var placeholder: String
     var autoFocus = false
-    var disable = false
+    var disabled = false
     var type: NTextFieldType = .NORMAL
     var tag: Int = 0
     var focusTag: Binding<Int>?
@@ -41,7 +41,7 @@ struct NTextField: NSViewRepresentable {
 //        textField.alignment = .center
 //        textField.bezelStyle = .roundedBezel
         textField.tag = tag
-        textField.isEnabled = !disable
+        textField.isEnabled = !disabled
         
         style(textField)
         return textField
@@ -50,6 +50,7 @@ struct NTextField: NSViewRepresentable {
     
     func updateNSView(_ nsView: NSTextField, context: Context) {
         nsView.stringValue = stringValue
+        nsView.isEnabled = !disabled
         
         if autoFocus && !didFocus {
             NSApplication.shared.mainWindow?.perform(

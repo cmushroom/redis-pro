@@ -13,7 +13,7 @@ struct SetEditorView: View {
     @State private var selectIndex:Int?
     
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
-    @Binding var redisKeyModel:RedisKeyModel
+    @EnvironmentObject var redisKeyModel:RedisKeyModel
     @StateObject private var page:Page = Page()
     
     @State private var editModalVisible:Bool = false

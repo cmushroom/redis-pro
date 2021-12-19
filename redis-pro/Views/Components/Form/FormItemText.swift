@@ -21,7 +21,7 @@ struct FormItemText: View {
             if !label.isEmpty {
                 FormLabel(label: label, width: labelWidth, required: required)
             }
-            NTextField(stringValue: $value, placeholder: placeholder ?? label, disable: disabled)
+            NTextField(stringValue: $value, placeholder: placeholder ?? label, disabled: disabled)
 //            MNSTextField(text: $value)
 //            MTextField(value: $value, placeholder: placeholder ?? label, disabled: disabled, autoTrim: autoTrim)
         }

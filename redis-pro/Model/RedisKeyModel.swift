@@ -8,34 +8,46 @@
 import Foundation
 import Cocoa
 
-struct RedisKeyModel:Identifiable, Equatable {
-    var no:Int = 0
-    var key: String = ""
-    var type: String = RedisKeyTypeEnum.STRING.rawValue
+class RedisKeyModel:NSObject, ObservableObject, Identifiable {
+    @Published var key: String = ""
+    @Published var type: String = RedisKeyTypeEnum.STRING.rawValue
     var ttl: Int = -1
-    var isNew: Bool = false
+    @Published var isNew: Bool = false
     
     var id:String {
         key
     }
     
-    init() {}
+    override init() {}
     
-    init(_ isNew:Bool) {
+    convenience init(_ isNew:Bool) {
         self.init()
         self.isNew = isNew
     }
-    init(_ key:String, type:String) {
+    convenience init(_ key:String, type:String) {
         self.init()
         self.key = key
         self.type = type
     }
-    init(_ nsRedisKeyModel:NSRedisKeyModel) {
+    
+    func initNew() -> Void {
+        self.isNew = true
+        self.key = "NEW_KEY_\(Date().millis)"
+        self.type = RedisKeyTypeEnum.STRING.rawValue
+    }
+    
+    func initKey(_ nsRedisKeyModel:NSRedisKeyModel) {
+        self.isNew = false
+        self.key = nsRedisKeyModel.key
+        self.type = nsRedisKeyModel.type
+    }
+    
+    convenience init(_ nsRedisKeyModel:NSRedisKeyModel) {
         self.init(nsRedisKeyModel.key, type: nsRedisKeyModel.type)
     }
     
-    var description: String {
-        return "RedisKeyModel:[key:\(key), type:\(type), ttl:\(ttl)]"
+    override var description: String {
+        return "RedisKeyModel:[key:\(key), type:\(type), isNew:\(isNew)]"
     }
     
     public static func == (lhs: RedisKeyModel, rhs: RedisKeyModel) -> Bool {
@@ -45,11 +57,8 @@ struct RedisKeyModel:Identifiable, Equatable {
 }
 
 class NSRedisKeyModel:NSObject, ObservableObject, Identifiable {
-    @objc var no:Int = 0
     @objc @Published var key: String
     @objc @Published var type: String
-    @Published var ttl: Int = -1
-    @Published var isNew: Bool = false
     
     var id:String {
         key

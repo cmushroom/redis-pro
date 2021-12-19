@@ -13,8 +13,9 @@ import Cocoa
 struct StringEditorView: View {
     @State var text: String = ""
     
-    @Binding var redisKeyModel:RedisKeyModel
+    @EnvironmentObject var redisKeyModel:RedisKeyModel
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
+    var onSubmit: (() -> Void)?
     
     let logger = Logger(label: "redis-string-editor")
     
@@ -35,13 +36,13 @@ struct StringEditorView: View {
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
         }
-        .onChange(of: redisKeyModel, perform: { value in
+        .onChange(of: redisKeyModel.key, perform: { value in
             logger.info("redis string value editor view change \(value)")
-            onLoad(value)
+            onLoad()
         })
         .onAppear {
             logger.info("redis string value editor view init...")
-            onLoad(redisKeyModel)
+            onLoad()
         }
         
     }
@@ -61,10 +62,17 @@ struct StringEditorView: View {
     
     func onSubmitAction() -> Void {
         logger.info("redis string value editor on submit")
-        let _ = redisInstanceModel.getClient().set(redisKeyModel.key, value: text, ex: redisKeyModel.ttl)
-     
-        if self.redisKeyModel.isNew {
-            redisKeyModel.isNew = false
+        Task {
+            await redisInstanceModel.getClient().set(redisKeyModel.key, value: text, ex: redisKeyModel.ttl)
+            self.onSubmit?()
+//            DispatchQueue.main.async {
+//                self.redisKeyModel.isNew = false
+////                if self.redisKeyModel.isNew {
+////                    self.redisKeyModel.isNew = false
+////                }
+//                print("......................... \(self.redisKeyModel)")
+//            }
+            
         }
     }
     
@@ -78,8 +86,8 @@ struct StringEditorView: View {
         })
     }
     
-    func onLoad(_ redisKeyModel:RedisKeyModel) -> Void {
-        if redisKeyModel.type != RedisKeyTypeEnum.STRING.rawValue {
+    func onLoad() -> Void {
+        if self.redisKeyModel.type != RedisKeyTypeEnum.STRING.rawValue {
             return
         }
         getValue(redisKeyModel)

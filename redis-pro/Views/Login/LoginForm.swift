@@ -140,18 +140,24 @@ struct LoginForm: View {
     }
     
     
-    func onTestConnectionAction() throws -> Void {
+    func onTestConnectionAction() -> Void {
         logger.info("test connect to redis server: \(redisModel)")
+        Task {
+            let pong = await self.redisInstanceModel.testConnect(self.redisModel)
+            self.pingState = pong ? "Connect successed!" : "Connect fail! "
+        }
         
-        let _ = self.redisInstanceModel.testConnectAsync(redisModel).done({ ping in
-            self.pingState = ping ? "Connect successed!" : "Connect fail! "
-        })
-        .catch({ error in
-            self.pingState = "Connect fail, error: \(error)! "
-        })
+//
+//        let _ = self.redisInstanceModel.testConnectAsync(redisModel).done({ ping in
+//            self.pingState = ping ? "Connect successed!" : "Connect fail! "
+//        })
+//        .catch({ error in
+//            self.pingState = "Connect fail, error: \(error)! "
+//        })
     }
+
     
-    func onAddRedisInstanceAction()  throws -> Void {
+    func onAddRedisInstanceAction() -> Void {
         redisModel.id = UUID().uuidString
         logger.info("add redis to favorite, id: \(redisModel.id), name: \(redisModel.name), host: \(redisModel.host), port: \(redisModel.port), password: \(redisModel.password)")
         
@@ -167,18 +173,19 @@ struct LoginForm: View {
         redisFavoriteModel.loadAll()
     }
     
-    func onSaveRedisInstanceAction()  throws -> Void {
+    func onSaveRedisInstanceAction() -> Void {
         logger.info("save favorite redis: \(redisModel)")
         redisFavoriteModel.save(redisModel: redisModel)
         
         redisFavoriteModel.loadAll()
     }
     
-    func onConnect() throws -> Void {
-        let _ = redisInstanceModel.connect(redisModel:redisModel).done({r in
-            logger.info("on connect to redis server successed: \(redisModel)")
+    func onConnect() -> Void {
+        Task {
+            let r = await redisInstanceModel.connect(redisModel:redisModel)
+            logger.info("on connect to redis server result: \(r), redis: \(redisModel)")
             redisFavoriteModel.saveLast(redisModel: redisModel)
-        })
+        }
     }
     
 }

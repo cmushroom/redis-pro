@@ -49,12 +49,14 @@ struct RedisValueHeaderView: View {
     }
     
     func ttl(_ key:String) -> Void {
-        if self.redisKeyModel.isNew {
+        if redisKeyModel.isNew {
             return
         }
-        let _ = redisInstanceModel.getClient().ttl(key).done({r in
+        
+        Task {
+            let r = await redisInstanceModel.getClient().ttl(key)
             self.redisKeyModel.ttl = r
-        })
+        }
     }
     
 }

@@ -47,6 +47,7 @@ struct NSearchField: NSViewRepresentable {
     
     class Coordinator: NSObject, NSSearchFieldDelegate {
         let parent: NSearchField
+        private var editing = false
         
         
         let logger = Logger(label: "search-field-coordinator")
@@ -56,30 +57,34 @@ struct NSearchField: NSViewRepresentable {
             super.init()
         }
         
-        
         // MARK: - NSTextFieldDelegate Methods
         
         func controlTextDidChange(_ obj: Notification) {
             guard let textField = obj.object as? NSSearchField else { return }
-            parent.value = textField.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
-            
-            logger.info("search field change, value: \(textField.stringValue)")
+            parent.value = textField.stringValue
+            editing = true
+            logger.debug("search field text change, value: \(textField.stringValue)")
             parent.onChange?()
+            
         }
         
         func controlTextDidEndEditing(_ obj: Notification) {
             guard let textField = obj.object as? NSSearchField else { return }
             parent.value = textField.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
             
-            logger.info("search field end change, value: \(textField.stringValue)")
-            parent.onChange?()
-            parent.onCommit?()
+            logger.debug("search field end editing, value: \(textField.stringValue)")
+            if editing {
+                editing = false
+                parent.onChange?()
+                parent.onCommit?()
+            }
         }
         
         func control(_ control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
-            logger.info("on search field commit")
             parent.value = fieldEditor.string.trimmingCharacters(in: .whitespacesAndNewlines)
+            logger.debug("on search field commit, text: \(parent.value)")
             parent.onCommit?()
+            editing = false
             return true
         }
     }

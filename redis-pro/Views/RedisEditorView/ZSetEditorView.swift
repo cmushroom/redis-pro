@@ -9,6 +9,7 @@ import SwiftUI
 import Logging
 
 struct ZSetEditorView: View {
+    var onSubmit: (() -> Void)?
     @State private var datasource:[RedisZSetItemModel] = [RedisZSetItemModel]()
     @State private var selectIndex:Int?
     @State private var refresh:Int = 0
@@ -99,6 +100,7 @@ struct ZSetEditorView: View {
         let score:Double = Double(editScore) ?? 0
         if editIndex == -1 {
             let _ = redisInstanceModel.getClient().zadd(redisKeyModel.key, score: score, ele: editValue).done({ _ in
+                self.onSubmit?()
                 self.datasource.insert(RedisZSetItemModel(value: editValue, score: editScore), at: 0)
             })
         } else {
@@ -111,10 +113,6 @@ struct ZSetEditorView: View {
                 self.refresh += 1
                 
             })
-        }
-        
-        if self.redisKeyModel.isNew {
-            redisKeyModel.isNew = false
         }
     }
     

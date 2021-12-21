@@ -11,19 +11,20 @@ import SwiftyJSON
 import Cocoa
 
 struct StringEditorView: View {
-    @State var text: String = ""
+    @State private var text: String = ""
     
     @EnvironmentObject var redisKeyModel:RedisKeyModel
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     var onSubmit: (() -> Void)?
     
-    let logger = Logger(label: "redis-string-editor")
+    let logger = Logger(label: "string-editor")
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             VStack(alignment: .leading, spacing: MTheme.V_SPACING){
                 // text editor
                 MTextView(text: $text)
+//                MTextEditor(text: $text)
             }
             .background(Color.init(NSColor.textBackgroundColor))
 
@@ -36,7 +37,7 @@ struct StringEditorView: View {
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
         }
-        .onChange(of: redisKeyModel.key, perform: { value in
+        .onChange(of: redisKeyModel.id, perform: { value in
             logger.info("redis string value editor view change \(value)")
             onLoad()
         })
@@ -65,14 +66,6 @@ struct StringEditorView: View {
         Task {
             await redisInstanceModel.getClient().set(redisKeyModel.key, value: text, ex: redisKeyModel.ttl)
             self.onSubmit?()
-//            DispatchQueue.main.async {
-//                self.redisKeyModel.isNew = false
-////                if self.redisKeyModel.isNew {
-////                    self.redisKeyModel.isNew = false
-////                }
-//                print("......................... \(self.redisKeyModel)")
-//            }
-            
         }
     }
     
@@ -80,31 +73,26 @@ struct StringEditorView: View {
         if redisKeyModel.key.isEmpty {
             return
         }
-        getValue(redisKeyModel)
-        let _ = redisInstanceModel.getClient().ttl(redisKeyModel.key).done({r in
-            self.redisKeyModel.ttl = r
-        })
+        Task {
+            await getValue()
+            let ttl = await redisInstanceModel.getClient().ttl(redisKeyModel.key)
+            self.redisKeyModel.ttl = ttl
+        }
     }
     
     func onLoad() -> Void {
-        if self.redisKeyModel.type != RedisKeyTypeEnum.STRING.rawValue {
+        if self.redisKeyModel.isNew || self.redisKeyModel.type != RedisKeyTypeEnum.STRING.rawValue {
+            text = ""
             return
         }
-        getValue(redisKeyModel)
+        Task {
+            await getValue()
+        }
     }
     
-    func getValue(_ redisKeyModel:RedisKeyModel) -> Void {
-        
-        if redisKeyModel.key.isEmpty {
-            return
-        }
-        if redisKeyModel.isNew {
-            text = ""
-        } else {
-            let _ = redisInstanceModel.getClient().get(key: redisKeyModel.key).done({r in
-                self.text = r
-            })
-        }
+    func getValue() async -> Void {
+        let r = await redisInstanceModel.getClient().get(redisKeyModel.key)
+        self.text = r
     }
 }
 

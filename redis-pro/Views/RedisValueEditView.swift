@@ -20,13 +20,13 @@ struct RedisValueEditView: View {
             if RedisKeyTypeEnum.STRING.rawValue == redisKeyModel.type {
                 StringEditorView(onSubmit: onSubmit)
             } else if RedisKeyTypeEnum.HASH.rawValue == redisKeyModel.type {
-                HashEditorView()
+                HashEditorView(onSubmit: onSubmit)
             } else if RedisKeyTypeEnum.LIST.rawValue == redisKeyModel.type {
-                ListEditorView()
+                ListEditorView(onSubmit: onSubmit)
             } else if RedisKeyTypeEnum.SET.rawValue == redisKeyModel.type {
-                SetEditorView()
+                SetEditorView(onSubmit: onSubmit)
             } else if RedisKeyTypeEnum.ZSET.rawValue == redisKeyModel.type {
-                ZSetEditorView()
+                ZSetEditorView(onSubmit: onSubmit)
             } else {
                 EmptyView()
             }

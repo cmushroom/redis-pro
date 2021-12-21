@@ -1,36 +1,33 @@
 //
-//  NIntField.swift
+//  NTextEditor.swift
 //  redis-pro
 //
-//  Created by chengpan on 2021/12/5.
+//  Created by chenpanwang on 2021/12/21.
 //
-
-import SwiftUI
 import Cocoa
+import SwiftUI
 import Logging
 
-
-struct NIntField: NSViewRepresentable {
-    @Binding var value: Int
-    var placeholder: String
+struct NTextEditor: NSViewRepresentable {
+    @Binding var value: String
+//    var placeholder: String
     var disable = false
     var onChange: (() -> Void)?
     var onCommit: (() -> Void)?
     
-    func makeNSView(context: Context) -> NSTextField {
-        let textField = NSTextField()
-        textField.integerValue = value
-        textField.placeholderString = placeholder
+    func makeNSView(context: Context) -> NSTextView {
+        let textField = NSTextView()
+        textField.string = value
+//        textField.place = placeholder
         textField.delegate = context.coordinator
-        
-        textField.formatter = NumberHelper.intFormatter
-        textField.isEnabled = !disable
+
+//        textField.isEnabled = !disable
         return textField
     }
     
     
-    func updateNSView(_ nsView: NSTextField, context: Context) {
-        nsView.integerValue = value
+    func updateNSView(_ nsView: NSTextView, context: Context) {
+        nsView.string = value
     }
     
     
@@ -39,13 +36,13 @@ struct NIntField: NSViewRepresentable {
     }
     
     
-    class Coordinator: NSObject, NSTextFieldDelegate {
-        let parent: NIntField
+    class Coordinator: NSObject, NSTextViewDelegate {
+        let parent: NTextEditor
         private var editing = false
         
-        let logger = Logger(label: "int-field-coordinator")
+        let logger = Logger(label: "text-editor-coordinator")
         
-        init(with parent: NIntField) {
+        init(with parent: NTextEditor) {
             self.parent = parent
             super.init()
         }
@@ -55,13 +52,9 @@ struct NIntField: NSViewRepresentable {
         
         // change
         func controlTextDidChange(_ obj: Notification) {
-            guard let textField = obj.object as? NSTextField else { return }
+            guard let textField = obj.object as? NSTextView else { return }
             
-            if NumberHelper.isInt(textField.stringValue) {
-                parent.value = textField.integerValue
-            } else {
-                textField.stringValue = String(parent.value)
-            }
+            parent.value = textField.string
             editing = true
             parent.onChange?()
         }
@@ -82,5 +75,10 @@ struct NIntField: NSViewRepresentable {
             return true
         }
     }
-    
 }
+
+//struct NTextEditor_Previews: PreviewProvider {
+//    static var previews: some View {
+//        NTextEditor()
+//    }
+//}

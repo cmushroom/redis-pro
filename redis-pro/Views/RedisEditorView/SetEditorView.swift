@@ -9,6 +9,8 @@ import SwiftUI
 import Logging
 
 struct SetEditorView: View {
+    var onSubmit: (() -> Void)?
+    
     @State var list:[String] = [String]()
     @State private var selectIndex:Int?
     
@@ -93,6 +95,7 @@ struct SetEditorView: View {
     func onUpdateItemAction() throws -> Void {
         if editIndex == -1 {
             let _ = redisInstanceModel.getClient().sadd(redisKeyModel.key, ele: editValue).done({_ in
+                self.onSubmit?()
                 try onRefreshAction()
             })
         } else {
@@ -100,10 +103,6 @@ struct SetEditorView: View {
                 self.logger.info("redis set update success, update list")
                 self.list[editIndex] = editValue
             })
-        }
-        
-        if self.redisKeyModel.isNew {
-            redisKeyModel.isNew = false
         }
     }
     

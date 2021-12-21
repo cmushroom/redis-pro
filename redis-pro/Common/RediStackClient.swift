@@ -13,6 +13,10 @@ import PromiseKit
 import NIOSSH
 import Swift
 
+class Cons {
+    static let EMPTY_STRING = ""
+}
+
 class RediStackClient {
     let logger = Logger(label: "redis-client")
     
@@ -28,7 +32,6 @@ class RediStackClient {
     // 递归查询每页大小
     private var recursionSize:Int = 500
     
-    
     init(redisModel:RedisModel) {
         self.redisModel = redisModel
     }
@@ -43,24 +46,12 @@ class RediStackClient {
         }
     }
     
-    func complete<T:Any>(_ completion:Swift.Result<T, Error>) -> Void {
+    func complete<T:Any, R:Any>(_ completion:Swift.Result<T, Error>, continuation:CheckedContinuation<R, Error>) -> Void {
         if case .failure(let error) = completion {
-            self.handleError(error)
+            continuation.resume(throwing: error)
         }
+        
         DispatchQueue.main.async {
-            self.globalContext?.loading = false
-        }
-    }
-    
-    func complete() -> Void {
-        DispatchQueue.main.async {
-            self.globalContext?.loading = false
-        }
-    }
-    
-    func handleComplete() -> Void {
-        DispatchQueue.main.async {
-//            self.globalContext?.showError(error)
             self.globalContext?.loading = false
         }
     }
@@ -71,16 +62,14 @@ class RediStackClient {
             self.globalContext?.showError(error)
             self.globalContext?.loading = false
         }
-        
     }
     
     func handleConnectionError(_ error:Error) {
-        logger.info("get an error \(error)")
-        
-        DispatchQueue.main.async {
-            self.globalContext?.showError(error)
-            self.globalContext?.loading = false
-        }
+        logger.info("get connection error \(error)")
+//        DispatchQueue.main.async {
+//            self.globalContext?.showError(error)
+//            self.globalContext?.loading = false
+//        }
     }
     
     /*
@@ -89,7 +78,10 @@ class RediStackClient {
     func initConnection() async -> Bool {
         begin()
         let conn = try? await getConn()
-        complete()
+        
+        DispatchQueue.main.async {
+            self.globalContext?.loading = false
+        }
         return conn != nil
     }
     
@@ -100,28 +92,24 @@ class RediStackClient {
         do {
             let conn = try await getConn()
             
-            return await withUnsafeContinuation { continuation in
+            return try await withCheckedThrowingContinuation { continuation in
                 if (ex == nil || ex! == -1) {
                     conn.set(RedisKey(key), to: value)
                         .whenComplete({completion in
                             if case .success(_) = completion {
+                                continuation.resume()
                             }
-                            else if case .failure(let error) = completion {
-                                self.logger.error("redis string set error \(error)")
-                            }
-                            continuation.resume()
-                            self.complete(completion)
+                
+                            self.complete(completion, continuation: continuation)
                         })
                 } else {
                     conn.setex(RedisKey(key), to: value, expirationInSeconds: ex!)
                         .whenComplete({completion in
                             if case .success(_) = completion {
+                                continuation.resume()
                             }
-                            else if case .failure(let error) = completion {
-                                self.logger.error("redis string set error \(error)")
-                            }
-                            continuation.resume()
-                            self.complete(completion)
+                            
+                            self.complete(completion, continuation: continuation)
                         })
                 }
             }
@@ -131,29 +119,33 @@ class RediStackClient {
         
     }
     
-    func get(key:String) -> Promise<String> {
-        self.globalContext?.loading = true
-        let promise = getConnectionAsync().then({connection in
-            Promise<String>{resolver in
-                connection.get(RedisKey(key)).whenComplete({completion in
-                    if case .success(let r) = completion {
-                        self.logger.info("get value key: \(key) complete, r: \(r)")
-                        if r.isNull {
-                            resolver.reject(BizError(message: "Key `\(key)` is not exist!"))
-                        } else {
-                            resolver.fulfill(r.string!)
+    func get(_ key:String) async -> String {
+        logger.info("get value, key:\(key)")
+        begin()
+        do {
+            let conn = try await getConn()
+            
+            return try await withCheckedThrowingContinuation { continuation in
+                
+                conn.get(RedisKey(key))
+                    .whenComplete({completion in
+                        if case .success(let r) = completion {
+                            self.logger.info("get value key: \(key) complete, r: \(r)")
+                            if r.isNull {
+                                continuation.resume(throwing: BizError(message: "Key `\(key)` is not exist!"))
+                            } else {
+                                continuation.resume(returning: r.string!)
+                            }
                         }
-                    }
-                    else if case .failure(let error) = completion {
-                        self.logger.error("redis get string error \(error)")
-                        resolver.reject(error)
-                    }
-                })
+                        
+                        self.complete(completion, continuation: continuation)
+                    })
+                
             }
-        })
-        
-        afterPromise(promise)
-        return promise
+        } catch {
+            handleError(error)
+        }
+        return Cons.EMPTY_STRING
     }
     
     func del(key:String) -> Promise<Int> {
@@ -214,17 +206,6 @@ class RediStackClient {
         return promise
     }
     
-    //    func ttl(_ redisKeyModel:RedisKeyModel) -> Void {
-    //        if redisKeyModel.isNew {
-    //            return
-    //        }
-    //
-    //        ttl(key: redisKeyModel.key).done({r in
-    ////            redisKeyModel.ttl = r
-    //        })
-    //    }
-    
-    
     func exist(_ key:String) -> Promise<Bool> {
         logger.info("get key exist: \(key)")
         
@@ -245,30 +226,37 @@ class RediStackClient {
         return promise
     }
     
-    func ttl(_ key:String) -> Promise<Int> {
+    func ttl(_ key:String) async -> Int {
         logger.info("get ttl key: \(key)")
-        
-        let promise = getConnectionAsync().then({connection in
-            Promise<Int>{resolver in
-                connection.ttl(RedisKey(key)).whenComplete({completion in
-                    if case .success(let r) = completion {
-                        self.logger.info("query redis key ttl, key: \(key), r:\(r)")
-                        if r == RedisKey.Lifetime.keyDoesNotExist {
-                            resolver.reject(BizError(message: "redis key: \(key) does not exist!"))
-                        } else if r == RedisKey.Lifetime.unlimited {
-                            resolver.fulfill(-1)
-                        } else {
-                            resolver.fulfill(Int(r.timeAmount!.nanoseconds / 1000000000))
+        begin()
+        do {
+            let conn = try await getConn()
+            
+            return try await withCheckedThrowingContinuation { continuation in
+                
+                conn.ttl(RedisKey(key))
+                    .whenComplete({completion in
+                        if case .success(let r) = completion {
+                            self.logger.info("query redis key ttl, key: \(key), r:\(r)")
+                            var ttl = -1
+                            if r == RedisKey.Lifetime.keyDoesNotExist {
+                                continuation.resume(throwing: BizError(message: "Key `\(key)` is not exist!"))
+                            } else if r == RedisKey.Lifetime.unlimited {
+                               // ignore
+                            } else {
+                                ttl = Int(r.timeAmount!.nanoseconds / 1000000000)
+                            }
+                            continuation.resume(returning: ttl)
                         }
-                    }
-                    else if case .failure(let error) = completion {
-                        self.logger.error("redis get key type error \(error)")
-                        resolver.reject(error)
-                    }
-                })
+                        
+                        self.complete(completion, continuation: continuation)
+                    })
+                
             }
-        })
-        return promise
+        } catch {
+            handleError(error)
+        }
+        return 0
     }
     
     private func type(_ key:String) -> Promise<String> {
@@ -515,7 +503,7 @@ extension RediStackClient {
         return scanTotal(keywords, cursor: cursor, total: total)
     }
     
-    func pageKeys(_ page:Page) -> Promise<[NSRedisKeyModel]> {
+    func pageKeys(_ page:Page) -> Promise<[RedisKeyModel]> {
         self.globalContext?.loading = true
         
         let stopwatch = Stopwatch.createStarted()
@@ -529,7 +517,7 @@ extension RediStackClient {
         let cursor:Int = 0
         let total:Int = page.current * page.size
         
-        let scanPromise = Promise<[NSRedisKeyModel]> { resolver in
+        let scanPromise = Promise<[RedisKeyModel]> { resolver in
             if isScan {
                 let _ = self.recursionScan(match, cursor: cursor, maxCount: total, keys: keys).done {res in
                     
@@ -575,7 +563,7 @@ extension RediStackClient {
         
         let countPromise = isScan ? recursionScanTotal(match) : Promise.value(0)
         
-        let promise = Promise<[NSRedisKeyModel]> { resolver in
+        let promise = Promise<[RedisKeyModel]> { resolver in
             let _ = when(fulfilled: countPromise, scanPromise).done({ r1, r2 in
                 let total = r1
                 
@@ -595,25 +583,25 @@ extension RediStackClient {
         return promise
     }
     
-    private func toRedisKeyModels(_ keys:[String]) -> Promise<[NSRedisKeyModel]> {
+    private func toRedisKeyModels(_ keys:[String]) -> Promise<[RedisKeyModel]> {
         if keys.isEmpty {
-            return Promise<[NSRedisKeyModel]>.value([NSRedisKeyModel]())
+            return Promise<[RedisKeyModel]>.value([RedisKeyModel]())
         }
         
-        var promises = [Promise<NSRedisKeyModel>]()
+        var promises = [Promise<RedisKeyModel>]()
         
         for key in keys {
             promises.append(type(key).then({type in
-                Promise<NSRedisKeyModel>.value(NSRedisKeyModel(key, type: type))
+                Promise<RedisKeyModel>.value(RedisKeyModel(key, type: type))
             }))
         }
         
         return when(resolved: promises).then({ r in
-            Promise<[NSRedisKeyModel]>.value(r.map({
+            Promise<[RedisKeyModel]>.value(r.map({
                 if case .fulfilled(let v) = $0 {
                     return v
                 } else {
-                    return NSRedisKeyModel("ERROR", type: RedisKeyTypeEnum.NONE.rawValue)
+                    return RedisKeyModel("ERROR", type: RedisKeyTypeEnum.NONE.rawValue)
                 }
             }))
         })
@@ -1681,19 +1669,20 @@ extension RediStackClient {
         guard let conn = conn else {
             return false
         }
-        
-        return await withUnsafeContinuation { continuation in
-            conn.ping().whenComplete({completion in
-                if case .success(let pong) = completion {
-                    continuation.resume(returning: "PONG".caseInsensitiveCompare(pong) == .orderedSame)
-                }
-                else if case .failure(_) = completion {
-                    continuation.resume(returning: false)
-                }
-                self.complete(completion)
-            })
+        do {
+            return try await withCheckedThrowingContinuation { continuation in
+                conn.ping().whenComplete({completion in
+                    if case .success(let pong) = completion {
+                        continuation.resume(returning: "PONG".caseInsensitiveCompare(pong) == .orderedSame)
+                    }
+                    self.complete(completion, continuation:continuation)
+                })
+            }
+        } catch {
+            handleError(error)
         }
         
+        return false
     }
     
 }

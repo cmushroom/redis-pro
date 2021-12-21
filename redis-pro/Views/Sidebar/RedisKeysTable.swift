@@ -10,7 +10,7 @@ import SwiftUI
 import Logging
 
 struct RedisKeysTable: NSViewControllerRepresentable {
-    @Binding var datasource: [NSRedisKeyModel]
+    @Binding var datasource: [RedisKeyModel]
     @Binding var selectRowIndex:Int
     var onChange: ((Int) -> Void)?
     var onClick: ((Int) -> Void)?

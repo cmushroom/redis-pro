@@ -9,41 +9,41 @@ import Foundation
 import Cocoa
 
 class RedisKeyModel:NSObject, ObservableObject, Identifiable {
-    @Published var key: String = ""
-    @Published var type: String = RedisKeyTypeEnum.STRING.rawValue
-    var ttl: Int = -1
+    @objc @Published var key: String = ""
+    @objc @Published var type: String = RedisKeyTypeEnum.STRING.rawValue
+    @Published var ttl: Int = -1
     @Published var isNew: Bool = false
     
+    private var _id:String = ""
     var id:String {
-        key
+        if isNew {
+            return _id
+        }
+        return key
     }
     
     override init() {}
     
-    convenience init(_ isNew:Bool) {
-        self.init()
-        self.isNew = isNew
-    }
     convenience init(_ key:String, type:String) {
         self.init()
         self.key = key
         self.type = type
     }
     
+    func copyValue(_ redisKeyModel:RedisKeyModel) {
+        self.key = redisKeyModel.key
+        self.type = redisKeyModel.type
+    }
+    
     func initNew() -> Void {
         self.isNew = true
-        self.key = "NEW_KEY_\(Date().millis)"
+        self.key = generateKey()
+        self._id = self.key
         self.type = RedisKeyTypeEnum.STRING.rawValue
     }
     
-    func initKey(_ nsRedisKeyModel:NSRedisKeyModel) {
-        self.isNew = false
-        self.key = nsRedisKeyModel.key
-        self.type = nsRedisKeyModel.type
-    }
-    
-    convenience init(_ nsRedisKeyModel:NSRedisKeyModel) {
-        self.init(nsRedisKeyModel.key, type: nsRedisKeyModel.type)
+    private func generateKey() -> String {
+        return "NEW_KEY_\(Date().millis)"
     }
     
     override var description: String {
@@ -53,6 +53,26 @@ class RedisKeyModel:NSObject, ObservableObject, Identifiable {
     public static func == (lhs: RedisKeyModel, rhs: RedisKeyModel) -> Bool {
         // 需要比较的值
         return lhs.id == rhs.id
+    }
+}
+
+extension RedisKeyModel {
+    // type 颜色
+    @objc var typeColor: NSColor {
+        switch type {
+        case RedisKeyTypeEnum.STRING.rawValue:
+            return NSColor.systemBlue
+        case RedisKeyTypeEnum.HASH.rawValue:
+            return NSColor.systemPink
+        case RedisKeyTypeEnum.LIST.rawValue:
+            return NSColor.systemOrange
+        case RedisKeyTypeEnum.SET.rawValue:
+            return NSColor.systemGreen
+        case RedisKeyTypeEnum.ZSET.rawValue:
+            return NSColor.systemTeal
+        default:
+            return NSColor.systemBrown
+        }
     }
 }
 

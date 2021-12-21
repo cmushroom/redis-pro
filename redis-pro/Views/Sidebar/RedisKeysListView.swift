@@ -13,7 +13,7 @@ import AppKit
 struct RedisKeysListView: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @EnvironmentObject var globalContext:GlobalContext
-    @State private var redisKeyModels:[NSRedisKeyModel] = [NSRedisKeyModel]()
+    @State private var redisKeyModels:[RedisKeyModel] = [RedisKeyModel]()
     @State private var selectedRedisKeyIndex:Int = -1
     @StateObject private var scanModel:Page = Page()
     @StateObject private var page:ScanModel = ScanModel()
@@ -30,10 +30,16 @@ struct RedisKeysListView: View {
     
     let logger = Logger(label: "redis-key-list-view")
     
-//    var selectRedisKeyModel:RedisKeyModel? {
-//        get {
-//            return (selectedRedisKeyIndex == nil || redisKeyModels.isEmpty || redisKeyModels.count <= selectedRedisKeyIndex!) ? nil : redisKeyModels[selectedRedisKeyIndex!]
+//    var selectRedisKeyModel:RedisKeyModel {
+//        if selectedRedisKeyIndex >= 0 {
+//            return RedisKeyModel(redisKeyModels[selectedRedisKeyIndex])
+//        } else if selectedRedisKeyIndex ==  -2 {
+//            return RedisKeyModel("NEW_KEY_\(Date().millis)", type: RedisKeyTypeEnum.STRING.rawValue, isNew: true)
 //        }
+//        return RedisKeyModel()
+////        get {
+////            return (selectedRedisKeyIndex == nil || redisKeyModels.isEmpty || redisKeyModels.count <= selectedRedisKeyIndex!) ? nil : redisKeyModels[selectedRedisKeyIndex!]
+////        }
 //    }
     
     var selectRedisKey:String {
@@ -95,16 +101,19 @@ struct RedisKeysListView: View {
         }
     }
     
+    
     private var sidebar: some View {
         VStack(alignment: .leading, spacing: 0) {
             // header area
             sidebarHeader
             
             RedisKeysTable(datasource: $redisKeyModels, selectRowIndex: $selectedRedisKeyIndex, onChange: {
+                
 //                let select = redisKeyModels[$0]
-                self.selectRedisKeyModel.initKey(redisKeyModels[$0])
+                self.selectRedisKeyModel.copyValue(redisKeyModels[$0])
+//                selectRedisKeyModel = select
 //                self.selectRedisKeyModel.key = select.key
-                logger.info("set redis model \(self.selectRedisKeyModel)")
+//                logger.info("set redis model \(self.selectRedisKeyModel)")
                 self.showEditor()
             }, onClick: {_ in
                 self.showEditor()
@@ -154,9 +163,6 @@ struct RedisKeysListView: View {
             // content
             rightMainView
         }
-        .onChange(of: selectRedisKeyModel.isNew) {newValue in
-            print("newnew..... \(selectRedisKeyModel)")
-        }
         .onAppear{
             onRefreshAction()
         }
@@ -178,7 +184,7 @@ struct RedisKeysListView: View {
     
     func onRedisValueSubmit() -> Void {
         if self.selectRedisKeyModel.isNew {
-            let newItem = NSRedisKeyModel(selectRedisKeyModel.key, type: selectRedisKeyModel.type)
+            let newItem = RedisKeyModel(selectRedisKeyModel.key, type: selectRedisKeyModel.type)
             self.redisKeyModels.insert(newItem, at: 0)
             self.selectedRedisKeyIndex = 0
             self.selectRedisKeyModel.isNew = false
@@ -186,12 +192,8 @@ struct RedisKeysListView: View {
     }
     
     func onAddAction() -> Void {
-//        let newRedisKeyModel = RedisKeyModel(key: "NEW_KEY_\(Date().millis)", type: RedisKeyTypeEnum.STRING.rawValue)
-        
         self.selectRedisKeyModel.initNew()
         showEditor()
-//        self.redi sKeyModels.insert(newRedisKeyModel, at: 0)
-//        self.selectedRedisKeyIndex = 0
     }
     
     func onRenameConfirmAction(_ index:Int) -> Void {

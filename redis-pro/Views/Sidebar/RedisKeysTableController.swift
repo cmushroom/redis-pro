@@ -18,7 +18,7 @@ class RedisKeysTableController: NSViewController {
         self.action?(sender.clickedRow)
     }
     
-    @objc dynamic var datasource: [NSRedisKeyModel] = []
+    @objc dynamic var datasource: [RedisKeyModel] = []
     
     var deleteAction: ((_ index:Int) -> Void)?
     var renameAction: ((_ index:Int) -> Void)?
@@ -36,7 +36,7 @@ class RedisKeysTableController: NSViewController {
         
     }
     
-    func setDatasource(_ datasource:[NSRedisKeyModel]) -> Void {
+    func setDatasource(_ datasource:[RedisKeyModel]) -> Void {
         self.datasource = datasource
     }
     
@@ -55,35 +55,5 @@ class RedisKeysTableController: NSViewController {
     @objc private func tableViewDeleteItemClicked(_ sender: AnyObject) {
         logger.info("context menu delete index: \(tableView.clickedRow)")
         self.deleteAction?(tableView.clickedRow)
-    }
-}
-
-
-class RedisKeyTableRow:NSObject, Identifiable  {
-    @objc var no:Int
-    @objc var type:String
-    @objc var key:String
-    
-    @objc var typeColor: NSColor {
-        switch type {
-        case RedisKeyTypeEnum.STRING.rawValue:
-            return NSColor.systemBlue
-        case RedisKeyTypeEnum.HASH.rawValue:
-            return NSColor.systemPink
-        case RedisKeyTypeEnum.LIST.rawValue:
-            return NSColor.systemOrange
-        case RedisKeyTypeEnum.SET.rawValue:
-            return NSColor.systemGreen
-        case RedisKeyTypeEnum.ZSET.rawValue:
-            return NSColor.systemTeal
-        default:
-            return NSColor.systemBrown
-        }
-    }
-    
-    init(no:Int, type:String, key:String) {
-        self.no = no
-        self.type = type
-        self.key = key
     }
 }

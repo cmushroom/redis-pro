@@ -10,6 +10,8 @@ import Logging
 import PromiseKit
 
 struct HashEditorView: View {
+    var onSubmit: (() -> Void)?
+    
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @EnvironmentObject var redisKeyModel:RedisKeyModel
     @StateObject private var page:ScanModel = ScanModel()
@@ -64,13 +66,13 @@ struct HashEditorView: View {
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
         }
-        .onChange(of: redisKeyModel, perform: { value in
+        .onChange(of: redisKeyModel.id, perform: { value in
             logger.info("redis string value editor view change \(value)")
-            onLoad(value)
+            onLoad()
         })
         .onAppear {
             logger.info("redis string value editor view init...")
-            onLoad(redisKeyModel)
+            onLoad()
         }
         .sheet(isPresented: $editModalVisible, onDismiss: {
         }) {
@@ -113,11 +115,8 @@ struct HashEditorView: View {
     
     func onSaveFieldAction() throws -> Void {
         let _ = redisInstanceModel.getClient().hset(redisKeyModel.key, field: editField, value: editValue).done({ _ in
-            
-            if self.redisKeyModel.isNew {
-                self.redisKeyModel.isNew = false
-            }
             logger.info("redis hset success, update field list")
+            self.onSubmit?()
             
             if editIndex == -1 {
                 self.datasource.insert(RedisHashEntryModel(field: editField, value: editValue), at: 0)
@@ -142,20 +141,21 @@ struct HashEditorView: View {
     }
     
     func onRefreshAction() throws -> Void {
-        
-        if redisKeyModel.key.isEmpty {
+        if redisKeyModel.isNew {
             return
         }
         page.reset()
         queryHashPage(redisKeyModel)
-        ttl()
+        Task {
+            await ttl()
+        }
+        
     }
     
     
-    func onLoad(_ redisKeyModel:RedisKeyModel) -> Void {
-        
-        
-        if redisKeyModel.type != RedisKeyTypeEnum.HASH.rawValue {
+    func onLoad() -> Void {
+        if redisKeyModel.isNew || redisKeyModel.type != RedisKeyTypeEnum.HASH.rawValue {
+            datasource.removeAll()
             return
         }
         
@@ -168,10 +168,6 @@ struct HashEditorView: View {
     
     func queryHashPage(_ redisKeyModel:RedisKeyModel) -> Void {
         
-        if redisKeyModel.key.isEmpty {
-            return
-        }
-        
         let _ = redisInstanceModel.getClient().pageHash(redisKeyModel, page: page).done({res in
             self.datasource = res
             self.selectIndex = res.count > 0 ? 0 : -1
@@ -179,10 +175,9 @@ struct HashEditorView: View {
         })
     }
     
-    func ttl() -> Void {
-        let _  = redisInstanceModel.getClient().ttl(redisKeyModel.key).done({r in
-            self.redisKeyModel.ttl = r
-        })
+    func ttl() async -> Void {
+        let r = await redisInstanceModel.getClient().ttl(redisKeyModel.key)
+        self.redisKeyModel.ttl = r
     }
     
     // delete

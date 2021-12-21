@@ -95,6 +95,7 @@ struct NTextField: NSViewRepresentable {
     
     class Coordinator: NSObject, NSTextFieldDelegate {
         let parent: NTextField
+        private var editing = false
         
         
         let logger = Logger(label: "text-field-coordinator")
@@ -124,24 +125,32 @@ struct NTextField: NSViewRepresentable {
         
         func controlTextDidChange(_ obj: Notification) {
             guard let textField = obj.object as? NSTextField else { return }
-            parent.stringValue = textField.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
+            parent.stringValue = textField.stringValue
             
-            logger.info("text field change, value: \(textField.stringValue)")
+            logger.debug("text field change, value: \(textField.stringValue)")
+            editing = true
             parent.onChange?()
         }
         
         func controlTextDidEndEditing(_ obj: Notification) {
             guard let textField = obj.object as? NSTextField else { return }
-            parent.stringValue = textField.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
+            let value = textField.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
             
-            logger.info("text field end change, value: \(textField.stringValue)")
-            parent.onChange?()
+            parent.stringValue = value
+            logger.debug("text field end change, value: \(textField.stringValue)")
+            if editing {
+                editing = false
+                parent.onChange?()
+                parent.onCommit?()
+            }
         }
         
         func control(_ control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
-            logger.info("on text field commit")
             parent.stringValue = fieldEditor.string.trimmingCharacters(in: .whitespacesAndNewlines)
+            
+            logger.debug("on text field commit, text: \(parent.stringValue)")
             parent.onCommit?()
+            editing = false
             return true
         }
         

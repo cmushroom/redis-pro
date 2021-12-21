@@ -9,6 +9,7 @@ import SwiftUI
 import Logging
 
 struct ListEditorView: View {
+    var onSubmit: (() -> Void)?
     @State var text:String = ""
     @State var list:[String] = [String]()
     @State private var selectIndex:Int?
@@ -98,7 +99,7 @@ struct ListEditorView: View {
         
         globalContext.confirm(String(format: Helps.DELETE_LIST_ITEM_CONFIRM_TITLE, item), alertMessage: String(format:Helps.DELETE_LIST_ITEM_CONFIRM_MESSAGE, item)
                               , primaryAction: {
-                                try deleteField(index)
+                                deleteField(index)
                             }
         , primaryButton: "Delete")
         
@@ -121,11 +122,13 @@ struct ListEditorView: View {
     func onUpdateItemAction() throws -> Void {
         if editIndex == -1 {
             let _ = redisInstanceModel.getClient().lpush(redisKeyModel.key, value: editValue).done({ _ in
-                try onRefreshAction()
+                self.onSubmit?()
+                onRefreshAction()
             })
         } else if editIndex == -2 {
             let _ = redisInstanceModel.getClient().rpush(redisKeyModel.key, value: editValue).done({_ in
-                try onRefreshAction()
+                self.onSubmit?()
+                onRefreshAction()
             })
         } else {
             let index = (page.current - 1) * page.size + editIndex
@@ -134,31 +137,30 @@ struct ListEditorView: View {
                 list[editIndex] = editValue
             })
         }
-        
-        if redisKeyModel.isNew {
-            self.redisKeyModel.isNew = false
-        }
     }
     
-    func onDeleteAction() throws -> Void {
-        try deleteField(selectIndex!)
-        try onRefreshAction()
+    func onDeleteAction() -> Void {
+        deleteField(selectIndex!)
+        onRefreshAction()
     }
     
-    func onSubmitAction() throws -> Void {
+    func onSubmitAction() -> Void {
         logger.info("redis hash value editor on submit")
         let _ = redisInstanceModel.getClient().expire(redisKeyModel.key, seconds: redisKeyModel.ttl)
     }
     
-    func onRefreshAction() throws -> Void {
+    func onRefreshAction() -> Void {
         page.firstPage()
-        try queryPage(redisKeyModel)
-        ttl()
+        queryPage(redisKeyModel)
+        Task {
+            await ttl()
+        }
+        
     }
     
     
-    func onPageAction() throws -> Void {
-        try queryPage(redisKeyModel)
+    func onPageAction() -> Void {
+        queryPage(redisKeyModel)
     }
     
     func onLoad(_ redisKeyModel:RedisKeyModel) -> Void {
@@ -167,15 +169,10 @@ struct ListEditorView: View {
             return
         }
         
-        do {
-            try queryPage(redisKeyModel)
-        } catch {
-            logger.error("on string editor view load query redis hash error:\(error)")
-            globalContext.showError(error)
-        }
+        queryPage(redisKeyModel)
     }
     
-    func queryPage(_ redisKeyModel:RedisKeyModel) throws -> Void {
+    func queryPage(_ redisKeyModel:RedisKeyModel) -> Void {
         
         if redisKeyModel.key.isEmpty {
             return
@@ -187,17 +184,12 @@ struct ListEditorView: View {
         
     }
     
-    func ttl() -> Void {
-        
-        if redisKeyModel.key.isEmpty {
-            return
-        }
-        let _  = redisInstanceModel.getClient().ttl(self.redisKeyModel.key).done({r in
-            self.redisKeyModel.ttl = r
-        })
+    func ttl() async -> Void {
+        let r  = await redisInstanceModel.getClient().ttl(self.redisKeyModel.key)
+        self.redisKeyModel.ttl = r
     }
     
-    func deleteField(_ index:Int) throws -> Void {
+    func deleteField(_ index:Int) -> Void {
         logger.info("delete list item, index: \(index)")
         let _ = redisInstanceModel.getClient().ldel(redisKeyModel.key, index: index).done({r in
             if r > 0 {

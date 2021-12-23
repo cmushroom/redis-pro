@@ -125,7 +125,9 @@ struct ZSetEditorView: View {
     func onRefreshAction() throws -> Void {
         page.reset()
         queryPage(redisKeyModel)
-        try ttl(redisKeyModel)
+        Task {
+            await ttl(redisKeyModel)
+        }
     }
     
     func onQueryField() -> Void {
@@ -139,7 +141,7 @@ struct ZSetEditorView: View {
     
     func onLoad(_ redisKeyModel:RedisKeyModel) -> Void {
         
-        if redisKeyModel.type != RedisKeyTypeEnum.ZSET.rawValue {
+        if redisKeyModel.isNew || redisKeyModel.type != RedisKeyTypeEnum.ZSET.rawValue {
             return
         }
         queryPage(redisKeyModel)
@@ -156,14 +158,10 @@ struct ZSetEditorView: View {
         })
     }
     
-    func ttl(_ redisKeyModel:RedisKeyModel) throws -> Void {
+    func ttl(_ redisKeyModel:RedisKeyModel) async -> Void {
         
-        if redisKeyModel.key.isEmpty {
-            return
-        }
-        let _ = redisInstanceModel.getClient().ttl(redisKeyModel.key).done({r in
-            self.redisKeyModel.ttl = r
-        })
+        let r = await redisInstanceModel.getClient().ttl(redisKeyModel.key)
+        self.redisKeyModel.ttl = r
     }
     
     // delete

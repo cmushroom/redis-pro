@@ -116,7 +116,9 @@ struct SetEditorView: View {
     func onRefreshAction() throws -> Void {
         page.reset()
         queryPage(redisKeyModel)
-        ttl(redisKeyModel)
+        Task {
+            await ttl(redisKeyModel)
+        }
     }
     
     func onQueryField() -> Void {
@@ -130,7 +132,7 @@ struct SetEditorView: View {
     
     func onLoad(_ redisKeyModel:RedisKeyModel) -> Void {
         
-        if redisKeyModel.type != RedisKeyTypeEnum.SET.rawValue {
+        if  redisKeyModel.type != RedisKeyTypeEnum.SET.rawValue {
             return
         }
     
@@ -149,15 +151,9 @@ struct SetEditorView: View {
         })
     }
     
-    func ttl(_ redisKeyModel:RedisKeyModel) -> Void {
-        
-        if redisKeyModel.key.isEmpty {
-            return
-        }
-        
-        let _ = redisInstanceModel.getClient().ttl(redisKeyModel.key).done({r in
-            self.redisKeyModel.ttl = r
-        })
+    func ttl(_ redisKeyModel:RedisKeyModel) async -> Void {
+        let r = await redisInstanceModel.getClient().ttl(redisKeyModel.key)
+        self.redisKeyModel.ttl = r
     }
     
     

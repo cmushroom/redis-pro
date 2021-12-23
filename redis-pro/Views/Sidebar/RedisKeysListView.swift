@@ -239,7 +239,8 @@ struct RedisKeysListView: View {
     
     func onRefreshAction() -> Void {
         self.onSearchKeyAction()
-        let _ = self.redisInstanceModel.getClient().dbsizeAsync().done { r in
+        Task {
+            let r = await self.redisInstanceModel.getClient().dbsize()
             self.dbsize = r
         }
     }
@@ -283,17 +284,11 @@ struct RedisKeysListView: View {
             return
         }
         
-        let promise = self.redisInstanceModel.getClient().pageKeys(scanModel)
-        
-        let _ = promise.done({ keysPage in
+        Task {
+            let keysPage = await self.redisInstanceModel.getClient().pageKeys(scanModel)
             self.redisKeyModels = keysPage
-            
-            // 如果有key 默认选中第一个
-            if keysPage.count > 0 {
-//                self.selectedRedisKeyIndex = 0
-//                self.selectRedisKeyModel = self.redisKeyModels
-            }
-        })
+        }
+        
     }
 }
 

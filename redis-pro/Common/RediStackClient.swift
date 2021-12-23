@@ -56,6 +56,12 @@ class RediStackClient {
         }
     }
     
+    func complete() -> Void {
+        DispatchQueue.main.async {
+            self.globalContext?.loading = false
+        }
+    }
+    
     func handleError(_ error: Error) {
         logger.info("get an error \(error)")
         DispatchQueue.main.async {
@@ -206,24 +212,30 @@ class RediStackClient {
         return promise
     }
     
-    func exist(_ key:String) -> Promise<Bool> {
+    private func exist(_ key:String) async -> Bool {
         logger.info("get key exist: \(key)")
-        
-        let promise = getConnectionAsync().then({connection in
-            Promise<Bool>{resolver in
-                connection.exists(RedisKey(key)).whenComplete({completion in
-                    if case .success(let r) = completion {
-                        self.logger.info("query redis key exist, key: \(key), r:\(r)")
-                        resolver.fulfill(r > 0)
-                    }
-                    else if case .failure(let error) = completion {
-                        self.logger.error("redis get key type error \(error)")
-                        resolver.reject(error)
-                    }
-                })
+        do {
+            let conn = try await getConn()
+            
+            return try await withCheckedThrowingContinuation { continuation in
+                
+                conn.exists(RedisKey(key))
+                    .whenComplete({completion in
+                        if case .success(let r) = completion {
+                            self.logger.info("query redis key exist, key: \(key), r:\(r)")
+                            continuation.resume(returning: r > 0)
+                        }
+                        else if case .failure(let error) = completion {
+                            self.logger.error("redis get key exist error \(error)")
+                            continuation.resume(returning: false)
+                        }
+                    })
+                
             }
-        })
-        return promise
+        } catch {
+            self.logger.error("redis get key exist error \(error)")
+        }
+        return false
     }
     
     func ttl(_ key:String) async -> Int {
@@ -259,22 +271,28 @@ class RediStackClient {
         return 0
     }
     
-    private func type(_ key:String) -> Promise<String> {
-        let promise = getConnectionAsync().then({connection in
-            Promise<String>{resolver in
-                connection.send(command: "type", with: [RESPValue.init(from: key)]).whenComplete({completion in
-                    if case .success(let r) = completion {
-                        resolver.fulfill(r.string!)
-                    }
-                    else if case .failure(let error) = completion {
-                        self.logger.error("redis get key type error \(error)")
-                        resolver.fulfill(RedisKeyTypeEnum.NONE.rawValue)
-                    }
-                })
+    private func type(_ key:String) async -> String {
+        do {
+            let conn = try await getConn()
+            
+            return try await withCheckedThrowingContinuation { continuation in
+                
+                conn.send(command: "type", with: [RESPValue.init(from: key)])
+                    .whenComplete({completion in
+                        if case .success(let r) = completion {
+                            continuation.resume(returning: r.string!)
+                        } else if case .failure(let error) = completion {
+                            self.logger.error("get key type error: \(error)")
+                            continuation.resume(returning: RedisKeyTypeEnum.NONE.rawValue)
+                        }
+                    })
+                
             }
-        })
+        } catch {
+            self.logger.error("get key type error: \(error)")
+        }
         
-        return promise
+        return RedisKeyTypeEnum.NONE.rawValue
     }
     
     func rename(_ oldKey:String, newKey:String) -> Promise<Bool> {
@@ -422,189 +440,233 @@ class RediStackClient {
 extension RediStackClient {
     
     
-    private func scanAsync(cursor:Int, keywords:String?, count:Int? = 1) -> Promise<(cursor:Int, keys:[String])> {
+    private func keyScan(cursor:Int, keywords:String?, count:Int? = 1) async throws -> (cursor:Int, keys:[String]) {
         logger.debug("redis keys scan, cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
         
-        let promise =
-        getConnectionAsync().then({ connection in
-            Promise<(cursor:Int, keys:[String])> { resolver in
-                connection.scan(startingFrom: cursor, matching: keywords, count: count)
-                    .whenComplete({ completion in
-                        if case .success(let r) = completion {
-                            resolver.fulfill(r)
-                        }
-                        else if case .failure(let error) = completion {
-                            self.logger.error("redis keys scan error \(error)")
-                            resolver.reject(error)
-                        }
-                    })
-            }
-            
-        })
         
-        return promise
+        let conn = try await getConn()
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            conn.scan(startingFrom: cursor, matching: keywords, count: count)
+                .whenComplete({completion in
+                    if case .success(let r) = completion {
+                        continuation.resume(returning: r)
+                    }
+                    else if case .failure(let error) = completion {
+                        self.logger.error("redis keys scan error \(error)")
+                        continuation.resume(throwing: error)
+                    }
+                })
+        }
     }
     
     // 递归取出包含分页的数据
-    private func recursionScan(_ keywords:String?, cursor:Int, maxCount:Int, keys:[String]) -> Promise<(cursor:Int, keys:[String])> {
+    private func recursionScan(_ keywords:String?, cursor:Int, maxCount:Int, keys:[String]) async throws -> (cursor:Int, keys:[String]) {
         if keys.count >= maxCount {
             self.logger.info("recursion scan get keys enough, max count: \(maxCount), current count: \(keys.count)")
-            return Promise<(cursor:Int, keys:[String])> { resolver in
-                resolver.fulfill((cursor, keys))
-            }
+            return (cursor, keys)
         } else {
-            return scanAsync(cursor: cursor, keywords: keywords, count: 3000).then{ res -> Promise<(cursor:Int, keys:[String])> in
-                
-                let newKeys = keys + res.keys
-                
-                if res.cursor == 0 {
-                    self.logger.info("recursion scan reach end, max count: \(maxCount), current count: \(keys.count)")
-                    
-                    return Promise<(cursor:Int, keys:[String])> { resolver in
-                        resolver.fulfill((res.cursor, newKeys))
-                    }
-                }
-                
-                self.logger.info("recursion scan get more keys, current count: \(newKeys.count)")
-                return self.recursionScan(keywords, cursor: res.cursor, maxCount: maxCount, keys: newKeys)
-            }
-        }
-    }
-    
-    private func scanTotal(_ keywords:String?, cursor:Int, total:Int) -> Promise<Int> {
-        return scanAsync(cursor: cursor, keywords: keywords, count: recursionSize).then{ res -> Promise<Int> in
-            let newTotal:Int = total + res.keys.count
+            let res = try await keyScan(cursor: cursor, keywords: keywords, count: 3000)
+            let newKeys = keys + res.keys
+            
             if res.cursor == 0 {
-                self.logger.info("recursion scan total reach end, total: \(newTotal)")
+                self.logger.info("recursion scan reach end, max count: \(maxCount), current count: \(keys.count)")
                 
-                return Promise<Int> { resolver in
-                    resolver.fulfill(newTotal)
-                }
+                return (res.cursor, newKeys)
             }
             
-            self.logger.info("recursion scan total get more, current total: \(newTotal)")
-            return self.scanTotal(keywords, cursor: res.cursor, total: newTotal)
+            self.logger.info("recursion scan get more keys, current count: \(newKeys.count)")
+            return try await self.recursionScan(keywords, cursor: res.cursor, maxCount: maxCount, keys: newKeys)
         }
     }
     
-    private func isMatchAll(_ keywords:String?) -> Bool {
-        return keywords == nil || keywords == "*" || keywords!.trimmingCharacters(in: .whitespacesAndNewlines) == "*"
+    private func scanTotal(_ keywords:String?, cursor:Int, total:Int) async throws -> Int {
+        let res = try await keyScan(cursor: cursor, keywords: keywords, count: recursionSize)
+        let newTotal:Int = total + res.keys.count
+        if res.cursor == 0 {
+            self.logger.info("recursion scan total reach end, total: \(newTotal)")
+            
+            return newTotal
+        }
+        
+        self.logger.info("recursion scan total get more, current total: \(newTotal)")
+        return try await self.scanTotal(keywords, cursor: res.cursor, total: newTotal)
     }
     
-    private func recursionScanTotal(_ keywords:String?) -> Promise<Int> {
-        if isMatchAll(keywords) {
+    
+    private func isMatchAll(_ keywords:String?) -> Bool {
+        guard let keywords = keywords else {
+            return true
+        }
+        return keywords.isEmpty || keywords == "*" || keywords == "**"
+    }
+    
+    private func isScan(_ keywords:String) -> Bool {
+        return keywords.isEmpty || keywords.contains("*") || keywords.contains("?")
+    }
+    
+    private func recursionScanTotal(_ keywords:String?) async throws -> Int {
+        if isMatchAll(keywords ?? "") {
             logger.info("keywords is match all, use dbsize...")
-            return dbsizeAsync()
+            return await dbsize()
         }
         
         let cursor:Int = 0
         let total:Int = 0
         
-        return scanTotal(keywords, cursor: cursor, total: total)
+        return try await scanTotal(keywords, cursor: cursor, total: total)
     }
     
-    func pageKeys(_ page:Page) -> Promise<[RedisKeyModel]> {
-        self.globalContext?.loading = true
+    func pageKeys(_ page:Page) async -> [RedisKeyModel] {
+//        self.globalContext?.loading = true
+        begin()
         
         let stopwatch = Stopwatch.createStarted()
         
         logger.info("redis keys page scan, page: \(page)")
         
-        let isScan = page.keywords.isEmpty || page.keywords.contains("*") || page.keywords.contains("?")
+        let isScan = isScan(page.keywords)
         let match = page.keywords.isEmpty ? nil : page.keywords
         
         let keys:[String] = [String]()
         let cursor:Int = 0
-        let total:Int = page.current * page.size
         
-        let scanPromise = Promise<[RedisKeyModel]> { resolver in
+        defer {
+            self.logger.info("keys scan complete, spend: \(stopwatch.elapsedMillis()) ms")
+            complete()
+        }
+        
+        do {
             if isScan {
-                let _ = self.recursionScan(match, cursor: cursor, maxCount: total, keys: keys).done {res in
-                    
-                    let start = (page.current - 1) * page.size
-                    
-                    if res.keys.count <= start {
-                        resolver.fulfill([])
-                        return
-                    }
-                    
-                    let end = min(start + page.size - 1, res.keys.count)
-                    let pageData:[String] = Array(res.keys[start..<end])
-                    
-                    let _ = self.toRedisKeyModels(pageData).done { r in
-                        resolver.fulfill(r)
-                    }
+                let total = try await recursionScanTotal(match)
+                page.total = total
+                let res = try await self.recursionScan(match, cursor: cursor, maxCount: total, keys: keys)
+                let start = (page.current - 1) * page.size
+                
+                if res.keys.count <= start {
+                    return []
                 }
+                
+                let end = min(start + page.size - 1, res.keys.count)
+                let pageData:[String] = Array(res.keys[start..<end])
+                
+                return await self.toRedisKeyModels(pageData)
             } else {
-                let _ = self.exist(page.keywords).done({ existR in
-                    if existR {
-                        page.total = 1
-                        let _ = self.toRedisKeyModels([page.keywords]).done { r in
-                            resolver.fulfill(r)
-                        }
-                    } else {
-                        page.total = 0
-                        resolver.fulfill([])
-                    }
-                }).catch({error in
-                    resolver.reject(error)
-                })
-                //                let _ = self.get(key: page.keywords).done({v in
-                //                    page.total = 1
-                //                    let _ = self.toRedisKeyModels([v]).done { r in
-                //                        resolver.fulfill(r)
-                //                    }
-                //                }).catch({error in
-                //                    resolver.reject(error)
-                //                })
-            }
-        }
-        
-        
-        let countPromise = isScan ? recursionScanTotal(match) : Promise.value(0)
-        
-        let promise = Promise<[RedisKeyModel]> { resolver in
-            let _ = when(fulfilled: countPromise, scanPromise).done({ r1, r2 in
-                let total = r1
-                
-                if isScan {
-                    page.total = total
+                let exist = await self.exist(page.keywords)
+                if exist {
+                    page.total = 1
+                    return await self.toRedisKeyModels([page.keywords])
+                } else {
+                    page.total = 0
+                    return []
                 }
-                //                page.cursor = cursor
-                
-                self.logger.info("keys scan complete, spend: \(stopwatch.elapsedMillis()) ms")
-                resolver.fulfill(r2)
-            }).catch({ error in
-                resolver.reject(error)
-            })
+            }
+            
+        } catch {
+            self.logger.error("get key type error: \(error)")
+            self.handleError(error)
         }
-        
-        afterPromise(promise)
-        return promise
+
+        return []
+//
+//        let scanPromise = Promise<[RedisKeyModel]> { resolver in
+//            if isScan {
+//                let _ = self.recursionScan(match, cursor: cursor, maxCount: total, keys: keys).done {res in
+//
+//                    let start = (page.current - 1) * page.size
+//
+//                    if res.keys.count <= start {
+//                        resolver.fulfill([])
+//                        return
+//                    }
+//
+//                    let end = min(start + page.size - 1, res.keys.count)
+//                    let pageData:[String] = Array(res.keys[start..<end])
+//
+//                    let _ = self.toRedisKeyModels(pageData).done { r in
+//                        resolver.fulfill(r)
+//                    }
+//                }
+//            } else {
+//                let _ = self.exist(page.keywords).done({ existR in
+//                    if existR {
+//                        page.total = 1
+//                        let _ = self.toRedisKeyModels([page.keywords]).done { r in
+//                            resolver.fulfill(r)
+//                        }
+//                    } else {
+//                        page.total = 0
+//                        resolver.fulfill([])
+//                    }
+//                }).catch({error in
+//                    resolver.reject(error)
+//                })
+//                //                let _ = self.get(key: page.keywords).done({v in
+//                //                    page.total = 1
+//                //                    let _ = self.toRedisKeyModels([v]).done { r in
+//                //                        resolver.fulfill(r)
+//                //                    }
+//                //                }).catch({error in
+//                //                    resolver.reject(error)
+//                //                })
+//            }
+//        }
+//
+//
+//        let countPromise = isScan ? recursionScanTotal(match) : Promise.value(0)
+//
+//        let promise = Promise<[RedisKeyModel]> { resolver in
+//            let _ = when(fulfilled: countPromise, scanPromise).done({ r1, r2 in
+//                let total = r1
+//
+//                if isScan {
+//                    page.total = total
+//                }
+//                //                page.cursor = cursor
+//
+//                self.logger.info("keys scan complete, spend: \(stopwatch.elapsedMillis()) ms")
+//                resolver.fulfill(r2)
+//            }).catch({ error in
+//                resolver.reject(error)
+//            })
+//        }
+//
+//        afterPromise(promise)
+//        return promise
     }
     
-    private func toRedisKeyModels(_ keys:[String]) -> Promise<[RedisKeyModel]> {
+    private func toRedisKeyModels(_ keys:[String]) async -> [RedisKeyModel] {
         if keys.isEmpty {
-            return Promise<[RedisKeyModel]>.value([RedisKeyModel]())
+            return []
         }
         
-        var promises = [Promise<RedisKeyModel>]()
+        var redisKeyModels = [RedisKeyModel]()
         
         for key in keys {
-            promises.append(type(key).then({type in
-                Promise<RedisKeyModel>.value(RedisKeyModel(key, type: type))
-            }))
+            let type = await type(key)
+            redisKeyModels.append(RedisKeyModel(key, type: type))
         }
         
-        return when(resolved: promises).then({ r in
-            Promise<[RedisKeyModel]>.value(r.map({
-                if case .fulfilled(let v) = $0 {
-                    return v
-                } else {
-                    return RedisKeyModel("ERROR", type: RedisKeyTypeEnum.NONE.rawValue)
-                }
-            }))
-        })
+        return redisKeyModels
+//
+//
+//        var promises = [Promise<RedisKeyModel>]()
+//
+//        for key in keys {
+//            promises.append(type(key).then({type in
+//                Promise<RedisKeyModel>.value(RedisKeyModel(key, type: type))
+//            }))
+//        }
+//
+//        return when(resolved: promises).then({ r in
+//            Promise<[RedisKeyModel]>.value(r.map({
+//                if case .fulfilled(let v) = $0 {
+//                    return v
+//                } else {
+//                    return RedisKeyModel("ERROR", type: RedisKeyTypeEnum.NONE.rawValue)
+//                }
+//            }))
+//        })
     }
     
 }
@@ -1497,25 +1559,31 @@ extension RediStackClient {
         return promise
     }
     
-    func dbsizeAsync() -> Promise<Int> {
-        let promise =
-        getConnectionAsync().then({connection in
-            Promise<Int> { resolver in
-                connection.send(command: "dbsize")
-                    .whenComplete{ completion in
-                        if case .success(let res) = completion {
-                            self.logger.info("query redis dbsize success: \(res.int!)")
-                            resolver.fulfill(res.int!)
+    func dbsize() async -> Int {
+        begin()
+        do {
+            let conn = try await getConn()
+            
+            return try await withCheckedThrowingContinuation { continuation in
+                
+                conn.send(command: "dbsize")
+                    .whenComplete({completion in
+                        if case .success(let r) = completion {
+                            let dbsize = r.int ?? 0
+                            self.logger.info("query redis dbsize success: \(dbsize)")
+                            continuation.resume(returning: dbsize)
                         }
                         else if case .failure(let error) = completion {
-                            resolver.reject(error)
+                            self.logger.error("query redis dbsize error: \(error)")
+                            continuation.resume(returning: 0)
                         }
-                    }
+                    })
+                
             }
-        })
-        
-        
-        return promise
+        } catch {
+            self.logger.error("query redis dbsize error: \(error)")
+        }
+        return 0
     }
     
     func flushDB() -> Promise<Bool> {

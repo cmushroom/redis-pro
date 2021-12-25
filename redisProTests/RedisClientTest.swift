@@ -1,17 +1,13 @@
 //
-//  SSHTunnelTests.swift
+//  RedisClientTest.swift
 //  redisProTests
 //
-//  Created by chengpanwang on 2021/8/4.
+//  Created by chengpan on 2021/12/25.
 //
 
 import XCTest
-import NIOSSH
-import NIO
-import RediStack
-@testable import redis_pro
 
-class SSHTunnelTests: XCTestCase {
+class RedisClientTest: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -20,25 +16,13 @@ class SSHTunnelTests: XCTestCase {
     override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
-    
-    func testSSHConnection() -> Void {
-        let redisModel = RedisModel()
-        redisModel.password = ""
-        redisModel.sshHost = "192.168.15.120"
-        redisModel.sshUser = ""
-        redisModel.sshPass = ""
-        
-        let redisInstance = RedisInstanceModel(redisModel: redisModel)
-        do {
-            let _ = try redisInstance.getClient().getSSHConnection().wait()
-        } catch {
-            print("error \(error)")
-        }
-    }
 
     func testExample() throws {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
+        // Any test you write for XCTest can be annotated as throws and async.
+        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
+        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
     }
 
     func testPerformanceExample() throws {

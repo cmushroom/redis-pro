@@ -12,7 +12,6 @@ import Combine
 
 class RedisFavoriteModel:ObservableObject {
     @Published var redisModels: [RedisModel] = [RedisModel](repeating: RedisModel(), count: 1)
-    @Published var nsRedisModels: [NSRedisModel] = [NSRedisModel]()
     var lastRedisModelId:String?
     
     let userDefaults = UserDefaults.standard
@@ -28,20 +27,17 @@ class RedisFavoriteModel:ObservableObject {
     
     func loadAll() -> Void {
         redisModels.removeAll()
-        nsRedisModels.removeAll()
         
         let redisDicts = getAll()
         
         redisDicts.forEach{ (element) in
             let item = RedisModel(dictionary: element)
             redisModels.append(item)
-            nsRedisModels.append(NSRedisModel(item))
         }
         
         if redisModels.count == 0 {
             let item = RedisModel()
             redisModels.append(item)
-            nsRedisModels.append(NSRedisModel(item))
         }
         
 //        self.redisModels.forEach({

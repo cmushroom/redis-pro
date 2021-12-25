@@ -108,12 +108,7 @@ struct RedisKeysListView: View {
             sidebarHeader
             
             RedisKeysTable(datasource: $redisKeyModels, selectRowIndex: $selectedRedisKeyIndex, onChange: {
-                
-//                let select = redisKeyModels[$0]
                 self.selectRedisKeyModel.copyValue(redisKeyModels[$0])
-//                selectRedisKeyModel = select
-//                self.selectRedisKeyModel.key = select.key
-//                logger.info("set redis model \(self.selectRedisKeyModel)")
                 self.showEditor()
             }, onClick: {_ in
                 self.showEditor()

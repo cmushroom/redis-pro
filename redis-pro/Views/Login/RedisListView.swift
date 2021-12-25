@@ -40,7 +40,7 @@ struct RedisListView: View {
     }
     
     var redisTable:some View {
-        RedisListTable(datasource: $redisFavoriteModel.nsRedisModels, selectRowIndex: $selectIndex, onChange: {
+        RedisListTable(datasource: $redisFavoriteModel.redisModels, selectRowIndex: $selectIndex, onChange: {
             logger.info("on table select change \($0)")
             self.selectRedisModel = redisFavoriteModel.redisModels[$0]
         }, doubleAction: self.onConnect)

@@ -25,7 +25,7 @@ class RedisListTableController: NSViewController {
         self.doubleAction()
     }
     
-    @objc dynamic var datasource: [NSRedisModel] = []
+    @objc dynamic var datasource: [RedisModel] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,14 +35,14 @@ class RedisListTableController: NSViewController {
         self.doubleAction = doubleAction
     }
     
-    func setDatasource(_ datasource:[NSRedisModel]) -> Void {
+    func setDatasource(_ datasource:[RedisModel]) -> Void {
         self.datasource = datasource
     }
 }
 
 
 struct RedisListTable: NSViewControllerRepresentable {
-    @Binding var datasource: [NSRedisModel]
+    @Binding var datasource: [RedisModel]
     @Binding var selectRowIndex:Int?
     var onChange: ((Int) -> Void)?
     var doubleAction: () -> Void = {}

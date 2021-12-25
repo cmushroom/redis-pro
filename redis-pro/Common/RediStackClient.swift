@@ -253,6 +253,7 @@ class RediStackClient {
                             var ttl = -1
                             if r == RedisKey.Lifetime.keyDoesNotExist {
                                 continuation.resume(throwing: BizError(message: "Key `\(key)` is not exist!"))
+                                return
                             } else if r == RedisKey.Lifetime.unlimited {
                                // ignore
                             } else {
@@ -268,7 +269,27 @@ class RediStackClient {
         } catch {
             handleError(error)
         }
-        return 0
+        return -1
+    }
+    
+    private func getTypes(_ keys:[String]) async -> [String:String] {
+        return await withTaskGroup(of: (String, String).self) { group in
+            var typeDict = [String:String]()
+            
+            // adding tasks to the group and fetching movies
+            for key in keys {
+                group.addTask {
+                    let type = await self.type(key)
+                    return (key, type)
+                }
+            }
+            
+            for await type in group {
+                typeDict[type.0] = type.1
+            }
+            
+            return typeDict
+        }
     }
     
     private func type(_ key:String) async -> String {
@@ -324,6 +345,12 @@ class RediStackClient {
             self.logger.info("get redis connection, but connection is not available...")
             self.close()
         }
+        
+        
+        if self.redisModel.connectionType == RedisConnectionTypeEnum.SSH.rawValue {
+            return try await getSSHConn()
+        }
+        
         
         return try await withUnsafeThrowingContinuation { continuation in
             self.logger.info("start get new redis connection...")
@@ -518,7 +545,6 @@ extension RediStackClient {
     }
     
     func pageKeys(_ page:Page) async -> [RedisKeyModel] {
-//        self.globalContext?.loading = true
         begin()
         
         let stopwatch = Stopwatch.createStarted()
@@ -537,6 +563,7 @@ extension RediStackClient {
         }
         
         do {
+            // 带有占位符的情况，使用
             if isScan {
                 let total = try await recursionScanTotal(match)
                 page.total = total
@@ -642,9 +669,10 @@ extension RediStackClient {
         
         var redisKeyModels = [RedisKeyModel]()
         
+        let typeDict = await getTypes(keys)
+        
         for key in keys {
-            let type = await type(key)
-            redisKeyModels.append(RedisKeyModel(key, type: type))
+            redisKeyModels.append(RedisKeyModel(key, type: typeDict[key] ?? RedisKeyTypeEnum.NONE.rawValue))
         }
         
         return redisKeyModels
@@ -1733,11 +1761,10 @@ extension RediStackClient {
     
     func ping() async -> Bool {
         begin()
-        let conn = try? await getConn()
-        guard let conn = conn else {
-            return false
-        }
+    
         do {
+            let conn = try await getConn()
+            
             return try await withCheckedThrowingContinuation { continuation in
                 conn.ping().whenComplete({completion in
                     if case .success(let pong) = completion {

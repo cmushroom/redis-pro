@@ -14,9 +14,9 @@
             filePath = "redis-pro/Views/Sidebar/RedisKeysListView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "180"
-            endingLineNumber = "180"
-            landmarkName = "onRedisValueSubmit()"
+            startingLineNumber = "175"
+            endingLineNumber = "175"
+            landmarkName = "showEditor()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

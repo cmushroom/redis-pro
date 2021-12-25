@@ -32,9 +32,9 @@
         "package": "Puppy",
         "repositoryURL": "https://gitee.com/chengpan168_admin/Puppy.git",
         "state": {
-          "branch": "main",
-          "revision": "1c9f96e607022d1ccacb34252ac5205e89d6d3e4",
-          "version": null
+          "branch": null,
+          "revision": "95ce04b0e778b8d7c351876bc98bbf68328dfc9b",
+          "version": "0.3.1"
         }
       },
       {
@@ -44,15 +44,6 @@
           "branch": null,
           "revision": "0c3beee7eb7704e50e81d4a89740101b87d02833",
           "version": "1.2.0"
-        }
-      },
-      {
-        "package": "swift-atomics",
-        "repositoryURL": "https://github.com/apple/swift-atomics",
-        "state": {
-          "branch": null,
-          "revision": "919eb1d83e02121cdb434c7bfc1f0c66ef17febe",
-          "version": "1.0.2"
         }
       },
       {
@@ -68,14 +59,14 @@
         "package": "swift-log",
         "repositoryURL": "https://github.com/apple/swift-log.git",
         "state": {
-          "branch": "main",
-          "revision": "4e75f88c6ab63bf47a8780ac4adfce830e8478a6",
-          "version": null
+          "branch": null,
+          "revision": "5d66f7ba25daf4f94100e7022febf3c75e37a6c7",
+          "version": "1.4.2"
         }
       },
       {
         "package": "swift-metrics",
-        "repositoryURL": "https://gitee.com/mirrors_apple/swift-metrics.git",
+        "repositoryURL": "https://github.com/apple/swift-metrics.git",
         "state": {
           "branch": null,
           "revision": "3edd2f57afc4e68e23c3e4956bc8b65ca6b5b2ff",
@@ -86,9 +77,9 @@
         "package": "swift-nio",
         "repositoryURL": "https://github.com/apple/swift-nio.git",
         "state": {
-          "branch": "main",
+          "branch": null,
           "revision": "213eb6887e526e0dfac526a2eae559a1893ebbac",
-          "version": null
+          "version": "2.36.0"
         }
       },
       {
@@ -98,15 +89,6 @@
           "branch": null,
           "revision": "09778e0388bda898c7592887f2ec84bb81ef21eb",
           "version": "0.3.3"
-        }
-      },
-      {
-        "package": "swift-service-discovery",
-        "repositoryURL": "https://gitee.com/mirrors_apple/swift-service-discovery.git",
-        "state": {
-          "branch": null,
-          "revision": "c83afedb1c95ef0111907cd6e2fd03d7175cc0d0",
-          "version": "1.2.0"
         }
       },
       {

@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "4320AAEF25B6740900A8E214"
-               BuildableName = "redis_pro.app"
+               BuildableName = "redis-pro.app"
                BlueprintName = "redis-pro"
                ReferencedContainer = "container:redis-pro.xcodeproj">
             </BuildableReference>
@@ -80,7 +80,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "4320AAEF25B6740900A8E214"
-            BuildableName = "redis_pro.app"
+            BuildableName = "redis-pro.app"
             BlueprintName = "redis-pro"
             ReferencedContainer = "container:redis-pro.xcodeproj">
          </BuildableReference>
@@ -97,7 +97,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "4320AAEF25B6740900A8E214"
-            BuildableName = "redis_pro.app"
+            BuildableName = "redis-pro.app"
             BlueprintName = "redis-pro"
             ReferencedContainer = "container:redis-pro.xcodeproj">
          </BuildableReference>

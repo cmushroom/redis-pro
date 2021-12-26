@@ -154,62 +154,65 @@ class RediStackClient {
         return Cons.EMPTY_STRING
     }
     
-    func del(key:String) -> Promise<Int> {
+    func del(_ key:String) async -> Int {
         self.logger.info("delete key \(key)")
-        self.globalContext?.loading = true
-        let promise = getConnectionAsync().then({connection in
-            Promise<Int>{resolver in
-                connection.delete(RedisKey(key)).whenComplete({completion in
-                    if case .success(let r) = completion {
-                        self.logger.info("delete redis key \(key) complete, r: \(r)")
-                        resolver.fulfill(r)
-                    }
-                    else if case .failure(let error) = completion {
-                        self.logger.error("redis get string error \(error)")
-                        resolver.reject(error)
-                    }
-                })
+        begin()
+ 
+        do {
+            let conn = try await getConn()
+            
+            return try await withCheckedThrowingContinuation { continuation in
+                
+                conn.delete(RedisKey(key))
+                    .whenComplete({completion in
+                        if case .success(let r) = completion {
+                            self.logger.info("delete redis key \(key) complete, r: \(r)")
+                            continuation.resume(returning: r)
+                        }
+                        
+                        self.complete(completion, continuation: continuation)
+                    })
+                
             }
-        })
-        
-        afterPromise(promise)
-        return promise
+        } catch {
+            handleError(error)
+        }
+        return 0
     }
     
-    func expire(_ key:String, seconds:Int) -> Promise<Bool> {
+    func expire(_ key:String, seconds:Int) async -> Bool {
         logger.info("set key expire key:\(key), seconds:\(seconds)")
-        self.globalContext?.loading = true
-        
-        let promise = getConnectionAsync().then({connection in
-            Promise<Bool>{resolver in
+        begin()
+ 
+        do {
+            let conn = try await getConn()
+            
+            return try await withCheckedThrowingContinuation { continuation in
+                
                 if seconds < 0 {
-                    connection.send(command: "PERSIST", with: [RESPValue(from: key)]).whenComplete({completion in
+                    conn.send(command: "PERSIST", with: [RESPValue(from: key)]).whenComplete({completion in
                         if case .success(let r) = completion {
                             self.logger.info("clear key expire time \(key) complete, r: \(r)")
-                            resolver.fulfill(true)
+                            continuation.resume(returning: true)
                         }
-                        else if case .failure(let error) = completion {
-                            self.logger.error("clear key expire time error \(error)")
-                            resolver.reject(error)
-                        }
+                        self.complete(completion, continuation: continuation)
                     })
                 } else {
-                    connection.expire(RedisKey(key), after: TimeAmount.seconds(Int64(seconds))).whenComplete({completion in
+                    conn.expire(RedisKey(key), after: TimeAmount.seconds(Int64(seconds))).whenComplete({completion in
                         if case .success(let r) = completion {
                             self.logger.info("set key expire time \(key) complete, r: \(r)")
-                            resolver.fulfill(true)
+                            continuation.resume(returning: true)
                         }
-                        else if case .failure(let error) = completion {
-                            self.logger.error("set key expire time error \(error)")
-                            resolver.reject(error)
-                        }
+                        
+                        self.complete(completion, continuation: continuation)
                     })
                 }
+                
             }
-        })
-        
-        afterPromise(promise)
-        return promise
+        } catch {
+            handleError(error)
+        }
+        return false
     }
     
     private func exist(_ key:String) async -> Bool {
@@ -316,26 +319,30 @@ class RediStackClient {
         return RedisKeyTypeEnum.NONE.rawValue
     }
     
-    func rename(_ oldKey:String, newKey:String) -> Promise<Bool> {
+    func rename(_ oldKey:String, newKey:String) async -> Bool {
         logger.info("rename key, old key:\(oldKey), new key: \(newKey)")
-        self.globalContext?.loading = true
-        
-        let promise = getConnectionAsync().then({connection in
-            Promise<Bool> {resolver in
-                connection.send(command: "RENAME", with: [RESPValue(from: oldKey), RESPValue(from: newKey)]).whenComplete({completion in
-                    if case .success(let r) = completion {
-                        resolver.fulfill(r.string == "OK")
-                    }
-                    else if case .failure(let error) = completion {
-                        self.logger.error("redis keys scan error \(error)")
-                        resolver.reject(error)
-                    }
-                })
+        begin()
+ 
+        do {
+            let conn = try await getConn()
+            
+            return try await withCheckedThrowingContinuation { continuation in
+                
+                conn.send(command: "RENAME", with: [RESPValue(from: oldKey), RESPValue(from: newKey)])
+                    .whenComplete({completion in
+                        if case .success(let r) = completion {
+                            self.logger.info("rename redis key, old key \(oldKey), new key: \(newKey) complete, r: \(r)")
+                            continuation.resume(returning: r.string == "OK")
+                        }
+                        
+                        self.complete(completion, continuation: continuation)
+                    })
+                
             }
-        })
-        
-        afterPromise(promise)
-        return promise
+        } catch {
+            handleError(error)
+        }
+        return false
     }
     
     func getConn() async throws -> RedisConnection {
@@ -432,10 +439,6 @@ class RediStackClient {
                 resolver.reject(error)
             }
         }
-    }
-    
-    func getConnection() -> RedisConnection{
-        return self.connection!
     }
     
     func close() -> Void {
@@ -747,50 +750,57 @@ extension RediStackClient {
         return promise
     }
     
-    func hset(_ key:String, field:String, value:String) -> Promise<Bool> {
+    func hset(_ key:String, field:String, value:String) async -> Bool {
         logger.info("redis hash hset key:\(key), field:\(field), value:\(value)")
-        self.globalContext?.loading = true
-        
-        let promise = getConnectionAsync().then({connection in
-            Promise<Bool> {resolver in
-                connection.hset(field, to: value, in: RedisKey(key))
+        begin()
+ 
+        do {
+            let conn = try await getConn()
+            
+            return try await withCheckedThrowingContinuation { continuation in
+                
+                conn.hset(field, to: value, in: RedisKey(key))
                     .whenComplete({completion in
                         if case .success(let r) = completion {
-                            resolver.fulfill(r)
+                            self.logger.info("hset success, key:\(key), field:\(field), value:\(value)")
+                            continuation.resume(returning: r)
                         }
-                        else if case .failure(let error) = completion {
-                            self.logger.error("redis hash set error \(error)")
-                            resolver.reject(error)
-                        }
+                        
+                        self.complete(completion, continuation: continuation)
                     })
+                
             }
-        })
-        
-        afterPromise(promise)
-        return promise
+        } catch {
+            handleError(error)
+        }
+        return false
     }
     
-    func hdel(_ key:String, field:String) -> Promise<Int> {
+    func hdel(_ key:String, field:String) async -> Int {
         logger.info("redis hash hdel key:\(key), field:\(field)")
-        self.globalContext?.loading = true
-        
-        let promise = getConnectionAsync().then({connection in
-            Promise<Int> {resolver in
-                connection.hdel(field, from: RedisKey(key))
+        begin()
+ 
+        do {
+            let conn = try await getConn()
+            
+            return try await withCheckedThrowingContinuation { continuation in
+                
+                conn.hdel(field, from: RedisKey(key))
                     .whenComplete({completion in
                         if case .success(let r) = completion {
-                            resolver.fulfill(r)
+                            self.logger.info("hdel success, key:\(key), field:\(field)")
+                            continuation.resume(returning: r)
                         }
-                        else if case .failure(let error) = completion {
-                            self.logger.error("redis hash del error \(error)")
-                            resolver.reject(error)
-                        }
+                        
+                        self.complete(completion, continuation: continuation)
                     })
+                
             }
-        })
+        } catch {
+            handleError(error)
+        }
+        return 0
         
-        afterPromise(promise)
-        return promise
     }
     
     // 递归取出包含分页的数据
@@ -882,26 +892,30 @@ extension RediStackClient {
         })
     }
     
-    func hget(_ key:String, field:String) -> Promise<String> {
+    func hget(_ key:String, field:String) async -> String {
         logger.info("get hash field value, key:\(key), field: \(field)")
-        self.globalContext?.loading = true
-        let promise = getConnectionAsync().then({connection in
-            Promise<String> {resolver in
-                connection.hget(field, from: RedisKey(key)).whenComplete({completion in
-                    if case .success(let r) = completion {
-                        self.logger.info("hget value key: \(key), field: \(field) complete, r: \(r)")
-                        resolver.fulfill(r.string!)
-                    }
-                    else if case .failure(let error) = completion {
-                        self.logger.error("redis hash get field error, key: \(key), field: \(field), error: \(error)")
-                        resolver.reject(error)
-                    }
-                })
+        begin()
+ 
+        do {
+            let conn = try await getConn()
+            
+            return try await withCheckedThrowingContinuation { continuation in
+                
+                conn.hget(field, from: RedisKey(key))
+                    .whenComplete({completion in
+                        if case .success(let r) = completion {
+                            self.logger.info("hget value key: \(key), field: \(field) complete, r: \(r)")
+                            continuation.resume(returning: r.string!)
+                        }
+                        
+                        self.complete(completion, continuation: continuation)
+                    })
+                
             }
-        })
-        
-        afterPromise(promise)
-        return promise
+        } catch {
+            handleError(error)
+        }
+        return Cons.EMPTY_STRING
     }
 }
 
@@ -1037,44 +1051,56 @@ extension RediStackClient {
         return promise
     }
     
-    func zupdate(_ key:String, from:String, to:String, score:Double) throws -> Promise<Bool> {
+    func zupdate(_ key:String, from:String, to:String, score:Double) async -> Bool {
         logger.info("update zset element key: \(key), from:\(from), to:\(to), score:\(score)")
-        self.globalContext?.loading = true
-        
-        let promise = zremInner(key, ele: from).then({ _ in
-            self.zadd(key, score: score, ele: to)
-        })
-        
-        afterPromise(promise)
-        
-        return promise
-    }
-    
-    func zadd(_ key:String, score:Double, ele:String) -> Promise<Bool> {
-        self.globalContext?.loading = true
-        
-        let promise = zaddInner(key, score: score, ele: ele)
-        
-        afterPromise(promise)
-        
-        return promise
-    }
-    
-    private func zaddInner(_ key:String, score:Double, ele:String) -> Promise<Bool> {
-        return getConnectionAsync().then({ connection in
-            Promise<Bool> { resolver in
-                connection.zadd((element: ele, score: score), to: RedisKey(key))
-                    .whenComplete({ completion in
-                        if case .success(let r) = completion {
-                            resolver.fulfill(r)
-                        }
-                        else if case .failure(let error) = completion {
-                            self.logger.error("redis zset zadd key:\(key) error: \(error)")
-                            resolver.reject(error)
-                        }
-                    })
+        begin()
+        defer {
+            complete()
+        }
+ 
+        do {
+            let r = await zremInner(key, ele: from)
+            if r > 0 {
+                return try await zaddInner(key, score: score, ele: to)
             }
-        })
+            
+        } catch {
+            handleError(error)
+        }
+        return false
+    }
+    
+    func zadd(_ key:String, score:Double, ele:String) async -> Bool {
+        begin()
+        defer {
+            complete()
+        }
+        do {
+            return try await zaddInner(key, score: score, ele: ele)
+        } catch {
+            handleError(error)
+        }
+        
+        return false
+    }
+    
+    private func zaddInner(_ key:String, score:Double, ele:String) async throws -> Bool {
+        let conn = try await getConn()
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            
+            conn.zadd((element: ele, score: score), to: RedisKey(key))
+                .whenComplete({completion in
+                    if case .success(let r) = completion {
+                        continuation.resume(returning: r)
+                    }
+                    else if case .failure(let error) = completion {
+                        self.logger.error("redis zset zadd key:\(key) error: \(error)")
+                        continuation.resume(throwing: error)
+                    }
+                })
+            
+        }
     }
     
     
@@ -1095,31 +1121,36 @@ extension RediStackClient {
         })
     }
     
-    func zrem(_ key:String, ele:String) -> Promise<Int> {
-        self.globalContext?.loading = true
+    func zrem(_ key:String, ele:String) async -> Int {
+        begin()
         
-        let promise = zremInner(key, ele: ele)
+        defer {
+            complete()
+        }
+        return await zremInner(key, ele: ele)
         
-        afterPromise(promise)
-        
-        return promise
     }
     
-    private func zremInner(_ key:String, ele:String) -> Promise<Int> {
-        return getConnectionAsync().then({ connection in
-            Promise<Int> { resolver in
-                connection.zrem(ele, from: RedisKey(key))
-                    .whenComplete({ completion in
+    private func zremInner(_ key:String, ele:String) async -> Int {
+        do {
+            let conn = try await getConn()
+            
+            return try await withCheckedThrowingContinuation { continuation in
+                
+                conn.zrem(ele, from: RedisKey(key))
+                    .whenComplete({completion in
                         if case .success(let r) = completion {
-                            resolver.fulfill(r)
+                            continuation.resume(returning: r)
                         }
-                        else if case .failure(let error) = completion {
-                            self.logger.error("redis zset zrem key:\(key), ele:\(ele), error: \(error)")
-                            resolver.reject(error)
-                        }
+                        
+                        self.complete(completion, continuation: continuation)
                     })
+                
             }
-        })
+        } catch {
+            handleError(error)
+        }
+        return 0
     }
 }
 

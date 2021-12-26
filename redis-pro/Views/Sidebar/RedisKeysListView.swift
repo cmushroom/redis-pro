@@ -198,11 +198,12 @@ struct RedisKeysListView: View {
     
     func onRenameAction() throws -> Void {
         let renameKeyModel = redisKeyModels[oldKeyIndex!]
-        let _ = redisInstanceModel.getClient().rename(renameKeyModel.key, newKey: newKeyName).done({r in
+        Task {
+            let r = await redisInstanceModel.getClient().rename(renameKeyModel.key, newKey: newKeyName)
             if r {
                 renameKeyModel.key = newKeyName
             }
-        })
+        }
     }
     
     func onDeleteAction() -> Void {
@@ -226,10 +227,11 @@ struct RedisKeysListView: View {
         }
         
         let redisKeyModel = self.redisKeyModels[index]
-        let _ = redisInstanceModel.getClient().del(key: redisKeyModel.key).done({r in
+        Task {
+            let r = await redisInstanceModel.getClient().del(redisKeyModel.key)
             self.logger.info("on delete redis key: \(index), r:\(r)")
             self.redisKeyModels.remove(at: index)
-        })
+        }
     }
     
     func onRefreshAction() -> Void {

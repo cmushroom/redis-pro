@@ -146,7 +146,9 @@ struct ListEditorView: View {
     
     func onSubmitAction() -> Void {
         logger.info("redis hash value editor on submit")
-        let _ = redisInstanceModel.getClient().expire(redisKeyModel.key, seconds: redisKeyModel.ttl)
+        Task {
+            let _ = await redisInstanceModel.getClient().expire(redisKeyModel.key, seconds: redisKeyModel.ttl)
+        }
     }
     
     func onRefreshAction() -> Void {

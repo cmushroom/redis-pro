@@ -114,8 +114,13 @@ struct HashEditorView: View {
     }
     
     func onSaveFieldAction() throws -> Void {
-        let _ = redisInstanceModel.getClient().hset(redisKeyModel.key, field: editField, value: editValue).done({ _ in
+        Task {
+            let r = await redisInstanceModel.getClient().hset(redisKeyModel.key, field: editField, value: editValue)
             logger.info("redis hset success, update field list")
+            if !r {
+                return
+            }
+            
             self.onSubmit?()
             
             if editIndex == -1 {
@@ -124,9 +129,7 @@ struct HashEditorView: View {
                 (self.datasource[editIndex] as! RedisHashEntryModel).value = editValue
                 self.refresh += 1
             }
-            
-            
-        })
+        }
     }
     
     
@@ -137,7 +140,9 @@ struct HashEditorView: View {
     
     func onSubmitAction() throws -> Void {
         logger.info("redis hash value editor on submit")
-        let _ = redisInstanceModel.getClient().expire(redisKeyModel.key, seconds: redisKeyModel.ttl)
+        Task {
+            let _ = await redisInstanceModel.getClient().expire(redisKeyModel.key, seconds: redisKeyModel.ttl)
+        }
     }
     
     func onRefreshAction() throws -> Void {
@@ -185,9 +190,12 @@ struct HashEditorView: View {
         let entry:RedisHashEntryModel = self.datasource[index] as! RedisHashEntryModel
         let field = entry.field
         MAlert.confirm(String(format: Helps.DELETE_HASH_FIELD_CONFIRM_TITLE, field), message: String(format:Helps.DELETE_HASH_FIELD_CONFIRM_MESSAGE, field), primaryButton: "Delete", primaryAction: {
-            let _ = deleteField(field).done({_ in
-                self.datasource.remove(at: index)
-            })
+            Task {
+                let r = await deleteField(field)
+                if r > 0 {
+                    self.datasource.remove(at: index)
+                }
+            }
         })
     }
     
@@ -195,9 +203,9 @@ struct HashEditorView: View {
         onDeleteIndexAction(selectIndex)
     }
     
-    func deleteField(_ field:String) -> Promise<Int> {
+    func deleteField(_ field:String) async -> Int {
         logger.info("delete hash field: \(field)")
-        return redisInstanceModel.getClient().hdel(redisKeyModel.key, field: field)
+        return await redisInstanceModel.getClient().hdel(redisKeyModel.key, field: field)
     }
 }
 

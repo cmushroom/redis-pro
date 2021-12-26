@@ -172,12 +172,15 @@ struct HashEditorView: View {
     }
     
     func queryHashPage(_ redisKeyModel:RedisKeyModel) -> Void {
+        if redisKeyModel.isNew {
+            return
+        }
         
-        let _ = redisInstanceModel.getClient().pageHash(redisKeyModel, page: page).done({res in
+        Task {
+            let res = await redisInstanceModel.getClient().pageHash(redisKeyModel.key, page: page)
             self.datasource = res
             self.selectIndex = res.count > 0 ? 0 : -1
-            
-        })
+        }
     }
     
     func ttl() async -> Void {

@@ -153,14 +153,14 @@ struct ZSetEditorView: View {
     }
     
     func queryPage(_ redisKeyModel:RedisKeyModel) -> Void {
-        
-        if redisKeyModel.key.isEmpty {
+        if redisKeyModel.isNew {
             return
         }
-        let _ = redisInstanceModel.getClient().pageZSet(redisKeyModel, page: page).done({ res in
+        Task {
+            let res = await redisInstanceModel.getClient().pageZSet(redisKeyModel.key, page: page)
             self.datasource = res
             self.selectIndex = res.count > 0 ? 0 : nil
-        })
+        }
     }
     
     func ttl(_ redisKeyModel:RedisKeyModel) async -> Void {

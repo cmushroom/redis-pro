@@ -9,7 +9,7 @@ import SwiftUI
 
 struct RedisKeyRowView: View {
     var index:Int = 0
-    @ObservedObject var redisKeyModel:RedisKeyModel
+    @State var redisKeyModel:RedisKeyModel
     
     var body: some View {
         VStack(spacing: 0){
@@ -37,6 +37,6 @@ struct RedisKeyRowView: View {
 
 struct RedisKeyRow_Previews: PreviewProvider {
     static var previews: some View {
-        RedisKeyRowView(redisKeyModel: RedisKeyModel(key: UUID().uuidString, type: RedisKeyTypeEnum.STRING.rawValue))
+        RedisKeyRowView(redisKeyModel: RedisKeyModel(UUID().uuidString, type: RedisKeyTypeEnum.STRING.rawValue))
     }
 }

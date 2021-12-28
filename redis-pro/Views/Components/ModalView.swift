@@ -46,12 +46,12 @@ struct ModalView<Content: View>: View {
         .padding(0)
     }
     
-    func doAction() throws -> Void {
+    func doAction() -> Void {
         presentation.wrappedValue.dismiss()
-        try action()
+        try? action()
     }
     
-    func onCancel() throws -> Void{
+    func onCancel() -> Void{
         presentation.wrappedValue.dismiss()
     }
 }

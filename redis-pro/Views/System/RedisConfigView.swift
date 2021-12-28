@@ -24,7 +24,7 @@ struct RedisConfigView: View {
     
     private var header: some View {
         HStack(alignment: .center , spacing: MTheme.H_SPACING) {
-            SearchBar(keywords: $pattern, action: {
+            SearchBar(keywords: $pattern, onCommit: {
                 self.onLoad()
             }).frame(width: 500)
             Spacer()

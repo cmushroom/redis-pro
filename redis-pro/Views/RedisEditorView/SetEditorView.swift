@@ -9,11 +9,13 @@ import SwiftUI
 import Logging
 
 struct SetEditorView: View {
-    @State var list:[String] = [String]()
+    var onSubmit: (() -> Void)?
+    
+    @State private var list:[String] = [String]()
     @State private var selectIndex:Int?
     
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
-    @ObservedObject var redisKeyModel:RedisKeyModel
+    @EnvironmentObject var redisKeyModel:RedisKeyModel
     @StateObject private var page:Page = Page()
     
     @State private var editModalVisible:Bool = false
@@ -34,7 +36,7 @@ struct SetEditorView: View {
                 IconButton(icon: "plus", name: "Add", action: onAddAction)
                 IconButton(icon: "trash", name: "Delete", disabled:delButtonDisabled,
                            action: onDeleteAction)
-                SearchBar(keywords: $page.keywords, placeholder: "Search set...", action: onQueryField)
+                SearchBar(keywords: $page.keywords, placeholder: "Search set...", onCommit: onQueryField)
                 Spacer()
                 PageBar(page:page, action: onPageAction)
             }
@@ -91,19 +93,22 @@ struct SetEditorView: View {
     }
     
     func onUpdateItemAction() throws -> Void {
-        if editIndex == -1 {
-            let _ = redisInstanceModel.getClient().sadd(redisKeyModel.key, ele: editValue).done({_ in
-                try onRefreshAction()
-            })
-        } else {
-            let _ = redisInstanceModel.getClient().supdate(redisKeyModel.key, from: list[editIndex], to: editValue ).done({ _ in
-                self.logger.info("redis set update success, update list")
-                self.list[editIndex] = editValue
-            })
-        }
-        
-        if self.redisKeyModel.isNew {
-            redisKeyModel.isNew = false
+        let fromValue = self.list[self.editIndex]
+        Task {
+            if editIndex == -1 {
+                let r = await redisInstanceModel.getClient().sadd(redisKeyModel.key, ele: editValue)
+                if r > 0 {
+                    self.onSubmit?()
+                    try onRefreshAction()
+                }
+                
+            } else {
+                let r = await redisInstanceModel.getClient().supdate(redisKeyModel.key, from: fromValue, to: editValue )
+                if r > 0 {
+                    self.logger.info("redis set update success, update list")
+                    self.list[editIndex] = editValue
+                }
+            }
         }
     }
     
@@ -111,16 +116,20 @@ struct SetEditorView: View {
     
     func onSubmitAction() throws -> Void {
         logger.info("redis hash value editor on submit")
-        let _ = redisInstanceModel.getClient().expire(redisKeyModel.key, seconds: redisKeyModel.ttl)
+        Task {
+            let _ = await redisInstanceModel.getClient().expire(redisKeyModel.key, seconds: redisKeyModel.ttl)
+        }
     }
     
     func onRefreshAction() throws -> Void {
         page.reset()
         queryPage(redisKeyModel)
-        ttl(redisKeyModel)
+        Task {
+            await ttl(redisKeyModel)
+        }
     }
     
-    func onQueryField() throws -> Void {
+    func onQueryField() -> Void {
         page.reset()
         queryPage(redisKeyModel)
     }
@@ -130,20 +139,30 @@ struct SetEditorView: View {
     }
     
     func onLoad(_ redisKeyModel:RedisKeyModel) -> Void {
+        
+        if  redisKeyModel.type != RedisKeyTypeEnum.SET.rawValue {
+            return
+        }
+    
         queryPage(redisKeyModel)
     }
     
     func queryPage(_ redisKeyModel:RedisKeyModel) -> Void {
-        let _ = redisInstanceModel.getClient().pageSet(redisKeyModel, page: page).done({res in
+        
+        if redisKeyModel.isNew {
+            return
+        }
+        
+        Task {
+            let res = await redisInstanceModel.getClient().pageSet(redisKeyModel.key, page: page)
             list = res.map{ $0 ?? ""}
             self.selectIndex = res.count > 0 ? 0 : nil
-        })
+        }
     }
     
-    func ttl(_ redisKeyModel:RedisKeyModel) -> Void {
-        let _ = redisInstanceModel.getClient().ttl(key: redisKeyModel.key).done({r in
-            redisKeyModel.ttl = r
-        })
+    func ttl(_ redisKeyModel:RedisKeyModel) async -> Void {
+        let r = await redisInstanceModel.getClient().ttl(redisKeyModel.key)
+        self.redisKeyModel.ttl = r
     }
     
     
@@ -163,17 +182,18 @@ struct SetEditorView: View {
     func deleteEle(_ index:Int) -> Void {
         logger.info("delete set item, index: \(index)")
         let ele = list[index]
-        let _ = redisInstanceModel.getClient().srem(redisKeyModel.key, ele: ele).done({r in
-            if r > 0 {
-                self.list.remove(at: index)
-            }
-        })
+        Task {
+        let r = await redisInstanceModel.getClient().srem(redisKeyModel.key, ele: ele)
+        if r > 0 {
+            self.list.remove(at: index)
+        }
+        }
     }
 }
 
-struct SetEditorView_Previews: PreviewProvider {
-    static var redisKeyModel:RedisKeyModel = RedisKeyModel(key: "tes", type: "string")
-    static var previews: some View {
-        SetEditorView(redisKeyModel: redisKeyModel)
-    }
-}
+//struct SetEditorView_Previews: PreviewProvider {
+//    static var redisKeyModel:RedisKeyModel = RedisKeyModel(key: "tes", type: "string")
+//    static var previews: some View {
+//        SetEditorView(redisKeyModel: redisKeyModel)
+//    }
+//}

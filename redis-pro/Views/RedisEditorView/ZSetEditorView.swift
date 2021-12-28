@@ -9,11 +9,12 @@ import SwiftUI
 import Logging
 
 struct ZSetEditorView: View {
+    var onSubmit: (() -> Void)?
     @State private var datasource:[RedisZSetItemModel] = [RedisZSetItemModel]()
     @State private var selectIndex:Int?
     @State private var refresh:Int = 0
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
-    @ObservedObject var redisKeyModel:RedisKeyModel
+    @EnvironmentObject var redisKeyModel:RedisKeyModel
     @StateObject private var page:Page = Page()
     
     @State private var editModalVisible:Bool = false
@@ -34,7 +35,7 @@ struct ZSetEditorView: View {
                 IconButton(icon: "plus", name: "Add", action: onAddAction)
                 IconButton(icon: "trash", name: "Delete", disabled:delButtonDisabled,
                            action: onDeleteAction)
-                SearchBar(keywords: $page.keywords, placeholder: "Search set...", action: onQueryField)
+                SearchBar(keywords: $page.keywords, placeholder: "Search set...", onCommit: onQueryField)
                 Spacer()
                 PageBar(page:page, action: onPageAction)
             }
@@ -42,11 +43,11 @@ struct ZSetEditorView: View {
             
             ZSetTable(datasource: $datasource, selectRowIndex: $selectIndex, refresh: refresh
                       , deleteAction: { index in
-                        onDeleteConfirmAction(index)
-                      }
+                onDeleteConfirmAction(index)
+            }
                       , editAction: { index in
-                        onEditAction(index)
-                      })
+                onEditAction(index)
+            })
             
             // footer
             HStack(alignment: .center, spacing: 4) {
@@ -97,37 +98,41 @@ struct ZSetEditorView: View {
     
     func onUpdateItemAction() throws -> Void {
         let score:Double = Double(editScore) ?? 0
-        if editIndex == -1 {
-            let _ = redisInstanceModel.getClient().zadd(redisKeyModel.key, score: score, ele: editValue).done({ _ in
-                self.datasource.insert(RedisZSetItemModel(value: editValue, score: editScore), at: 0)
-            })
-        } else {
-            let editEle = datasource[editIndex]
-            let _ = try redisInstanceModel.getClient().zupdate(redisKeyModel.key, from: editEle.value, to: editValue, score: score ).done({_ in
-                self.logger.info("redis zset update success, update list")
-                
-                self.datasource[editIndex].value = editValue
-                self.datasource[editIndex].score = editScore
-                self.refresh += 1
-                
-            })
-        }
-        
-        if self.redisKeyModel.isNew {
-            redisKeyModel.isNew = false
+        Task {
+            if editIndex == -1 {
+                let r = await redisInstanceModel.getClient().zadd(redisKeyModel.key, score: score, ele: editValue)
+                if r {
+                    self.onSubmit?()
+                    self.datasource.insert(RedisZSetItemModel(value: editValue, score: editScore), at: 0)
+                }
+            } else {
+                let editEle = datasource[editIndex]
+                let r = await redisInstanceModel.getClient().zupdate(redisKeyModel.key, from: editEle.value, to: editValue, score: score )
+                if r {
+                    self.logger.info("redis zset update success, update list")
+                    
+                    self.datasource[editIndex].value = editValue
+                    self.datasource[editIndex].score = editScore
+                    self.refresh += 1
+                }
+            }
         }
     }
-
+    
     
     func onSubmitAction() throws -> Void {
         logger.info("redis hash value editor on submit")
-        let _ = redisInstanceModel.getClient().expire(redisKeyModel.key, seconds: redisKeyModel.ttl)
+        Task {
+            let _ = await redisInstanceModel.getClient().expire(redisKeyModel.key, seconds: redisKeyModel.ttl)
+        }
     }
     
     func onRefreshAction() throws -> Void {
         page.reset()
         queryPage(redisKeyModel)
-        try ttl(redisKeyModel)
+        Task {
+            await ttl(redisKeyModel)
+        }
     }
     
     func onQueryField() -> Void {
@@ -140,20 +145,28 @@ struct ZSetEditorView: View {
     }
     
     func onLoad(_ redisKeyModel:RedisKeyModel) -> Void {
+        
+        if redisKeyModel.isNew || redisKeyModel.type != RedisKeyTypeEnum.ZSET.rawValue {
+            return
+        }
         queryPage(redisKeyModel)
     }
     
     func queryPage(_ redisKeyModel:RedisKeyModel) -> Void {
-        let _ = redisInstanceModel.getClient().pageZSet(redisKeyModel, page: page).done({ res in
+        if redisKeyModel.isNew {
+            return
+        }
+        Task {
+            let res = await redisInstanceModel.getClient().pageZSet(redisKeyModel.key, page: page)
             self.datasource = res
             self.selectIndex = res.count > 0 ? 0 : nil
-        })
+        }
     }
     
-    func ttl(_ redisKeyModel:RedisKeyModel) throws -> Void {
-        let _ = redisInstanceModel.getClient().ttl(key: redisKeyModel.key).done({r in
-            redisKeyModel.ttl = r
-        })
+    func ttl(_ redisKeyModel:RedisKeyModel) async -> Void {
+        
+        let r = await redisInstanceModel.getClient().ttl(redisKeyModel.key)
+        self.redisKeyModel.ttl = r
     }
     
     // delete
@@ -167,25 +180,25 @@ struct ZSetEditorView: View {
         
         MAlert.confirm(String(format: Helps.DELETE_LIST_ITEM_CONFIRM_TITLE, text), message: String(format:Helps.DELETE_LIST_ITEM_CONFIRM_MESSAGE, text), primaryButton: "Delete", primaryAction: {
             deleteEle(index)
-          })
+        })
         
     }
     
     func deleteEle(_ index:Int) -> Void {
         logger.info("delete set item, index: \(index)")
         let ele = self.datasource[index]
-        
-        let _ = redisInstanceModel.getClient().zrem(redisKeyModel.key, ele: ele.value).done({ r in
+        Task {
+            let r = await redisInstanceModel.getClient().zrem(redisKeyModel.key, ele: ele.value)
             if r > 0 {
                 datasource.remove(at: index)
             }
-        })
+        }
     }
 }
 
-struct ZSetEditorView_Previews: PreviewProvider {
-    static var redisKeyModel:RedisKeyModel = RedisKeyModel(key: "tes", type: "string")
-    static var previews: some View {
-        ZSetEditorView(redisKeyModel: redisKeyModel)
-    }
-}
+//struct ZSetEditorView_Previews: PreviewProvider {
+//    static var redisKeyModel:RedisKeyModel = RedisKeyModel(key: "tes", type: "string")
+//    static var previews: some View {
+//        ZSetEditorView(redisKeyModel: redisKeyModel)
+//    }
+//}

@@ -15,7 +15,7 @@ struct SearchBar: View {
     @State var showFuzzy: Bool = false
     var placeholder:String = "Search..."
     
-    var action: () throws -> Void = {}
+    var onCommit: (() -> Void)?
     
     let logger = Logger(label: "search-bar")
     
@@ -23,8 +23,9 @@ struct SearchBar: View {
         
         HStack {
             // Search text field
-            MTextField(value: $keywords, placeholder: placeholder, suffix: "magnifyingglass", onCommit: doAction)
-                .help(Helps.SEARCH_PATTERN)
+//            MTextField(value: $keywords, placeholder: placeholder, suffix: "magnifyingglass", onCommit: doAction)
+//                .help(Helps.SEARCH_PATTERN)
+            NSearchField(value: $keywords, placeholder: placeholder, onCommit: doAction)
             
             if showFuzzy {
                 Toggle("Fuzzy", isOn: $fuzzy)
@@ -32,9 +33,9 @@ struct SearchBar: View {
         }
     }
     
-    func doAction() throws -> Void {
+    func doAction() -> Void {
         logger.info("on search bar action, keywords: \(keywords)")
-        try action()
+        onCommit?()
     }
 }
 

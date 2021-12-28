@@ -1,6 +1,6 @@
 {
-    "latestVersionNum": 7,
-    "latestVersion": "1.4.0",
+    "latestVersionNum": 8,
+    "latestVersion": "1.4.1",
     "updateType": "hint",
-    "releaseNotes": "1. 增加SSH Tunnel Login功能, 目前支持SSH账号密码登录 \n2. 分页逻辑重写，提供key列表, list, set精确分页， hash 游标分页。"
+    "releaseNotes": "1. 优化scan, 没有通配符时不进行scan搜索。感谢@ydq \n2. 使用swift concurrency 重写部分功能。"
 }

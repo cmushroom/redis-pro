@@ -65,13 +65,12 @@ struct RedisInfoTable: NSViewControllerRepresentable {
         
         init(_ table: RedisInfoTable) {
             self.table = table
-        
         }
         
         func tableViewSelectionIsChanging(_ notification: Notification) {
             guard let tableView = notification.object as? NSTableView else {return}
             guard self.table.datasource.count > 0 else {return}
-            
+
             self.table.selectRowIndex = tableView.selectedRow == -1 ? nil : tableView.selectedRow
 
         }

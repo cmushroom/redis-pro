@@ -6,26 +6,26 @@
         "repositoryURL": "https://gitee.com/chengpan168_admin/appcenter-sdk-apple.git",
         "state": {
           "branch": null,
-          "revision": "013bffe628b49433d7bc334146a4ed8c507c0e32",
-          "version": "4.1.1"
+          "revision": "25f64229373de97ff3920941cd52203193e5d8be",
+          "version": "4.3.0"
         }
       },
       {
         "package": "PLCrashReporter",
-        "repositoryURL": "https://gitee.com/chengpan168_admin/plcrashreporter.git",
+        "repositoryURL": "https://github.com/microsoft/PLCrashReporter.git",
         "state": {
           "branch": null,
-          "revision": "de6b8f9db4b2a0aa859a5507550a70548e4da936",
-          "version": "1.8.1"
+          "revision": "6b27393cad517c067dceea85fadf050e70c4ceaa",
+          "version": "1.10.1"
         }
       },
       {
         "package": "PromiseKit",
-        "repositoryURL": "https://gitee.com/chengpan168_admin/PromiseKit.git",
+        "repositoryURL": "https://github.com/mxcl/PromiseKit.git",
         "state": {
           "branch": null,
-          "revision": "d2f7ba14bcdc45e18f4f60ad9df883fb9055f081",
-          "version": "6.15.3"
+          "revision": "93c8d41ce96ed78f36c3948be396d76f3ca3de1b",
+          "version": "6.16.2"
         }
       },
       {
@@ -33,17 +33,17 @@
         "repositoryURL": "https://gitee.com/chengpan168_admin/Puppy.git",
         "state": {
           "branch": null,
-          "revision": "dc82e65c749cee431ffbb8c0913680b61ccd7e08",
-          "version": "0.2.0"
+          "revision": "95ce04b0e778b8d7c351876bc98bbf68328dfc9b",
+          "version": "0.3.1"
         }
       },
       {
         "package": "RediStack",
-        "repositoryURL": "https://gitee.com/chengpan168_admin/RediStack.git",
+        "repositoryURL": "https://github.com/Mordil/RediStack.git",
         "state": {
           "branch": null,
-          "revision": "edadec93a18c4514b33b932c4957c9672b93d6cf",
-          "version": "1.1.2"
+          "revision": "0c3beee7eb7704e50e81d4a89740101b87d02833",
+          "version": "1.2.0"
         }
       },
       {
@@ -57,7 +57,7 @@
       },
       {
         "package": "swift-log",
-        "repositoryURL": "https://gitee.com/mirrors_apple/swift-log.git",
+        "repositoryURL": "https://github.com/apple/swift-log.git",
         "state": {
           "branch": null,
           "revision": "5d66f7ba25daf4f94100e7022febf3c75e37a6c7",
@@ -66,20 +66,20 @@
       },
       {
         "package": "swift-metrics",
-        "repositoryURL": "https://gitee.com/mirrors_apple/swift-metrics.git",
+        "repositoryURL": "https://github.com/apple/swift-metrics.git",
         "state": {
           "branch": null,
-          "revision": "e382458581b05839a571c578e90060fff499f101",
-          "version": "2.1.1"
+          "revision": "3edd2f57afc4e68e23c3e4956bc8b65ca6b5b2ff",
+          "version": "2.2.0"
         }
       },
       {
         "package": "swift-nio",
-        "repositoryURL": "https://gitee.com/mirrors_apple/swift-nio.git",
+        "repositoryURL": "https://github.com/apple/swift-nio.git",
         "state": {
           "branch": null,
-          "revision": "d79e33308b0ac83326b0ead0ea6446e604b8162d",
-          "version": "2.30.0"
+          "revision": "213eb6887e526e0dfac526a2eae559a1893ebbac",
+          "version": "2.36.0"
         }
       },
       {
@@ -87,17 +87,8 @@
         "repositoryURL": "https://gitee.com/mirrors_apple/swift-nio-ssh.git",
         "state": {
           "branch": null,
-          "revision": "bc1a91daf3ae35134fbca5655ed221668d0369d3",
-          "version": "0.3.0"
-        }
-      },
-      {
-        "package": "swift-service-discovery",
-        "repositoryURL": "https://gitee.com/mirrors_apple/swift-service-discovery.git",
-        "state": {
-          "branch": null,
-          "revision": "fcf03632e5dc098dc433ffdcf93b42c9b6321968",
-          "version": "1.0.0"
+          "revision": "09778e0388bda898c7592887f2ec84bb81ef21eb",
+          "version": "0.3.3"
         }
       },
       {

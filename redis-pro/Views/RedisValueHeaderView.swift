@@ -9,7 +9,7 @@ import SwiftUI
 import Logging
 
 struct RedisValueHeaderView: View {
-    @ObservedObject var redisKeyModel:RedisKeyModel
+    @EnvironmentObject var redisKeyModel:RedisKeyModel
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     
     let logger = Logger(label: "redis-value-header")
@@ -32,33 +32,39 @@ struct RedisValueHeaderView: View {
         }
         .onChange(of: redisKeyModel, perform: { value in
             logger.info("redis value header key model change \(value)")
-            ttl(value)
+            ttl(value.key)
         })
         .onAppear {
             logger.info("redis value header view init...")
-            ttl(redisKeyModel)
+            ttl(redisKeyModel.key)
         }
     }
     
-    func onTTLCommit() throws -> Void {
+    func onTTLCommit() -> Void {
         if redisKeyModel.isNew {
             return
         }
         logger.info("update redis key ttl: \(redisKeyModel)")
-        let _ = redisInstanceModel.getClient().expire(redisKeyModel.key, seconds: redisKeyModel.ttl)
+        Task {
+            let _ = await redisInstanceModel.getClient().expire(redisKeyModel.key, seconds: redisKeyModel.ttl)
+        }
     }
     
-    func ttl(_ redisKeyModel:RedisKeyModel) -> Void {
-        let key:String = redisKeyModel.key
-        let _ = redisInstanceModel.getClient().ttl(key: key).done({r in
-            redisKeyModel.ttl = r
-        })
+    func ttl(_ key:String) -> Void {
+        if redisKeyModel.isNew {
+            return
+        }
+        
+        Task {
+            let r = await redisInstanceModel.getClient().ttl(key)
+            self.redisKeyModel.ttl = r
+        }
     }
     
 }
 
-struct RedisValueHeaderView_Previews: PreviewProvider {
-    static var previews: some View {
-        RedisValueHeaderView(redisKeyModel: RedisKeyModel(key: "test", type: RedisKeyTypeEnum.STRING.rawValue))
-    }
-}
+//struct RedisValueHeaderView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        RedisValueHeaderView(redisKeyModel: RedisKeyModel(key: "test", type: RedisKeyTypeEnum.STRING.rawValue))
+//    }
+//}

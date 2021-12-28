@@ -13,11 +13,16 @@ class RedisKeysTableController: NSViewController {
     
     @IBOutlet weak var tableView: NSTableView!
     @IBOutlet var arrayController: NSArrayController!
+    @IBAction func action(_ sender: NSTableView) {
+        logger.info("table view click, row: \(sender.clickedRow)")
+        self.action?(sender.clickedRow)
+    }
     
     @objc dynamic var datasource: [RedisKeyModel] = []
     
-    var deleteAction: (_ index:Int) -> Void = {_ in }
-    var renameAction: (_ index:Int) -> Void = {_ in }
+    var deleteAction: ((_ index:Int) -> Void)?
+    var renameAction: ((_ index:Int) -> Void)?
+    var action: ((_ index:Int) -> Void)?
     
     let logger = Logger(label: "redis-keys-table-controller")
     
@@ -35,49 +40,20 @@ class RedisKeysTableController: NSViewController {
         self.datasource = datasource
     }
     
-    func setUp(deleteAction: @escaping (_ index:Int) -> Void, renameAction: @escaping (_ index:Int) -> Void) -> Void {
+    func setUp(action: ((_ index:Int) -> Void)?, deleteAction: @escaping (_ index:Int) -> Void, renameAction: @escaping (_ index:Int) -> Void) -> Void {
         self.deleteAction = deleteAction
         self.renameAction = renameAction
+        self.action = action
     }
     
     @objc private func tableViewEditItemClicked(_ sender: AnyObject) {
         logger.info("context menu rename index: \(tableView.clickedRow)")
-        self.renameAction(tableView.clickedRow)
+        self.renameAction?(tableView.clickedRow)
 //        guard tableView.clickedRow >= 0 else { return }
     }
     
     @objc private func tableViewDeleteItemClicked(_ sender: AnyObject) {
         logger.info("context menu delete index: \(tableView.clickedRow)")
-        self.deleteAction(tableView.clickedRow)
-    }
-}
-
-
-class RedisKeyTableRow:NSObject, Identifiable  {
-    @objc var no:Int
-    @objc var type:String
-    @objc var key:String
-    
-    @objc var typeColor: NSColor {
-        switch type {
-        case RedisKeyTypeEnum.STRING.rawValue:
-            return NSColor.systemBlue
-        case RedisKeyTypeEnum.HASH.rawValue:
-            return NSColor.systemPink
-        case RedisKeyTypeEnum.LIST.rawValue:
-            return NSColor.systemOrange
-        case RedisKeyTypeEnum.SET.rawValue:
-            return NSColor.systemGreen
-        case RedisKeyTypeEnum.ZSET.rawValue:
-            return NSColor.systemTeal
-        default:
-            return NSColor.systemBrown
-        }
-    }
-    
-    init(no:Int, type:String, key:String) {
-        self.no = no
-        self.type = type
-        self.key = key
+        self.deleteAction?(tableView.clickedRow)
     }
 }

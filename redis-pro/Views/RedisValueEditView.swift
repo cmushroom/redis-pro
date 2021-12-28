@@ -10,22 +10,23 @@ import Logging
 
 struct RedisValueEditView: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
-    @ObservedObject var redisKeyModel:RedisKeyModel
+    @EnvironmentObject var redisKeyModel:RedisKeyModel
+    var onSubmit: (() -> Void)?
     
     let logger = Logger(label: "redis-value-edit-view")
     
     var body: some View {
         VStack(alignment: .leading, spacing: 4)  {
             if RedisKeyTypeEnum.STRING.rawValue == redisKeyModel.type {
-                StringEditorView(redisKeyModel: redisKeyModel)
+                StringEditorView(onSubmit: onSubmit)
             } else if RedisKeyTypeEnum.HASH.rawValue == redisKeyModel.type {
-                HashEditorView(redisKeyModel: redisKeyModel)
+                HashEditorView(onSubmit: onSubmit)
             } else if RedisKeyTypeEnum.LIST.rawValue == redisKeyModel.type {
-                ListEditorView(redisKeyModel: redisKeyModel)
+                ListEditorView(onSubmit: onSubmit)
             } else if RedisKeyTypeEnum.SET.rawValue == redisKeyModel.type {
-                SetEditorView(redisKeyModel: redisKeyModel)
+                SetEditorView(onSubmit: onSubmit)
             } else if RedisKeyTypeEnum.ZSET.rawValue == redisKeyModel.type {
-                ZSetEditorView(redisKeyModel: redisKeyModel)
+                ZSetEditorView(onSubmit: onSubmit)
             } else {
                 EmptyView()
             }
@@ -35,8 +36,8 @@ struct RedisValueEditView: View {
     
 }
 
-struct RedisValueEditView_Previews: PreviewProvider {
-    static var previews: some View {
-        RedisValueEditView(redisKeyModel: RedisKeyModel(key: "user_session:1234", type: RedisKeyTypeEnum.STRING.rawValue))
-    }
-}
+//struct RedisValueEditView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        RedisValueEditView(redisKeyModel: RedisKeyModel(key: "user_session:1234", type: RedisKeyTypeEnum.STRING.rawValue))
+//    }
+//}

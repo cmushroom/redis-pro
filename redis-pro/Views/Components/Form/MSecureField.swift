@@ -14,7 +14,7 @@ struct MSecureField: View {
     @Binding var value:String
     var placeholder:String = "Password"
     @State private var isEditing = false
-    var onCommit:() throws -> Void = {}
+    var onCommit:() -> Void = {}
     
     @State private var showPass:Bool = false
     
@@ -23,9 +23,10 @@ struct MSecureField: View {
     @ViewBuilder
     private var field: some View {
         if showPass {
-            TextField(placeholder, text: $value, onEditingChanged: { isEditing in
-                self.isEditing = isEditing
-            }, onCommit: doCommit)
+//            TextField(placeholder, text: $value, onEditingChanged: { isEditing in
+//                self.isEditing = isEditing
+//            }, onCommit: doCommit)
+            NTextField(stringValue: $value, placeholder: placeholder, onCommit: onCommit)
         } else {
             SecureField(placeholder, text: $value, onCommit: doCommit)
         }
@@ -64,11 +65,7 @@ struct MSecureField: View {
     
     func doAction() -> Void {
         logger.info("on textField commit, value: \(value)")
-        do {
-            try onCommit()
-        } catch {
-            MAlert.error(error)
-        }
+        onCommit()
     }
 }
 struct MSecureField_Previews: PreviewProvider {

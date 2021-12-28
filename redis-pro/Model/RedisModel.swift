@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 class RedisModel:NSObject, ObservableObject, Identifiable {
-    @Published var id: String = UUID().uuidString
+    var id: String = UUID().uuidString
     @objc @Published var name: String = "New Favorite"
     @Published var host: String = "127.0.0.1"
     @Published var port: Int = 6379
@@ -17,7 +17,6 @@ class RedisModel:NSObject, ObservableObject, Identifiable {
     @Published var password: String = ""
     @Published var isFavorite: Bool = false
     @Published var ping: Bool = false
-    
     @Published var connectionType:String = "tcp"
     
     // ssh
@@ -43,18 +42,23 @@ class RedisModel:NSObject, ObservableObject, Identifiable {
         ]
     }
     
+    
     override init() {
     }
     
-    init(name: String) {
+    convenience init(name: String) {
+        self.init()
         self.name = name
     }
     
-    init(password: String) {
+    convenience init(password: String) {
+        self.init()
         self.password = password
     }
     
-    init(dictionary: [String: Any]) {
+    convenience init(dictionary: [String: Any]) {
+        self.init()
+        
         self.id = dictionary["id"] as! String
         self.name = dictionary["name"] as! String
         self.host = dictionary["host"] as! String
@@ -73,6 +77,9 @@ class RedisModel:NSObject, ObservableObject, Identifiable {
         }
     }
     
+    static func ==(a: RedisModel, b: RedisModel) -> Bool {
+        return a.id == b.id
+    }
     
     override var description: String {
         return "RedisModel:[id:\(id), name:\(name), host:\(host), port:\(port), password:\(password), database:\(database), type:\(connectionType), sshHost:\(sshHost), sshPort:\(sshPort),sshUser:\(sshUser)]"

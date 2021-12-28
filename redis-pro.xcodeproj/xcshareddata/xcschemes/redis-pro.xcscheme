@@ -37,6 +37,11 @@
                BlueprintName = "redisProTests"
                ReferencedContainer = "container:redis-pro.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "redisProTests">
+               </Test>
+            </SkippedTests>
          </TestableReference>
          <TestableReference
             skipped = "NO">

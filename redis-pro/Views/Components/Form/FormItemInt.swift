@@ -13,24 +13,18 @@ struct FormItemInt: View {
     var placeholder:String?
     @Binding var value:Int
     var suffix:String?
-    var onCommit:() throws -> Void = {}
+    var onCommit:() -> Void = {}
     var autoCommit:Bool = true
     
     var body: some View {
-        let valueProxy = Binding<String>(
-            get: { String(Int(self.value)) },
-            set: {
-                if let value = NumberFormatter().number(from: $0) {
-                    self.value = value.intValue
-                }
-            }
-        )
         
         HStack(alignment: .center) {
             if !label.isEmpty {
                 FormLabel(label: label, width: labelWidth)
             }
-            MTextField(value: valueProxy, placeholder: placeholder ?? label, suffix: suffix, onCommit: onCommit, autoCommit: autoCommit)
+            NIntField(value: $value, placeholder: placeholder ?? label, onCommit: onCommit)
+//            MTextField(value: valueProxy, placeholder: placeholder ?? label, suffix: suffix, onCommit: onCommit, autoCommit: autoCommit)
+//            MIntField(value: $value, placeholder: placeholder ?? label, suffix: suffix, onCommit: onCommit, autoCommit: autoCommit)
         }
     }
 }

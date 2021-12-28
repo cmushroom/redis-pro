@@ -44,7 +44,7 @@ class RedisListTableController: NSViewController {
 struct RedisListTable: NSViewControllerRepresentable {
     @Binding var datasource: [RedisModel]
     @Binding var selectRowIndex:Int?
-    
+    var onChange: ((Int) -> Void)?
     var doubleAction: () -> Void = {}
     
     let logger = Logger(label: "redis-list-table")
@@ -89,7 +89,7 @@ struct RedisListTable: NSViewControllerRepresentable {
             self.logger.info("redis list table Coordinator tableViewSelectionIsChanging, selectedRow: \(tableView.selectedRow)")
             
             self.table.selectRowIndex = tableView.selectedRow == -1 ? nil : tableView.selectedRow
-            
+            self.table.onChange?(self.table.selectRowIndex!)  
         }
         
     }

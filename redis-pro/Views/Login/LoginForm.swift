@@ -19,7 +19,8 @@ struct LoginForm: View {
     @EnvironmentObject var globalContext:GlobalContext
     
     @ObservedObject var redisFavoriteModel: RedisFavoriteModel
-    @ObservedObject var redisModel:RedisModel
+    @Binding var redisModel:RedisModel
+    
     @State private var pingState:String = ""
     
     
@@ -84,11 +85,11 @@ struct LoginForm: View {
         Form {
             Section {
                 VStack(alignment: .leading, spacing: 14) {
-                    FormItemText(label: "Name", placeholder: "name", value: $redisModel.name, autoTrim: true)
+                    FormItemText(label: "Name", placeholder: "name", value: $redisModel.name)
                     FormItemText(label: "Host", placeholder: "host", value: $redisModel.host)
-                    FormItemInt(label: "Port", placeholder: "port", value: $redisModel.port)
-                    FormItemSecure(label: "Password", value: $redisModel.password)
-                    FormItemInt(label: "Database", value: $redisModel.database)
+                    FormItemInt(label: "Port", placeholder: "port", value: $redisModel.port).focusable()
+                    FormItemSecure(label: "Password", value: $redisModel.password).focusable()
+                    FormItemInt(label: "Database", value: $redisModel.database).focusable()
                 }
             }
             
@@ -103,11 +104,11 @@ struct LoginForm: View {
             Form {
                 Section {
                     VStack(alignment: .leading, spacing: 12) {
-                        FormItemText(label: "Name", placeholder: "name", value: $redisModel.name, autoTrim: true)
-                        FormItemText(label: "Host", placeholder: "host", value: $redisModel.host, autoTrim: true)
-                        FormItemInt(label: "Port", placeholder: "port", value: $redisModel.port)
-                        FormItemSecure(label: "Password", value: $redisModel.password)
-                        FormItemInt(label: "Database", value: $redisModel.database)
+                        FormItemText(label: "Name", placeholder: "name", value: $redisModel.name, autoTrim: true).focusable()
+                        FormItemText(label: "Host", placeholder: "host", value: $redisModel.host, autoTrim: true).focusable()
+                        FormItemInt(label: "Port", placeholder: "port", value: $redisModel.port).focusable()
+                        FormItemSecure(label: "Password", value: $redisModel.password).focusable()
+                        FormItemInt(label: "Database", value: $redisModel.database).focusable()
                     }
                 }
                 
@@ -115,10 +116,10 @@ struct LoginForm: View {
                         Divider().padding(.vertical, 2)
                         
                         VStack(alignment: .leading, spacing: 12) {
-                            FormItemText(label: "SSH Host", placeholder: "name", value: $redisModel.sshHost, autoTrim: true)
-                            FormItemInt(label: "SSH Port", placeholder: "port", value: $redisModel.sshPort)
-                            FormItemText(label: "SSH User", placeholder: "host", value: $redisModel.sshUser, autoTrim: true)
-                            FormItemSecure(label: "SSH Pass", value: $redisModel.sshPass)
+                            FormItemText(label: "SSH Host", placeholder: "name", value: $redisModel.sshHost, autoTrim: true).focusable()
+                            FormItemInt(label: "SSH Port", placeholder: "port", value: $redisModel.sshPort).focusable()
+                            FormItemText(label: "SSH User", placeholder: "host", value: $redisModel.sshUser, autoTrim: true).focusable()
+                            FormItemSecure(label: "SSH Pass", value: $redisModel.sshPass).focusable()
                         }
                     }
                 footer
@@ -139,18 +140,24 @@ struct LoginForm: View {
     }
     
     
-    func onTestConnectionAction() throws -> Void {
+    func onTestConnectionAction() -> Void {
         logger.info("test connect to redis server: \(redisModel)")
+        Task {
+            let pong = await self.redisInstanceModel.testConnect(self.redisModel)
+            self.pingState = pong ? "Connect successed!" : "Connect fail! "
+        }
         
-        let _ = self.redisInstanceModel.testConnectAsync(redisModel).done({ ping in
-            self.pingState = ping ? "Connect successed!" : "Connect fail! "
-        })
-        .catch({ error in
-            self.pingState = "Connect fail, error: \(error)! "
-        })
+//
+//        let _ = self.redisInstanceModel.testConnectAsync(redisModel).done({ ping in
+//            self.pingState = ping ? "Connect successed!" : "Connect fail! "
+//        })
+//        .catch({ error in
+//            self.pingState = "Connect fail, error: \(error)! "
+//        })
     }
+
     
-    func onAddRedisInstanceAction()  throws -> Void {
+    func onAddRedisInstanceAction() -> Void {
         redisModel.id = UUID().uuidString
         logger.info("add redis to favorite, id: \(redisModel.id), name: \(redisModel.name), host: \(redisModel.host), port: \(redisModel.port), password: \(redisModel.password)")
         
@@ -160,34 +167,31 @@ struct LoginForm: View {
         
         savedRedisList.append(redisModel.dictionary)
         
-        print("save list \(savedRedisList)")
-        
         defaults.set(savedRedisList, forKey: UserDefaulsKeysEnum.RedisFavoriteListKey.rawValue)
         logger.info("add redis to favorite complete")
         
         redisFavoriteModel.loadAll()
     }
     
-    func onSaveRedisInstanceAction()  throws -> Void {
-        
-        logger.info("save redis to favorite, id: \(redisModel.id), name: \(redisModel.name), host: \(redisModel.host), port: \(redisModel.port), password: \(redisModel.password)")
-        
+    func onSaveRedisInstanceAction() -> Void {
+        logger.info("save favorite redis: \(redisModel)")
         redisFavoriteModel.save(redisModel: redisModel)
         
         redisFavoriteModel.loadAll()
     }
     
-    func onConnect() throws -> Void {
-        let _ = redisInstanceModel.connect(redisModel:redisModel).done({r in
-            logger.info("on connect to redis server successed: \(redisModel)")
+    func onConnect() -> Void {
+        Task {
+            let r = await redisInstanceModel.connect(redisModel:redisModel)
+            logger.info("on connect to redis server result: \(r), redis: \(redisModel)")
             redisFavoriteModel.saveLast(redisModel: redisModel)
-        })
+        }
     }
     
 }
 
-struct LoginForm_Previews: PreviewProvider {
-    static var previews: some View {
-        LoginForm(redisFavoriteModel: RedisFavoriteModel(), redisModel: RedisModel())
-    }
-}
+//struct LoginForm_Previews: PreviewProvider {
+//    static var previews: some View {
+//        LoginForm(redisFavoriteModel: RedisFavoriteModel(), redisModel: RedisModel())
+//    }
+//}

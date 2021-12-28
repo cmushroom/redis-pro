@@ -1,7 +1,7 @@
 //
 //  MTextEditor.swift
 //  redis-pro
-//
+//  存在问题，自动转换双引号， 暂时使用 NSTextEditor
 //  Created by chengpanwang on 2021/4/29.
 //
 
@@ -15,6 +15,7 @@ struct MTextEditor: View {
     var body: some View {
         // text editor
         TextEditor(text: $text)
+            .disableAutocorrection(true)
             .font(.body)
             .multilineTextAlignment(.leading)
             .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))

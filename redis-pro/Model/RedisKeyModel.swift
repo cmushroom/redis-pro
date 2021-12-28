@@ -9,11 +9,76 @@ import Foundation
 import Cocoa
 
 class RedisKeyModel:NSObject, ObservableObject, Identifiable {
-    @objc var no:Int = 0
-    @objc @Published var key: String
-    @objc @Published var type: String
+    @objc @Published var key: String = ""
+    @objc @Published var type: String = RedisKeyTypeEnum.STRING.rawValue
     @Published var ttl: Int = -1
     @Published var isNew: Bool = false
+    
+    private var _id:String = ""
+    var id:String {
+        if isNew {
+            return _id
+        }
+        return key
+    }
+    
+    override init() {}
+    
+    convenience init(_ key:String, type:String) {
+        self.init()
+        self.key = key
+        self.type = type
+    }
+    
+    func copyValue(_ redisKeyModel:RedisKeyModel) {
+        self.key = redisKeyModel.key
+        self.type = redisKeyModel.type
+    }
+    
+    func initNew() -> Void {
+        self.isNew = true
+        self.key = generateKey()
+        self._id = self.key
+        self.type = RedisKeyTypeEnum.STRING.rawValue
+    }
+    
+    private func generateKey() -> String {
+        return "NEW_KEY_\(Date().millis)"
+    }
+    
+    override var description: String {
+        return "RedisKeyModel:[key:\(key), type:\(type), isNew:\(isNew)]"
+    }
+    
+    public static func == (lhs: RedisKeyModel, rhs: RedisKeyModel) -> Bool {
+        // 需要比较的值
+        return lhs.id == rhs.id
+    }
+}
+
+extension RedisKeyModel {
+    // type 颜色
+    @objc var typeColor: NSColor {
+        switch type {
+        case RedisKeyTypeEnum.STRING.rawValue:
+            return NSColor.systemBlue
+        case RedisKeyTypeEnum.HASH.rawValue:
+            return NSColor.systemPink
+        case RedisKeyTypeEnum.LIST.rawValue:
+            return NSColor.systemOrange
+        case RedisKeyTypeEnum.SET.rawValue:
+            return NSColor.systemGreen
+        case RedisKeyTypeEnum.ZSET.rawValue:
+            return NSColor.systemTeal
+        default:
+            return NSColor.systemBrown
+        }
+    }
+}
+
+class NSRedisKeyModel:NSObject, ObservableObject, Identifiable {
+    @objc @Published var key: String
+    @objc @Published var type: String
     
     var id:String {
         key
@@ -37,22 +102,19 @@ class RedisKeyModel:NSObject, ObservableObject, Identifiable {
         }
     }
     
-    convenience init(key:String, type:String) {
-        self.init(key: key, type: type, isNew: false)
+    override init() {
+        self.key = ""
+        self.type = RedisKeyTypeEnum.STRING.rawValue
+        super.init()
     }
-    
-    init(key:String, type:String, isNew:Bool) {
+    convenience init(_ key:String, type:String) {
+        self.init()
         self.key = key
         self.type = type
-        self.isNew = isNew
     }
     
-    public static func == (lhs: RedisKeyModel, rhs: RedisKeyModel) -> Bool {
-           // 需要比较的值
-           return lhs.id == rhs.id
-       }
-    
+
     override var description: String {
-        return "RedisKeyModel:[key:\(key), type:\(type), ttl:\(ttl)]"
+        return "RedisKeyModel:[key:\(key), type:\(type)]"
     }
 }

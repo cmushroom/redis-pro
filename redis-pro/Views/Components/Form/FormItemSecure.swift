@@ -18,8 +18,10 @@ struct FormItemSecure: View {
             if !label.isEmpty {
                 FormLabel(label: label, width: labelWidth, required: required)
             }
-//            MNSTextField(text: $value)
-            MSecureField(value: $value)
+            //            MNSTextField(text: $value)
+            //            MSecureField(value: $value)/Users/chengpan/work/dream/redis-pro/redis-pro/Views/Components/FormItemTextArea.swift
+//            MPasswordField(value: $value)
+            NPasswordField(value: $value)
         }
     }
 }

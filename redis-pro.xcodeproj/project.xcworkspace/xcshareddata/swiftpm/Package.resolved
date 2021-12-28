@@ -81,24 +81,6 @@
           "revision": "213eb6887e526e0dfac526a2eae559a1893ebbac",
           "version": "2.36.0"
         }
-      },
-      {
-        "package": "swift-nio-ssh",
-        "repositoryURL": "https://gitee.com/mirrors_apple/swift-nio-ssh.git",
-        "state": {
-          "branch": null,
-          "revision": "09778e0388bda898c7592887f2ec84bb81ef21eb",
-          "version": "0.3.3"
-        }
-      },
-      {
-        "package": "SwiftyJSON",
-        "repositoryURL": "https://gitee.com/chengpan168_admin/SwiftyJSON.git",
-        "state": {
-          "branch": null,
-          "revision": "b3dcd7dbd0d488e1a7077cb33b00f2083e382f07",
-          "version": "5.0.1"
-        }
       }
     ]
   },

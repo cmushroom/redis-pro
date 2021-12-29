@@ -12,7 +12,7 @@ import Logging
 
 struct ClientListTable: NSViewControllerRepresentable {
     @Binding var datasource: [ClientModel]
-    @Binding var selectRowIndex:Int?
+    @Binding var selectRowIndex:Int
     
     let logger = Logger(label: "client-list-table")
     
@@ -34,7 +34,7 @@ struct ClientListTable: NSViewControllerRepresentable {
         controller.setDatasource(datasource)
         controller.tableView?.delegate = context.coordinator
         
-        controller.arrayController.setSelectionIndex(selectRowIndex ?? -1)
+        controller.arrayController.setSelectionIndex(selectRowIndex)
 //        controller.tableView.scrollRowToVisible(selectRowIndex)
     }
     
@@ -56,7 +56,7 @@ struct ClientListTable: NSViewControllerRepresentable {
 
             self.logger.info("client list Coordinator tableViewSelectionIsChanging, selectedRow: \(tableView.selectedRow)")
 
-            self.table.selectRowIndex = tableView.selectedRow == -1 ? nil : tableView.selectedRow
+            self.table.selectRowIndex = tableView.selectedRow
 
         }
         

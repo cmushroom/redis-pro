@@ -12,7 +12,7 @@ import Logging
 
 class TextViewController: NSViewController {
     
-    @objc dynamic var text: String = "hello"
+    @objc dynamic var text: String = ""
     
     @IBOutlet var textView: NSTextView!
     @IBOutlet var scrollView: NSScrollView!

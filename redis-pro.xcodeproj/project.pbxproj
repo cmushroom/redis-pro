@@ -58,7 +58,6 @@
 		4340E2C52666239F00F51F19 /* JsonPrettyFormatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4340E2C42666239F00F51F19 /* JsonPrettyFormatTests.swift */; };
 		4340E2CA2666494300F51F19 /* ScanModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4340E2C92666494300F51F19 /* ScanModel.swift */; };
 		4340E2CC266649D000F51F19 /* ScanBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4340E2CB266649D000F51F19 /* ScanBar.swift */; };
-		4340E2CE266660FE00F51F19 /* PromiseExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4340E2CD266660FE00F51F19 /* PromiseExt.swift */; };
 		43481049262D30CE002809ED /* Helps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43481048262D30CE002809ED /* Helps.swift */; };
 		436BB6932644D126008B4866 /* SetEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436BB6922644D126008B4866 /* SetEditorView.swift */; };
 		436BB6952644E8D6008B4866 /* ZSetEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436BB6942644E8D6008B4866 /* ZSetEditorView.swift */; };
@@ -156,6 +155,16 @@
 		CE83D51A27563C28000DF09D /* AppCenterCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = CE83D51927563C28000DF09D /* AppCenterCrashes */; };
 		CE83D51C2758E8D1000DF09D /* NTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE83D51B2758E8D1000DF09D /* NTextField.swift */; };
 		CE916155276B60650026C625 /* NSearchField.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE916154276B60650026C625 /* NSearchField.swift */; };
+		CEA1EF4A277C56B100D300E9 /* NIOSSH in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1EF49277C56B100D300E9 /* NIOSSH */; };
+		CEA1EF4D277C56DD00D300E9 /* NIO in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1EF4C277C56DD00D300E9 /* NIO */; };
+		CEA1EF4F277C56DD00D300E9 /* NIOConcurrencyHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1EF4E277C56DD00D300E9 /* NIOConcurrencyHelpers */; };
+		CEA1EF51277C56DD00D300E9 /* NIOCore in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1EF50277C56DD00D300E9 /* NIOCore */; };
+		CEA1EF53277C56DD00D300E9 /* NIOEmbedded in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1EF52277C56DD00D300E9 /* NIOEmbedded */; };
+		CEA1EF55277C56DD00D300E9 /* NIOFoundationCompat in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1EF54277C56DD00D300E9 /* NIOFoundationCompat */; };
+		CEA1EF57277C56DD00D300E9 /* NIOPosix in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1EF56277C56DD00D300E9 /* NIOPosix */; };
+		CEA1EF59277C56DD00D300E9 /* NIOTLS in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1EF58277C56DD00D300E9 /* NIOTLS */; };
+		CEA1EF5B277C56DD00D300E9 /* _NIOConcurrency in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1EF5A277C56DD00D300E9 /* _NIOConcurrency */; };
+		CEA1EF5E277C57BC00D300E9 /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = CEA1EF5D277C57BC00D300E9 /* SwiftyJSON */; };
 		CEF000FF2771B6640020A27E /* NTextEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF000FE2771B6640020A27E /* NTextEditor.swift */; };
 /* End PBXBuildFile section */
 
@@ -225,7 +234,6 @@
 		4340E2C42666239F00F51F19 /* JsonPrettyFormatTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonPrettyFormatTests.swift; sourceTree = "<group>"; };
 		4340E2C92666494300F51F19 /* ScanModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanModel.swift; sourceTree = "<group>"; };
 		4340E2CB266649D000F51F19 /* ScanBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanBar.swift; sourceTree = "<group>"; };
-		4340E2CD266660FE00F51F19 /* PromiseExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromiseExt.swift; sourceTree = "<group>"; };
 		43481048262D30CE002809ED /* Helps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helps.swift; sourceTree = "<group>"; };
 		436BB6922644D126008B4866 /* SetEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetEditorView.swift; sourceTree = "<group>"; };
 		436BB6942644E8D6008B4866 /* ZSetEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZSetEditorView.swift; sourceTree = "<group>"; };
@@ -328,13 +336,23 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CEA1EF4D277C56DD00D300E9 /* NIO in Frameworks */,
 				CE2B15C0275DAF0800A3C8CE /* RediStack in Frameworks */,
+				CEA1EF55277C56DD00D300E9 /* NIOFoundationCompat in Frameworks */,
 				43CD28AA267B64FA00E11876 /* Puppy in Frameworks */,
+				CEA1EF53277C56DD00D300E9 /* NIOEmbedded in Frameworks */,
+				CEA1EF5E277C57BC00D300E9 /* SwiftyJSON in Frameworks */,
+				CEA1EF59277C56DD00D300E9 /* NIOTLS in Frameworks */,
+				CEA1EF4A277C56B100D300E9 /* NIOSSH in Frameworks */,
 				4301C82826AE8DE500C08E19 /* Crypto in Frameworks */,
 				CE2B15C4275DAF0800A3C8CE /* RedisTypes in Frameworks */,
 				CE83D51827563C28000DF09D /* AppCenterAnalytics in Frameworks */,
+				CEA1EF57277C56DD00D300E9 /* NIOPosix in Frameworks */,
 				CE83D51A27563C28000DF09D /* AppCenterCrashes in Frameworks */,
 				6237D032275C954A000ACD6A /* Logging in Frameworks */,
+				CEA1EF51277C56DD00D300E9 /* NIOCore in Frameworks */,
+				CEA1EF4F277C56DD00D300E9 /* NIOConcurrencyHelpers in Frameworks */,
+				CEA1EF5B277C56DD00D300E9 /* _NIOConcurrency in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -498,7 +516,6 @@
 				437BC24D26461E2100E2C84D /* NumberHelper.swift */,
 				43F22EF4269FCE6000A00F97 /* DateHelper.swift */,
 				43F22F1026A1603F00A00F97 /* StringHelper.swift */,
-				4340E2CD266660FE00F51F19 /* PromiseExt.swift */,
 				43CD286D2670A03800E11876 /* VersionManager.swift */,
 				43CD28AB267B67C600E11876 /* PuppyLogger.swift */,
 				43CD28AD267B6E0E00E11876 /* LoggerFactory.swift */,
@@ -665,6 +682,16 @@
 				6237D031275C954A000ACD6A /* Logging */,
 				CE2B15BF275DAF0800A3C8CE /* RediStack */,
 				CE2B15C3275DAF0800A3C8CE /* RedisTypes */,
+				CEA1EF49277C56B100D300E9 /* NIOSSH */,
+				CEA1EF4C277C56DD00D300E9 /* NIO */,
+				CEA1EF4E277C56DD00D300E9 /* NIOConcurrencyHelpers */,
+				CEA1EF50277C56DD00D300E9 /* NIOCore */,
+				CEA1EF52277C56DD00D300E9 /* NIOEmbedded */,
+				CEA1EF54277C56DD00D300E9 /* NIOFoundationCompat */,
+				CEA1EF56277C56DD00D300E9 /* NIOPosix */,
+				CEA1EF58277C56DD00D300E9 /* NIOTLS */,
+				CEA1EF5A277C56DD00D300E9 /* _NIOConcurrency */,
+				CEA1EF5D277C57BC00D300E9 /* SwiftyJSON */,
 			);
 			productName = "redis-pro";
 			productReference = 4320AAF025B6740900A8E214 /* redis-pro.app */;
@@ -726,6 +753,9 @@
 				CE83D51627563C28000DF09D /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */,
 				6237D030275C954A000ACD6A /* XCRemoteSwiftPackageReference "swift-log" */,
 				CE2B15BE275DAF0800A3C8CE /* XCRemoteSwiftPackageReference "RediStack" */,
+				CEA1EF48277C56B100D300E9 /* XCRemoteSwiftPackageReference "swift-nio-ssh" */,
+				CEA1EF4B277C56DD00D300E9 /* XCRemoteSwiftPackageReference "swift-nio" */,
+				CEA1EF5C277C57BC00D300E9 /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
 			);
 			productRefGroup = 4320AAF125B6740900A8E214 /* Products */;
 			projectDirPath = "";
@@ -841,7 +871,6 @@
 				4314A34F2625B46E00053FEE /* RediStackClient.swift in Sources */,
 				43F22F0D26A15AD700A00F97 /* ZSetTableController.swift in Sources */,
 				431266CC261C450300FB6B69 /* Tag.swift in Sources */,
-				4340E2CE266660FE00F51F19 /* PromiseExt.swift in Sources */,
 				4373C50C25C3FC81002B700E /* LoginForm.swift in Sources */,
 				430A09D625BEA98300B60DFC /* RedisListView.swift in Sources */,
 				621EFD8E276CC52E0079D1E3 /* NPasswordField.swift in Sources */,
@@ -1231,6 +1260,30 @@
 				minimumVersion = 4.3.0;
 			};
 		};
+		CEA1EF48277C56B100D300E9 /* XCRemoteSwiftPackageReference "swift-nio-ssh" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-nio-ssh";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.3.3;
+			};
+		};
+		CEA1EF4B277C56DD00D300E9 /* XCRemoteSwiftPackageReference "swift-nio" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-nio.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+		CEA1EF5C277C57BC00D300E9 /* XCRemoteSwiftPackageReference "SwiftyJSON" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwiftyJSON/SwiftyJSON.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1273,6 +1326,56 @@
 			isa = XCSwiftPackageProductDependency;
 			package = CE83D51627563C28000DF09D /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
 			productName = AppCenterCrashes;
+		};
+		CEA1EF49277C56B100D300E9 /* NIOSSH */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEA1EF48277C56B100D300E9 /* XCRemoteSwiftPackageReference "swift-nio-ssh" */;
+			productName = NIOSSH;
+		};
+		CEA1EF4C277C56DD00D300E9 /* NIO */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEA1EF4B277C56DD00D300E9 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIO;
+		};
+		CEA1EF4E277C56DD00D300E9 /* NIOConcurrencyHelpers */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEA1EF4B277C56DD00D300E9 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOConcurrencyHelpers;
+		};
+		CEA1EF50277C56DD00D300E9 /* NIOCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEA1EF4B277C56DD00D300E9 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOCore;
+		};
+		CEA1EF52277C56DD00D300E9 /* NIOEmbedded */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEA1EF4B277C56DD00D300E9 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOEmbedded;
+		};
+		CEA1EF54277C56DD00D300E9 /* NIOFoundationCompat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEA1EF4B277C56DD00D300E9 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOFoundationCompat;
+		};
+		CEA1EF56277C56DD00D300E9 /* NIOPosix */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEA1EF4B277C56DD00D300E9 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOPosix;
+		};
+		CEA1EF58277C56DD00D300E9 /* NIOTLS */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEA1EF4B277C56DD00D300E9 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = NIOTLS;
+		};
+		CEA1EF5A277C56DD00D300E9 /* _NIOConcurrency */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEA1EF4B277C56DD00D300E9 /* XCRemoteSwiftPackageReference "swift-nio" */;
+			productName = _NIOConcurrency;
+		};
+		CEA1EF5D277C57BC00D300E9 /* SwiftyJSON */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEA1EF5C277C57BC00D300E9 /* XCRemoteSwiftPackageReference "SwiftyJSON" */;
+			productName = SwiftyJSON;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

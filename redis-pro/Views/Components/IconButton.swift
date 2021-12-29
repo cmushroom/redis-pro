@@ -28,7 +28,7 @@ struct IconButton: View {
 //            MLabel(name: name, icon: icon)
 //            .padding(.horizontal, 4.0)
 //        }
-        NativeButton(title: name, action: doAction, icon: icon, disabled: disabled)
+        NButton(title: name, action: doAction, icon: icon, disabled: disabled)
 //        .buttonStyle(BorderedButtonStyle())
         .disabled(disabled)
         .onHover { inside in

@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 import Logging
-import PromiseKit
 
 struct ScanBar: View {
     @EnvironmentObject var globalContext:GlobalContext

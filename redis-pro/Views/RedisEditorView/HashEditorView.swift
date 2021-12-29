@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Logging
-import PromiseKit
 
 struct HashEditorView: View {
     var onSubmit: (() -> Void)?
@@ -25,10 +24,6 @@ struct HashEditorView: View {
     @State private var editIndex:Int = 0
     @State private var editField:String = ""
     @State private var editValue:String = ""
-    
-    private var selectField:String {
-        selectIndex == -1 ? "" : (datasource[selectIndex] as! RedisHashEntryModel).field
-    }
     
     var delButtonDisabled:Bool {
         datasource.count <= 0 || selectIndex == -1
@@ -76,12 +71,12 @@ struct HashEditorView: View {
         }
         .sheet(isPresented: $editModalVisible, onDismiss: {
         }) {
-            ModalView("Edit field", action: onSaveFieldAction) {
+            ModalView("Edit hash entry", action: onSaveFieldAction) {
                 VStack(alignment:.leading, spacing: 8) {
                     FormItemText(label: "Field", placeholder: "Field", value: $editField, disabled: !editNewField)
                     FormItemTextArea(label: "Value", placeholder: "Value", value: $editValue)
                 }
-                .frame(minWidth:500, minHeight:300)
+                .frame(minWidth:640, minHeight:380)
             }
             .onAppear {
                 // 弹窗弹出后再次触发是否可以编辑，才能正常生效

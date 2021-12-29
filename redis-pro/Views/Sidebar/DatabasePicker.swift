@@ -12,7 +12,7 @@ struct DatabasePicker: View {
     @State private var databases:Int = 16
     @State var database:Int = 0
     @State var selection = 0
-    var action: () -> Void = {}
+    var onChange: (() -> Void)?
     
     var body: some View {
         Menu(content: {
@@ -34,16 +34,20 @@ struct DatabasePicker: View {
     
     
     func onSelectDatabaseAction(_ database:Int) -> Void {
-        let _ = redisInstanceModel.getClient().selectDB(database).done({
-            self.database = database
-            action()
-        })
+        Task {
+            let r = await redisInstanceModel.getClient().selectDB(database)
+            if r {
+                self.database = database
+                self.onChange?()
+            }
+        }
     }
     
     func queryDBList() -> Void {
-        let _ = redisInstanceModel.getClient().databases().done({r in
+        Task {
+            let r = await redisInstanceModel.getClient().databases()
             self.databases = r
-        })
+        }
     }
 }
 

@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Logging
-import PromiseKit
 import AppKit
 
 struct RedisKeysListView: View {
@@ -30,17 +29,6 @@ struct RedisKeysListView: View {
     
     let logger = Logger(label: "redis-key-list-view")
     
-//    var selectRedisKeyModel:RedisKeyModel {
-//        if selectedRedisKeyIndex >= 0 {
-//            return RedisKeyModel(redisKeyModels[selectedRedisKeyIndex])
-//        } else if selectedRedisKeyIndex ==  -2 {
-//            return RedisKeyModel("NEW_KEY_\(Date().millis)", type: RedisKeyTypeEnum.STRING.rawValue, isNew: true)
-//        }
-//        return RedisKeyModel()
-////        get {
-////            return (selectedRedisKeyIndex == nil || redisKeyModels.isEmpty || redisKeyModels.count <= selectedRedisKeyIndex!) ? nil : redisKeyModels[selectedRedisKeyIndex!]
-////        }
-//    }
     
     var selectRedisKey:String {
         selectRedisKeyModel.key
@@ -63,7 +51,7 @@ struct RedisKeysListView: View {
                                action: onDeleteAction)
                     
                     Spacer()
-                    DatabasePicker(database: redisInstanceModel.redisModel.database, action: onRefreshAction)
+                    DatabasePicker(database: redisInstanceModel.redisModel.database, onChange: onRefreshAction)
                 }
             }
             .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
@@ -266,9 +254,12 @@ struct RedisKeysListView: View {
     }
     
     func onFlushDBAction() -> Void {
-        let _ = self.redisInstanceModel.getClient().flushDB().done({ _ in
-            self.onRefreshAction()
-        })
+        Task {
+            let r = await self.redisInstanceModel.getClient().flushDB()
+            if r {
+                self.onRefreshAction()
+            }
+        }
     }
     
     func onSearchKeyAction() -> Void {

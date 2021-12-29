@@ -45,7 +45,9 @@ struct SidebarFooter: View {
     }
     
     func onRedisInfoAction() -> Void {
-        let _ = redisInstanceModel.getClient().info()
+        Task {
+            let _ = await redisInstanceModel.getClient().info()
+        }
     }
     
 }

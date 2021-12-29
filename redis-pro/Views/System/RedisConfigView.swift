@@ -68,9 +68,10 @@ struct RedisConfigView: View {
     
     
     func onLoad() -> Void {
-        let _ = redisInstanceModel.getClient().getConfigList(self.pattern).done({res in
+        Task {
+            let res = await redisInstanceModel.getClient().getConfigList(self.pattern)
             self.redisConfigItemModels = res
-        })
+        }
     }
     
     func onRefrehAction() -> Void {
@@ -78,7 +79,9 @@ struct RedisConfigView: View {
     }
     
     func onRewriteAction() -> Void {
-        let _ = redisInstanceModel.getClient().configRewrite()
+        Task {
+            let _ = await redisInstanceModel.getClient().configRewrite()
+        }
     }
     
     func onReadyEditAction(index:Int) -> Void {
@@ -97,10 +100,13 @@ struct RedisConfigView: View {
     }
     
     func onUpdateItemAction() -> Void {
-        let _ = redisInstanceModel.getClient().setConfig(key: editKey, value: editValue).done({res in
-            self.redisConfigItemModels[editIndex].value = editValue
-            self.refresh += 1
-        })
+        Task {
+            let r = await redisInstanceModel.getClient().setConfig(key: editKey, value: editValue)
+            if r {
+                self.redisConfigItemModels[editIndex].value = editValue
+                self.refresh += 1
+            }
+        }
     }
     
 }

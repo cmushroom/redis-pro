@@ -10,16 +10,16 @@ import SwiftUI
 struct ClientsListView: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @State private var clientModels:[ClientModel] = [ClientModel]()
-    @State var selectRowIndex: Int?
+    @State private var selectRowIndex: Int = -1
     
     var selectClientAddr:String {
-        selectRowIndex == nil ? "" : self.clientModels[self.selectRowIndex!].addr
+        selectRowIndex == -1 ? "" : self.clientModels[self.selectRowIndex].addr
     }
     
     private var footer: some View {
         HStack(alignment: .center , spacing: 8) {
             Spacer()
-            MButton(text: "Kill Client", action: clientKill, disabled: selectRowIndex == nil, isConfirm: true, confirmTitle: selectRowIndex == nil ? "" : "Kill Client?",
+            MButton(text: "Kill Client", action: clientKill, disabled: selectRowIndex == -1, isConfirm: true, confirmTitle: selectRowIndex == -1 ? "" : "Kill Client?",
                 confirmMessage: "Are you sure you want to kill client:\(selectClientAddr)? This operation cannot be undone.")
             MButton(text: "Refresh", action: onRefrehAction)
         }
@@ -34,28 +34,32 @@ struct ClientsListView: View {
         }
 //        .padding(EdgeInsets(top: 10, leading: 8, bottom: 10, trailing: 8))
         .onAppear {
-            getClients()
+            onRefrehAction()
         }
     }
     
-    func getClients() -> Void {
-        let _ = redisInstanceModel.getClient().clientList().done({res in
-            self.clientModels = res
-        })
+    func getClients() async -> Void {
+        let res = await redisInstanceModel.getClient().clientList()
+        self.clientModels = res
     }
     func onRefrehAction() -> Void {
-        let _ = redisInstanceModel.getClient().clientList().done({res in
-            self.clientModels = res
-        })
+        Task {
+            await getClients()
+        }
     }
     func clientKill() -> Void {
-        if self.selectRowIndex == nil {
+        if self.selectRowIndex == -1 {
             return
         }
         
-        let _ = redisInstanceModel.getClient().clientKill(self.clientModels[self.selectRowIndex!]).done({_ in
-            self.onRefrehAction()
-        })
+        let client = self.clientModels[self.selectRowIndex]
+        
+        Task {
+            let r = await redisInstanceModel.getClient().clientKill(client)
+            if r {
+                await self.getClients()
+            }
+        }
     }
 }
 

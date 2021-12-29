@@ -23,15 +23,15 @@ struct StringEditorView: View {
         VStack(alignment: .leading, spacing: 0) {
             VStack(alignment: .leading, spacing: MTheme.V_SPACING){
                 // text editor
-                MTextView(text: $text)
-//                MTextEditor(text: $text)
+//                MTextView(text: $text)
+                MTextEditor(text: $text)
             }
             .background(Color.init(NSColor.textBackgroundColor))
 
             // footer
             HStack(alignment: .center, spacing: MTheme.H_SPACING) {
                 Spacer()
-                MButton(text: "Json Format", action: onJsonFormat)
+                MButton(text: "Pretty Json", action: onJsonFormat)
                 IconButton(icon: "arrow.clockwise", name: "Refresh", action: onRefreshAction)
                 IconButton(icon: "checkmark", name: "Submit", isConfirm: false, confirmTitle: "", confirmMessage: "", confirmPrimaryButtonText: "Submit", action: onSubmitAction)
             }

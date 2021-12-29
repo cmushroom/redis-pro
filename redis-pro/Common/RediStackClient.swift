@@ -9,7 +9,6 @@ import Foundation
 import NIO
 import RediStack
 import Logging
-import PromiseKit
 import NIOSSH
 import Swift
 
@@ -393,54 +392,6 @@ class RediStackClient {
         }
     }
     
-    
-    func getConnectionAsync() -> Promise<RedisConnection> {
-        if self.connection != nil && self.connection!.isConnected{
-            return Promise<RedisConnection>.value(self.connection!)
-        } else {
-            self.logger.info("get redis connection, but connection is not available...")
-            self.close()
-        }
-        
-        if self.redisModel.connectionType == RedisConnectionTypeEnum.SSH.rawValue {
-            return getSSHConnection()
-        }
-        
-        return Promise<RedisConnection>{ resolver in
-            self.logger.info("start get new redis connection...")
-            
-            let eventLoop = MultiThreadedEventLoopGroup(numberOfThreads: 1).next()
-            var configuration: RedisConnection.Configuration
-            do {
-                if (self.redisModel.password.isEmpty) {
-                    configuration = try RedisConnection.Configuration(hostname: self.redisModel.host, port: self.redisModel.port, initialDatabase: self.redisModel.database, defaultLogger: logger)
-                } else {
-                    configuration = try RedisConnection.Configuration(hostname: self.redisModel.host, port: self.redisModel.port, password: self.redisModel.password, initialDatabase: self.redisModel.database, defaultLogger: logger)
-                }
-                
-                let future = RedisConnection.make(
-                    configuration: configuration
-                    , boundEventLoop: eventLoop
-                )
-                
-                future.whenSuccess({ redisConnection in
-                    self.connection = redisConnection
-                    resolver.fulfill(redisConnection)
-                    self.logger.info("get new redis connection success")
-                })
-                future.whenFailure({ error in
-                    self.logger.info("get new redis connection error: \(error)")
-                    
-                    resolver.reject(error)
-                })
-                
-            } catch {
-                self.logger.error("get new redis connection error \(error)")
-                resolver.reject(error)
-            }
-        }
-    }
-    
     func close() -> Void {
         if connection == nil {
             logger.info("close redis connection, connection is nil, over...")
@@ -455,15 +406,15 @@ class RediStackClient {
         self.closeSSH()
     }
     
-    func afterPromise<T:CatchMixin>(_ promise:T) -> Void {
-        promise
-            .catch({error in
-                self.globalContext?.showError(error)
-            })
-                    .finally {
-                self.globalContext?.loading = false
-            }
-    }
+//    func afterPromise<T:CatchMixin>(_ promise:T) -> Void {
+//        promise
+//            .catch({error in
+//                self.globalContext?.showError(error)
+//            })
+//                    .finally {
+//                self.globalContext?.loading = false
+//            }
+//    }
 }
 
 // key
@@ -1427,7 +1378,7 @@ extension RediStackClient {
 // system
 extension RediStackClient {
     
-    func selectDB(_ database: Int) async -> Void {
+    func selectDB(_ database: Int) async -> Bool {
         do {
             let conn = try await getConn()
             return try await withCheckedThrowingContinuation { continuation in
@@ -1435,8 +1386,8 @@ extension RediStackClient {
                 conn.select(database: database)
                     .whenComplete({completion in
                         if case .success(let r) = completion {
-                            self.logger.info("select redis database: \(database)")
-                            continuation.resume(returning: r)
+                            self.logger.info("select redis database: \(database), r: \(r)")
+                            continuation.resume(returning: true)
                         }
                         
                         self.complete(completion, continuation: continuation)
@@ -1445,6 +1396,7 @@ extension RediStackClient {
         } catch {
             handleError(error)
         }
+        return false
     }
     
     func databases() async -> Int {
@@ -1512,7 +1464,7 @@ extension RediStackClient {
                 conn.send(command: "FLUSHDB")
                     .whenComplete({completion in
                         if case .success(let r) = completion {
-                            self.logger.info("flush db success: \(res)")
+                            self.logger.info("flush db success: \(r)")
                             continuation.resume(returning: true)
                         }
                         self.complete(completion, continuation: continuation)
@@ -1538,7 +1490,7 @@ extension RediStackClient {
                 conn.send(command: "CLIENT", with: [RESPValue(from: "KILL"), RESPValue(from: "\(clientModel.addr)")])
                     .whenComplete({completion in
                         if case .success(let r) = completion {
-                            self.logger.info("flush db success: \(res)")
+                            self.logger.info("flush db success: \(r)")
                             continuation.resume(returning: true)
                         }
                         self.complete(completion, continuation: continuation)
@@ -1564,8 +1516,8 @@ extension RediStackClient {
                 conn.send(command: "CLIENT", with: [RESPValue(from: "LIST")])
                     .whenComplete({completion in
                         if case .success(let r) = completion {
-                            self.logger.info("query redis server client list success: \(res)")
-                            let resStr = res.string ?? ""
+                            self.logger.info("query redis server client list success: \(r)")
+                            let resStr = r.string ?? ""
                             let lines = resStr.components(separatedBy: "\n")
                             
                             var resArray = [ClientModel]()
@@ -1602,8 +1554,8 @@ extension RediStackClient {
                 conn.send(command: "info")
                     .whenComplete({completion in
                         if case .success(let r) = completion {
-                            self.logger.info("query redis server info success: \(res.string ?? "")")
-                            let infoStr = res.string ?? ""
+                            self.logger.info("query redis server info success: \(r.string ?? "")")
+                            let infoStr = r.string ?? ""
                             let lines = infoStr.components(separatedBy: "\n")
                             
                             var redisInfoModels = [RedisInfoModel]()
@@ -1647,8 +1599,8 @@ extension RediStackClient {
                 conn.send(command: "CONFIG", with: [RESPValue(from: "RESETSTAT")])
                     .whenComplete({completion in
                         if case .success(let r) = completion {
-                            self.logger.info("reset state res: \(res)")
-                            continuation.resume(returning: res.string == "OK")
+                            self.logger.info("reset state res: \(r)")
+                            continuation.resume(returning: r.string == "OK")
                         }
                         self.complete(completion, continuation: continuation)
                     })
@@ -1703,10 +1655,10 @@ extension RediStackClient {
             return try await withCheckedThrowingContinuation { continuation in
                 conn.send(command: "CONFIG", with: [RESPValue(from: "GET"), RESPValue(from: _pattern)])
                     .whenComplete({completion in
-                    if case .success(let pong) = completion {
-                        self.logger.info("get redis config list res: \(res)")
+                    if case .success(let r) = completion {
+                        self.logger.info("get redis config list res: \(r)")
                         
-                        let configs = res.array ?? []
+                        let configs = r.array ?? []
                         
                         var configList = [RedisConfigItemModel]()
                         
@@ -1741,9 +1693,9 @@ extension RediStackClient {
             return try await withCheckedThrowingContinuation { continuation in
                 conn.send(command: "CONFIG", with: [RESPValue(from: "REWRITE")])
                     .whenComplete({completion in
-                    if case .success(let pong) = completion {
-                        self.logger.info("redis config rewrite res: \(res)")
-                        continuation.resume(returning: res.string == "OK")
+                    if case .success(let r) = completion {
+                        self.logger.info("redis config rewrite res: \(r)")
+                        continuation.resume(returning: r.string == "OK")
                     }
                     self.complete(completion, continuation:continuation)
                 })
@@ -1765,9 +1717,9 @@ extension RediStackClient {
             return try await withCheckedThrowingContinuation { continuation in
                 conn.send(command: "CONFIG", with: [RESPValue(from: "GET"), RESPValue(from: key)])
                     .whenComplete({completion in
-                    if case .success(let pong) = completion {
-                        self.logger.info("get redis config one res: \(res)")
-                        continuation.resume(returning: res.array?[1].string)
+                    if case .success(let r) = completion {
+                        self.logger.info("get redis config one res: \(r)")
+                        continuation.resume(returning: r.array?[1].string)
                     }
                     self.complete(completion, continuation:continuation)
                 })
@@ -1783,6 +1735,10 @@ extension RediStackClient {
     
     func setConfig(key:String, value:String) async -> Bool {
         logger.info("set redis config, key: \(key), value: \(value)")
+        begin()
+        defer {
+            complete()
+        }
 
         do {
             let conn = try await getConn()
@@ -1790,9 +1746,9 @@ extension RediStackClient {
             return try await withCheckedThrowingContinuation { continuation in
                 conn.send(command: "CONFIG", with: [RESPValue(from: "SET"), RESPValue(from: key), RESPValue(from: value)])
                     .whenComplete({completion in
-                    if case .success(let pong) = completion {
-                        self.logger.info("set config res: \(res)")
-                        continuation.resume(returning: res.string == "OK")
+                    if case .success(let r) = completion {
+                        self.logger.info("set config res: \(r)")
+                        continuation.resume(returning: r.string == "OK")
                     }
                     self.complete(completion, continuation:continuation)
                 })
@@ -1818,9 +1774,9 @@ extension RediStackClient {
             return try await withCheckedThrowingContinuation { continuation in
                 conn.send(command: "SLOWLOG", with: [RESPValue(from: "RESET")])
                     .whenComplete({completion in
-                    if case .success(let pong) = completion {
-                        self.logger.info("slow log reset res: \(res)")
-                        continuation.resume(returning: res.string == "OK")
+                    if case .success(let r) = completion {
+                        self.logger.info("slow log reset res: \(r)")
+                        continuation.resume(returning: r.string == "OK")
                     }
                     self.complete(completion, continuation:continuation)
                 })
@@ -1840,9 +1796,9 @@ extension RediStackClient {
             return try await withCheckedThrowingContinuation { continuation in
                 conn.send(command: "SLOWLOG", with: [RESPValue(from: "LEN")])
                     .whenComplete({completion in
-                    if case .success(let pong) = completion {
-                        self.logger.info("slow log reset res: \(res)")
-                        continuation.resume(returning: res.int ?? 0)
+                    if case .success(let r) = completion {
+                        self.logger.info("slow log reset res: \(r)")
+                        continuation.resume(returning: r.int ?? 0)
                     }
                     self.complete(completion, continuation:continuation)
                 })
@@ -1868,11 +1824,11 @@ extension RediStackClient {
             return try await withCheckedThrowingContinuation { continuation in
                 conn.send(command: "SLOWLOG", with: [RESPValue(from: "GET"), RESPValue(from: size)])
                     .whenComplete({completion in
-                    if case .success(let pong) = completion {
-                        self.logger.info("get slow log res: \(res)")
+                    if case .success(let r) = completion {
+                        self.logger.info("get slow log res: \(r)")
                         
                         var slowLogs = [SlowLogModel]()
-                        res.array?.forEach({ item in
+                        r.array?.forEach({ item in
                             let itemArray = item.array
                             
                             let cmd = itemArray?[3].array!.map({

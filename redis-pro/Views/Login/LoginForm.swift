@@ -6,10 +6,8 @@
 //
 
 import SwiftUI
-import NIO
-import RediStack
-import PromiseKit
 import Logging
+import Cocoa
 
 struct LoginForm: View {
     let logger = Logger(label: "redis-login")
@@ -60,14 +58,6 @@ struct LoginForm: View {
                     MButton(text: "Connect", action: onConnect, disabled: self.globalContext.loading, keyEquivalent: .return)
                         .buttonStyle(BorderedButtonStyle())
                         .keyboardShortcut(.defaultAction)
-//                    MButton(text: "test ssh", action: {
-////                        self.redisInstanceModel.redisModel = self.redisModel
-//                        self.redisInstanceModel.getClient().getSSHConnection().done { connection in
-//                            let _ = connection.ping().whenSuccess { r in
-//                                print("ping  \(r)")
-//                            }
-//                        }
-//                    })
                     
                 }
                 
@@ -146,14 +136,6 @@ struct LoginForm: View {
             let pong = await self.redisInstanceModel.testConnect(self.redisModel)
             self.pingState = pong ? "Connect successed!" : "Connect fail! "
         }
-        
-//
-//        let _ = self.redisInstanceModel.testConnectAsync(redisModel).done({ ping in
-//            self.pingState = ping ? "Connect successed!" : "Connect fail! "
-//        })
-//        .catch({ error in
-//            self.pingState = "Connect fail, error: \(error)! "
-//        })
     }
 
     

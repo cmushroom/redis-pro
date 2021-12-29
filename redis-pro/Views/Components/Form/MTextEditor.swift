@@ -35,3 +35,11 @@ struct MTextEditor_Previews: PreviewProvider {
         MTextEditor(text: $text)
     }
 }
+
+extension NSTextView {
+    open override var frame: CGRect {
+        didSet {
+            self.isAutomaticQuoteSubstitutionEnabled = false
+        }
+    }
+}

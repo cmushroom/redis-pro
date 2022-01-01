@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct FormItemTextArea: View {
-    var label: String
+    var label: String = ""
     var labelWidth:CGFloat = 80
     var placeholder: String?
     var required:Bool = false

@@ -43,6 +43,7 @@ struct ModalView<Content: View>: View {
             }
             .padding(EdgeInsets(top: 0, leading: 8, bottom: 6, trailing: 8))
         }
+        .frame(minWidth: MTheme.DIALOG_W, minHeight: MTheme.DIALOG_H)
         .padding(0)
     }
     

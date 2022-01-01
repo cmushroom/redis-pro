@@ -77,9 +77,9 @@ struct LoginForm: View {
                 VStack(alignment: .leading, spacing: 14) {
                     FormItemText(label: "Name", placeholder: "name", value: $redisModel.name)
                     FormItemText(label: "Host", placeholder: "host", value: $redisModel.host)
-                    FormItemInt(label: "Port", placeholder: "port", value: $redisModel.port).focusable()
-                    FormItemSecure(label: "Password", value: $redisModel.password).focusable()
-                    FormItemInt(label: "Database", value: $redisModel.database).focusable()
+                    FormItemInt(label: "Port", placeholder: "port", value: $redisModel.port)
+                    FormItemPassword(label: "Password", value: $redisModel.password)
+                    FormItemInt(label: "Database", value: $redisModel.database)
                 }
             }
             
@@ -94,10 +94,10 @@ struct LoginForm: View {
             Form {
                 Section {
                     VStack(alignment: .leading, spacing: 12) {
-                        FormItemText(label: "Name", placeholder: "name", value: $redisModel.name, autoTrim: true).focusable()
-                        FormItemText(label: "Host", placeholder: "host", value: $redisModel.host, autoTrim: true).focusable()
+                        FormItemText(label: "Name", placeholder: "name", value: $redisModel.name).focusable()
+                        FormItemText(label: "Host", placeholder: "host", value: $redisModel.host).focusable()
                         FormItemInt(label: "Port", placeholder: "port", value: $redisModel.port).focusable()
-                        FormItemSecure(label: "Password", value: $redisModel.password).focusable()
+                        FormItemPassword(label: "Password", value: $redisModel.password).focusable()
                         FormItemInt(label: "Database", value: $redisModel.database).focusable()
                     }
                 }
@@ -106,10 +106,10 @@ struct LoginForm: View {
                         Divider().padding(.vertical, 2)
                         
                         VStack(alignment: .leading, spacing: 12) {
-                            FormItemText(label: "SSH Host", placeholder: "name", value: $redisModel.sshHost, autoTrim: true).focusable()
+                            FormItemText(label: "SSH Host", placeholder: "name", value: $redisModel.sshHost).focusable()
                             FormItemInt(label: "SSH Port", placeholder: "port", value: $redisModel.sshPort).focusable()
-                            FormItemText(label: "SSH User", placeholder: "host", value: $redisModel.sshUser, autoTrim: true).focusable()
-                            FormItemSecure(label: "SSH Pass", value: $redisModel.sshPass).focusable()
+                            FormItemText(label: "SSH User", placeholder: "host", value: $redisModel.sshUser).focusable()
+                            FormItemPassword(label: "SSH Pass", value: $redisModel.sshPass).focusable()
                         }
                     }
                 footer

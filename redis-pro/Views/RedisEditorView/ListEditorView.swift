@@ -73,7 +73,7 @@ struct ListEditorView: View {
 //                    FormItemTextArea(label: "", placeholder: "value", value: $editValue)
                     MTextView(text: $editValue)
                 }
-                .frame(minWidth:500, minHeight:300)
+                
             }
         }
         .onChange(of: redisKeyModel, perform: { value in

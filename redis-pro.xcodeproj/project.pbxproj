@@ -87,7 +87,7 @@
 		4397288C2643E43800803BE9 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4397288B2643E43800803BE9 /* Constants.swift */; };
 		43BB012326390BC20039565E /* ModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BB012226390BC20039565E /* ModalView.swift */; };
 		43BCCD3526A919B8000BE45F /* MSecureField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BCCD3426A919B8000BE45F /* MSecureField.swift */; };
-		43BCCD3726A91E85000BE45F /* FormItemSecure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BCCD3626A91E85000BE45F /* FormItemSecure.swift */; };
+		43BCCD3726A91E85000BE45F /* FormItemPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BCCD3626A91E85000BE45F /* FormItemPassword.swift */; };
 		43CD286A2670933F00E11876 /* CheckUpdateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD28692670933F00E11876 /* CheckUpdateTests.swift */; };
 		43CD286E2670A03800E11876 /* VersionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD286D2670A03800E11876 /* VersionManager.swift */; };
 		43CD28712670C3DD00E11876 /* ColorSchemeEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD28702670C3DD00E11876 /* ColorSchemeEnum.swift */; };
@@ -265,7 +265,7 @@
 		4397288B2643E43800803BE9 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		43BB012226390BC20039565E /* ModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalView.swift; sourceTree = "<group>"; };
 		43BCCD3426A919B8000BE45F /* MSecureField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSecureField.swift; sourceTree = "<group>"; };
-		43BCCD3626A91E85000BE45F /* FormItemSecure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormItemSecure.swift; sourceTree = "<group>"; };
+		43BCCD3626A91E85000BE45F /* FormItemPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormItemPassword.swift; sourceTree = "<group>"; };
 		43CD2868267091B600E11876 /* .version */ = {isa = PBXFileReference; lastKnownFileType = text; path = .version; sourceTree = "<group>"; };
 		43CD28692670933F00E11876 /* CheckUpdateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckUpdateTests.swift; sourceTree = "<group>"; };
 		43CD286D2670A03800E11876 /* VersionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionManager.swift; sourceTree = "<group>"; };
@@ -637,7 +637,7 @@
 				430A09E125C1559400B60DFC /* FormLabel.swift */,
 				4313576E263ABB1C0077EE46 /* FormWrapper.swift */,
 				430A09E525C155F800B60DFC /* FormItemText.swift */,
-				43BCCD3626A91E85000BE45F /* FormItemSecure.swift */,
+				43BCCD3626A91E85000BE45F /* FormItemPassword.swift */,
 				4313576A263AB6400077EE46 /* FormItemTextArea.swift */,
 				43DFEF3625C29288006EF535 /* FormItemInt.swift */,
 				436BB6962644EED8008B4866 /* FormItemNumber.swift */,
@@ -850,7 +850,7 @@
 				43F22EDF269BEB6800A00F97 /* RedisListTableDemo.swift in Sources */,
 				4385D32E261ED26200BA8ED1 /* IndexView.swift in Sources */,
 				4320AAF425B6740900A8E214 /* redis_proApp.swift in Sources */,
-				43BCCD3726A91E85000BE45F /* FormItemSecure.swift in Sources */,
+				43BCCD3726A91E85000BE45F /* FormItemPassword.swift in Sources */,
 				43F22F1926A6690600A00F97 /* MLabel.swift in Sources */,
 				43CD28AE267B6E0E00E11876 /* LoggerFactory.swift in Sources */,
 				43CD286E2670A03800E11876 /* VersionManager.swift in Sources */,

@@ -66,7 +66,6 @@ struct ZSetEditorView: View {
                     FormItemNumber(label: "Score", placeholder: "score", value: $editScore)
                     FormItemTextArea(label: "Value", placeholder: "value", value: $editValue)
                 }
-                .frame(minWidth:500, minHeight:300)
             }
         }
         .onChange(of: redisKeyModel, perform: { value in

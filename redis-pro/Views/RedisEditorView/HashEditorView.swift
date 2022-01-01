@@ -17,7 +17,6 @@ struct HashEditorView: View {
     
     @State private var datasource:[Any] = [RedisHashEntryModel]()
     @State private var selectIndex:Int = -1
-    @State private var refresh:Int = 0
     
     @State private var editModalVisible:Bool = false
     @State private var editNewField:Bool = false
@@ -25,7 +24,8 @@ struct HashEditorView: View {
     @State private var editField:String = ""
     @State private var editValue:String = ""
     
-    var delButtonDisabled:Bool {
+    
+    private var delButtonDisabled:Bool {
         datasource.count <= 0 || selectIndex == -1
     }
     
@@ -45,13 +45,14 @@ struct HashEditorView: View {
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
             
-            HashEntryTable(datasource: $datasource, selectRowIndex: $selectIndex, refresh: refresh
+            HashEntryTable(datasource: $datasource, selectRowIndex: $selectIndex
                            , deleteAction: { index in
                 onDeleteIndexAction(index)
             }
                            , editAction: { index in
                 onEditIndexAction(index)
-            })
+            }
+            )
             
             // footer
             HStack(alignment: .center, spacing: 4) {
@@ -73,21 +74,19 @@ struct HashEditorView: View {
         }) {
             ModalView("Edit hash entry", action: onSaveFieldAction) {
                 VStack(alignment:.leading, spacing: 8) {
-                    FormItemText(label: "Field", placeholder: "Field", value: $editField, disabled: !editNewField)
-                    FormItemTextArea(label: "Value", placeholder: "Value", value: $editValue)
+                    FormItemText(placeholder: "Field", value: $editField, disabled: !editNewField)
+                    FormItemTextArea(placeholder: "Value", value: $editValue)
                 }
-                .frame(minWidth:640, minHeight:380)
             }
             .onAppear {
-                // 弹窗弹出后再次触发是否可以编辑，才能正常生效
-                if self.editNewField {
-                    self.editNewField.toggle()
-                    self.editNewField.toggle()
-                }
             }
         }
     }
     
+}
+
+// action
+extension HashEditorView {
     // add and update
     func onAddFieldAction() throws -> Void {
         editNewField = true
@@ -122,7 +121,6 @@ struct HashEditorView: View {
                 self.datasource.insert(RedisHashEntryModel(field: editField, value: editValue), at: 0)
             } else {
                 (self.datasource[editIndex] as! RedisHashEntryModel).value = editValue
-                self.refresh += 1
             }
         }
     }

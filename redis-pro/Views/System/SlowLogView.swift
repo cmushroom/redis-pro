@@ -25,7 +25,7 @@ struct SlowLogView: View {
         VStack(alignment: .leading, spacing: MTheme.V_SPACING) {
             // header
             HStack(alignment: .center, spacing: MTheme.H_SPACING) {
-                FormItemInt(label: "Slower Than(us)", labelWidth: 120, value: $slowerThan, suffix: "square.and.pencil", onCommit: onSlowerThanAction, autoCommit: false)
+                FormItemInt(label: "Slower Than(us)", labelWidth: 120, value: $slowerThan, suffix: "square.and.pencil", onCommit: onSlowerThanAction)
                     .help("REDIS_SLOW_LOG_SLOWER_THAN")
                     .frame(width: 320)
                 FormItemInt(label: "Max Len", value: $maxLen, suffix: "square.and.pencil", onCommit: onMaxLenAction)

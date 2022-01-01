@@ -13,13 +13,11 @@ struct MIntField: View {
     var placeholder:String?
     var suffix:String?
     @State private var isEditing = false
-    var onCommit:() throws -> Void = {}
+    var onCommit: (() -> Void)?
     var disabled:Bool = false
-    var autoCommit:Bool = true
     
     // 是否有编辑过，编回过才会触commit
     @State private var isEdited:Bool = false
-    var autoTrim:Bool = false
     
     let logger = Logger(label: "int-field")
     
@@ -67,14 +65,14 @@ struct MIntField: View {
         }
         .padding(EdgeInsets(top: 3, leading: 4, bottom: 3, trailing: 4))
         .background(Color.init(NSColor.textBackgroundColor))
-        .cornerRadius(4)
+        .cornerRadius(MTheme.CORNER_RADIUS)
         .overlay(
-            RoundedRectangle(cornerRadius: 4).stroke(Color.gray.opacity(!disabled && isEditing ?  0.4 : 0.2), lineWidth: 1)
+            RoundedRectangle(cornerRadius: MTheme.CORNER_RADIUS).stroke(Color.gray.opacity(!disabled && isEditing ?  0.4 : 0.2), lineWidth: 1)
         )
     }
     
     func doCommit() -> Void {
-        if autoCommit && self.isEdited {
+        if self.isEdited {
             self.isEdited = false
             doAction()
         }
@@ -82,11 +80,7 @@ struct MIntField: View {
     
     func doAction() -> Void {
         logger.info("on textField commit, value: \(value)")
-        do {
-            try onCommit()
-        } catch {
-            MAlert.error(error)
-        }
+        onCommit?()
     }
 }
 

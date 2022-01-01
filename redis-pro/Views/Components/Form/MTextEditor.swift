@@ -15,7 +15,6 @@ struct MTextEditor: View {
     var body: some View {
         // text editor
         TextEditor(text: $text)
-            .disableAutocorrection(true)
             .font(.body)
             .multilineTextAlignment(.leading)
             .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
@@ -24,7 +23,7 @@ struct MTextEditor: View {
             .onHover { inside in
                 self.editing = inside
             }
-            .addBorder(Color.gray.opacity(!disabled && editing ?  0.4 : 0.2), width: 1, cornerRadius: 4)
+            .addBorder(Color.gray.opacity(!disabled && editing ?  0.4 : 0.2), width: 1, cornerRadius: MTheme.CORNER_RADIUS)
     }
 }
 

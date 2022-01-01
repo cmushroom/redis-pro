@@ -60,11 +60,10 @@ struct SetEditorView: View {
         .sheet(isPresented: $editModalVisible, onDismiss: {
             print("on dismiss")
         }) {
-            ModalView("Edit element", action: onUpdateItemAction) {
+            ModalView("Edit set element", action: onUpdateItemAction) {
                 VStack(alignment:.leading, spacing: MTheme.V_SPACING) {
                     MTextView(text: $editValue)
                 }
-                .frame(minWidth:500, minHeight:300)
             }
         }
         .onChange(of: redisKeyModel, perform: { value in

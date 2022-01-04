@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="18122" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="19529" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="18122"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19529"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -106,6 +107,7 @@
                             </tableColumn>
                         </tableColumns>
                         <connections>
+                            <action trigger="doubleAction" selector="doubleAction:" target="-2" id="i3E-EA-JTu"/>
                             <binding destination="kPX-nh-VnS" name="content" keyPath="arrangedObjects" id="uHR-gM-8ew"/>
                             <binding destination="kPX-nh-VnS" name="selectionIndexes" keyPath="selectionIndexes" previousBinding="uHR-gM-8ew" id="gTi-95-v3q"/>
                         </connections>

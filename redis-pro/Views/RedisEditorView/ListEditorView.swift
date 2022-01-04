@@ -20,7 +20,6 @@ struct ListEditorView: View {
     @StateObject private var page:Page = Page()
     
     @State private var editModalVisible:Bool = false
-    @State private var editNewField:Bool = false
     @State private var editIndex:Int = 0
     @State private var editValue:String = ""
     
@@ -68,10 +67,9 @@ struct ListEditorView: View {
         .sheet(isPresented: $editModalVisible, onDismiss: {
             print("on dismiss")
         }) {
-            ModalView("Edit item", action: onUpdateItemAction) {
+            ModalView("Edit list item", action: onUpdateItemAction) {
                 VStack(alignment:.leading, spacing: MTheme.V_SPACING) {
-//                    FormItemTextArea(label: "", placeholder: "value", value: $editValue)
-                    MTextView(text: $editValue)
+                    FormItemTextArea(label: "", placeholder: "value", value: $editValue)
                 }
                 
             }
@@ -87,7 +85,6 @@ struct ListEditorView: View {
     }
     
     func onEditAction(_ index:Int) -> Void {
-        editNewField = false
         editIndex = index
         editValue = list[index]
         
@@ -107,14 +104,12 @@ struct ListEditorView: View {
     
     func onLPushAction() throws -> Void {
         editModalVisible = true
-        editNewField = true
         editIndex = -1
         editValue = ""
     }
     
     func onRPushAction() throws -> Void {
         editModalVisible = true
-        editNewField = true
         editIndex = -2
         editValue = ""
     }

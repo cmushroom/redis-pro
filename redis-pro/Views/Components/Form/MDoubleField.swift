@@ -8,11 +8,7 @@
 import SwiftUI
 
 struct MDoubleField: View {
-    @Binding var value:Double {
-        didSet {
-            print("did set double \(value)")
-        }
-    }
+    @Binding var value:Double
     var placeholder:String?
     @State private var isEditing = false
     var onCommit:() throws -> Void = {}

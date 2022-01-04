@@ -20,15 +20,6 @@
         }
       },
       {
-        "package": "PromiseKit",
-        "repositoryURL": "https://github.com/mxcl/PromiseKit.git",
-        "state": {
-          "branch": null,
-          "revision": "93c8d41ce96ed78f36c3948be396d76f3ca3de1b",
-          "version": "6.16.2"
-        }
-      },
-      {
         "package": "Puppy",
         "repositoryURL": "https://gitee.com/chengpan168_admin/Puppy.git",
         "state": {

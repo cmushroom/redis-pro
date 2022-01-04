@@ -19,14 +19,16 @@ struct HashEditorView: View {
     @State private var selectIndex:Int = -1
     
     @State private var editModalVisible:Bool = false
-    @State private var editNewField:Bool = false
-    @State private var editIndex:Int = 0
+    @State private var editIndex:Int = -1
     @State private var editField:String = ""
     @State private var editValue:String = ""
     
     
     private var delButtonDisabled:Bool {
         datasource.count <= 0 || selectIndex == -1
+    }
+    private var isNewField: Bool {
+        editIndex == -1
     }
     
     let logger = Logger(label: "redis-hash-editor")
@@ -74,7 +76,7 @@ struct HashEditorView: View {
         }) {
             ModalView("Edit hash entry", action: onSaveFieldAction) {
                 VStack(alignment:.leading, spacing: 8) {
-                    FormItemText(placeholder: "Field", value: $editField, disabled: !editNewField)
+                    FormItemText(placeholder: "Field", value: $editField, disabled: !isNewField)
                     FormItemTextArea(placeholder: "Value", value: $editValue)
                 }
             }
@@ -89,7 +91,6 @@ struct HashEditorView: View {
 extension HashEditorView {
     // add and update
     func onAddFieldAction() throws -> Void {
-        editNewField = true
         editIndex = -1
         editField = ""
         editValue = ""
@@ -98,11 +99,9 @@ extension HashEditorView {
     
     func onEditIndexAction(_ index:Int) -> Void {
         let entry:RedisHashEntryModel = self.datasource[index] as! RedisHashEntryModel
-        let field = entry.field
         
-        editNewField = false
         editIndex = index
-        editField = field
+        editField = entry.field
         editValue = entry.value
         editModalVisible = true
     }

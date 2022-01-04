@@ -18,7 +18,6 @@ struct ZSetEditorView: View {
     @StateObject private var page:Page = Page()
     
     @State private var editModalVisible:Bool = false
-    @State private var editNewField:Bool = false
     @State private var editIndex:Int = 0
     @State private var editValue:String = ""
     @State private var editScore:String = "0"
@@ -60,7 +59,7 @@ struct ZSetEditorView: View {
         .sheet(isPresented: $editModalVisible, onDismiss: {
             print("on dismiss")
         }) {
-            ModalView("Edit element", action: onUpdateItemAction) {
+            ModalView("Edit zset element", action: onUpdateItemAction) {
                 VStack(alignment:.leading, spacing: 8) {
                     //                    TextField("", value: $editScore, formatter: NumberFormatter())
                     FormItemNumber(label: "Score", placeholder: "score", value: $editScore)
@@ -81,7 +80,6 @@ struct ZSetEditorView: View {
     
     func onAddAction() throws -> Void {
         editModalVisible = true
-        editNewField = true
         editIndex = -1
         editValue = ""
         editScore = "0"
@@ -89,7 +87,6 @@ struct ZSetEditorView: View {
     
     func onEditAction(_ index:Int) -> Void {
         editModalVisible = true
-        editNewField = false
         editIndex = index
         editValue = self.datasource[index].value
         editScore = self.datasource[index].score

@@ -16,50 +16,44 @@ struct MIntField: View {
     var onCommit: (() -> Void)?
     var disabled:Bool = false
     
-    // 是否有编辑过，编回过才会触commit
+    // 是否有编辑过，编辑过才会触commit
     @State private var isEdited:Bool = false
     
     let logger = Logger(label: "int-field")
     
+    @ViewBuilder
+    private var field: some View {
+        if #available(macOS 12.0, *) {
+            TextField("", value: $value, formatter: NumberHelper.intFormatter, prompt: Text(placeholder ?? ""))
+                .onSubmit {
+                    doCommit()
+                }
+        } else {
+            TextField(placeholder ?? "", value: $value, formatter: NumberHelper.intFormatter, onEditingChanged: { isEditing in
+                self.isEditing = isEditing
+                if isEditing {
+                    self.isEdited = true
+                }
+            }, onCommit: doCommit)
+        }
+    }
+    
     var body: some View {
         HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 2) {
-            if #available(macOS 12.0, *) {
-                TextField("", value: $value, formatter: NumberHelper.intFormatter, prompt: Text(placeholder ?? ""))
-                    .onSubmit {
-                        doCommit()
-                    }
-                    .labelsHidden()
-                    .lineLimit(1)
-                    .disabled(disabled)
-                    .multilineTextAlignment(.leading)
-                    .font(.body)
-                    .disableAutocorrection(true)
-                    .textFieldStyle(PlainTextFieldStyle())
-                    .onHover { inside in
-                        self.isEditing = inside
-                    }
-            } else {
-                // Fallback on earlier versions
-                
-                TextField(placeholder ?? "", value: $value, formatter: NumberHelper.intFormatter, onEditingChanged: { isEditing in
-                    self.isEditing = isEditing
-                    if isEditing {
-                        self.isEdited = true
-                    }
-                }, onCommit: doCommit)
-                    .disabled(disabled)
-                    .multilineTextAlignment(.leading)
-                    .lineLimit(1)
-                    .font(.body)
-                    .disableAutocorrection(true)
-                    .textFieldStyle(PlainTextFieldStyle())
-                    .onHover { inside in
-                        self.isEditing = inside
-                    }
-            }
+            field
+                .labelsHidden()
+                .lineLimit(1)
+                .disabled(disabled)
+                .multilineTextAlignment(.leading)
+                .font(.body)
+                .disableAutocorrection(true)
+                .textFieldStyle(PlainTextFieldStyle())
+                .onHover { inside in
+                    self.isEditing = inside
+                }
             
             if suffix != nil {
-                MIcon(icon: suffix!, fontSize: MTheme.FONT_SIZE_BUTTON, action: doAction)
+                MIcon(icon: suffix!, fontSize: MTheme.FONT_SIZE_BUTTON, action: doCommit)
                     .padding(0)
             }
         }
@@ -74,13 +68,9 @@ struct MIntField: View {
     func doCommit() -> Void {
         if self.isEdited {
             self.isEdited = false
-            doAction()
+            logger.info("on textField commit, value: \(value)")
+            onCommit?()
         }
-    }
-    
-    func doAction() -> Void {
-        logger.info("on textField commit, value: \(value)")
-        onCommit?()
     }
 }
 

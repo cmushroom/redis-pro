@@ -12,23 +12,23 @@ class NumberHelper {
     static let logger = Logger(label: "number-helper")
     
     static var doubleFormatter:NumberFormatter = {
-        logger.info("NumberFormatHelper init number formatter instance ...")
+        logger.info("NumberFormatHelper init double formatter instance ...")
         
         let formatter = NumberFormatter()
         formatter.locale = Locale(identifier: "en_US")
         formatter.numberStyle = .decimal
         formatter.hasThousandSeparators = false
-        formatter.maximumIntegerDigits = 50
+        formatter.maximumIntegerDigits = 20
         formatter.minimumFractionDigits = 0
-        formatter.maximumFractionDigits = 8
+        formatter.maximumFractionDigits = 10
         formatter.generatesDecimalNumbers = true
-        formatter.maximumSignificantDigits = 50
+        formatter.maximumSignificantDigits = 20
         return formatter
     }()
     
     
     static var intFormatter:NumberFormatter = {
-        logger.info("NumberFormatHelper init number formatter instance ...")
+        logger.info("NumberFormatHelper init int formatter instance ...")
         
         let formatter = NumberFormatter()
         formatter.locale = Locale(identifier: "en_US")

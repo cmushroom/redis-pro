@@ -15,10 +15,11 @@ class HashEntryTableController: NSViewController {
     @IBOutlet weak var tableView: NSTableView!
     @IBOutlet var arrayController: NSArrayController!
     @IBAction func doubleAction(_ sender: NSTableView) {
-        if self.tableView.selectedRow < 0 {
+    
+        if sender.clickedRow < 0 {
             return
         }
-        self.editAction?(self.tableView.selectedRow)
+        self.editAction?(sender.clickedRow)
     }
     
     @objc dynamic var datasource: [Any] = []

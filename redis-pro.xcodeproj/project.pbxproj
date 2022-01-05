@@ -59,7 +59,7 @@
 		43481049262D30CE002809ED /* Helps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43481048262D30CE002809ED /* Helps.swift */; };
 		436BB6932644D126008B4866 /* SetEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436BB6922644D126008B4866 /* SetEditorView.swift */; };
 		436BB6952644E8D6008B4866 /* ZSetEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436BB6942644E8D6008B4866 /* ZSetEditorView.swift */; };
-		436BB6972644EED8008B4866 /* FormItemNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436BB6962644EED8008B4866 /* FormItemNumber.swift */; };
+		436BB6972644EED8008B4866 /* FormItemDouble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436BB6962644EED8008B4866 /* FormItemDouble.swift */; };
 		4370534E262812EE00D8F1B7 /* GlobalContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4370534D262812EE00D8F1B7 /* GlobalContext.swift */; };
 		4370CE682685B07D001E5787 /* ClientListTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4370CE672685B07D001E5787 /* ClientListTableController.swift */; };
 		4370CE6A2685B0B7001E5787 /* ClientListTableController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4370CE692685B0B7001E5787 /* ClientListTableController.xib */; };
@@ -233,7 +233,7 @@
 		43481048262D30CE002809ED /* Helps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helps.swift; sourceTree = "<group>"; };
 		436BB6922644D126008B4866 /* SetEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetEditorView.swift; sourceTree = "<group>"; };
 		436BB6942644E8D6008B4866 /* ZSetEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZSetEditorView.swift; sourceTree = "<group>"; };
-		436BB6962644EED8008B4866 /* FormItemNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormItemNumber.swift; sourceTree = "<group>"; };
+		436BB6962644EED8008B4866 /* FormItemDouble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormItemDouble.swift; sourceTree = "<group>"; };
 		4370534B2626E65D00D8F1B7 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		4370534D262812EE00D8F1B7 /* GlobalContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalContext.swift; sourceTree = "<group>"; };
 		4370CE672685B07D001E5787 /* ClientListTableController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientListTableController.swift; sourceTree = "<group>"; };
@@ -635,7 +635,7 @@
 				43BCCD3626A91E85000BE45F /* FormItemPassword.swift */,
 				4313576A263AB6400077EE46 /* FormItemTextArea.swift */,
 				43DFEF3625C29288006EF535 /* FormItemInt.swift */,
-				436BB6962644EED8008B4866 /* FormItemNumber.swift */,
+				436BB6962644EED8008B4866 /* FormItemDouble.swift */,
 				CE83D51B2758E8D1000DF09D /* NTextField.swift */,
 				CEF000FE2771B6640020A27E /* NTextEditor.swift */,
 				CE916154276B60650026C625 /* NSearchField.swift */,
@@ -874,7 +874,7 @@
 				432A6ADF26A7C3D200F6DB64 /* RedisConfigView.swift in Sources */,
 				43F22EFF26A129B300A00F97 /* RedisHashEntryModel.swift in Sources */,
 				43F22F0726A1455D00A00F97 /* ListTableController.swift in Sources */,
-				436BB6972644EED8008B4866 /* FormItemNumber.swift in Sources */,
+				436BB6972644EED8008B4866 /* FormItemDouble.swift in Sources */,
 				43DFEF3725C29288006EF535 /* FormItemInt.swift in Sources */,
 				4313576D263AB6A20077EE46 /* MTextEditor.swift in Sources */,
 				43481049262D30CE002809ED /* Helps.swift in Sources */,

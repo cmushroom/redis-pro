@@ -6,35 +6,67 @@
 //
 
 import SwiftUI
+import Logging
 
 struct MDoubleField: View {
     @Binding var value:Double
     var placeholder:String?
     @State private var isEditing = false
-    var onCommit:() throws -> Void = {}
+    var onCommit:(() -> Void)?
     var disabled:Bool = false
-    var formatter:Formatter = DoubleFormatter()
     
-    var body: some View {
-        TextField(placeholder ?? "", value: $value, formatter: NumberFormatter(), onEditingChanged: { isEditing in
-            self.isEditing = isEditing
-            print("double field status: \(isEditing), \(value)")
-        }, onCommit: doAction)
-        .disabled(disabled)
-        .font(/*@START_MENU_TOKEN@*/.body/*@END_MENU_TOKEN@*/)
-        .textFieldStyle(PlainTextFieldStyle())
-        .padding(EdgeInsets(top: 3, leading: 4, bottom: 3, trailing: 4))
-        .onHover { inside in
-            self.isEditing = inside
+    // 是否有编辑过，编辑过才会触commit
+    @State private var isEdited:Bool = false
+    
+    
+    let logger = Logger(label: "double-field")
+    
+    @ViewBuilder
+    private var field: some View {
+        if #available(macOS 12.0, *) {
+            TextField("", value: $value, formatter: NumberHelper.doubleFormatter, prompt: Text(placeholder ?? ""))
+                .onSubmit {
+                    doCommit()
+                }
+        } else {
+            TextField(placeholder ?? "", value: $value, formatter: NumberHelper.doubleFormatter, onEditingChanged: { isEditing in
+                self.isEditing = isEditing
+                if isEditing {
+                    self.isEdited = true
+                }
+            }, onCommit: doCommit)
         }
-        .cornerRadius(4)
-        .overlay(
-            RoundedRectangle(cornerRadius: 4).stroke(Color.gray.opacity(!disabled && isEditing ?  0.4 : 0.2), lineWidth: 1)
-        )
     }
     
     
-    func doAction() -> Void {
+    var body: some View {
+        HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 2) {
+            field
+                .labelsHidden()
+                .lineLimit(1)
+                .disabled(disabled)
+                .multilineTextAlignment(.leading)
+                .font(.body)
+                .disableAutocorrection(true)
+                .textFieldStyle(PlainTextFieldStyle())
+                .onHover { inside in
+                    self.isEditing = inside
+                }
+        }
+        .padding(EdgeInsets(top: 3, leading: 4, bottom: 3, trailing: 4))
+        .background(Color.init(NSColor.textBackgroundColor))
+        .cornerRadius(MTheme.CORNER_RADIUS)
+        .overlay(
+            RoundedRectangle(cornerRadius: MTheme.CORNER_RADIUS).stroke(Color.gray.opacity(!disabled && isEditing ?  0.4 : 0.2), lineWidth: 1)
+        )
+    }
+    
+    func doCommit() -> Void {
+        if self.isEdited {
+            self.isEdited = false
+            logger.info("on double field commit, value: \(value)")
+            onCommit?()
+        }
     }
 }
 

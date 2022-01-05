@@ -18,6 +18,9 @@ class ZSetTableController: NSViewController {
     
     @objc dynamic var datasource: [RedisZSetItemModel] = []
     @IBAction func doubleAction(_ sender: NSTableView) {
+        if sender.clickedRow < 0 {
+            return
+        }
         editAction?(sender.clickedRow)
     }
     

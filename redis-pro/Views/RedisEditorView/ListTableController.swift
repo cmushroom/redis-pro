@@ -16,6 +16,10 @@ class ListTableController: NSViewController {
     @IBOutlet weak var tableView: NSTableView!
     @IBOutlet var arrayController: NSArrayController!
     @IBAction func doubleAction(_ sender: NSTableView) {
+        if sender.clickedRow < 0 {
+            return
+        }
+        
         editAction?(sender.clickedRow)
     }
     

@@ -20,7 +20,7 @@ struct ZSetEditorView: View {
     @State private var editModalVisible:Bool = false
     @State private var editIndex:Int = 0
     @State private var editValue:String = ""
-    @State private var editScore:String = "0"
+    @State private var editScore:Double = 0
     
     var delButtonDisabled:Bool {
         datasource.count <= 0 || selectIndex == nil
@@ -62,7 +62,7 @@ struct ZSetEditorView: View {
             ModalView("Edit zset element", action: onUpdateItemAction) {
                 VStack(alignment:.leading, spacing: 8) {
                     //                    TextField("", value: $editScore, formatter: NumberFormatter())
-                    FormItemNumber(label: "Score", placeholder: "score", value: $editScore)
+                    FormItemDouble(label: "Score", placeholder: "score", value: $editScore)
                     FormItemTextArea(label: "Value", placeholder: "value", value: $editValue)
                 }
             }
@@ -82,24 +82,24 @@ struct ZSetEditorView: View {
         editModalVisible = true
         editIndex = -1
         editValue = ""
-        editScore = "0"
+        editScore = 0
     }
     
     func onEditAction(_ index:Int) -> Void {
         editModalVisible = true
         editIndex = index
         editValue = self.datasource[index].value
-        editScore = self.datasource[index].score
+        editScore = Double(self.datasource[index].score) ?? 0
     }
     
     func onUpdateItemAction() throws -> Void {
-        let score:Double = Double(editScore) ?? 0
+        let score:Double = editScore
         Task {
             if editIndex == -1 {
                 let r = await redisInstanceModel.getClient().zadd(redisKeyModel.key, score: score, ele: editValue)
                 if r {
                     self.onSubmit?()
-                    self.datasource.insert(RedisZSetItemModel(value: editValue, score: editScore), at: 0)
+                    self.datasource.insert(RedisZSetItemModel(value: editValue, score: NumberHelper.formatDouble(editScore)), at: 0)
                 }
             } else {
                 let editEle = datasource[editIndex]
@@ -108,7 +108,7 @@ struct ZSetEditorView: View {
                     self.logger.info("redis zset update success, update list")
                     
                     self.datasource[editIndex].value = editValue
-                    self.datasource[editIndex].score = editScore
+                    self.datasource[editIndex].score = NumberHelper.formatDouble(editScore)
                     self.refresh += 1
                 }
             }

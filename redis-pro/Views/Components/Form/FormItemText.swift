@@ -13,7 +13,6 @@ struct FormItemText: View {
     var placeholder: String?
     var required:Bool = false
     @Binding var value: String
-    var disabled:Bool = false
     
     var body: some View {
         HStack(alignment: .center) {
@@ -22,7 +21,7 @@ struct FormItemText: View {
             }
 //            NTextField(stringValue: $value, placeholder: placeholder ?? label ?? "", disabled: disabled).disabled(disabled)
 //            MNSTextField(text: $value)
-            MTextField(value: $value, placeholder: placeholder ?? label, disabled: disabled)
+            MTextField(value: $value, placeholder: placeholder ?? label)
         }
     }
 }

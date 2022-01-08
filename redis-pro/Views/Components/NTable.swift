@@ -86,8 +86,8 @@ class NTable: NSViewController, NSTableViewDelegate, NSTableViewDataSource {
     
 }
 
-struct NTable_Previews: PreviewProvider {
-    static var previews: some View {
-        NTable()
-    }
-}
+//struct NTable_Previews: PreviewProvider {
+//    static var previews: some View {
+//        NTable()
+//    }
+//}

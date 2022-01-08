@@ -21,7 +21,7 @@
       },
       {
         "package": "Puppy",
-        "repositoryURL": "https://gitee.com/chengpan168_admin/Puppy.git",
+        "repositoryURL": "https://github.com/sushichop/Puppy.git",
         "state": {
           "branch": null,
           "revision": "95ce04b0e778b8d7c351876bc98bbf68328dfc9b",
@@ -33,17 +33,17 @@
         "repositoryURL": "https://github.com/Mordil/RediStack.git",
         "state": {
           "branch": null,
-          "revision": "0c3beee7eb7704e50e81d4a89740101b87d02833",
-          "version": "1.2.0"
+          "revision": "16037bbb8248eccaf50b8499d3bb9ed945cfd44c",
+          "version": "1.2.1"
         }
       },
       {
         "package": "swift-crypto",
-        "repositoryURL": "https://gitee.com/mirrors_apple/swift-crypto.git",
+        "repositoryURL": "https://github.com/apple/swift-crypto.git",
         "state": {
           "branch": null,
-          "revision": "3bea268b223651c4ab7b7b9ad62ef9b2d4143eb6",
-          "version": "1.1.6"
+          "revision": "9c53b7a758bb849a7df1bd2314395f5f0c14306f",
+          "version": "2.0.3"
         }
       },
       {

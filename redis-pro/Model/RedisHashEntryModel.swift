@@ -7,9 +7,10 @@
 
 import Foundation
 
-class RedisHashEntryModel:NSObject, Identifiable {
-    @objc var field:String = ""
-    @objc var value:String = ""
+class RedisHashEntryModel:NSObject, Identifiable, ObservableObject {
+    @objc @Published var field:String = ""
+    @objc @Published var value:String = ""
+    @Published var isNew = false
     
     var id:String {
         self.field

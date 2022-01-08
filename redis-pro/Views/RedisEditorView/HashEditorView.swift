@@ -20,15 +20,11 @@ struct HashEditorView: View {
     
     @State private var editModalVisible:Bool = false
     @State private var editIndex:Int = -1
-    @State private var editField:String = ""
-    @State private var editValue:String = ""
+    @StateObject private var editEntry = RedisHashEntryModel()
     
     
     private var delButtonDisabled:Bool {
         datasource.count <= 0 || selectIndex == -1
-    }
-    private var isNewField: Bool {
-        editIndex == -1
     }
     
     let logger = Logger(label: "redis-hash-editor")
@@ -36,7 +32,7 @@ struct HashEditorView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .center , spacing: 4) {
-                IconButton(icon: "plus", name: "Add", action: onAddFieldAction)
+                IconButton(icon: "plus", name: "Add", action: {showEditModel(-1)})
                 IconButton(icon: "trash", name: "Delete", disabled:delButtonDisabled,
                            action: onDeleteAction)
                 
@@ -52,10 +48,9 @@ struct HashEditorView: View {
                 onDeleteIndexAction(index)
             }
                            , editAction: { index in
-                onEditIndexAction(index)
+                showEditModel(index)
             }
             )
-            
             // footer
             HStack(alignment: .center, spacing: 4) {
                 Spacer()
@@ -76,11 +71,12 @@ struct HashEditorView: View {
         }) {
             ModalView("Edit hash entry", action: onSaveFieldAction) {
                 VStack(alignment:.leading, spacing: 8) {
-                    FormItemText(placeholder: "Field", value: $editField, disabled: !isNewField)
-                    FormItemTextArea(placeholder: "Value", value: $editValue)
+                    FormItemText(placeholder: "Field", value: $editEntry.field).disabled(!editEntry.isNew)
+                    FormItemTextArea(placeholder: "Value", value: $editEntry.value)
                 }
-            }
-            .onAppear {
+                .onAppear {
+                    self.setEditForm()
+                }
             }
         }
     }
@@ -89,26 +85,27 @@ struct HashEditorView: View {
 
 // action
 extension HashEditorView {
-    // add and update
-    func onAddFieldAction() throws -> Void {
-        editIndex = -1
-        editField = ""
-        editValue = ""
-        editModalVisible = true
+    func showEditModel(_ index:Int = -1) {
+        self.editIndex = index
+        self.editModalVisible = true
     }
     
-    func onEditIndexAction(_ index:Int) -> Void {
-        let entry:RedisHashEntryModel = self.datasource[index] as! RedisHashEntryModel
-        
-        editIndex = index
-        editField = entry.field
-        editValue = entry.value
-        editModalVisible = true
+    func setEditForm() {
+        if editIndex < 0 {
+            editEntry.field = ""
+            editEntry.value = ""
+            editEntry.isNew = true
+        } else {
+            let entry:RedisHashEntryModel = self.datasource[editIndex] as! RedisHashEntryModel
+            editEntry.field = entry.field
+            editEntry.value = entry.value
+            editEntry.isNew = false
+        }
     }
     
     func onSaveFieldAction() throws -> Void {
         Task {
-            let r = await redisInstanceModel.getClient().hset(redisKeyModel.key, field: editField, value: editValue)
+            let r = await redisInstanceModel.getClient().hset(redisKeyModel.key, field: editEntry.field, value: editEntry.value)
             logger.info("redis hset success, update field list")
             if !r {
                 return
@@ -117,9 +114,9 @@ extension HashEditorView {
             self.onSubmit?()
             
             if editIndex == -1 {
-                self.datasource.insert(RedisHashEntryModel(field: editField, value: editValue), at: 0)
+                self.datasource.insert(RedisHashEntryModel(field: editEntry.field, value: editEntry.value), at: 0)
             } else {
-                (self.datasource[editIndex] as! RedisHashEntryModel).value = editValue
+                (self.datasource[editIndex] as! RedisHashEntryModel).value = editEntry.value
             }
         }
     }

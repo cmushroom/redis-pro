@@ -618,8 +618,8 @@ extension RediStackClient {
                 conn.hset(field, to: value, in: RedisKey(key))
                     .whenComplete({completion in
                         if case .success(let r) = completion {
-                            self.logger.info("hset success, key:\(key), field:\(field), value:\(value)")
-                            continuation.resume(returning: r)
+                            self.logger.info("hset success, key:\(key), field:\(field), value:\(value), r:\(r)")
+                            continuation.resume(returning: true)
                         }
                         
                         self.complete(completion, continuation: continuation)

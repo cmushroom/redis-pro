@@ -13,9 +13,10 @@ struct MTextField: View {
     var placeholder:String?
     var suffix:String?
     @State private var isEditing = false
-    var onCommit:() throws -> Void = {}
-    var disabled:Bool = false
+    var onCommit: (() -> Void)?
     var autoCommit:Bool = true
+    
+    @Environment(\.isEnabled) var isEnabled
     
     // 是否有编辑过，编回过才会触commit
     @State private var isEdited:Bool = false
@@ -54,7 +55,6 @@ struct MTextField: View {
             field
                 .labelsHidden()
                 .lineLimit(1)
-                .disabled(disabled)
                 .multilineTextAlignment(.leading)
                 .font(.body)
                 .disableAutocorrection(true)
@@ -64,7 +64,7 @@ struct MTextField: View {
                 }
             
             if suffix != nil {
-                MIcon(icon: suffix!, fontSize: MTheme.FONT_SIZE_BUTTON, action: doAction)
+                MIcon(icon: suffix!, fontSize: MTheme.FONT_SIZE_BUTTON, action: doCommit)
                     .padding(0)
             }
         }
@@ -72,23 +72,15 @@ struct MTextField: View {
         .background(Color.init(NSColor.textBackgroundColor))
         .cornerRadius(MTheme.CORNER_RADIUS)
         .overlay(
-            RoundedRectangle(cornerRadius: MTheme.CORNER_RADIUS).stroke(Color.gray.opacity(!disabled && isEditing ?  0.4 : 0.2), lineWidth: 1)
+            RoundedRectangle(cornerRadius: MTheme.CORNER_RADIUS).stroke(Color.gray.opacity(isEnabled && isEditing ?  0.4 : 0.2), lineWidth: 1)
         )
     }
     
     func doCommit() -> Void {
         if autoCommit && self.isEdited {
             self.isEdited = false
-            doAction()
-        }
-    }
-    
-    func doAction() -> Void {
-        logger.info("on textField commit, value: \(value)")
-        do {
-            try onCommit()
-        } catch {
-            MAlert.error(error)
+            logger.info("on textField commit, value: \(value)")
+            onCommit?()
         }
     }
 }

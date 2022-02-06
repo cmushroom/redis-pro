@@ -10,7 +10,6 @@ import Foundation
 import NIO
 import RediStack
 import Logging
-import PromiseKit
 
 
 class RedisInstanceModel:ObservableObject, Identifiable {

@@ -16,7 +16,7 @@ struct Demo: View {
     @State var isSecured = true
     var body: some View {
         VStack(spacing: 10) {
-            NTable()
+//            NTable()
             
             ZStack(alignment: .trailing) {
                         if isSecured {

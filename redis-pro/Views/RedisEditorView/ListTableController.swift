@@ -15,11 +15,18 @@ class ListTableController: NSViewController {
     
     @IBOutlet weak var tableView: NSTableView!
     @IBOutlet var arrayController: NSArrayController!
+    @IBAction func doubleAction(_ sender: NSTableView) {
+        if sender.clickedRow < 0 {
+            return
+        }
+        
+        editAction?(sender.clickedRow)
+    }
     
     @objc dynamic var datasource: [String] = []
     
-    var deleteAction: (_ index:Int) -> Void = {_ in }
-    var editAction: (_ index:Int) -> Void = {_ in }
+    var deleteAction: ((Int) -> Void)?
+    var editAction: ((Int) -> Void)?
     
     override func viewDidLoad() {
         let menu = NSMenu()
@@ -39,13 +46,13 @@ class ListTableController: NSViewController {
     
     @objc private func tableViewEditItemClicked(_ sender: AnyObject) {
         logger.info("context menu rename index: \(tableView.clickedRow)")
-        self.editAction(tableView.clickedRow)
+        self.editAction?(tableView.clickedRow)
         //        guard tableView.clickedRow >= 0 else { return }
     }
     
     @objc private func tableViewDeleteItemClicked(_ sender: AnyObject) {
         logger.info("context menu delete index: \(tableView.clickedRow)")
-        self.deleteAction(tableView.clickedRow)
+        self.deleteAction?(tableView.clickedRow)
     }
     
 }

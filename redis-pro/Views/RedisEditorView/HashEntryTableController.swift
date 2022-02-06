@@ -14,10 +14,19 @@ class HashEntryTableController: NSViewController {
     
     @IBOutlet weak var tableView: NSTableView!
     @IBOutlet var arrayController: NSArrayController!
-    @objc dynamic var datasource: [Any] = []
+    @IBAction func doubleAction(_ sender: NSTableView) {
     
-    var deleteAction: (_ index:Int) -> Void = {_ in }
-    var editAction: (_ index:Int) -> Void = {_ in }
+        if sender.clickedRow < 0 {
+            return
+        }
+        self.editAction?(sender.clickedRow)
+    }
+    
+    @objc dynamic var datasource: [Any] = []
+    @objc var doubleAction: ((Int) -> Void)?
+    var deleteAction: ((Int) -> Void)?
+    var editAction: ((Int) -> Void)?
+    
     
     override func viewDidLoad() {
         let menu = NSMenu()
@@ -30,28 +39,26 @@ class HashEntryTableController: NSViewController {
         self.datasource = datasource
     }
     
-    func setUp(deleteAction: @escaping (_ index:Int) -> Void, editAction: @escaping (_ index:Int) -> Void) -> Void {
+    func setUp(deleteAction: @escaping (Int) -> Void, editAction: @escaping (Int) -> Void) -> Void {
         self.deleteAction = deleteAction
         self.editAction = editAction
     }
     
     @objc private func tableViewEditItemClicked(_ sender: AnyObject) {
         logger.info("context menu rename index: \(tableView.clickedRow)")
-        self.editAction(tableView.clickedRow)
+        self.editAction?(tableView.clickedRow)
 //        guard tableView.clickedRow >= 0 else { return }
     }
     
     @objc private func tableViewDeleteItemClicked(_ sender: AnyObject) {
         logger.info("context menu delete index: \(tableView.clickedRow)")
-        self.deleteAction(tableView.clickedRow)
+        self.deleteAction?(tableView.clickedRow)
     }
 }
 
 struct HashEntryTable: NSViewControllerRepresentable {
     @Binding var datasource: [Any]
     @Binding var selectRowIndex:Int
-    var refresh:Int = 0
-    
     
     var deleteAction: (_ index:Int) -> Void = {_ in }
     var editAction: (_ index:Int) -> Void = {_ in }
@@ -65,7 +72,6 @@ struct HashEntryTable: NSViewControllerRepresentable {
     
     func makeNSViewController(context: Context) -> NSViewController {
         let controller = HashEntryTableController()
-        
         controller.setUp(deleteAction: deleteAction, editAction: editAction)
         
         return controller

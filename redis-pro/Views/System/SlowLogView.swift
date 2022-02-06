@@ -25,16 +25,16 @@ struct SlowLogView: View {
         VStack(alignment: .leading, spacing: MTheme.V_SPACING) {
             // header
             HStack(alignment: .center, spacing: MTheme.H_SPACING) {
-                FormItemInt(label: "Slower Than(us)", labelWidth: 120, value: $slowerThan, suffix: "square.and.pencil", onCommit: onSlowerThanAction, autoCommit: false)
+                FormItemInt(label: "Slower Than(us)", labelWidth: 120, value: $slowerThan, suffix: "square.and.pencil", onCommit: onSlowerThanAction)
                     .help("REDIS_SLOW_LOG_SLOWER_THAN")
                     .frame(width: 320)
-                FormItemInt(label: "Max Len", value: $maxLen, suffix: "square.and.pencil", onCommit: onMaxLenAction, autoCommit: false)
+                FormItemInt(label: "Max Len", value: $maxLen, suffix: "square.and.pencil", onCommit: onMaxLenAction)
                     .help("REDIS_SLOW_LOG_MAX_LEN")
-                    .frame(width: 150)
+                    .frame(width: 200)
                 
-            FormItemInt(label: "Size", value: $size, suffix: "square.and.pencil", onCommit: onSlowLogSizeChangeAction, autoCommit: true)
+            FormItemInt(label: "Size", value: $size, suffix: "square.and.pencil", onCommit: onSlowLogSizeChangeAction)
                 .help("REDIS_SLOW_LOG_SIZE")
-                .frame(width: 150)
+                .frame(width: 200)
                 
                 Spacer()
                 MButton(text: "Reset", action: onSlowLogResetAction)
@@ -56,58 +56,63 @@ struct SlowLogView: View {
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
         }.onAppear {
-            getSlowLog()
-            getSlowLogMaxLen()
-            getSlowLogSlowerThan()
+            onRefreshAction()
         }
     }
     
     func onRefreshAction() -> Void {
-        getSlowLog()
-        getSlowLogMaxLen()
-        getSlowLogSlowerThan()
+        Task {
+            await getSlowLog()
+            await getSlowLogMaxLen()
+            await getSlowLogSlowerThan()
+        }
     }
     
     func onSlowerThanAction() -> Void {
         logger.info("update slow log slower than: \(self.slowerThan)")
-        let _ = self.redisInstanceModel.getClient().setConfig(key: "slowlog-log-slower-than", value: "\(maxLen)")
+        Task {
+            let _ = await self.redisInstanceModel.getClient().setConfig(key: "slowlog-log-slower-than", value: "\(slowerThan)")
+        }
     }
     
     func onMaxLenAction() -> Void {
         logger.info("update slow log max len: \(self.maxLen)")
-        let _ = self.redisInstanceModel.getClient().setConfig(key: "slowlog-max-len", value: "\(maxLen)")
+        Task {
+            let _ = await self.redisInstanceModel.getClient().setConfig(key: "slowlog-max-len", value: "\(maxLen)")
+        }
     }
     
     func onSlowLogResetAction() -> Void {
-        let _ = self.redisInstanceModel.getClient().slowLogReset().done({_ in
-            self.getSlowLog()
-        })
+        Task {
+            let r = await self.redisInstanceModel.getClient().slowLogReset()
+            if r {
+                await self.getSlowLog()
+            }
+        }
     }
     
     func onSlowLogSizeChangeAction() -> Void {
-        getSlowLog()
+        Task {
+            await getSlowLog()
+        }
     }
     
-    func getSlowLog() -> Void {
-        let _ = self.redisInstanceModel.getClient().getSlowLog(self.size).done({ res in
-            self.datasource = res
-        })
+    func getSlowLog() async -> Void {
+        let res = await self.redisInstanceModel.getClient().getSlowLog(self.size)
+        self.datasource = res
         
-        let _ = self.redisInstanceModel.getClient().slowLogLen().done({ res in
-            self.total = res
-        })
+        let total = await self.redisInstanceModel.getClient().slowLogLen()
+        self.total = total
     }
     
-    func getSlowLogMaxLen() -> Void {
-        let _ = self.redisInstanceModel.getClient().getConfigOne(key: "slowlog-max-len").done({ res in
-            self.maxLen = NumberHelper.toInt(res)
-        })
+    func getSlowLogMaxLen() async -> Void {
+        let res = await self.redisInstanceModel.getClient().getConfigOne(key: "slowlog-max-len")
+        self.maxLen = NumberHelper.toInt(res)
     }
     
-    func getSlowLogSlowerThan() -> Void {
-        let _ = self.redisInstanceModel.getClient().getConfigOne(key: "slowlog-log-slower-than").done({ res in
-            self.slowerThan = NumberHelper.toInt(res)
-        })
+    func getSlowLogSlowerThan() async -> Void {
+        let res = await self.redisInstanceModel.getClient().getConfigOne(key: "slowlog-log-slower-than")
+        self.slowerThan = NumberHelper.toInt(res)
     }
 }
 

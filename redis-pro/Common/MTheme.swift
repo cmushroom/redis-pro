@@ -12,6 +12,11 @@ struct MTheme {
 //    static var PRIMARY:Color = Color(red: 0.1, green: 0.1, blue: 0.1)
     static var PRIMARY:Color = Color.gray
     
+    static var CORNER_RADIUS:CGFloat = 2
+    
+    static var DIALOG_W:CGFloat = 640
+    static var DIALOG_H:CGFloat = 400
+    
 //    spacing
     static var H_SPACING:CGFloat = 6
     static var H_SPACING_L:CGFloat = 10

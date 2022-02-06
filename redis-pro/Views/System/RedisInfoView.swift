@@ -43,24 +43,28 @@ struct RedisInfoView: View {
     }
     
     func getInfo() -> Void {
-        let _ = redisInstanceModel.getClient().info().done({res in
+        Task {
+            let res = await redisInstanceModel.getClient().info()
             self.redisInfoModels = res
-        })
+        }
     }
     func onRefrehAction() -> Void {
-        let _ = redisInstanceModel.getClient().info().done({res in
+        Task {
+            let res = await redisInstanceModel.getClient().info()
             for redisInfoModel in res {
                 if let index = self.redisInfoModels.firstIndex(where: {$0.section == redisInfoModel.section}) {
                     self.redisInfoModels[index].infos = redisInfoModel.infos
                 }
             }
-        })
+            
+        }
     }
     
     func onResetStateAction() -> Void {
-        let _ = redisInstanceModel.getClient().resetState().done({_ in
+        Task {
+            let _ = await redisInstanceModel.getClient().resetState()
             self.onRefrehAction()
-        })
+        }
     }
 }
 

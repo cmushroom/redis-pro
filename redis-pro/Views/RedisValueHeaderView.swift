@@ -24,7 +24,7 @@ struct RedisValueHeaderView: View {
     
     var body: some View {
         HStack(alignment: .center, spacing: 6) {
-            FormItemText(label: "Key", labelWidth: 40, required: true, value: $redisKeyModel.key, disabled: !redisKeyModel.isNew)
+            FormItemText(label: "Key", labelWidth: 40, required: true, value: $redisKeyModel.key).disabled(!redisKeyModel.isNew)
             RedisKeyTypePicker(label: "Type", value: $redisKeyModel.type, disabled: !redisKeyModel.isNew)
             Spacer()
             

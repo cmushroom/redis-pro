@@ -17,7 +17,7 @@ struct ClientListDemo: View {
 struct ClientListDemo_Previews: PreviewProvider {
     
     @State static var list = [ClientModel(), ClientModel()]
-    @State static var selectRowIndex: Int?
+    @State static var selectRowIndex: Int = -1
     
     static var previews: some View {
         VStack {

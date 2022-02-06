@@ -17,9 +17,15 @@ class ZSetTableController: NSViewController {
     @IBOutlet var arrayController: NSArrayController!
     
     @objc dynamic var datasource: [RedisZSetItemModel] = []
+    @IBAction func doubleAction(_ sender: NSTableView) {
+        if sender.clickedRow < 0 {
+            return
+        }
+        editAction?(sender.clickedRow)
+    }
     
-    var deleteAction: (_ index:Int) -> Void = {_ in }
-    var editAction: (_ index:Int) -> Void = {_ in }
+    var deleteAction: ((Int) -> Void)?
+    var editAction: ((Int) -> Void)?
     
     override func viewDidLoad() {
         let menu = NSMenu()
@@ -39,13 +45,13 @@ class ZSetTableController: NSViewController {
     
     @objc private func tableViewEditItemClicked(_ sender: AnyObject) {
         logger.info("context menu rename index: \(tableView.clickedRow)")
-        self.editAction(tableView.clickedRow)
+        self.editAction?(tableView.clickedRow)
 //        guard tableView.clickedRow >= 0 else { return }
     }
     
     @objc private func tableViewDeleteItemClicked(_ sender: AnyObject) {
         logger.info("context menu delete index: \(tableView.clickedRow)")
-        self.deleteAction(tableView.clickedRow)
+        self.deleteAction?(tableView.clickedRow)
     }
     
 }

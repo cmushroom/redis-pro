@@ -21,7 +21,7 @@ struct MButton: View {
     var keyEquivalent:KeyEquivalent?
     
     var body: some View {
-        NativeButton(title: text, keyEquivalent: keyEquivalent, action: doAction, disabled: disabled)
+        NButton(title: text, keyEquivalent: keyEquivalent, action: doAction, disabled: disabled)
             //        Button(action: doAction) {
             //            Text(text)
             //                .font(.system(size: MTheme.FONT_SIZE_BUTTON))
@@ -94,7 +94,7 @@ enum KeyEquivalent: String {
 }
 
 @available(macOS 10.15, *)
-struct NativeButton: NSViewRepresentable {
+struct NButton: NSViewRepresentable {
     var title: String?
     var attributedTitle: NSAttributedString?
     var keyEquivalent: KeyEquivalent?
@@ -109,6 +109,7 @@ struct NativeButton: NSViewRepresentable {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setContentHuggingPriority(.defaultHigh, for: .vertical)
         button.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        button.isEnabled = !disabled
         
         if icon != nil {
             button.image = NSImage(systemSymbolName: icon!, accessibilityDescription: nil)

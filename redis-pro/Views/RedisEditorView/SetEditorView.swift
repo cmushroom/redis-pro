@@ -19,7 +19,6 @@ struct SetEditorView: View {
     @StateObject private var page:Page = Page()
     
     @State private var editModalVisible:Bool = false
-    @State private var editNewField:Bool = false
     @State private var editIndex:Int = 0
     @State private var editValue:String = ""
     
@@ -60,11 +59,10 @@ struct SetEditorView: View {
         .sheet(isPresented: $editModalVisible, onDismiss: {
             print("on dismiss")
         }) {
-            ModalView("Edit element", action: onUpdateItemAction) {
+            ModalView("Edit set element", action: onUpdateItemAction) {
                 VStack(alignment:.leading, spacing: MTheme.V_SPACING) {
-                    MTextView(text: $editValue)
+                    FormItemTextArea(label: "Value", placeholder: "value", value: $editValue)
                 }
-                .frame(minWidth:500, minHeight:300)
             }
         }
         .onChange(of: redisKeyModel, perform: { value in
@@ -80,20 +78,17 @@ struct SetEditorView: View {
     
     func onAddAction() throws -> Void {
         editModalVisible = true
-        editNewField = true
         editIndex = -1
         editValue = ""
     }
     
     func onEditAction(_ index:Int) -> Void {
         editModalVisible = true
-        editNewField = false
         editIndex = index
         editValue = list[index]
     }
     
     func onUpdateItemAction() throws -> Void {
-        let fromValue = self.list[self.editIndex]
         Task {
             if editIndex == -1 {
                 let r = await redisInstanceModel.getClient().sadd(redisKeyModel.key, ele: editValue)
@@ -103,6 +98,7 @@ struct SetEditorView: View {
                 }
                 
             } else {
+                let fromValue = self.list[self.editIndex]
                 let r = await redisInstanceModel.getClient().supdate(redisKeyModel.key, from: fromValue, to: editValue )
                 if r > 0 {
                     self.logger.info("redis set update success, update list")

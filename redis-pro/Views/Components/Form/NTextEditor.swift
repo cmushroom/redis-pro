@@ -18,10 +18,10 @@ struct NTextEditor: NSViewRepresentable {
     func makeNSView(context: Context) -> NSTextView {
         let textField = NSTextView()
         textField.string = value
-//        textField.place = placeholder
+//        textField.placeho = placeholder
         textField.delegate = context.coordinator
 
-//        textField.isEnabled = !disable
+//        textField.disable = !disable
         return textField
     }
     

@@ -9,7 +9,6 @@ import Foundation
 import NIO
 import RediStack
 import Logging
-import PromiseKit
 import NIOSSH
 import Swift
 
@@ -393,54 +392,6 @@ class RediStackClient {
         }
     }
     
-    
-    func getConnectionAsync() -> Promise<RedisConnection> {
-        if self.connection != nil && self.connection!.isConnected{
-            return Promise<RedisConnection>.value(self.connection!)
-        } else {
-            self.logger.info("get redis connection, but connection is not available...")
-            self.close()
-        }
-        
-        if self.redisModel.connectionType == RedisConnectionTypeEnum.SSH.rawValue {
-            return getSSHConnection()
-        }
-        
-        return Promise<RedisConnection>{ resolver in
-            self.logger.info("start get new redis connection...")
-            
-            let eventLoop = MultiThreadedEventLoopGroup(numberOfThreads: 1).next()
-            var configuration: RedisConnection.Configuration
-            do {
-                if (self.redisModel.password.isEmpty) {
-                    configuration = try RedisConnection.Configuration(hostname: self.redisModel.host, port: self.redisModel.port, initialDatabase: self.redisModel.database, defaultLogger: logger)
-                } else {
-                    configuration = try RedisConnection.Configuration(hostname: self.redisModel.host, port: self.redisModel.port, password: self.redisModel.password, initialDatabase: self.redisModel.database, defaultLogger: logger)
-                }
-                
-                let future = RedisConnection.make(
-                    configuration: configuration
-                    , boundEventLoop: eventLoop
-                )
-                
-                future.whenSuccess({ redisConnection in
-                    self.connection = redisConnection
-                    resolver.fulfill(redisConnection)
-                    self.logger.info("get new redis connection success")
-                })
-                future.whenFailure({ error in
-                    self.logger.info("get new redis connection error: \(error)")
-                    
-                    resolver.reject(error)
-                })
-                
-            } catch {
-                self.logger.error("get new redis connection error \(error)")
-                resolver.reject(error)
-            }
-        }
-    }
-    
     func close() -> Void {
         if connection == nil {
             logger.info("close redis connection, connection is nil, over...")
@@ -455,15 +406,15 @@ class RediStackClient {
         self.closeSSH()
     }
     
-    func afterPromise<T:CatchMixin>(_ promise:T) -> Void {
-        promise
-            .catch({error in
-                self.globalContext?.showError(error)
-            })
-                    .finally {
-                self.globalContext?.loading = false
-            }
-    }
+//    func afterPromise<T:CatchMixin>(_ promise:T) -> Void {
+//        promise
+//            .catch({error in
+//                self.globalContext?.showError(error)
+//            })
+//                    .finally {
+//                self.globalContext?.loading = false
+//            }
+//    }
 }
 
 // key
@@ -667,8 +618,8 @@ extension RediStackClient {
                 conn.hset(field, to: value, in: RedisKey(key))
                     .whenComplete({completion in
                         if case .success(let r) = completion {
-                            self.logger.info("hset success, key:\(key), field:\(field), value:\(value)")
-                            continuation.resume(returning: r)
+                            self.logger.info("hset success, key:\(key), field:\(field), value:\(value), r:\(r)")
+                            continuation.resume(returning: true)
                         }
                         
                         self.complete(completion, continuation: continuation)
@@ -1250,217 +1201,231 @@ extension RediStackClient {
 
 // list
 extension RediStackClient {
-    func pageList(_ redisKeyModel:RedisKeyModel, page:Page) -> Promise<[String?]> {
-        if redisKeyModel.isNew {
-            return Promise<[String?]>.value([String?]())
-        }
-        return pageList(redisKeyModel.key, page: page)
-    }
-    
-    func pageList(_ key:String, page:Page) -> Promise<[String?]> {
+
+    func pageList(_ key:String, page:Page) async -> [String?] {
         
         logger.info("redis list page, key: \(key), page: \(page)")
-        self.globalContext?.loading = true
-        
-        let cursor:Int = (page.current - 1) * page.size
-        
-        
-        let promise =
-        Promise<[String?]> {resolver in
-            let _ = when(fulfilled: llen(key), lrange(key, start: cursor, stop: cursor + page.size - 1)).done({ r1, r2 in
-                let total = r1
-                page.total = total
-                resolver.fulfill(r2)
-            })
-            
+        begin()
+        defer {
+            complete()
         }
-        afterPromise(promise)
-        return promise
+        do {
+            let cursor:Int = (page.current - 1) * page.size
+            let r1 = try await llen(key)
+            let r2 = try await lrange(key, start: cursor, stop: cursor + page.size - 1)
+            let total = r1
+            page.total = total
+            return r2
+        } catch {
+            handleError(error)
+        }
+        return []
     }
     
-    private func lrange(_ key:String, start:Int, stop:Int) -> Promise<[String?]> {
+    private func lrange(_ key:String, start:Int, stop:Int) async throws -> [String?] {
         
         logger.debug("redis list range, key: \(key)")
         
-        return getConnectionAsync().then({connection in
-            Promise<[String?]> {resolver in
-                connection.lrange(from: RedisKey(key), firstIndex: start, lastIndex: stop, as: String.self)
-                    .whenComplete({completion in
-                        if case .success(let r) = completion {
-                            resolver.fulfill(r)
-                        }
-                        else if case .failure(let error) = completion {
-                            self.logger.error("redis list lrem error \(error)")
-                            resolver.reject(error)
-                        }
-                    })
-            }
-        })
-    }
-    
-    func ldel(_ key:String, index:Int) -> Promise<Int> {
-        logger.debug("redis list delete, key: \(key), index:\(index)")
+        let conn = try await getConn()
         
-        let promise = lsetInner(key, index: index, value: Constants.LIST_VALUE_DELETE_MARK).then({ _ in
-            self.getConnectionAsync().then({connection in
-                Promise<Int> {resolver in
-                    connection.lrem(Constants.LIST_VALUE_DELETE_MARK, from: RedisKey(key), count: 0)
-                        .whenComplete({completion in
-                            if case .success(let r) = completion {
-                                resolver.fulfill(r)
-                            }
-                            else if case .failure(let error) = completion {
-                                self.logger.error("redis list lrem error \(error)")
-                                resolver.reject(error)
-                            }
-                        })
-                }
-            })
-        })
-        
-        afterPromise(promise)
-        return promise
-    }
-    
-    func lset(_ key:String, index:Int, value:String) -> Promise<Void> {
-        self.globalContext?.loading = true
-        
-        let promise = lsetInner(key, index: index, value: value)
-        afterPromise(promise)
-        return promise
-    }
-    
-    private func lsetInner(_ key:String, index:Int, value:String) -> Promise<Void> {
-        let promise = getConnectionAsync().then({connection in
-            Promise<Void> {resolver in
-                connection.lset(index: index, to: value, in: RedisKey(key))
-                    .whenComplete({completion in
-                        if case .success(let r) = completion {
-                            resolver.fulfill(r)
-                        }
-                        else if case .failure(let error) = completion {
-                            self.logger.error("redis list lset error \(error)")
-                            resolver.reject(error)
-                        }
-                    })
-            }
-        })
-        
-        return promise
-    }
-    
-    func lpush(_ key:String, value:String) -> Promise<Int> {
-        self.globalContext?.loading = true
-        
-        let promise = getConnectionAsync().then({connection in
-            Promise<Int> {resolver in
-                connection.lpush(value, into: RedisKey(key))
-                    .whenComplete({completion in
-                        if case .success(let r) = completion {
-                            resolver.fulfill(r)
-                        }
-                        else if case .failure(let error) = completion {
-                            self.logger.error("redis list lpush error \(error)")
-                            resolver.reject(error)
-                        }
-                    })
-            }
-        })
-        
-        afterPromise(promise)
-        return promise
-    }
-    
-    func rpush(_ key:String, value:String) -> Promise<Int> {
-        self.globalContext?.loading = true
-        
-        let promise = getConnectionAsync().then({connection in
-            Promise<Int> {resolver in
-                connection.rpush(value, into: RedisKey(key))
-                    .whenComplete({completion in
-                        if case .success(let r) = completion {
-                            resolver.fulfill(r)
-                        }
-                        else if case .failure(let error) = completion {
-                            self.logger.error("redis list rpush error \(error)")
-                            resolver.reject(error)
-                        }
-                    })
-            }
-        })
-        
-        afterPromise(promise)
-        return promise
-    }
-    
-    private func llen(_ key:String) -> Promise<Int> {
-        logger.debug("redis list length, key: \(key)")
-        
-        return getConnectionAsync().then({connection in
-            Promise<Int> {resolver in
-                connection.llen(of: RedisKey(key)).whenComplete({completion in
+        return try await withCheckedThrowingContinuation { continuation in
+            
+            conn.lrange(from: RedisKey(key), firstIndex: start, lastIndex: stop, as: String.self)
+                .whenComplete({completion in
                     if case .success(let r) = completion {
-                        resolver.fulfill(r)
+                        continuation.resume(returning: r)
                     }
+                    
                     else if case .failure(let error) = completion {
-                        self.logger.error("redis list llen error \(error)")
-                        resolver.reject(error)
+                        self.logger.error("redis list range error \(error)")
+                        continuation.resume(throwing: error)
                     }
                 })
+        }
+    }
+    
+    func ldel(_ key:String, index:Int) async -> Int {
+        logger.debug("redis list delete, key: \(key), index:\(index)")
+        
+        begin()
+        defer {
+            complete()
+        }
+        
+        do {
+            try await lsetInner(key, index: index, value: Constants.LIST_VALUE_DELETE_MARK)
+            
+            let conn = try await getConn()
+            return try await withCheckedThrowingContinuation { continuation in
+                
+                conn.lrem(Constants.LIST_VALUE_DELETE_MARK, from: RedisKey(key), count: 0)
+                    .whenComplete({completion in
+                        if case .success(let r) = completion {
+                            continuation.resume(returning: r)
+                        }
+                        
+                        self.complete(completion, continuation: continuation)
+                    })
             }
-        })
+        } catch {
+            handleError(error)
+        }
+        return 0
+    }
+    
+    func lset(_ key:String, index:Int, value:String) async -> Void {
+        begin()
+        defer {
+            complete()
+        }
+        do {
+            try await lsetInner(key, index: index, value: value)
+        } catch {
+            handleError(error)
+        }
+    }
+    
+    private func lsetInner(_ key:String, index:Int, value:String) async throws -> Void {
+        let conn = try await getConn()
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            
+            conn.lset(index: index, to: value, in: RedisKey(key))
+                .whenComplete({completion in
+                    if case .success(let r) = completion {
+                        continuation.resume(returning: r)
+                    }
+                    
+                    else if case .failure(let error) = completion {
+                        self.logger.error("redis list lset error \(error)")
+                        continuation.resume(throwing: error)
+                    }
+                })
+        }
+    }
+    
+    func lpush(_ key:String, value:String) async -> Int {
+        begin()
+        defer {
+            complete()
+        }
+        
+        do {
+            let conn = try await getConn()
+            return try await withCheckedThrowingContinuation { continuation in
+                
+                conn.lpush(value, into: RedisKey(key))
+                    .whenComplete({completion in
+                        if case .success(let r) = completion {
+                            continuation.resume(returning: r)
+                        }
+                        
+                        self.complete(completion, continuation: continuation)
+                    })
+            }
+        } catch {
+            handleError(error)
+        }
+        return 0
+    }
+    
+    func rpush(_ key:String, value:String) async -> Int {
+        begin()
+        defer {
+            complete()
+        }
+        
+        do {
+            let conn = try await getConn()
+            return try await withCheckedThrowingContinuation { continuation in
+                
+                conn.rpush(value, into: RedisKey(key))
+                    .whenComplete({completion in
+                        if case .success(let r) = completion {
+                            continuation.resume(returning: r)
+                        }
+                        
+                        self.complete(completion, continuation: continuation)
+                    })
+            }
+        } catch {
+            handleError(error)
+        }
+        return 0
+    }
+    
+    private func llen(_ key:String) async throws -> Int {
+        logger.debug("redis list length, key: \(key)")
+        let conn = try await getConn()
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            
+            conn.llen(of: RedisKey(key))
+                .whenComplete({completion in
+                    if case .success(let r) = completion {
+                        continuation.resume(returning: r)
+                    }
+                    
+                    else if case .failure(let error) = completion {
+                        self.logger.error("redis list llen error \(error)")
+                        continuation.resume(throwing: error)
+                    }
+                })
+        }
     }
 }
 
 // system
 extension RediStackClient {
     
-    func selectDB(_ database: Int) -> Promise<Void> {
-        let promise = getConnectionAsync().then({connection in
-            Promise<Void> {resolver in
-                connection.select(database: database).whenComplete{ completion in
-                    if case .success(let r) = completion {
-                        self.logger.info("select redis database: \(database)")
-                        
-                        resolver.fulfill(r)
-                    }
-                    else if case .failure(let error) = completion {
-                        resolver.reject(error)
-                    }
-                }
+    func selectDB(_ database: Int) async -> Bool {
+        do {
+            let conn = try await getConn()
+            return try await withCheckedThrowingContinuation { continuation in
                 
+                conn.select(database: database)
+                    .whenComplete({completion in
+                        if case .success(let r) = completion {
+                            self.logger.info("select redis database: \(database), r: \(r)")
+                            continuation.resume(returning: true)
+                        }
+                        
+                        self.complete(completion, continuation: continuation)
+                    })
             }
-        })
-        
-        afterPromise(promise)
-        return promise
+        } catch {
+            handleError(error)
+        }
+        return false
     }
     
-    func databases() -> Promise<Int> {
-        let promise =
-        getConnectionAsync().then({connection in
-            Promise<Int> { resolver in
-                connection.send(command: "CONFIG", with: [RESPValue(from: "GET"), RESPValue(from: "databases")])
-                    .whenComplete{ completion in
+    func databases() async -> Int {
+        do {
+            let conn = try await getConn()
+            return try await withCheckedThrowingContinuation { continuation in
+                
+                conn.send(command: "CONFIG", with: [RESPValue(from: "GET"), RESPValue(from: "databases")])
+                    .whenComplete({completion in
                         if case .success(let r) = completion {
                             let dbs = r.array
                             self.logger.info("get config databases: \(String(describing: dbs))")
-                            
-                            resolver.fulfill(NumberHelper.toInt(dbs?[1], defaultValue: 16))
+                            continuation.resume(returning: NumberHelper.toInt(dbs?[1], defaultValue: 16))
                         }
-                        else if case .failure(let error) = completion {
-                            resolver.reject(error)
-                        }
-                    }
+                        
+                        self.complete(completion, continuation: continuation)
+                    })
             }
-        })
-        
-        afterPromise(promise)
-        return promise
+        } catch {
+            handleError(error)
+        }
+        return 0
     }
     
     func dbsize() async -> Int {
         begin()
+        defer {
+            complete()
+        }
         do {
             let conn = try await getConn()
             
@@ -1486,63 +1451,73 @@ extension RediStackClient {
         return 0
     }
     
-    func flushDB() -> Promise<Bool> {
-        self.globalContext?.loading = true
-        
-        let promise = getConnectionAsync().then({connection in
-            Promise<Bool> {resolver in
-                connection.send(command: "FLUSHDB")
-                    .whenComplete { completion in
-                        if case .success(let res) = completion {
-                            self.logger.info("flush db success: \(res)")
-                            resolver.fulfill(true)
+    func flushDB() async -> Bool {
+        begin()
+        defer {
+            complete()
+        }
+        do {
+            let conn = try await getConn()
+            
+            return try await withCheckedThrowingContinuation { continuation in
+                
+                conn.send(command: "FLUSHDB")
+                    .whenComplete({completion in
+                        if case .success(let r) = completion {
+                            self.logger.info("flush db success: \(r)")
+                            continuation.resume(returning: true)
                         }
-                        else if case .failure(let error) = completion {
-                            resolver.reject(error)
-                        }
-                    }
+                        self.complete(completion, continuation: continuation)
+                    })
+                
             }
-        })
-        
-        afterPromise(promise)
-        return promise
+        } catch {
+            handleError(error)
+        }
+        return false
     }
     
-    func clientKill(_ clientModel:ClientModel) -> Promise<Bool> {
-        self.globalContext?.loading = true
-        
-        let promise =
-        getConnectionAsync().then({connection in
-            Promise<Bool> { resolver in
-                connection.send(command: "CLIENT", with: [RESPValue(from: "KILL"), RESPValue(from: "\(clientModel.addr)")])
-                    .whenComplete{ completion in
-                        if case .success(let res) = completion {
-                            self.logger.info("client kill success: \(res)")
-                            
-                            resolver.fulfill(true)
+    func clientKill(_ clientModel:ClientModel) async -> Bool {
+        begin()
+        defer {
+            complete()
+        }
+        do {
+            let conn = try await getConn()
+            
+            return try await withCheckedThrowingContinuation { continuation in
+                
+                conn.send(command: "CLIENT", with: [RESPValue(from: "KILL"), RESPValue(from: "\(clientModel.addr)")])
+                    .whenComplete({completion in
+                        if case .success(let r) = completion {
+                            self.logger.info("flush db success: \(r)")
+                            continuation.resume(returning: true)
                         }
-                        else if case .failure(let error) = completion {
-                            resolver.reject(error)
-                        }
-                    }
+                        self.complete(completion, continuation: continuation)
+                    })
+                
             }
-        })
-        
-        afterPromise(promise)
-        return promise
+        } catch {
+            handleError(error)
+        }
+        return false
     }
     
-    func clientList() -> Promise<[ClientModel]> {
-        self.globalContext?.loading = true
-        
-        let promise =
-        getConnectionAsync().then({connection in
-            Promise<[ClientModel]> { resolver in
-                connection.send(command: "CLIENT", with: [RESPValue(from: "LIST")])
-                    .whenComplete{ completion in
-                        if case .success(let res) = completion {
-                            self.logger.info("query redis server client list success: \(res)")
-                            let resStr = res.string ?? ""
+    func clientList() async -> [ClientModel] {
+        begin()
+        defer {
+            complete()
+        }
+        do {
+            let conn = try await getConn()
+            
+            return try await withCheckedThrowingContinuation { continuation in
+                
+                conn.send(command: "CLIENT", with: [RESPValue(from: "LIST")])
+                    .whenComplete({completion in
+                        if case .success(let r) = completion {
+                            self.logger.info("query redis server client list success: \(r)")
+                            let resStr = r.string ?? ""
                             let lines = resStr.components(separatedBy: "\n")
                             
                             var resArray = [ClientModel]()
@@ -1553,30 +1528,34 @@ extension RediStackClient {
                                 }
                                 resArray.append(ClientModel(line: line))
                             })
-                            resolver.fulfill(resArray)
+
+                            continuation.resume(returning: resArray)
                         }
-                        else if case .failure(let error) = completion {
-                            resolver.reject(error)
-                        }
-                    }
+                        self.complete(completion, continuation: continuation)
+                    })
+                
             }
-        })
-        
-        afterPromise(promise)
-        return promise
+        } catch {
+            handleError(error)
+        }
+        return []
     }
     
-    func info() -> Promise<[RedisInfoModel]> {
-        self.globalContext?.loading = true
-        
-        let promise =
-        getConnectionAsync().then({connection in
-            Promise<[RedisInfoModel]> { resolver in
-                connection.send(command: "info")
-                    .whenComplete{ completion in
-                        if case .success(let res) = completion {
-                            self.logger.info("query redis server info success: \(res.string ?? "")")
-                            let infoStr = res.string ?? ""
+    func info() async -> [RedisInfoModel] {
+        begin()
+        defer {
+            complete()
+        }
+        do {
+            let conn = try await getConn()
+            
+            return try await withCheckedThrowingContinuation { continuation in
+                
+                conn.send(command: "info")
+                    .whenComplete({completion in
+                        if case .success(let r) = completion {
+                            self.logger.info("query redis server info success: \(r.string ?? "")")
+                            let infoStr = r.string ?? ""
                             let lines = infoStr.components(separatedBy: "\n")
                             
                             var redisInfoModels = [RedisInfoModel]()
@@ -1597,38 +1576,40 @@ extension RediStackClient {
                                     item?.infos.append(redisInfoItemModel)
                                 }
                             })
-                            resolver.fulfill(redisInfoModels)
+                            continuation.resume(returning: redisInfoModels)
                         }
-                        else if case .failure(let error) = completion {
-                            resolver.reject(error)
-                        }
-                    }
+                        self.complete(completion, continuation: continuation)
+                    })
+                
             }
-        })
-        
-        afterPromise(promise)
-        return promise
+        } catch {
+            handleError(error)
+        }
+        return []
     }
     
-    func resetState() -> Promise<Bool> {
+    func resetState() async -> Bool {
         logger.info("reset state...")
-        let promise =
-        getConnectionAsync().then({ connection in
-            Promise<Bool> { resolver in
-                connection.send(command: "CONFIG", with: [RESPValue(from: "RESETSTAT")])
+
+        do {
+            let conn = try await getConn()
+            
+            return try await withCheckedThrowingContinuation { continuation in
+                
+                conn.send(command: "CONFIG", with: [RESPValue(from: "RESETSTAT")])
                     .whenComplete({completion in
-                        if case .success(let res) = completion {
-                            self.logger.info("reset state res: \(res)")
-                            resolver.fulfill(res.string == "OK")
+                        if case .success(let r) = completion {
+                            self.logger.info("reset state res: \(r)")
+                            continuation.resume(returning: r.string == "OK")
                         }
-                        else if case .failure(let error) = completion {
-                            resolver.reject(error)
-                        }
+                        self.complete(completion, continuation: continuation)
                     })
+                
             }
-        })
-        
-        return promise
+        } catch {
+            handleError(error)
+        }
+        return false
     }
     
     func ping() async -> Bool {
@@ -1656,114 +1637,127 @@ extension RediStackClient {
 
 // config
 extension RediStackClient {
-    func getConfigList(_ pattern:String = "*") -> Promise<[RedisConfigItemModel]> {
+    func getConfigList(_ pattern:String = "*") async -> [RedisConfigItemModel] {
         logger.info("get redis config list, pattern: \(pattern)...")
-        globalContext?.loading = true
+        begin()
+        defer {
+            complete()
+        }
         
         var _pattern = pattern
         if pattern.isEmpty {
             _pattern = "*"
         }
         
-        let promise =
-        getConnectionAsync().then({ connection in
-            Promise<[RedisConfigItemModel]> { resolver in
-                connection.send(command: "CONFIG", with: [RESPValue(from: "GET"), RESPValue(from: _pattern)])
+        do {
+            let conn = try await getConn()
+            
+            return try await withCheckedThrowingContinuation { continuation in
+                conn.send(command: "CONFIG", with: [RESPValue(from: "GET"), RESPValue(from: _pattern)])
                     .whenComplete({completion in
-                        if case .success(let res) = completion {
-                            self.logger.info("get redis config list res: \(res)")
-                            
-                            let configs = res.array ?? []
-                            
-                            var configList = [RedisConfigItemModel]()
-                            
-                            let max:Int = configs.count / 2
-                            
-                            for index in (0..<max) {
-                                configList.append(RedisConfigItemModel(key: configs[ index * 2].string, value: configs[index * 2 + 1].string))
-                            }
-                            
-                            resolver.fulfill(configList)
+                    if case .success(let r) = completion {
+                        self.logger.info("get redis config list res: \(r)")
+                        
+                        let configs = r.array ?? []
+                        
+                        var configList = [RedisConfigItemModel]()
+                        
+                        let max:Int = configs.count / 2
+                        
+                        for index in (0..<max) {
+                            configList.append(RedisConfigItemModel(key: configs[ index * 2].string, value: configs[index * 2 + 1].string))
                         }
-                        else if case .failure(let error) = completion {
-                            resolver.reject(error)
-                        }
-                    })
+                        
+                        continuation.resume(returning: configList)
+                    }
+                    self.complete(completion, continuation:continuation)
+                })
             }
-        })
+        } catch {
+            handleError(error)
+        }
         
-        afterPromise(promise)
-        return promise
+        return []
     }
     
-    func configRewrite() -> Promise<Bool> {
+    func configRewrite() async -> Bool {
         logger.info("redis config rewrite ...")
-        globalContext?.loading = true
-        
-        let promise =
-        getConnectionAsync().then({ connection in
-            Promise<Bool> { resolver in
-                connection.send(command: "CONFIG", with: [RESPValue(from: "REWRITE")])
+        begin()
+        defer {
+            complete()
+        }
+
+        do {
+            let conn = try await getConn()
+            
+            return try await withCheckedThrowingContinuation { continuation in
+                conn.send(command: "CONFIG", with: [RESPValue(from: "REWRITE")])
                     .whenComplete({completion in
-                        if case .success(let res) = completion {
-                            self.logger.info("redis config rewrite res: \(res)")
-                            resolver.fulfill(res.string == "OK")
-                        }
-                        else if case .failure(let error) = completion {
-                            resolver.reject(error)
-                        }
-                    })
+                    if case .success(let r) = completion {
+                        self.logger.info("redis config rewrite res: \(r)")
+                        continuation.resume(returning: r.string == "OK")
+                    }
+                    self.complete(completion, continuation:continuation)
+                })
             }
-        })
+        } catch {
+            handleError(error)
+        }
         
-        afterPromise(promise)
-        return promise
+        return false
+        
     }
     
-    func getConfigOne(key:String) -> Promise<String?> {
+    func getConfigOne(key:String) async -> String? {
         logger.info("get redis config ...")
         
-        let promise =
-        getConnectionAsync().then({ connection in
-            Promise<String?> { resolver in
-                connection.send(command: "CONFIG", with: [RESPValue(from: "GET"), RESPValue(from: key)])
+        do {
+            let conn = try await getConn()
+            
+            return try await withCheckedThrowingContinuation { continuation in
+                conn.send(command: "CONFIG", with: [RESPValue(from: "GET"), RESPValue(from: key)])
                     .whenComplete({completion in
-                        if case .success(let res) = completion {
-                            self.logger.info("get redis config one res: \(res)")
-                            resolver.fulfill(res.array?[1].string)
-                        }
-                        else if case .failure(let error) = completion {
-                            resolver.reject(error)
-                        }
-                    })
+                    if case .success(let r) = completion {
+                        self.logger.info("get redis config one res: \(r)")
+                        continuation.resume(returning: r.array?[1].string)
+                    }
+                    self.complete(completion, continuation:continuation)
+                })
             }
-        })
+        } catch {
+            handleError(error)
+        }
         
-        return promise
+        return nil
+        
     }
     
     
-    func setConfig(key:String, value:String) -> Promise<Bool> {
+    func setConfig(key:String, value:String) async -> Bool {
         logger.info("set redis config, key: \(key), value: \(value)")
-        
-        let promise =
-        getConnectionAsync().then({ connection in
-            Promise<Bool> { resolver in
-                connection.send(command: "CONFIG", with: [RESPValue(from: "SET"), RESPValue(from: key), RESPValue(from: value)])
+        begin()
+        defer {
+            complete()
+        }
+
+        do {
+            let conn = try await getConn()
+            
+            return try await withCheckedThrowingContinuation { continuation in
+                conn.send(command: "CONFIG", with: [RESPValue(from: "SET"), RESPValue(from: key), RESPValue(from: value)])
                     .whenComplete({completion in
-                        if case .success(let res) = completion {
-                            self.logger.info("set config res: \(res)")
-                            resolver.fulfill(res.string == "OK")
-                        }
-                        else if case .failure(let error) = completion {
-                            resolver.reject(error)
-                        }
-                    })
+                    if case .success(let r) = completion {
+                        self.logger.info("set config res: \(r)")
+                        continuation.resume(returning: r.string == "OK")
+                    }
+                    self.complete(completion, continuation:continuation)
+                })
             }
-        })
+        } catch {
+            handleError(error)
+        }
         
-        afterPromise(promise)
-        return promise
+        return false
     }
     
 }
@@ -1771,83 +1765,88 @@ extension RediStackClient {
 
 // slow log
 extension RediStackClient {
-    func slowLogReset() -> Promise<Bool> {
+    func slowLogReset() async -> Bool {
         logger.info("slow log reset ...")
-        let promise =
-        getConnectionAsync().then({ connection in
-            Promise<Bool> { resolver in
-                connection.send(command: "SLOWLOG", with: [RESPValue(from: "RESET")])
-                    .whenComplete({completion in
-                        if case .success(let res) = completion {
-                            self.logger.info("slow log reset res: \(res)")
-                            resolver.fulfill(res.string == "OK")
-                        }
-                        else if case .failure(let error) = completion {
-                            resolver.reject(error)
-                        }
-                    })
-            }
-        })
         
-        return promise
+        do {
+            let conn = try await getConn()
+            
+            return try await withCheckedThrowingContinuation { continuation in
+                conn.send(command: "SLOWLOG", with: [RESPValue(from: "RESET")])
+                    .whenComplete({completion in
+                    if case .success(let r) = completion {
+                        self.logger.info("slow log reset res: \(r)")
+                        continuation.resume(returning: r.string == "OK")
+                    }
+                    self.complete(completion, continuation:continuation)
+                })
+            }
+        } catch {
+            handleError(error)
+        }
+        
+        return false
     }
     
-    func slowLogLen() -> Promise<Int> {
+    func slowLogLen() async -> Int {
         logger.info("get slow log len ...")
-        let promise =
-        getConnectionAsync().then({ connection in
-            Promise<Int> { resolver in
-                connection.send(command: "SLOWLOG", with: [RESPValue(from: "LEN")])
+        do {
+            let conn = try await getConn()
+            
+            return try await withCheckedThrowingContinuation { continuation in
+                conn.send(command: "SLOWLOG", with: [RESPValue(from: "LEN")])
                     .whenComplete({completion in
-                        if case .success(let res) = completion {
-                            self.logger.info("get slow log len res: \(res)")
-                            resolver.fulfill(res.int ?? 0)
-                        }
-                        else if case .failure(let error) = completion {
-                            resolver.reject(error)
-                        }
-                    })
+                    if case .success(let r) = completion {
+                        self.logger.info("slow log reset res: \(r)")
+                        continuation.resume(returning: r.int ?? 0)
+                    }
+                    self.complete(completion, continuation:continuation)
+                })
             }
-        })
+        } catch {
+            handleError(error)
+        }
         
-        return promise
+        return 0
+        
     }
     
-    func getSlowLog(_ size:Int) -> Promise<[SlowLogModel]> {
+    func getSlowLog(_ size:Int) async -> [SlowLogModel] {
         logger.info("get slow log list ...")
         
-        self.globalContext?.loading = true
-        
-        let promise =
-        getConnectionAsync().then({ connection in
-            Promise<[SlowLogModel]> { resolver in
-                connection.send(command: "SLOWLOG", with: [RESPValue(from: "GET"), RESPValue(from: size)])
+        begin()
+        defer {
+            complete()
+        }
+        do {
+            let conn = try await getConn()
+            
+            return try await withCheckedThrowingContinuation { continuation in
+                conn.send(command: "SLOWLOG", with: [RESPValue(from: "GET"), RESPValue(from: size)])
                     .whenComplete({completion in
-                        // line [110,1626313174,1,[type,NEW_KEY_1626251400704],127.0.0.1:56306,]
-                        if case .success(let res) = completion {
-                            self.logger.info("get slow log res: \(res)")
+                    if case .success(let r) = completion {
+                        self.logger.info("get slow log res: \(r)")
+                        
+                        var slowLogs = [SlowLogModel]()
+                        r.array?.forEach({ item in
+                            let itemArray = item.array
                             
-                            var slowLogs = [SlowLogModel]()
-                            res.array?.forEach({ item in
-                                let itemArray = item.array
-                                
-                                let cmd = itemArray?[3].array!.map({
-                                    $0.string ?? MTheme.NULL_STRING
-                                }).joined(separator: " ")
-                                
-                                slowLogs.append(SlowLogModel(id: itemArray?[0].string, timestamp: itemArray?[1].int, execTime: itemArray?[2].string, cmd: cmd, client: itemArray?[4].string, clientName: itemArray?[5].string))
-                            })
+                            let cmd = itemArray?[3].array!.map({
+                                $0.string ?? MTheme.NULL_STRING
+                            }).joined(separator: " ")
                             
-                            resolver.fulfill(slowLogs)
-                        }
-                        else if case .failure(let error) = completion {
-                            resolver.reject(error)
-                        }
-                    })
+                            slowLogs.append(SlowLogModel(id: itemArray?[0].string, timestamp: itemArray?[1].int, execTime: itemArray?[2].string, cmd: cmd, client: itemArray?[4].string, clientName: itemArray?[5].string))
+                        })
+                        
+                        continuation.resume(returning: slowLogs)
+                    }
+                    self.complete(completion, continuation:continuation)
+                })
             }
-        })
+        } catch {
+            handleError(error)
+        }
         
-        afterPromise(promise)
-        return promise
+        return []
     }
 }

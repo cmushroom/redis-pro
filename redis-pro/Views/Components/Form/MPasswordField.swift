@@ -14,44 +14,85 @@ struct MPasswordField: View {
     @State private var isEditing = false
     var onCommit:(() -> Void)?
     
-    @State private var showPass:Bool = false
+    @State private var visible:Bool = false
+    var disabled = false
     
     let logger = Logger(label: "pass-field")
     
     @ViewBuilder
-    private var field: some View {
-        if showPass {
-            NTextField(stringValue: $value, placeholder: placeholder, type: .PLAIN, onCommit: onCommit)
+    private var textField: some View {
+        if #available(macOS 12.0, *) {
+            TextField("", text: $value, prompt: Text(placeholder))
+                .onSubmit {
+                    onCommit?()
+                }
         } else {
-            NSecureField(value: $value, placeholder: placeholder, onChange: {}, onCommit: onCommit)
+            TextField(placeholder, text: $value, onCommit: {onCommit?()})
+        }
+    }
+    
+    @ViewBuilder
+    private var secureField: some View {
+        if #available(macOS 12.0, *) {
+            SecureField("", text: $value, prompt: Text(placeholder))
+                .onSubmit {
+                    onCommit?()
+                }
+        } else {
+            SecureField(placeholder, text: $value, onCommit: {onCommit?()})
+        }
+    }
+    
+    @ViewBuilder
+    private var field: some View {
+        if visible {
+            textField
+        } else {
+            secureField
         }
     }
     
     var body: some View {
-        HStack(alignment: .center, spacing: 2) {
+        ZStack(alignment: .trailing) {
             field
-                .multilineTextAlignment(/*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/)
-                .font(.body)
+                .labelsHidden()
                 .lineLimit(1)
+                .disabled(disabled)
+                .multilineTextAlignment(.leading)
+                .font(.body)
                 .disableAutocorrection(true)
                 .textFieldStyle(PlainTextFieldStyle())
                 .onHover { inside in
                     self.isEditing = inside
                 }
             
-            MIcon(icon: showPass ? "eye" : "eye.slash", fontSize: MTheme.FONT_SIZE_BUTTON, action: showPassAction)
-                .padding(0)
+            Button(action: {
+                visible.toggle()
+            }) {
+                Image(systemName: !self.visible ? "eye.slash" : "eye")
+                    .accentColor(.gray)
+            }
+            .onHover { inside in
+                if inside {
+                    NSCursor.pointingHand.push()
+                } else {
+                    NSCursor.pop()
+                }
+            }
+            .padding(EdgeInsets(top: 0, leading: 2, bottom: 0, trailing: 2))
+            .buttonStyle(PlainButtonStyle())
+            .contentShape(Circle())
         }
-        .padding(EdgeInsets(top: 1, leading: 2, bottom: 1, trailing: 2))
+        .padding(EdgeInsets(top: 3, leading: 4, bottom: 3, trailing: 4))
         .background(Color.init(NSColor.textBackgroundColor))
-        .cornerRadius(0)
-//        .overlay(
-////            RoundedRectangle(cornerRadius: 4).stroke(Color.gray.opacity(isEditing ?  0.4 : 0.2), lineWidth: 1)
-//        )
+        .cornerRadius(MTheme.CORNER_RADIUS)
+        .overlay(
+            RoundedRectangle(cornerRadius: MTheme.CORNER_RADIUS).stroke(Color.gray.opacity(!disabled && isEditing ?  0.4 : 0.2), lineWidth: 1)
+        )
     }
     
     func showPassAction() -> Void {
-        self.showPass.toggle()
+        self.visible.toggle()
     }
 }
 

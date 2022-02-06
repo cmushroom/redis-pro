@@ -24,10 +24,10 @@ struct ModalView<Content: View>: View {
         VStack(alignment: .center, spacing: 0) {
             HStack {
                 Text(title)
-                    .font(.title3)
+                    .font(.body)
                 Spacer()
             }
-            .padding(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
+            .padding(EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8))
             Rectangle().frame(height: 1)
                 .padding(.horizontal, 0).foregroundColor(Color.gray.opacity(0.2))
             
@@ -43,6 +43,7 @@ struct ModalView<Content: View>: View {
             }
             .padding(EdgeInsets(top: 0, leading: 8, bottom: 6, trailing: 8))
         }
+        .frame(minWidth: MTheme.DIALOG_W, minHeight: MTheme.DIALOG_H)
         .padding(0)
     }
     

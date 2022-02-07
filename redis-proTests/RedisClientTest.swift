@@ -36,9 +36,10 @@ class RedisClientTest: XCTestCase {
         Task {
             let _ = await redisInstance.connect(redisModel: redisModel)
             
-            for index in 1...10000 {
+            for index in 10000...100000 {
 //                let _ = await redisInstance.getClient().hset("hash_perf", field: "k_\(index)", value: "\(index)")
-                let _ = await redisInstance.getClient().zadd("zset_perf", score: Double(index), ele: "e_\(index)")
+//                let _ = await redisInstance.getClient().zadd("zset_perf", score: Double(index), ele: "e_\(index)")
+                let _ = await redisInstance.getClient().set("string_\(index)", value: "\(index)", ex: -1)
             }
         }
         

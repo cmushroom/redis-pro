@@ -49,6 +49,7 @@ struct MPasswordField: View {
             textField
         } else {
             secureField
+                .textContentType(.password)
         }
     }
     

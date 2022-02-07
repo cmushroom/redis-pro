@@ -152,7 +152,7 @@ extension HashEditorView {
             datasource.removeAll()
             return
         }
-        
+        page.reset()
         queryHashPage(redisKeyModel)
     }
     

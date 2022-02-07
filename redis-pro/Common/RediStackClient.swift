@@ -29,7 +29,8 @@ class RediStackClient {
     var sshServer:PortForwardingServer?
     
     // 递归查询每页大小
-    private var recursionSize:Int = 500
+    private var recursionSize:Int = 2000
+    private var recursionCountSize:Int = 5000
     
     init(redisModel:RedisModel) {
         self.redisModel = redisModel
@@ -447,7 +448,7 @@ extension RediStackClient {
             self.logger.info("recursion scan get keys enough, max count: \(maxCount), current count: \(keys.count)")
             return (cursor, keys)
         } else {
-            let res = try await keyScan(cursor: cursor, keywords: keywords, count: 3000)
+            let res = try await keyScan(cursor: cursor, keywords: keywords, count: recursionSize)
             let newKeys = keys + res.keys
             
             if res.cursor == 0 {
@@ -462,7 +463,7 @@ extension RediStackClient {
     }
     
     private func scanTotal(_ keywords:String?, cursor:Int, total:Int) async throws -> Int {
-        let res = try await keyScan(cursor: cursor, keywords: keywords, count: recursionSize)
+        let res = try await keyScan(cursor: cursor, keywords: keywords, count: recursionCountSize)
         let newTotal:Int = total + res.keys.count
         if res.cursor == 0 {
             self.logger.info("recursion scan total reach end, total: \(newTotal)")
@@ -519,17 +520,21 @@ extension RediStackClient {
         do {
             // 带有占位符的情况，使用
             if isScan {
-                let total = try await recursionScanTotal(match)
-                page.total = total
-                let res = try await self.recursionScan(match, cursor: cursor, maxCount: total, keys: keys)
+//                async let total = recursionScanTotal(match)
+                
+                async let res = self.recursionScan(match, cursor: cursor, maxCount: page.size, keys: keys)
+                
+//                page.total = try await total
+                let keys = try await res.keys
+                
                 let start = (page.current - 1) * page.size
                 
-                if res.keys.count <= start {
+                if keys.count <= start {
                     return []
                 }
                 
-                let end = min(start + page.size - 1, res.keys.count)
-                let pageData:[String] = Array(res.keys[start..<end])
+                let end = min(start + page.size - 1, keys.count)
+                let pageData:[String] = Array(keys[start..<end])
                 
                 return await self.toRedisKeyModels(pageData)
             } else {
@@ -818,7 +823,7 @@ extension RediStackClient {
             self.logger.info("recursion zscan get items enough, max count: \(maxCount), current count: \(items.count)")
             return (cursor, items)
         } else {
-            let res = try await zscanAsync(key, keywords: keywords, cursor: cursor, count: 1000)
+            let res = try await zscanAsync(key, keywords: keywords, cursor: cursor, count: recursionSize)
             let newItems:[(String, Double)?] = items + res.1
             
             if res.0 == 0 {

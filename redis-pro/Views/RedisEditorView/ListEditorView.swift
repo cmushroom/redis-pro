@@ -74,13 +74,13 @@ struct ListEditorView: View {
                 
             }
         }
-        .onChange(of: redisKeyModel, perform: { value in
+        .onChange(of: redisKeyModel.id, perform: { value in
             logger.info("redis string value editor view change \(value)")
-            onLoad(value)
+            onLoad()
         })
         .onAppear {
             logger.info("redis string value editor view init...")
-            onLoad(redisKeyModel)
+            onLoad()
         }
     }
     
@@ -163,7 +163,7 @@ struct ListEditorView: View {
         }
     }
     
-    func onLoad(_ redisKeyModel:RedisKeyModel) -> Void {
+    func onLoad() -> Void {
         
         if redisKeyModel.type != RedisKeyTypeEnum.LIST.rawValue {
             return

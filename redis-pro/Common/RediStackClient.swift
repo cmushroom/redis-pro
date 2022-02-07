@@ -818,7 +818,7 @@ extension RediStackClient {
             self.logger.info("recursion zscan get items enough, max count: \(maxCount), current count: \(items.count)")
             return (cursor, items)
         } else {
-            let res = try await zscanAsync(key, keywords: keywords, cursor: cursor, count: 1000)
+            let res = try await zscanAsync(key, keywords: keywords, cursor: cursor, count: recursionSize)
             let newItems:[(String, Double)?] = items + res.1
             
             if res.0 == 0 {

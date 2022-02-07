@@ -67,13 +67,13 @@ struct ZSetEditorView: View {
                 }
             }
         }
-        .onChange(of: redisKeyModel, perform: { value in
+        .onChange(of: redisKeyModel.id, perform: { value in
             logger.info("redis zset value editor view change \(value)")
-            onLoad(value)
+            onLoad()
         })
         .onAppear {
             logger.info("redis zset value editor view init...")
-            onLoad(redisKeyModel)
+            onLoad()
         }
         
     }
@@ -140,7 +140,7 @@ struct ZSetEditorView: View {
         queryPage(redisKeyModel)
     }
     
-    func onLoad(_ redisKeyModel:RedisKeyModel) -> Void {
+    func onLoad() -> Void {
         
         if redisKeyModel.isNew || redisKeyModel.type != RedisKeyTypeEnum.ZSET.rawValue {
             return

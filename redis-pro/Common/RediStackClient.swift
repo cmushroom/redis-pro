@@ -521,7 +521,7 @@ extension RediStackClient {
             if isScan {
                 let total = try await recursionScanTotal(match)
                 page.total = total
-                let res = try await self.recursionScan(match, cursor: cursor, maxCount: total, keys: keys)
+                let res = try await self.recursionScan(match, cursor: cursor, maxCount: page.size, keys: keys)
                 let start = (page.current - 1) * page.size
                 
                 if res.keys.count <= start {

@@ -145,6 +145,7 @@ struct ZSetEditorView: View {
         if redisKeyModel.isNew || redisKeyModel.type != RedisKeyTypeEnum.ZSET.rawValue {
             return
         }
+        page.reset()
         queryPage(redisKeyModel)
     }
     

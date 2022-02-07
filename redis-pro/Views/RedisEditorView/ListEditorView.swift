@@ -169,6 +169,7 @@ struct ListEditorView: View {
             return
         }
         
+        page.reset()
         Task {
             await queryPage(redisKeyModel)
         }

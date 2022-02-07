@@ -140,6 +140,7 @@ struct SetEditorView: View {
             return
         }
     
+        page.reset()
         queryPage(redisKeyModel)
     }
     

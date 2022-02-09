@@ -1,6 +1,6 @@
 {
-    "latestVersionNum": 9,
-    "latestVersion": "1.4.2",
+    "latestVersionNum": 10,
+    "latestVersion": "1.4.3",
     "updateType": "hint",
-    "releaseNotes": "1. 密码，搜索框使用swiftUI 原生组件。 \n2. 表格增加双击编辑。 \n3. 修复hash field 禁用状态错误bug。 \n4. 去除promisekit依赖，使用swift concurrency。"
+    "releaseNotes": "1. key切换时分页bugfix, key scan 分页bugfix #25。 \n2. key切换监听问题修复。 \n3. 登录页面port输入框问题修复 #24。 \n4. 修复分页时错误告警 #27。 \n5. 优化scan性能"
 }

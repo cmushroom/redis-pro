@@ -66,11 +66,8 @@ struct MIntField: View {
     }
     
     func doCommit() -> Void {
-        if self.isEdited {
-            self.isEdited = false
-            logger.info("on textField commit, value: \(value)")
-            onCommit?()
-        }
+        logger.info("on textField commit, value: \(value)")
+        onCommit?()
     }
 }
 

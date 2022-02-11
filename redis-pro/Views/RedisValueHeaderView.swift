@@ -14,7 +14,7 @@ struct RedisValueHeaderView: View {
     
     let logger = Logger(label: "redis-value-header")
     
-    private var ttl: some View {
+    private var ttlView: some View {
         HStack(alignment:.center, spacing: 0) {
             FormItemInt(label: "TTL(s)", value: $redisKeyModel.ttl, suffix: "square.and.pencil", onCommit: onTTLCommit)
                 .help(Helps.TTL_HELP)
@@ -28,15 +28,15 @@ struct RedisValueHeaderView: View {
             RedisKeyTypePicker(label: "Type", value: $redisKeyModel.type, disabled: !redisKeyModel.isNew)
             Spacer()
             
-            ttl
+            ttlView
         }
-        .onChange(of: redisKeyModel, perform: { value in
+        .onChange(of: redisKeyModel.id, perform: { value in
             logger.info("redis value header key model change \(value)")
-            ttl(value.key)
+            ttl()
         })
         .onAppear {
             logger.info("redis value header view init...")
-            ttl(redisKeyModel.key)
+            ttl()
         }
     }
     
@@ -50,13 +50,13 @@ struct RedisValueHeaderView: View {
         }
     }
     
-    func ttl(_ key:String) -> Void {
+    func ttl() -> Void {
         if redisKeyModel.isNew {
             return
         }
         
         Task {
-            let r = await redisInstanceModel.getClient().ttl(key)
+            let r = await redisInstanceModel.getClient().ttl(redisKeyModel.key)
             self.redisKeyModel.ttl = r
         }
     }

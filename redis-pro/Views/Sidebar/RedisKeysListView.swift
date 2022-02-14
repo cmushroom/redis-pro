@@ -106,8 +106,6 @@ struct RedisKeysListView: View {
             sidebarFoot
                 .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 6))
             
-        }.onTapGesture {
-            self.showEditor()
         }
     }
     

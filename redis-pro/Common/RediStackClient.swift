@@ -520,11 +520,11 @@ extension RediStackClient {
         do {
             // 带有占位符的情况，使用
             if isScan {
-//                async let total = recursionScanTotal(match)
+                async let totalAsync = recursionScanTotal(match)
                 
                 async let res = self.recursionScan(match, cursor: cursor, maxCount: page.size, keys: keys)
                 
-//                page.total = try await total
+                let total = try await totalAsync
                 let keys = try await res.keys
                 
                 let start = (page.current - 1) * page.size
@@ -536,6 +536,10 @@ extension RediStackClient {
                 let end = min(start + page.size - 1, keys.count)
                 let pageData:[String] = Array(keys[start..<end])
                 
+                
+                DispatchQueue.main.async {
+                    page.total = total
+                }
                 return await self.toRedisKeyModels(pageData)
             } else {
                 let exist = await self.exist(page.keywords)

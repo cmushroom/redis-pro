@@ -31,6 +31,7 @@ class RedisKeyModel:NSObject, ObservableObject, Identifiable {
     }
     
     func copyValue(_ redisKeyModel:RedisKeyModel) {
+        self.isNew =  redisKeyModel.isNew
         self.key = redisKeyModel.key
         self.type = redisKeyModel.type
     }

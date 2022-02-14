@@ -13,7 +13,7 @@ struct Helps {
     static let SCAN_COUNT = "redis scan 命令 COUNT 参数, 实际返回数量不保证一致."
     
     static let SEARCH_PATTERN = "支持redis glob 风格的模式参数, 示例: key*, re?is"
-    static let TTL_HELP = "单位(秒), -1表示永不过期"
+    static let TTL_HELP = "单位(秒), -1表示永不过期, 修改后回车提交修改!"
     
     static let DELETE_KEY_CONFIRM_TITLE = "Delete key '%@'?"
     static let DELETE_KEY_CONFIRM_MESSAGE = "Are you sure you want to delete the key '%@'? This operation cannot be undone."

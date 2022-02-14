@@ -7,14 +7,29 @@
 
 import SwiftUI
 import Cocoa
+import Logging
 
 struct RedisProCommands: Commands {
     
-    private struct HelpCommands: View {
-        
+    let logger = Logger(label: "commands")
+    
+    private struct CheckUpdateCommands: View {
         var body: some View {
             Button("Check Update") {
                 VersionManager().checkUpdate(isNoUpgradeHint: true)
+            }
+        }
+    }
+    
+    private struct AboutCommands: View {
+        
+        @Environment(\.openURL) var openURL
+        var body: some View {
+            Button("About") {
+                guard let url = URL(string: "redis-pro://AboutView") else {
+                    return
+                }
+                openURL(url)
             }
         }
     }
@@ -51,8 +66,9 @@ struct RedisProCommands: Commands {
         }
 
         CommandGroup(replacing: CommandGroupPlacement.help) {
-            HelpCommands()
+            CheckUpdateCommands()
             HomePageCommands()
+            AboutCommands()
         }
     }
 }

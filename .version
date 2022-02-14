@@ -1,6 +1,6 @@
 {
-    "latestVersionNum": 10,
-    "latestVersion": "1.4.3",
+    "latestVersionNum": 11,
+    "latestVersion": "1.4.4",
     "updateType": "hint",
-    "releaseNotes": "1. key切换时分页bugfix, key scan 分页bugfix #25。 \n2. key切换监听问题修复。 \n3. 登录页面port输入框问题修复 #24。 \n4. 修复分页时错误告警 #27。 \n5. 优化scan性能"
+    "releaseNotes": "1.  修复key过期时间没有刷新问题 \n2. 添加关于页面"
 }

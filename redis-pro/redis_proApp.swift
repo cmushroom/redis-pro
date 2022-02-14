@@ -33,6 +33,7 @@ struct redis_proApp: App {
         
         WindowGroup("AboutView") {
               AboutView()
+                .preferredColorScheme(ColorSchemeEnum.getColorScheme(colorSchemeValue))
           }.handlesExternalEvents(matching: Set(arrayLiteral: "AboutView"))
           
         .commands {

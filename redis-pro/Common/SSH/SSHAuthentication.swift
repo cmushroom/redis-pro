@@ -54,6 +54,33 @@ final class UserPasswordDelegate: NIOSSHClientUserAuthenticationDelegate {
 }
 
 
+/// A client user auth delegate that provides an interactive prompt for password-based user auth.
+//final class SSHKeyDelegate: NIOSSHClientUserAuthenticationDelegate {
+//    let logger = Logger(label: "ssh-rsa-delegate")
+//
+//    private var username: String
+//    private var keyFile: String
+//
+//    init(username:String, keyFile: String) {
+//        self.username = username
+//        self.keyFile = keyFile
+//    }
+//
+//    func nextAuthenticationType(availableMethods: NIOSSHAvailableUserAuthenticationMethods, nextChallengePromise: EventLoopPromise<NIOSSHUserAuthenticationOffer?>) {
+//        guard availableMethods.contains(.password) else {
+//            logger.error("Error: password auth not supported")
+//            nextChallengePromise.fail(SSHClientError.passwordAuthenticationNotSupported)
+//            return
+//        }
+//
+//        Insecure.RSA.PrivateKey(self)
+//        NIOSSHUserAuthenticationOffer.Offer.PrivateKey(privateKey: NIOSSHPrivateKey()
+//                                                       NIOSSHUserAuthenticationOffer(username: username, serviceName: "", offer: .privateKey(.init(privateKey: .init(p256Key: <#T##P256.Signing.PrivateKey#>))))
+////        nextChallengePromise.succeed(NIOSSHUserAuthenticationOffer(username: self.username, serviceName: "", offer: .password(.init(password: self.password))))
+//    }
+//}
+
+
 final class AcceptAllHostKeysDelegate: NIOSSHClientServerAuthenticationDelegate {
     func validateHostKey(hostKey: NIOSSHPublicKey, validationCompletePromise: EventLoopPromise<Void>) {
         // Do not replicate this in your own code: validate host keys! This is a

@@ -7,6 +7,7 @@
 [![release](https://img.shields.io/github/v/release/cmushroom/redis-pro?include_prereleases)](https://github.com/cmushroom/redis-pro/releases)
 [![license](https://img.shields.io/badge/license-Apache%202-blue)](https://github.com/cmushroom/redis-pro/blob/main/LICENSE)
 ![platforms](https://img.shields.io/badge/Platforms-macOS%20-orange.svg?style=flat)
+[![Gitter](https://badges.gitter.im/redis-pro/community.svg)](https://gitter.im/redis-pro/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 ## 简介
 * redis-pro 是一款 redis 轻量客户端管理工具， 采用SwiftUI 编写
@@ -15,6 +16,11 @@
 ## 安装
 * 到release页面下载安装
 [下载地址](https://github.com/cmushroom/redis-pro/releases)
+* homebrew
+    ```
+    brew install redis-pro
+    ```
+
 
 
 
@@ -23,11 +29,12 @@
 
 ## 功能计划(暂定)
 - [x] client list and kill 
-- [ ] homebrew install
-- [ ] slow log
-- [ ] redis config 修改
-- [ ] ssh 登录
-- [ ] ipad os 支持
+- [x] homebrew install
+- [x] slow log
+- [x] redis config update
+- [x] ssh login
+- [ ] delete batch
+- [ ] ipad os support
     
 
 ## 版本要求

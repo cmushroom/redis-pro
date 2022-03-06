@@ -1214,7 +1214,7 @@
 			repositoryURL = "https://github.com/sushichop/Puppy.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.3.1;
+				minimumVersion = 0.5.0;
 			};
 		};
 		CE2B15BE275DAF0800A3C8CE /* XCRemoteSwiftPackageReference "RediStack" */ = {

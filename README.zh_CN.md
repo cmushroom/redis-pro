@@ -46,7 +46,6 @@
 * swift-log swift 日志框架, 是上层框架， 需要具体的实现
 * Puppy 日志实现, 滚动写入到日志文件
 * SwiftyJSON json 转换
-* PromiseKit 异步化操作使用， 简化callback代码
 
 
 

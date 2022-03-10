@@ -34,6 +34,8 @@ support macos (Intel, Apple Silicon) platform,  will support ipad os in the futu
 - [x] ssh login
 - [ ] delete batch
 - [ ] ipad os support
+- [ ] ssh key
+- [ ] favorite delete confirm
     
 
 ## Version
@@ -45,7 +47,6 @@ support macos (Intel, Apple Silicon) platform,  will support ipad os in the futu
 * swift-log swift log framework, need puppy implementation
 * Puppy log framework, support console, file
 * SwiftyJSON json convert
-* PromiseKit async framework， simplify the callback code
 
 
 

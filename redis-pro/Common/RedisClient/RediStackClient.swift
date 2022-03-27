@@ -182,9 +182,13 @@ class RediStackClient {
     
     func expire(_ key:String, seconds:Int) async -> Bool {
         logger.info("set key expire key:\(key), seconds:\(seconds)")
+        
         begin()
- 
         do {
+            
+            let maxSeconds:Int64 = INT64_MAX / (1000 * 1000 * 1000)
+            try Assert.isTrue(seconds < maxSeconds, message: "过期时间最大值不能超过 \(maxSeconds) 秒")
+            
             let conn = try await getConn()
             
             return try await withCheckedThrowingContinuation { continuation in

@@ -6,6 +6,11 @@
   
 */
 
+// ------------------------------------------------ system confirm message start ------------------------------------------------
+"CONFIRM_FAVORITE_REDIS_TITLE'%@'" = "Delete favorite redis '%@'?";
+"CONFIRM_FAVORITE_REDIS_MESSAGE'%@'" = "Are you sure you want to delete the favorite redis '%@'? This operation cannot be undone.";
+// ------------------------------------------------ system confirm message end ------------------------------------------------
+
 // system
 "UNIT_MICROSECOND" = "1秒 = 1,000,000 微秒";
 

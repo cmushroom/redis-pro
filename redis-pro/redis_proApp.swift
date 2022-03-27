@@ -27,6 +27,7 @@ struct redis_proApp: App {
     
     var body: some Scene {
         WindowGroup {
+//            NTableView()
             IndexView()
                 .preferredColorScheme(ColorSchemeEnum.getColorScheme(colorSchemeValue))
         }

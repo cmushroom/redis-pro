@@ -96,7 +96,7 @@ struct RedisKeysListView: View {
             sidebarHeader
             
             RedisKeysTable(datasource: $redisKeyModels, selectRowIndex: $selectedRedisKeyIndex, onChange: {
-                self.selectRedisKeyModel.copyValue(redisKeyModels[$0])
+                self.selectKeyIndex($0)
                 self.showEditor()
             }, onClick: {_ in
                 self.showEditor()
@@ -148,11 +148,10 @@ struct RedisKeysListView: View {
             onRefreshAction()
         }
         .sheet(isPresented: $renameModalVisible) {
-            ModalView("Rename", action: onRenameAction) {
+            ModalView("Rename", width: MTheme.DIALOG_W, height: 100, action: onRenameAction) {
                 VStack(alignment:.leading, spacing: 8) {
                     FormItemText(label: "New name", placeholder: "New key name", value: $newKeyName)
                 }
-                .frame(minWidth:400, minHeight:50)
             }
         }
     }
@@ -160,6 +159,14 @@ struct RedisKeysListView: View {
     func showEditor() -> Void {
         if self.mainViewType != MainViewTypeEnum.EDITOR {
             self.mainViewType = MainViewTypeEnum.EDITOR
+        }
+    }
+    
+    // 设置选中key
+    func selectKeyIndex(_ index: Int) {
+        self.selectRedisKeyModel.copyValue(redisKeyModels[index])
+        if self.selectedRedisKeyIndex != index {
+            self.selectedRedisKeyIndex = index
         }
     }
     
@@ -273,6 +280,9 @@ struct RedisKeysListView: View {
         Task {
             let keysPage = await self.redisInstanceModel.getClient().pageKeys(scanModel)
             self.redisKeyModels = keysPage
+            if !keysPage.isEmpty {
+                self.selectKeyIndex(0)
+            }
         }
         
     }

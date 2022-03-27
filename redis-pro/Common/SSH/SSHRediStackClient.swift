@@ -101,7 +101,13 @@ extension RediStackClient {
                     self.logger.info("bind local server, port: \(bindPort), final: \(localBindPort), success...")
                     self.sshLocalChannel = localChannel
                     
-                    let configuration = try! RedisConnection.Configuration(hostname: bindHost, port: localBindPort, password: password, initialDatabase: db)
+                    var configuration: RedisConnection.Configuration
+                    if (self.redisModel.password.isEmpty) {
+                        configuration = try! RedisConnection.Configuration(hostname: bindHost, port: localBindPort, initialDatabase: db)
+                    } else {
+                        configuration = try! RedisConnection.Configuration(hostname: bindHost, port: localBindPort, password: password, initialDatabase: db)
+                    }
+                    
                     RedisConnection.make(
                         configuration: configuration
                         , boundEventLoop: MultiThreadedEventLoopGroup(numberOfThreads: 1).next()

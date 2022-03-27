@@ -33,8 +33,15 @@ class RedisKeysTableController: NSViewController {
         menu.addItem(NSMenuItem(title: "Rename", action: #selector(tableViewEditItemClicked(_:)), keyEquivalent: ""))
         menu.addItem(NSMenuItem(title: "Delete", action: #selector(tableViewDeleteItemClicked(_:)), keyEquivalent: ""))
         tableView.menu = menu
-        
     }
+    
+    // 监听键盘删除事件
+    override func keyDown(with event: NSEvent) {
+        if event.specialKey == NSEvent.SpecialKey.delete {
+            logger.info("on delete key down, delete index: \(tableView.selectedRow)")
+            self.deleteAction?(tableView.selectedRow)
+        }
+       }
     
     func setDatasource(_ datasource:[RedisKeyModel]) -> Void {
         self.datasource = datasource

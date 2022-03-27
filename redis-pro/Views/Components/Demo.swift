@@ -16,7 +16,7 @@ struct Demo: View {
     @State var isSecured = true
     var body: some View {
         VStack(spacing: 10) {
-//            NTable()
+            NTableView()
             
             ZStack(alignment: .trailing) {
                         if isSecured {
@@ -40,7 +40,11 @@ struct Demo: View {
 
 struct Demo_Previews: PreviewProvider {
     static var previews: some View {
-        Demo()
-            .frame(width: 600, height: 400, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+        Group {
+            Demo()
+                .frame(width: 600, height: 400, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+            Demo()
+                .frame(width: 600, height: 400, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+        }
     }
 }

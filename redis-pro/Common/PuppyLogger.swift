@@ -18,7 +18,7 @@ class LogFormatter: LogFormattable {
     }
 }
 
-class PuppyFileRotationDelegate: FileRotationLoggerDeletate {
+class PuppyFileRotationDelegate: FileRotationLoggerDelegate {
     func fileRotationLogger(_ fileRotationLogger: FileRotationLogger,
                             didArchiveFileURL: URL, toFileURL: URL) {
         print("puppy didArchiveFileURL: \(didArchiveFileURL), to file URL: \(toFileURL)")

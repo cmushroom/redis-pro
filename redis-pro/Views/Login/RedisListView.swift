@@ -43,6 +43,7 @@ struct RedisListView: View {
         RedisListTable(datasource: $redisFavoriteModel.redisModels, selectRowIndex: $selectIndex, onChange: {
             logger.info("on table select change \($0)")
             self.selectRedisModel = redisFavoriteModel.redisModels[$0]
+            self.selectedRedisModelId = redisFavoriteModel.redisModels[$0].id
         }, doubleAction: self.onConnect)
     }
     
@@ -55,7 +56,7 @@ struct RedisListView: View {
                 // footer
                 HStack(alignment: .center) {
                     MIcon(icon: "plus", fontSize: 13, action: onAddAction)
-                    MIcon(icon: "minus", fontSize: 13, disabled: selectedRedisModelId == nil, action: onDelAction)
+                    MIcon(icon: "minus", fontSize: 13, disabled: selectedRedisModelId == nil, action: onConfirmDel)
                     
                 }
                 .padding(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
@@ -93,6 +94,23 @@ struct RedisListView: View {
         logger.info("add new redis favorite action")
         redisFavoriteModel.save(redisModel: RedisModel())
     }
+    
+    func onConfirmDel() -> Void {
+        if let index = self.redisFavoriteModel.redisModels.firstIndex(where: { (e) -> Bool in
+            return e.id == self.selectedRedisModelId
+        }) {
+            self.selectIndex = index
+        }
+        self.selectRedisModel = self.redisFavoriteModel.redisModels[self.selectIndex ?? 0]
+        
+        MAlert.confirm(String(format: NSLocalizedString("CONFIRM_FAVORITE_REDIS_TITLE'%@'", comment: ""), self.selectRedisModel.name)
+                       , message: String(format: NSLocalizedString("CONFIRM_FAVORITE_REDIS_MESSAGE'%@'", comment: ""), self.selectRedisModel.name)
+                       , primaryButton: "Delete"
+                       , primaryAction: {
+                        onDelAction()
+                       })
+    }
+    
     func onDelAction() -> Void {
         logger.info("del redis favorite action, id:\(String(describing: selectedRedisModelId))")
         if selectedRedisModelId == nil {

@@ -16,7 +16,7 @@ struct DatabasePicker: View {
     
     var body: some View {
         Menu(content: {
-            ForEach(0 ..< databases) { item in
+            ForEach(0 ..< databases, id: \.self) { item in
                 Button("DB\(item)", action: {onSelectDatabaseAction(item)})
                     .font(.system(size: 10.0))
                     .foregroundColor(.primary)

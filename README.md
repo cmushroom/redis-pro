@@ -31,10 +31,10 @@ support macos (Intel, Apple Silicon) platform,  will support ipad os in the futu
 - [x] slow log
 - [x] redis config update
 - [x] ssh login
+- [x] favorite delete confirm
 - [ ] delete batch
 - [ ] ipad os support
 - [ ] ssh key
-- [ ] favorite delete confirm
     
 
 ## Version

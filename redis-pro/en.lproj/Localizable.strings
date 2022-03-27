@@ -6,15 +6,21 @@
   
 */
 
-// system
+// ------------------------------------------------ system confirm message start ------------------------------------------------
+"CONFIRM_FAVORITE_REDIS_TITLE'%@'" = "Delete list item '%@'?";
+"CONFIRM_FAVORITE_REDIS_MESSAGE'%@'" = "Are you sure you want to delete the item '%@'? This operation cannot be undone.";
+// ------------------------------------------------ system confirm message end --------------------------------------------------
+
+
+// ------------------------------------------------ system start ----------------------------------------------------------------
 "UNIT_MICROSECOND" = "1 second = 1,000,000 microsecond";
+// ------------------------------------------------ system start ----------------------------------------------------------------
 
-
-// ------------------------------------------------ Redis Config Start...-------------------------------------------------------
+// ------------------------------------------------ Redis Config Start...--------------------------------------------------------
 "REDIS_CONFIG_REWRITE" = "The CONFIG REWRITE command rewrites the redis.conf file the server was started with, applying the minimal changes needed to make it reflect the configuration currently used by the server, which may be different compared to the original one because of the use of the CONFIG SET command.";
-// ------------------------------------------------ Redis Config End...-------------------------------------------------------
+// ------------------------------------------------ Redis Config End...----------------------------------------------------------
 
-// ------------------------------------------------ Redis Slow Log Start...-------------------------------------------------------
+// ------------------------------------------------ Redis Slow Log Start...------------------------------------------------------
 "REDIS_SLOW_LOG_ID" = "A unique progressive identifier for every slow log entry, The ID is never reset in the course of the Redis server execution, only a server restart will reset it";
 "REDIS_SLOW_LOG_TIMESTAMP" = "The timestamp at which the logged command was processed";
 "REDIS_SLOW_LOG_EXEC_TIME" = "The amount of time needed for its execution, in microseconds";
@@ -30,7 +36,7 @@
 // ------------------------------------------------ Redis Slow Log End...-------------------------------------------------------
 
 
-// ------------------------------------------------ Redis Info Start...-------------------------------------------------------
+// ------------------------------------------------ Redis Info Start...---------------------------------------------------------
 "REDIS_CLIENT_LIST_ID" = "an unique 64-bit client ID.";
 "REDIS_CLIENT_LIST_NAME" = "the name set by the client with CLIENT SETNAME";
 "REDIS_CLIENT_LIST_ADDR" = "address/port of the client";
@@ -54,7 +60,7 @@
 "REDIS_CLIENT_LIST_TOT-MEM" = "total memory consumed by this client in its various buffers";
 "REDIS_CLIENT_LIST_REDIR" = "client id of current client tracking redirection";
 "REDIS_CLIENT_LIST_USER" = "the authenticated username of the client";
-// ------------------------------------------------ Redis Info End...-------------------------------------------------------
+// ------------------------------------------------ Redis Info End...---------------------------------------------------------
 
 // ------------------------------------------------ Redis Info Start...-------------------------------------------------------
 // Server

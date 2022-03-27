@@ -103,7 +103,6 @@
 		43F22ED92697FC5800A00F97 /* RedisKeysTableDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F22ED82697FC5800A00F97 /* RedisKeysTableDemo.swift */; };
 		43F22EDB269BE69200A00F97 /* RedisListTableController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 43F22EDA269BE69200A00F97 /* RedisListTableController.xib */; };
 		43F22EDD269BE6A800A00F97 /* RedisListTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F22EDC269BE6A800A00F97 /* RedisListTableController.swift */; };
-		43F22EDF269BEB6800A00F97 /* RedisListTableDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F22EDE269BEB6800A00F97 /* RedisListTableDemo.swift */; };
 		43F22EE3269C2D6600A00F97 /* TextViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 43F22EE2269C2D6600A00F97 /* TextViewController.xib */; };
 		43F22EE5269C2E0900A00F97 /* TextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F22EE4269C2E0900A00F97 /* TextViewController.swift */; };
 		43F22EE9269E7F9500A00F97 /* README.zh_CN.md in Resources */ = {isa = PBXBuildFile; fileRef = 43F22EE8269E7F9500A00F97 /* README.zh_CN.md */; };
@@ -293,7 +292,6 @@
 		43F22ED82697FC5800A00F97 /* RedisKeysTableDemo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisKeysTableDemo.swift; sourceTree = "<group>"; };
 		43F22EDA269BE69200A00F97 /* RedisListTableController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RedisListTableController.xib; sourceTree = "<group>"; };
 		43F22EDC269BE6A800A00F97 /* RedisListTableController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisListTableController.swift; sourceTree = "<group>"; };
-		43F22EDE269BEB6800A00F97 /* RedisListTableDemo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisListTableDemo.swift; sourceTree = "<group>"; };
 		43F22EE2269C2D6600A00F97 /* TextViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TextViewController.xib; sourceTree = "<group>"; };
 		43F22EE4269C2E0900A00F97 /* TextViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewController.swift; sourceTree = "<group>"; };
 		43F22EE8269E7F9500A00F97 /* README.zh_CN.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.zh_CN.md; sourceTree = "<group>"; };
@@ -678,7 +676,6 @@
 				430A09D825BEA9A700B60DFC /* RedisRow.swift */,
 				431266C72617080D00FB6B69 /* RedisQuickRow.swift */,
 				4373C50B25C3FC81002B700E /* LoginForm.swift */,
-				43F22EDE269BEB6800A00F97 /* RedisListTableDemo.swift */,
 				43F22EDC269BE6A800A00F97 /* RedisListTableController.swift */,
 				43F22EDA269BE69200A00F97 /* RedisListTableController.xib */,
 			);
@@ -910,7 +907,6 @@
 				430A09D325BEA91700B60DFC /* LoginView.swift in Sources */,
 				43CD28B2267C6D0800E11876 /* ClientsListView.swift in Sources */,
 				4382203E265668CC00DA7F9E /* MLoading.swift in Sources */,
-				43F22EDF269BEB6800A00F97 /* RedisListTableDemo.swift in Sources */,
 				4385D32E261ED26200BA8ED1 /* IndexView.swift in Sources */,
 				4320AAF425B6740900A8E214 /* redis_proApp.swift in Sources */,
 				43BCCD3726A91E85000BE45F /* FormItemPassword.swift in Sources */,

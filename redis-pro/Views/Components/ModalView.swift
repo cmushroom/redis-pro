@@ -12,6 +12,8 @@ struct ModalView<Content: View>: View {
     var title: String
     var action: () throws -> Void
     var content: Content
+    var width = MTheme.DIALOG_W
+    var height = MTheme.DIALOG_H
     
     
     init(_ title:String, action: @escaping () throws -> Void, @ViewBuilder content: () -> Content) {
@@ -20,8 +22,17 @@ struct ModalView<Content: View>: View {
         self.content = content()
     }
     
+    init(_ title:String, width: CGFloat, height: CGFloat, action: @escaping () throws -> Void, @ViewBuilder content: () -> Content) {
+        self.title = title
+        self.width = width
+        self.height = height
+        self.action = action
+        self.content = content()
+    }
+    
     var body: some View {
-        VStack(alignment: .center, spacing: 0) {
+        VStack(alignment: .leading, spacing: 0) {
+            // header
             HStack {
                 Text(title)
                     .font(.body)
@@ -31,7 +42,7 @@ struct ModalView<Content: View>: View {
             Rectangle().frame(height: 1)
                 .padding(.horizontal, 0).foregroundColor(Color.gray.opacity(0.2))
             
-            VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .center, spacing: 0) {
                 content
             }
             .padding(8)
@@ -43,7 +54,7 @@ struct ModalView<Content: View>: View {
             }
             .padding(EdgeInsets(top: 0, leading: 8, bottom: 6, trailing: 8))
         }
-        .frame(minWidth: MTheme.DIALOG_W, minHeight: MTheme.DIALOG_H)
+        .frame(minWidth: width, minHeight: height)
         .padding(0)
     }
     

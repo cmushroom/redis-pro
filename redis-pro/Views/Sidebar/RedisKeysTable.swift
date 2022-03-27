@@ -59,9 +59,6 @@ struct RedisKeysTable: NSViewControllerRepresentable {
             
             self.logger.info("redis key table Coordinator tableViewSelectionIsChanging, selectedRow: \(tableView.selectedRow)")
             
-            self.table.selectRowIndex = tableView.selectedRow
-            self.table.onChange?(self.table.selectRowIndex)
-            
         }
         
         func tableViewSelectionDidChange(_ notification: Notification) {
@@ -69,6 +66,9 @@ struct RedisKeysTable: NSViewControllerRepresentable {
             guard self.table.datasource.count > 0 else {return}
             
             self.logger.info("redis key table Coordinator tableViewSelectionDidChang, selectedRow: \(tableView.selectedRow)")
+            
+            self.table.selectRowIndex = tableView.selectedRow
+            self.table.onChange?(self.table.selectRowIndex)
         }
 
         

@@ -148,11 +148,10 @@ struct RedisKeysListView: View {
             onRefreshAction()
         }
         .sheet(isPresented: $renameModalVisible) {
-            ModalView("Rename", action: onRenameAction) {
+            ModalView("Rename", width: MTheme.DIALOG_W, height: 100, action: onRenameAction) {
                 VStack(alignment:.leading, spacing: 8) {
                     FormItemText(label: "New name", placeholder: "New key name", value: $newKeyName)
                 }
-                .frame(minWidth:400, minHeight:50)
             }
         }
     }

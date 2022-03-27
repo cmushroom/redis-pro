@@ -32,10 +32,10 @@
 - [x] slow log
 - [x] redis config update
 - [x] ssh login
+- [x] favorite delete confirm
 - [ ] delete batch
 - [ ] ipad os support
 - [ ] ssh key support
-- [ ] favorite delete confirm
 
     
 

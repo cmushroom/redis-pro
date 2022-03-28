@@ -1,6 +1,6 @@
 {
-    "latestVersionNum": 11,
-    "latestVersion": "1.4.4",
+    "latestVersionNum": 12,
+    "latestVersion": "1.4.5",
     "updateType": "hint",
-    "releaseNotes": "1.  修复key过期时间没有刷新问题 \n2. 添加关于页面"
+    "releaseNotes": "1. 删除favorite 列表时增加删除确认 #35 \n2. ssh连接 不支持 redis 没有密码的bug修复 #34 \n3. 左侧列表刷新，没有清空选中项，导致无法刷新 value 的 bug #33 \n4. key 重命名弹框样式问题修复 \n5. key删除增加 delete 快捷键 \n6. 过期时间超过Int64导致闪退bug"
 }

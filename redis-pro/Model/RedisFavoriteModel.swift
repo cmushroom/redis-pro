@@ -40,14 +40,6 @@ class RedisFavoriteModel:ObservableObject {
             redisModels.append(item)
         }
         
-//        self.redisModels.forEach({
-//                   let c = $0.objectWillChange.sink(receiveValue: { self.objectWillChange.send() })
-//
-//                   // Important: You have to keep the returned value allocated,
-//                   // otherwise the sink subscription gets cancelled
-//                   self.cancellables.append(c)
-//               })
-        
         self.lastRedisModelId = userDefaults.string(forKey: UserDefaulsKeysEnum.RedisLastUseIdKey.rawValue)
         logger.info("last select redis model id: \(String(describing: lastRedisModelId))")
     }

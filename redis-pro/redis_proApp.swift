@@ -19,6 +19,8 @@ struct redis_proApp: App {
     private var colorSchemeValue:String = ColorSchemeEnum.AUTO.rawValue
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
+    @State private var datasource:[Any] = [RedisModel(name: "hello-test"), RedisModel(name: "hello-dev")]
+    
     // 应用启动只初始化一次
     init() {
         // logger
@@ -27,7 +29,15 @@ struct redis_proApp: App {
     
     var body: some Scene {
         WindowGroup {
-//            NTableView()
+//            NTableView(columns: [NTableColumn(title: "FAVORITES", key: "name", width: 100, icon: .APP)], datasource: $datasource)
+//            Button("add", action: {
+//                print("hello....")
+//                let item = datasource.last as! RedisModel
+//                item.name += "\(datasource.count)"
+//                datasource.append(RedisModel(name: "helllolsfas"))
+//                print("... \(datasource.count)")
+//            })
+            
             IndexView()
                 .preferredColorScheme(ColorSchemeEnum.getColorScheme(colorSchemeValue))
         }

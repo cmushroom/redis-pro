@@ -118,6 +118,8 @@ struct LoginForm: View {
             .tabItem {
                 Label("SSH", systemImage: "bolt.fill")
             }.tag(RedisConnectionTypeEnum.SSH.rawValue)
+        
+        .frame(minHeight: height)
     }
     
     var body: some View {

@@ -15,7 +15,9 @@ protocol TableColumnTypeData {
 enum TableColumnType: TableColumnTypeData {
 
     case DEFAULT
-    //    case INDEX
+    case INDEX
+    case IMAGE
+        
     //    case ID
     //    case DATE
     //    case DATETIME
@@ -25,6 +27,10 @@ enum TableColumnType: TableColumnTypeData {
         switch self {
         case .DEFAULT:
             return 100
+        case .INDEX:
+            return 20
+        case .IMAGE:
+            return 40
         }
     }
 }

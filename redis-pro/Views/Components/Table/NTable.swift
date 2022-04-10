@@ -11,20 +11,31 @@ import Cocoa
 
 struct NTableView: NSViewControllerRepresentable {
     var columns:[NTableColumn] = [NTableColumn]()
-    var datasource:[Any] = [Any]()
+    @Binding var datasource:[Any]
+    @Binding var selectIndex:Int
+    var onChange: ((Int) -> Void)?
+    var onDelete: ((Int) -> Void)?
+    var onDouble: ((Int) -> Void)?
+    
+    let logger = Logger(label: "ntable")
     
     
     func makeCoordinator() -> Coordinator {
+        logger.info("init ntable coordinator...")
         return Coordinator(self)
     }
     
     
     func makeNSViewController(context: Context) -> NSViewController {
         let controller = NTableController()
+        controller.onChangeAction = self.onChange
+        controller.onDeleteAction = self.onDelete
+        controller.onDoubleAction = self.onDouble
         controller.columns = columns
-        controller.datasource = datasource
+//        controller.datasource = datasource
 //        controller.setUp(action: self.onClick, deleteAction: self.deleteAction, renameAction: self.renameAction)
-        controller.tableView.delegate = context.coordinator
+//        controller.tableView.delegate = context.coordinator
+//        controller.tableView.dataSource = context.coordinator
         return controller
     }
     
@@ -33,41 +44,70 @@ struct NTableView: NSViewControllerRepresentable {
         guard let controller = nsViewController as? NTableController else {return}
 //        controller.setDatasource(datasource)
         controller.tableView.delegate = context.coordinator
+//        controller.tableView.dataSource = context.coordinator
         
-//        controller.arrayController.setSelectionIndex(self.selectRowIndex)
+        controller.refresh(self.datasource)
+        
+        DispatchQueue.main.async {
+            controller.arrayController.setSelectionIndex(self.selectIndex)
+        }
+        logger.info("ntable update nsview controller, datasource count: \(self.datasource.count), \(controller.arrayController.selectionIndexes)")
+    }
+    
+    func onConfirmDelete(index:Int) {
+        guard let deleteAction = onDelete else  {
+            return
+        }
+        MAlert.confirm("", message: "", primaryButton: "Delete", secondButton: "Cancel", primaryAction: {
+            deleteAction(index)
+        }, style: .warning)
     }
     
     
-    class Coordinator: NSObject, NSTableViewDelegate {
+    class Coordinator: NSObject, NSTableViewDelegate, NSTableViewDataSource {
         
         var table: NTableView
         
-        let logger = Logger(label: "ntable-coordinator")
+        let logger = Logger(label: "table-coordinator")
         
         
         init(_ table: NTableView) {
             self.table = table
+        }
         
+        // 构建单元格
+        func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+            guard let tableColumn = tableColumn else {
+                return nil
+            }
+
+            guard let column = self.table.columns.filter({ $0.key == tableColumn.identifier.rawValue}).first else { return nil }
+            
+            var tableCellView = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(column.key), owner: self) as? TableCellView
+            if tableCellView == nil {
+                tableCellView = TableCellView(tableView, tableColumn: tableColumn, column: column, row: row)
+            }
+            
+            return tableCellView
         }
         
         func tableViewSelectionIsChanging(_ notification: Notification) {
             guard let tableView = notification.object as? NSTableView else {return}
 //            guard self.table.datasource.count > 0 else {return}
             
-            self.logger.info("redis key table Coordinator tableViewSelectionIsChanging, selectedRow: \(tableView.selectedRow)")
+            self.logger.info("table coordinator selection changing, selectedRow: \(tableView.selectedRow)")
             
 //            self.table.selectRowIndex = tableView.selectedRow
 //            self.table.onChange?(self.table.selectRowIndex)
-            
         }
         
         func tableViewSelectionDidChange(_ notification: Notification) {
             guard let tableView = notification.object as? NSTableView else {return}
 //            guard self.table.datasource.count > 0 else {return}
             
-            self.logger.info("redis key table Coordinator tableViewSelectionDidChang, selectedRow: \(tableView.selectedRow)")
+            self.logger.info("table coordinator selection change, selectedRow: \(tableView.selectedRow)")
+            self.table.onChange?(tableView.selectedRow)
         }
-
         
     }
 }
@@ -75,12 +115,22 @@ struct NTableView: NSViewControllerRepresentable {
 class NTableController: NSViewController, NSTableViewDelegate, NSTableViewDataSource {
     
     var columns:[NTableColumn] = [NTableColumn]()
-    var datasource:[Any] = [Any]()
-    
+    @objc dynamic var datasource:[Any] = [Any]()
+    var arrayController = NSArrayController()
     var initialized = false
     let scrollView = NSScrollView()
     let tableView = NSTableView()
     
+    var onDeleteAction: ((Int) -> Void)?
+    var onDoubleAction: ((Int) -> Void)?
+    var onChangeAction: ((Int) -> Void)?
+    
+    let logger = Logger(label: "table-view-controller")
+    
+    func refresh(_ datasource: [Any]) {
+        self.datasource = datasource
+        logger.info("table view controller refresh, data length: \((arrayController.arrangedObjects as! Array<Any>).count)")
+    }
     
     override func loadView() {
         self.view = NSView()
@@ -93,6 +143,15 @@ class NTableController: NSViewController, NSTableViewDelegate, NSTableViewDataSo
     override func viewDidLayout() {
         if !initialized {
             initialized = true
+            arrayController.bind(.contentArray, to: self, withKeyPath: "datasource", options: nil)
+//            arrayController.bind(.selectionIndexes, to: self, withKeyPath: "selectIndex", options: nil)
+            
+            tableView.bind(.content, to: arrayController, withKeyPath: "arrangedObjects", options: nil)
+            tableView.bind(.selectionIndexes, to: arrayController, withKeyPath:"selectionIndexes", options: nil)
+//            tableView.bind(.selectedIndex, to: arrayController, withKeyPath:"selectedIndex", options: nil)
+//            tableView.bind(NSSortDescriptorsBinding, toObject: arrayController, withKeyPath: "sortDescriptors", options: nil)
+            
+            tableView.allowsEmptySelection = false
             setupView()
             setupTableView()
         }
@@ -118,12 +177,12 @@ class NTableController: NSViewController, NSTableViewDelegate, NSTableViewDataSo
         self.view.addSubview(scrollView)
         self.scrollView.translatesAutoresizingMaskIntoConstraints = false
         self.view.addConstraint(NSLayoutConstraint(item: self.scrollView, attribute: .left, relatedBy: .equal, toItem: self.view, attribute: .left, multiplier: 1.0, constant: 0))
-        self.view.addConstraint(NSLayoutConstraint(item: self.scrollView, attribute: .top, relatedBy: .equal, toItem: self.view, attribute: .top, multiplier: 1.0, constant: 23))
+        self.view.addConstraint(NSLayoutConstraint(item: self.scrollView, attribute: .top, relatedBy: .equal, toItem: self.view, attribute: .top, multiplier: 1.0, constant: 0))
         self.view.addConstraint(NSLayoutConstraint(item: self.scrollView, attribute: .right, relatedBy: .equal, toItem: self.view, attribute: .right, multiplier: 1.0, constant: 0))
         self.view.addConstraint(NSLayoutConstraint(item: self.scrollView, attribute: .bottom, relatedBy: .equal, toItem: self.view, attribute: .bottom, multiplier: 1.0, constant: 0))
         tableView.frame = scrollView.bounds
-        tableView.delegate = self
-        tableView.dataSource = self
+//        tableView.delegate = self
+//        tableView.dataSource = self
         tableView.usesAlternatingRowBackgroundColors = true
 //        tableView.headerView = nil
         scrollView.backgroundColor = NSColor.clear
@@ -141,18 +200,14 @@ class NTableController: NSViewController, NSTableViewDelegate, NSTableViewDataSo
         
         tableView.columnAutoresizingStyle = .lastColumnOnlyAutoresizingStyle
         
+        tableView.doubleAction = #selector(onDoubleAction(_:))
+        
         for column in columns {
             let col = NSTableColumn(identifier: NSUserInterfaceItemIdentifier(rawValue: column.key))
             col.width = column.width ?? column.type.width
             col.title = column.title
             tableView.addTableColumn(col)
         }
-
-//
-//        age2.maxWidth = 2000
-//        age2.title = "Age"
-////        age2.sizeToFit()
-//        tableView.addTableColumn(age2)
     
         // 最后一列自适应
         tableView.sizeLastColumnToFit()
@@ -164,26 +219,25 @@ class NTableController: NSViewController, NSTableViewDelegate, NSTableViewDataSo
         scrollView.hasVerticalScroller = true
     }
     
-    func numberOfRows(in tableView: NSTableView) -> Int {
-        return datasource.count
-    }
+    // 使用array controller, 不需要此方法
+//    func numberOfRows(in tableView: NSTableView) -> Int {
+//        return self.datasource.count
+//    }
     
     // 构建单元格
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
-        let text = NSTextField()
-        // 是否可以编辑
-        text.isEditable = false
+        guard let tableColumn = tableColumn else {
+            return nil
+        }
 
-        text.stringValue = getColumnValue(row, column: tableColumn)
-        let cell = NSTableCellView()
-        cell.addSubview(text)
-        text.drawsBackground = false
-        text.isBordered = false
-        text.translatesAutoresizingMaskIntoConstraints = false
-        cell.addConstraint(NSLayoutConstraint(item: text, attribute: .centerY, relatedBy: .equal, toItem: cell, attribute: .centerY, multiplier: 1, constant: 0))
-        cell.addConstraint(NSLayoutConstraint(item: text, attribute: .left, relatedBy: .equal, toItem: cell, attribute: .left, multiplier: 1, constant: 5))
-        cell.addConstraint(NSLayoutConstraint(item: text, attribute: .right, relatedBy: .equal, toItem: cell, attribute: .right, multiplier: 1, constant: 4))
-        return cell
+        guard let column = columns.filter({ $0.key == tableColumn.identifier.rawValue}).first else { return nil }
+        
+        var tableCellView = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(column.key), owner: self) as? TableCellView
+        if tableCellView == nil {
+            tableCellView = TableCellView(tableView, tableColumn: tableColumn, column: column, row: row)
+        }
+        
+        return tableCellView
     }
     
     func tableView(_ tableView: NSTableView, rowViewForRow row: Int) -> NSTableRowView? {
@@ -193,35 +247,43 @@ class NTableController: NSViewController, NSTableViewDelegate, NSTableViewDataSo
         return rowView
     }
     
-    private func getColumnValue(_ row:Int, column:NSTableColumn?) -> String {
-        let rowAnyObj = datasource[row]
-        let key = column?.identifier.rawValue ?? "_"
-        var value:Any?
-        if rowAnyObj is Dictionary<String, Any> {
-            let rowObj = rowAnyObj as! Dictionary<String, Any>
-            value = rowObj[key]
-        } else if rowAnyObj is NSObject {
-            let rowObj = rowAnyObj as! NSObject
-            value = rowObj.value(forKey: key)
+    // on change
+    func tableViewSelectionDidChange(_ notification: Notification) {
+        guard let tableView = notification.object as? NSTableView else {return}
+        self.onChangeAction?(tableView.selectedRow)
+        self.logger.info("table view controller selection change, selectedRow: \(tableView.selectedRow)")
+    }
+    
+    // 监听键盘删除事件
+    override func keyDown(with event: NSEvent) {
+        if event.specialKey == NSEvent.SpecialKey.delete {
+            logger.info("on delete key down, delete index: \(tableView.selectedRow)")
+            self.onDeleteAction?(tableView.clickedRow)
         }
-        
-        guard let value = value else {
-            return "-"
-        }
-        
-        return "\(value)"
     }
     
     
+    // double click action
+    @objc private func onDoubleAction(_ sender: AnyObject) {
+        logger.info("table view on double click action, row: \(tableView.clickedRow)")
+        self.onDoubleAction?(tableView.clickedRow)
+    }
 }
 
 struct NTable_Previews: PreviewProvider {
-    static var columns:[NTableColumn] = [NTableColumn(title: "name", key: "name"),  NTableColumn(title: "age", key: "age", width: 100)]
-    static var datasource:[Any] = [["name":"tom", "age":"10"], ["name": "jimi", "age":"12"]]
+    static var columns:[NTableColumn] = [NTableColumn(type: .IMAGE, title: "icon", key: "name", width: 20),  NTableColumn(title: "name", key: "name", width: 100)]
+    @State private static var datasource:[Any] = [RedisModel(name: "hello-test"), RedisModel(name: "hello-dev")]
+    @State static var index = 1
     static var previews: some View {
-        HStack {
-            NTableView(columns: columns, datasource: datasource)
+        VStack {
+            NTableView(columns: columns, datasource: $datasource, selectIndex: $index)
                 .preferredColorScheme(.light)
+            
+            Text("\(index), \(datasource.count)")
+            Button("add", action: {
+                self.index += 1
+                datasource.append(RedisModel(name: "helllolsfas"))
+            })
         }
         .frame(width: 700, height: 600, alignment: .leading)
         .background(Color.gray)

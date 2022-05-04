@@ -8,7 +8,7 @@
 import Foundation
 import AppKit
 import SwiftUI
-struct NTableColumn {
+struct NTableColumn: Equatable {
     var type:TableColumnType = .DEFAULT
     var title:String
     var key:String

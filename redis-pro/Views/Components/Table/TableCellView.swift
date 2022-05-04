@@ -10,11 +10,13 @@ import Cocoa
 import Logging
 
 class TableCellView: NSTableCellView {
-
-    var aTextField: NSTextField?
     
     let logger = Logger(label: "table-cell")
 
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     init(_ tableView: NSTableView, tableColumn: NSTableColumn,column: NTableColumn, row:Int) {
         let identifier = tableColumn.identifier
         let key = column.key
@@ -28,6 +30,11 @@ class TableCellView: NSTableCellView {
         textField.isEditable = false
         textField.drawsBackground = false
         textField.isBordered = false
+        // 禁止换行
+        textField.maximumNumberOfLines = 1
+        // ellipse
+        textField.cell?.truncatesLastVisibleLine = true
+        
         
         textField.bind(.value, to: self, withKeyPath: "objectValue.\(key)", options: nil)
 //        textField.stringValue = getColumnValue(column, row: row, rowAnyObj: rowObj)
@@ -46,9 +53,6 @@ class TableCellView: NSTableCellView {
             stackView.addView(imageView, in: .leading)
         }
         
-//        stackView.alignment = .
-//        stackView.wantsLayer = true
-//        stackView.layer?.backgroundColor = NSColor.blue.cgColor
         stackView.addView(textField, in: .leading)
         
         
@@ -79,11 +83,6 @@ class TableCellView: NSTableCellView {
         }
         
         return "\(value)"
-    }
-    
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 
 }

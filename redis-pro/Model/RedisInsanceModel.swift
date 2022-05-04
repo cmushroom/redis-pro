@@ -10,7 +10,7 @@ import Foundation
 import NIO
 import RediStack
 import Logging
-
+import ComposableArchitecture
 
 class RedisInstanceModel:ObservableObject, Identifiable {
     @Published var loading:Bool = false
@@ -18,6 +18,12 @@ class RedisInstanceModel:ObservableObject, Identifiable {
     @Published var redisModel:RedisModel
     private var rediStackClient:RediStackClient?
     var globalContext:GlobalContext?
+    
+    // 页面处理 loading , alert 等
+    private var loadingStore: Store<LoadingState, LoadingAction>?
+    private var loadingViewStore: ViewStore<LoadingState, LoadingAction>?
+    private var alertStore: Store<AppAlertState, AlertAction>?
+    private var alertViewStore: ViewStore<AppAlertState, AlertAction>?
     
     let logger = Logger(label: "redis-instance")
     
@@ -33,6 +39,13 @@ class RedisInstanceModel:ObservableObject, Identifiable {
                 close()
             }
         )
+    }
+    
+    func setUp(_ loadingStore:Store<LoadingState, LoadingAction>, alertStore: Store<AppAlertState, AlertAction>) -> Void {
+        self.loadingStore = loadingStore
+        self.loadingViewStore = ViewStore(loadingStore)
+        self.alertStore = alertStore
+        self.alertViewStore = ViewStore(alertStore)
     }
     
     func setUp(_ globalContext:GlobalContext) -> Void {
@@ -62,7 +75,6 @@ class RedisInstanceModel:ObservableObject, Identifiable {
     
     func testConnect(_ redisModel:RedisModel) async -> Bool {
         self.redisModel = redisModel
-        
         let pong =  await self.getClient().ping()
         self.close()
         return pong

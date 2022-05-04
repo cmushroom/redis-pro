@@ -1,97 +1,158 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "AppCenter",
-        "repositoryURL": "https://gitee.com/chengpan168_admin/appcenter-sdk-apple.git",
-        "state": {
-          "branch": null,
-          "revision": "25f64229373de97ff3920941cd52203193e5d8be",
-          "version": "4.3.0"
-        }
-      },
-      {
-        "package": "PLCrashReporter",
-        "repositoryURL": "https://github.com/microsoft/PLCrashReporter.git",
-        "state": {
-          "branch": null,
-          "revision": "6b27393cad517c067dceea85fadf050e70c4ceaa",
-          "version": "1.10.1"
-        }
-      },
-      {
-        "package": "Puppy",
-        "repositoryURL": "https://github.com/sushichop/Puppy.git",
-        "state": {
-          "branch": null,
-          "revision": "7cfae42becac2d8916cb1a866dd12d9843199df9",
-          "version": "0.5.0"
-        }
-      },
-      {
-        "package": "RediStack",
-        "repositoryURL": "https://github.com/Mordil/RediStack.git",
-        "state": {
-          "branch": null,
-          "revision": "16037bbb8248eccaf50b8499d3bb9ed945cfd44c",
-          "version": "1.2.1"
-        }
-      },
-      {
-        "package": "swift-crypto",
-        "repositoryURL": "https://github.com/apple/swift-crypto.git",
-        "state": {
-          "branch": null,
-          "revision": "a8911e0fadc25aef1071d582355bd1037a176060",
-          "version": "2.0.4"
-        }
-      },
-      {
-        "package": "swift-log",
-        "repositoryURL": "https://github.com/apple/swift-log.git",
-        "state": {
-          "branch": null,
-          "revision": "5d66f7ba25daf4f94100e7022febf3c75e37a6c7",
-          "version": "1.4.2"
-        }
-      },
-      {
-        "package": "swift-metrics",
-        "repositoryURL": "https://github.com/apple/swift-metrics.git",
-        "state": {
-          "branch": null,
-          "revision": "3edd2f57afc4e68e23c3e4956bc8b65ca6b5b2ff",
-          "version": "2.2.0"
-        }
-      },
-      {
-        "package": "swift-nio",
-        "repositoryURL": "https://github.com/apple/swift-nio.git",
-        "state": {
-          "branch": null,
-          "revision": "154f1d32366449dcccf6375a173adf4ed2a74429",
-          "version": "2.38.0"
-        }
-      },
-      {
-        "package": "swift-nio-ssh",
-        "repositoryURL": "https://github.com/apple/swift-nio-ssh",
-        "state": {
-          "branch": null,
-          "revision": "09778e0388bda898c7592887f2ec84bb81ef21eb",
-          "version": "0.3.3"
-        }
-      },
-      {
-        "package": "SwiftyJSON",
-        "repositoryURL": "https://github.com/SwiftyJSON/SwiftyJSON.git",
-        "state": {
-          "branch": null,
-          "revision": "b3dcd7dbd0d488e1a7077cb33b00f2083e382f07",
-          "version": "5.0.1"
-        }
+  "pins" : [
+    {
+      "identity" : "appcenter-sdk-apple",
+      "kind" : "remoteSourceControl",
+      "location" : "https://gitee.com/chengpan168_admin/appcenter-sdk-apple.git",
+      "state" : {
+        "revision" : "25f64229373de97ff3920941cd52203193e5d8be",
+        "version" : "4.3.0"
       }
-    ]
-  },
-  "version": 1
+    },
+    {
+      "identity" : "combine-schedulers",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/combine-schedulers",
+      "state" : {
+        "revision" : "4cf088c29a20f52be0f2ca54992b492c54e0076b",
+        "version" : "0.5.3"
+      }
+    },
+    {
+      "identity" : "plcrashreporter",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/microsoft/PLCrashReporter.git",
+      "state" : {
+        "revision" : "6b27393cad517c067dceea85fadf050e70c4ceaa",
+        "version" : "1.10.1"
+      }
+    },
+    {
+      "identity" : "puppy",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sushichop/Puppy.git",
+      "state" : {
+        "revision" : "7cfae42becac2d8916cb1a866dd12d9843199df9",
+        "version" : "0.5.0"
+      }
+    },
+    {
+      "identity" : "redistack",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Mordil/RediStack.git",
+      "state" : {
+        "revision" : "16037bbb8248eccaf50b8499d3bb9ed945cfd44c",
+        "version" : "1.2.1"
+      }
+    },
+    {
+      "identity" : "swift-case-paths",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/swift-case-paths",
+      "state" : {
+        "revision" : "ce9c0d897db8a840c39de64caaa9b60119cf4be8",
+        "version" : "0.8.1"
+      }
+    },
+    {
+      "identity" : "swift-collections",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-collections",
+      "state" : {
+        "revision" : "48254824bb4248676bf7ce56014ff57b142b77eb",
+        "version" : "1.0.2"
+      }
+    },
+    {
+      "identity" : "swift-composable-architecture",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/swift-composable-architecture",
+      "state" : {
+        "branch" : "main",
+        "revision" : "007c857bde0410b9d214d7f1e7659551553e337a"
+      }
+    },
+    {
+      "identity" : "swift-crypto",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-crypto.git",
+      "state" : {
+        "revision" : "a8911e0fadc25aef1071d582355bd1037a176060",
+        "version" : "2.0.4"
+      }
+    },
+    {
+      "identity" : "swift-custom-dump",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/swift-custom-dump",
+      "state" : {
+        "revision" : "51698ece74ecf31959d3fa81733f0a5363ef1b4e",
+        "version" : "0.3.0"
+      }
+    },
+    {
+      "identity" : "swift-identified-collections",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/swift-identified-collections",
+      "state" : {
+        "revision" : "680bf440178a78a627b1c2c64c0855f6523ad5b9",
+        "version" : "0.3.2"
+      }
+    },
+    {
+      "identity" : "swift-log",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-log.git",
+      "state" : {
+        "revision" : "5d66f7ba25daf4f94100e7022febf3c75e37a6c7",
+        "version" : "1.4.2"
+      }
+    },
+    {
+      "identity" : "swift-metrics",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-metrics.git",
+      "state" : {
+        "revision" : "3edd2f57afc4e68e23c3e4956bc8b65ca6b5b2ff",
+        "version" : "2.2.0"
+      }
+    },
+    {
+      "identity" : "swift-nio",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-nio.git",
+      "state" : {
+        "revision" : "154f1d32366449dcccf6375a173adf4ed2a74429",
+        "version" : "2.38.0"
+      }
+    },
+    {
+      "identity" : "swift-nio-ssh",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-nio-ssh",
+      "state" : {
+        "revision" : "09778e0388bda898c7592887f2ec84bb81ef21eb",
+        "version" : "0.3.3"
+      }
+    },
+    {
+      "identity" : "swiftyjson",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SwiftyJSON/SwiftyJSON.git",
+      "state" : {
+        "revision" : "b3dcd7dbd0d488e1a7077cb33b00f2083e382f07",
+        "version" : "5.0.1"
+      }
+    },
+    {
+      "identity" : "xctest-dynamic-overlay",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/xctest-dynamic-overlay",
+      "state" : {
+        "revision" : "50a70a9d3583fe228ce672e8923010c8df2deddd",
+        "version" : "0.2.1"
+      }
+    }
+  ],
+  "version" : 2
 }

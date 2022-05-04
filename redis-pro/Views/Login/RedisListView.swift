@@ -7,10 +7,7 @@
 
 import SwiftUI
 import Logging
-
-func onAppear() {
-    print("list on appear。。。")
-}
+import ComposableArchitecture
 
 struct RedisListView: View {
     let logger = Logger(label: "redis-login")
@@ -18,17 +15,18 @@ struct RedisListView: View {
     @EnvironmentObject var redisInstanceModel:RedisInstanceModel
     @EnvironmentObject var globalContext:GlobalContext
     @StateObject var redisFavoriteModel: RedisFavoriteModel = RedisFavoriteModel()
-    @State private var showFavoritesOnly = false
-    @State private var selectedRedisModelId: String?
+    // 一定要设置-1, 其它值会在view 刷新时， 陷入无限循环
     @State private var selectIndex:Int = -1
-    @State private var datasource:[Any] = [RedisModel()]
-    
+    @State private var datasource:[AnyHashable] = []
     @State private var selectRedisModel = RedisModel()
     
     @AppStorage("User.defaultFavorite")
     private var defaultFavorite:String = "last"
-    
-    var quickRedisModel:[RedisModel] = [RedisModel](repeating: RedisModel(name: "QUICK CONNECT"), count: 1)
+//
+//    let store:Store<TableState, TableAction> = Store(initialState: TableState(columns: [NTableColumn(title: "FAVORITES", key: "name", width: 50, icon: .APP)], datasource: [RedisModel(name: UUID().uuidString)], selectIndex: -1)
+//                      , reducer: tableReducer, environment: TableEnvironment())
+//    var store:Store<FavoriteState, FavoriteAction> = Store(initialState: FavoriteState(), reducer: favoriteReducer, environment: FavoriteEnvironment())
+    var store:Store<FavoriteState, FavoriteAction>
     
     var redisTable:some View {
 //        RedisListTable(datasource: $redisFavoriteModel.redisModels, selectRowIndex: $selectIndex, onChange: {
@@ -36,48 +34,74 @@ struct RedisListView: View {
 //            self.selectRedisModel = redisFavoriteModel.redisModels[$0]
 //            self.selectedRedisModelId = redisFavoriteModel.redisModels[$0].id
 //        }, doubleAction: self.onConnect)
-        NTableView(columns: [NTableColumn(title: "FAVORITES", key: "name", width: 50, icon: .APP)], datasource: $datasource, selectIndex: $selectIndex, onChange: {
-            self.selectRedisModel = self.datasource[$0] as! RedisModel
-        }, onDelete: {
-            self.selectIndex = $0
-            self.onConfirmDel()
-        }, onDouble: {
-            self.selectIndex = $0
-            self.onConnect()
-        })
+            NTableView(
+//                columns: [NTableColumn(title: "FAVORITES", key: "name", width: 50, icon: .APP)], datasource: $datasource, selectIndex: $selectIndex
+//                       , onChange: {
+//                print("on change \($0) , \(self.datasource.count)")
+                //            self.selectIndex = $0
+//                self.selectRedisModel = $1 as! RedisModel
+//            }
+//                       , onDelete: { index, _ in
+//                self.onConfirmDel(index)
+//            }
+//                       , onDouble: {
+//                //            self.selectIndex = $0
+//                self.selectRedisModel = $1 as! RedisModel
+//                self.onConnect()
+//            },
+                store: store.scope(state: \.tableState, action: FavoriteAction.tableAction)
+            )
+        
     }
     
     var body: some View {
-        HSplitView {
-            VStack(alignment: .leading,
-                   spacing: 0) {
-                redisTable
-
-                // footer
-                HStack(alignment: .center) {
-                    MIcon(icon: "plus", fontSize: 13, action: onAddAction)
-                    MIcon(icon: "minus", fontSize: 13, disabled: selectIndex < 0, action: onConfirmDel)
+        WithViewStore(store) { viewStore in
+            HSplitView {
+                VStack(alignment: .leading,
+                       spacing: 0) {
+                    redisTable
                     
+                    // footer
+                    HStack(alignment: .center) {
+                        MIcon(icon: "plus", fontSize: 13, action: onAddAction)
+                        MIcon(icon: "minus", fontSize: 13, disabled: selectIndex < 0, action: {
+                            self.onConfirmDel(selectIndex)
+                        })
+                    }
+                    .padding(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
+                    
+                    
+                    HStack {
+                        Button("select", action: {
+                            viewStore.send(.tableAction(.onSelectionChange(0)))
+                        })
+                        
+                        Button("double", action: {
+                            viewStore.send(.tableAction(.onDouble(0)))
+                        })
+                    }
                 }
-                .padding(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
+                       .padding(0)
+                       .frame(minWidth:200)
+                       .layoutPriority(0)
+                       .onAppear{
+//                           logger.info("load all redis favorite list")
+                           //                redisFavoriteModel.loadAll()
+                           onLoad(viewStore)
+                       }
+                LoginForm(redisFavoriteModel: redisFavoriteModel, redisModel: $selectRedisModel, store: store.scope(state: \.loginState, action: FavoriteAction.loginAction))
+                    .frame(minWidth: 500, idealWidth:500, maxWidth: .infinity, minHeight: 400, idealHeight: 400, maxHeight: .infinity)
             }
-            .padding(0)
-            .frame(minWidth:200)
-            .layoutPriority(0)
-            .onAppear{
-                logger.info("load all redis favorite list")
-                redisFavoriteModel.loadAll()
-                onLoad()
-            }
-            
-            LoginForm(redisFavoriteModel: redisFavoriteModel, redisModel: $selectRedisModel)
-            .frame(minWidth: 500, idealWidth:500, maxWidth: .infinity, minHeight: 400, idealHeight: 400, maxHeight: .infinity)
         }
     }
     
-    func onLoad() {
-        self.datasource = RedisDefaults.getAll()
-        initDefaultSelection()
+    func onLoad(_ viewStore:ViewStore<FavoriteState, FavoriteAction>) {
+//        self.datasource = RedisDefaults.getAll()
+//        self.datasource.removeAll()
+//        self.datasource.append(contentsOf: RedisDefaults.getAll())
+//        initDefaultSelection()
+        viewStore.send(.getAll)
+        viewStore.send(.initDefaultSelection)
     }
     
     func initDefaultSelection() -> Void {
@@ -121,28 +145,25 @@ struct RedisListView: View {
         
     }
     
-    func onConfirmDel() -> Void {
+    func onConfirmDel(_ index:Int) -> Void {
         if self.selectIndex < 0 {
             return
         }
         
-        let deleteRedis = datasource[self.selectIndex] as! RedisModel
-        
-        self.selectRedisModel = self.redisFavoriteModel.redisModels[self.selectIndex]
-        
+        let deleteRedis = self.datasource[index] as! RedisModel
+        logger.info("confirm delete redis, name: \(deleteRedis.name), index: \(self.selectIndex)")
+
         MAlert.confirm(String(format: NSLocalizedString("CONFIRM_FAVORITE_REDIS_TITLE'%@'", comment: ""), deleteRedis.name)
                        , message: String(format: NSLocalizedString("CONFIRM_FAVORITE_REDIS_MESSAGE'%@'", comment: ""), deleteRedis.name)
                        , primaryButton: "Delete"
                        , primaryAction: {
-                            self.deleteRedis()
-                       })
+            self.deleteRedis(index)
+        }
+        )
     }
     
-    func deleteRedis() -> Void {
-        logger.info("del redis favorite action, id:\(String(describing: selectIndex))")
-        if selectIndex < 0 {
-            return
-        }
+    func deleteRedis(_ index:Int) -> Void {
+        logger.info("delete redis favorite, index:\(index)")
         
         if RedisDefaults.delete(selectIndex) {
             datasource.remove(at: selectIndex)
@@ -152,21 +173,22 @@ struct RedisListView: View {
     func onConnect() -> Void {
         Task {
             let r = await redisInstanceModel.connect(redisModel:selectRedisModel)
-            redisFavoriteModel.saveLast(redisModel: selectRedisModel)
+//            redisFavoriteModel.saveLast(redisModel: selectRedisModel)
+            RedisDefaults.saveLastUse(selectRedisModel)
             logger.info("on connect to redis server result: \(r), redis: \(selectRedisModel)")
         }
     }
 }
 
 
-struct RedisInstanceList_Previews: PreviewProvider {
-    private static var redisFavoriteModel: RedisFavoriteModel = RedisFavoriteModel()
-    static var previews: some View {
-        RedisListView()
-            .environmentObject(redisFavoriteModel)
-            .onAppear{
-                redisFavoriteModel.loadAll()
-            }
-        
-    }
-}
+//struct RedisInstanceList_Previews: PreviewProvider {
+//    private static var redisFavoriteModel: RedisFavoriteModel = RedisFavoriteModel()
+//    static var previews: some View {
+//        RedisListView()
+//            .environmentObject(redisFavoriteModel)
+//            .onAppear{
+//                redisFavoriteModel.loadAll()
+//            }
+//
+//    }
+//}

@@ -8,6 +8,7 @@
 import SwiftUI
 import Cocoa
 import Logging
+import ComposableArchitecture
 
 struct RedisProCommands: Commands {
     
@@ -52,14 +53,21 @@ struct RedisProCommands: Commands {
         
         CommandGroup(replacing: CommandGroupPlacement.toolbar) {
             Button("New Tab", action: {
-                if let currentWindow = NSApp.keyWindow,
-                   let windowController = currentWindow.windowController {
-                    windowController.newWindowForTab(nil)
-                    if let newWindow = NSApp.keyWindow,
-                       currentWindow != newWindow {
-                        currentWindow.addTabbedWindow(newWindow, ordered: .above)
-                    }
-                }
+                let controller = NSHostingController(rootView: IndexView())
+                        let win = NSWindow(contentViewController: controller)
+                        win.contentViewController = controller
+//                        win.title = title
+                NSApp.keyWindow?.addTabbedWindow(win, ordered: .above)
+                
+//                if let currentWindow = NSApp.keyWindow,
+//                   let windowController = currentWindow.windowController {
+//                    windowController.newWindowForTab(nil)
+//
+//                    if let newWindow = NSApp.keyWindow,
+//                       currentWindow != newWindow {
+//                        currentWindow.addTabbedWindow(newWindow, ordered: .above)
+//                    }
+//                }
                 
             })
             .keyboardShortcut("t", modifiers: [.command])

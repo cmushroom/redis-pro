@@ -12,17 +12,18 @@ class RedisDefaults {
     static let userDefaults = UserDefaults.standard
     static let logger = Logger(label: "redis-defaults")
     
-    static var defaultrRedisModels: [RedisModel] = [RedisModel()]
+    static var defaultRedisModels: [RedisModel] = [RedisModel()]
     
+    // 获取用户保存的redis, 如果没有自动初始化一个
     static func getAll() -> [RedisModel] {
         let redisDicts:[Dictionary<String, Any>]? = getAllDict()
         
         guard let redisDicts = redisDicts else {
-            return  defaultrRedisModels
+            return  defaultRedisModels
         }
         
         if redisDicts.count == 0 {
-            return  defaultrRedisModels
+            return  defaultRedisModels
         }
 
         var redisModels:[RedisModel] = []
@@ -36,13 +37,21 @@ class RedisDefaults {
         return redisModels
     }
     
+    // 默认选中类型 last:最后一个, id: 上次成功连接的redis id
+    static func defaultSelectType() -> String {
+        return userDefaults.string(forKey: UserDefaulsKeysEnum.RedisFavoriteDefaultSelectType.rawValue) ?? "last"
+    }
+    
+    // 最后使用的id
     static func getLastId() -> String? {
         return userDefaults.string(forKey: UserDefaulsKeysEnum.RedisLastUseIdKey.rawValue)
     }
     
+    
     private static func getAllDict() -> [Dictionary<String, Any>]? {
         return userDefaults.array(forKey: UserDefaulsKeysEnum.RedisFavoriteListKey.rawValue) as? [Dictionary<String, Any>]
     }
+    
     
 //    func loadAll() -> Void {
 //        redisModels.removeAll()
@@ -63,7 +72,7 @@ class RedisDefaults {
 //        logger.info("last select redis model id: \(String(describing: lastRedisModelId))")
 //    }
     
-    static func saveLast(_ redisModel:RedisModel) -> Void {
+    static func saveLastUse(_ redisModel:RedisModel) -> Void {
         userDefaults.setValue(redisModel.id, forKey: UserDefaulsKeysEnum.RedisLastUseIdKey.rawValue)
     }
     

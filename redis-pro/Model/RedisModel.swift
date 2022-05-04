@@ -77,7 +77,7 @@ class RedisModel:NSObject, ObservableObject, Identifiable {
         }
     }
     
-    static func ==(a: RedisModel, b: RedisModel) -> Bool {
+    static func == (a: RedisModel, b: RedisModel) -> Bool {
         return a.id == b.id
     }
     

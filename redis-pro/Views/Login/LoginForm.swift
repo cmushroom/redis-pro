@@ -8,6 +8,7 @@
 import SwiftUI
 import Logging
 import Cocoa
+import ComposableArchitecture
 
 struct LoginForm: View {
     let logger = Logger(label: "redis-login")
@@ -19,17 +20,58 @@ struct LoginForm: View {
     @ObservedObject var redisFavoriteModel: RedisFavoriteModel
     @Binding var redisModel:RedisModel
     
-    @State private var pingState:String = ""
+//    @State private var pingState:String = ""
     
+//    var height:CGFloat {
+//        self.redisModel.connectionType == RedisConnectionTypeEnum.SSH.rawValue ? 500 : 380
+//    }
     
-    var saveBtnDisable: Bool {
-        !redisModel.isFavorite
-    }
-    var height:CGFloat {
-        self.redisModel.connectionType == RedisConnectionTypeEnum.SSH.rawValue ? 500 : 380
-    }
+    let store:Store<LoginState, LoginAction>
     
-    private var footer: some View {
+//    private var footer: some View {
+//        Section {
+//            Divider()
+//                .padding(.vertical, 8)
+//            VStack(alignment: .center, spacing: 10) {
+//                HStack(alignment: .center){
+//                    if !globalContext.loading {
+//                        Button(action: {
+//                            guard let url = URL(string: Constants.REPO_URL) else {
+//                                return
+//                            }
+//                            openURL(url)
+//                        }) {
+//                            Image(systemName: "questionmark.circle")
+//                                .font(.system(size: 16.0))
+//                        }
+//                        .buttonStyle(PlainButtonStyle())
+//                    }
+//
+//                    MLoading(text: pingState,
+//                             loadingText: "Connecting...",
+//                             loading: globalContext.loading)
+//                        .help(pingState)
+//
+//                    Spacer()
+//
+//                    MButton(text: "Connect", action: onConnect, disabled: self.globalContext.loading, keyEquivalent: .return)
+//                        .buttonStyle(BorderedButtonStyle())
+//                        .keyboardShortcut(.defaultAction)
+//
+//                }
+//
+//                HStack(alignment: .center){
+//                    MButton(text: "Add to Favorites", action: onAddRedisInstanceAction)
+//                    Spacer()
+//                    MButton(text: "Save changes", action: onSaveRedisInstanceAction)
+//                    Spacer()
+//                    MButton(text: "Test connection", action: onTestConnectionAction, disabled: self.globalContext.loading)
+//                }
+//            }
+//        }
+//    }
+    
+    private func footer(_ viewStore: ViewStore<LoginState, LoginAction>) -> some View {
         Section {
             Divider()
                 .padding(.vertical, 8)
@@ -48,10 +90,10 @@ struct LoginForm: View {
                         .buttonStyle(PlainButtonStyle())
                     }
                     
-                    MLoading(text: pingState,
+                    MLoading(text: viewStore.pingR,
                              loadingText: "Connecting...",
                              loading: globalContext.loading)
-                        .help(pingState)
+                        .help(viewStore.pingR)
                     
                     Spacer()
                     
@@ -66,79 +108,133 @@ struct LoginForm: View {
                     Spacer()
                     MButton(text: "Save changes", action: onSaveRedisInstanceAction)
                     Spacer()
-                    MButton(text: "Test connection", action: onTestConnectionAction, disabled: self.globalContext.loading)
+                    MButton(text: "Test connection", action: {
+//                        onTestConnectionAction
+                        viewStore.send(.testConnect)
+                    }, disabled: self.globalContext.loading)
                 }
             }
         }
     }
-    private var tcpTab: some View {
+    
+    private func tcpTab(_ viewStore: ViewStore<LoginState, LoginAction>) -> some View {
         Form {
             Section {
                 VStack(alignment: .leading, spacing: 14) {
-                    FormItemText(label: "Name", placeholder: "name", value: $redisModel.name)
-                    FormItemText(label: "Host", placeholder: "host", value: $redisModel.host)
-                    FormItemInt(label: "Port", placeholder: "port", value: $redisModel.port)
-                    FormItemPassword(label: "Password", value: $redisModel.password)
-                    FormItemInt(label: "Database", value: $redisModel.database)
+                    FormItemText(label: "Name", placeholder: "name", value: viewStore.binding(\.$name))
+                    FormItemText(label: "Host", placeholder: "host", value: viewStore.binding(\.$host))
+                    FormItemInt(label: "Port", placeholder: "port", value: viewStore.binding(\.$port))
+                    FormItemPassword(label: "Password", value: viewStore.binding(\.$password))
+                    FormItemInt(label: "Database", value: viewStore.binding(\.$database))
                 }
             }
             
-            footer
+            footer(viewStore)
         }
         .padding(.horizontal, 18.0)
         .tabItem {
             Text("TCP/IP")
         }.tag(RedisConnectionTypeEnum.TCP.rawValue)
     }
-    private var sshTab: some View {
-            Form {
-                Section {
+    
+//    private var tcpTab: some View {
+//        Form {
+//            Section {
+//                VStack(alignment: .leading, spacing: 14) {
+//                    FormItemText(label: "Name", placeholder: "name", value: $redisModel.name)
+//                    FormItemText(label: "Host", placeholder: "host", value: $redisModel.host)
+//                    FormItemInt(label: "Port", placeholder: "port", value: $redisModel.port)
+//                    FormItemPassword(label: "Password", value: $redisModel.password)
+//                    FormItemInt(label: "Database", value: $redisModel.database)
+//                }
+//            }
+//
+//            footer
+//        }
+//        .padding(.horizontal, 18.0)
+//        .tabItem {
+//            Text("TCP/IP")
+//        }.tag(RedisConnectionTypeEnum.TCP.rawValue)
+//    }
+    private func sshTab(_ viewStore: ViewStore<LoginState, LoginAction>) -> some View {
+        Form {
+            Section {
+                VStack(alignment: .leading, spacing: 12) {
+                    FormItemText(label: "Name", placeholder: "name", value: viewStore.binding(\.$name))
+                    FormItemText(label: "Host", placeholder: "host", value: viewStore.binding(\.$host))
+                    FormItemInt(label: "Port", placeholder: "port", value: viewStore.binding(\.$port))
+                    FormItemPassword(label: "Password", value: viewStore.binding(\.$password))
+                    FormItemInt(label: "Database", value: viewStore.binding(\.$database))
+                }
+            }
+            
+            Section() {
+                    Divider().padding(.vertical, 2)
+                    
                     VStack(alignment: .leading, spacing: 12) {
-                        FormItemText(label: "Name", placeholder: "name", value: $redisModel.name)
-                        FormItemText(label: "Host", placeholder: "host", value: $redisModel.host)
-                        FormItemInt(label: "Port", placeholder: "port", value: $redisModel.port)
-                        FormItemPassword(label: "Password", value: $redisModel.password)
-                        FormItemInt(label: "Database", value: $redisModel.database)
+                        FormItemText(label: "SSH Host", placeholder: "name", value: viewStore.binding(\.$sshHost))
+                        FormItemInt(label: "SSH Port", placeholder: "port", value: viewStore.binding(\.$sshPort))
+                        FormItemText(label: "SSH User", placeholder: "host", value: viewStore.binding(\.$sshUser))
+                        FormItemPassword(label: "SSH Pass", value: viewStore.binding(\.$sshPass))
                     }
                 }
-                
-                Section() {
-                        Divider().padding(.vertical, 2)
-                        
-                        VStack(alignment: .leading, spacing: 12) {
-                            FormItemText(label: "SSH Host", placeholder: "name", value: $redisModel.sshHost)
-                            FormItemInt(label: "SSH Port", placeholder: "port", value: $redisModel.sshPort)
-                            FormItemText(label: "SSH User", placeholder: "host", value: $redisModel.sshUser)
-                            FormItemPassword(label: "SSH Pass", value: $redisModel.sshPass)
-                        }
-                    }
-                footer
-            }
-            .padding(.horizontal, 18.0)
-            .tabItem {
-                Label("SSH", systemImage: "bolt.fill")
-            }.tag(RedisConnectionTypeEnum.SSH.rawValue)
-        
-        .frame(minHeight: height)
+            footer(viewStore)
+        }
+        .padding(.horizontal, 18.0)
+        .tabItem {
+            Label("SSH", systemImage: "bolt.fill")
+        }.tag(RedisConnectionTypeEnum.SSH.rawValue)
     }
+    
+//    private var sshTab: some View {
+//            Form {
+//                Section {
+//                    VStack(alignment: .leading, spacing: 12) {
+//                        FormItemText(label: "Name", placeholder: "name", value: $redisModel.name)
+//                        FormItemText(label: "Host", placeholder: "host", value: $redisModel.host)
+//                        FormItemInt(label: "Port", placeholder: "port", value: $redisModel.port)
+//                        FormItemPassword(label: "Password", value: $redisModel.password)
+//                        FormItemInt(label: "Database", value: $redisModel.database)
+//                    }
+//                }
+//
+//                Section() {
+//                        Divider().padding(.vertical, 2)
+//
+//                        VStack(alignment: .leading, spacing: 12) {
+//                            FormItemText(label: "SSH Host", placeholder: "name", value: $redisModel.sshHost)
+//                            FormItemInt(label: "SSH Port", placeholder: "port", value: $redisModel.sshPort)
+//                            FormItemText(label: "SSH User", placeholder: "host", value: $redisModel.sshUser)
+//                            FormItemPassword(label: "SSH Pass", value: $redisModel.sshPass)
+//                        }
+//                    }
+//                footer
+//            }
+//            .padding(.horizontal, 18.0)
+//            .tabItem {
+//                Label("SSH", systemImage: "bolt.fill")
+//            }.tag(RedisConnectionTypeEnum.SSH.rawValue)
+//    }
     
     var body: some View {
-        TabView(selection: $redisModel.connectionType) {
-            tcpTab
-            sshTab
+        WithViewStore(store) { viewStore in
+            TabView(selection: viewStore.binding(\.$connectionType)) {
+                tcpTab(viewStore)
+                sshTab(viewStore)
+            }
+            .padding(20.0)
+            .frame(width: 500.0, height: viewStore.height)
         }
-        .padding(20.0)
-        .frame(width: 500.0, height: height)
     }
     
     
-    func onTestConnectionAction() -> Void {
-        logger.info("test connect to redis server: \(redisModel)")
-        Task {
-            let pong = await self.redisInstanceModel.testConnect(self.redisModel)
-            self.pingState = pong ? "Connect successed!" : "Connect fail! "
-        }
-    }
+//    func onTestConnectionAction() -> Void {
+//        logger.info("test connect to redis server: \(redisModel)")
+//        Task {
+//            let pong = await self.redisInstanceModel.testConnect(self.redisModel)
+//            self.pingState = pong ? "Connect successed!" : "Connect fail! "
+//        }
+//    }
 
     
     func onAddRedisInstanceAction() -> Void {

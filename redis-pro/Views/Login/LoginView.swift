@@ -15,9 +15,13 @@ struct LoginView: View {
     let logger = Logger(label: "login-view")
     let store: Store<AppState, AppAction>
     
+    init(store: Store<AppState, AppAction>) {
+        logger.info("login view init...")
+        self.store = store
+    }
+    
     var body: some View {
         RedisListView(store: store.scope(state: \.favoriteState, action: AppAction.favoriteAction))
-//        RedisListView(store: Store(initialState: FavoriteState(), reducer: favoriteReducer, environment: FavoriteEnvironment()))
             .onDisappear {
                 logger.info("redis pro login view destroy...")
             }

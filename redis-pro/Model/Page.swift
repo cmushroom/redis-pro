@@ -7,7 +7,11 @@
 
 import Foundation
 
-class Page:ObservableObject, CustomStringConvertible {
+class Page:ObservableObject, CustomStringConvertible, Equatable {
+    static func == (lhs: Page, rhs: Page) -> Bool {
+        return lhs.current == rhs.current && lhs.size == rhs.size && lhs.keywords == rhs.keywords
+    }
+    
     @Published var current:Int = 1
     @Published var size:Int = 50
     @Published var total:Int = 0
@@ -17,6 +21,13 @@ class Page:ObservableObject, CustomStringConvertible {
         get {
             return total < 1 ? 1 : (total % size == 0 ? total / size : total / size + 1)
         }
+    }
+    
+    var start: Int {
+        (self.current - 1 ) * self.size
+    }
+    var end: Int {
+        self.current * self.size
     }
     
     var hasPrev:Bool {
@@ -33,7 +44,7 @@ class Page:ObservableObject, CustomStringConvertible {
     
     func reset() {
         self.current = 1
-//        self.keywords = ""
+        self.total = 0
     }
     
     func firstPage() {
@@ -44,12 +55,11 @@ class Page:ObservableObject, CustomStringConvertible {
         self.current += 1
     }
     
-    
-    // 0 - 18 - 5
     func prevPage() -> Void {
-        self.current -= 1
-        if self.current <= 1 {
-            self.current = 1
+        if self.current < 2 {
+            return
         }
+        self.current -= 1
     }
+
 }

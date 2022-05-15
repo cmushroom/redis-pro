@@ -7,16 +7,16 @@
 
 import SwiftUI
 import Logging
+import ComposableArchitecture
 
 struct SearchBar: View {
     
-    @Binding var keywords: String
-    @State var fuzzy: Bool = false
-    @State var showFuzzy: Bool = false
+    @State private var keywords: String = ""
     var placeholder:String = "Search..."
     
-    var onCommit: (() -> Void)?
+    var onCommit: ((String) -> Void)?
     
+    var store:Store<PageState, PageAction>?
     let logger = Logger(label: "search-bar")
     
     var body: some View {
@@ -26,22 +26,18 @@ struct SearchBar: View {
 //            MTextField(value: $keywords, placeholder: placeholder, suffix: "magnifyingglass", onCommit: doAction)
 //                .help(Helps.SEARCH_PATTERN)
             NSearchField(value: $keywords, placeholder: placeholder, onCommit: doAction)
-            
-            if showFuzzy {
-                Toggle("Fuzzy", isOn: $fuzzy)
-            }
         }
     }
     
-    func doAction() -> Void {
+    func doAction(keywords: String) -> Void {
         logger.info("on search bar action, keywords: \(keywords)")
-        onCommit?()
+        onCommit?(keywords)
     }
 }
 
-struct SearchBar_Previews: PreviewProvider {
-    @State static var keywords:String = ""
-    static var previews: some View {
-        SearchBar(keywords: $keywords)
-    }
-}
+//struct SearchBar_Previews: PreviewProvider {
+//    @State static var keywords:String = ""
+//    static var previews: some View {
+//        SearchBar()
+//    }
+//}

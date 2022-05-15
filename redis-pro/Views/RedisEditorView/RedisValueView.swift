@@ -6,19 +6,19 @@
 //
 
 import SwiftUI
+import ComposableArchitecture
 
 struct RedisValueView: View {
-    @EnvironmentObject var redisKeyModel:RedisKeyModel
-    var onSubmit: (() -> Void)?
+    var store: Store<ValueState, ValueAction>
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            RedisValueHeaderView()
+            RedisValueHeaderView(store: store.scope(state: \.keyState, action: ValueAction.keyAction))
                 .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
             Rectangle().frame(height: 1)
                 .padding(.horizontal, 0).foregroundColor(Color.gray.opacity(0.1))
             
-            RedisValueEditView(onSubmit: onSubmit)
+            RedisValueEditView(store: store)
         }
     }
 }

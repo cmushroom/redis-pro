@@ -29,11 +29,6 @@ struct MSpin: View {
     
     var body: some View {
         spin
-//                    .sheet(isPresented: $loading) {
-//                        ProgressView()
-//                            .background(Color.clear.opacity(0.1))
-//                            .progressViewStyle(CircularProgressViewStyle())
-//                    }
     }
 }
 

@@ -94,13 +94,12 @@ class NTableController: NSViewController, NSTableViewDelegate, NSTableViewDataSo
     let viewStore: ViewStore<TableState, TableAction>
     var cancellables: Set<AnyCancellable> = []
     
-//    var onDeleteAction: ((Int, AnyHashable) -> Void)?
-//    var onDoubleAction: ((Int, AnyHashable) -> Void)?
-//    var onChangeAction: ((Int, AnyHashable) -> Void)?
+    var observation: NSKeyValueObservation?
     
     let logger = Logger(label: "table-view-controller")
     
     init(_ store: Store<TableState, TableAction>) {
+        logger.info("table controller init...")
         self.viewStore = ViewStore(store)
         
         // init table data
@@ -108,20 +107,15 @@ class NTableController: NSViewController, NSTableViewDelegate, NSTableViewDataSo
         self.arrayController.setSelectionIndex(self.viewStore.selectIndex)
         
         super.init(nibName: nil, bundle: nil)
+        
+        // set table dark mode
+        self.view.appearance = NSApp.appearance
+        self.tableView.appearance = NSApp.appearance
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-//    func refresh(_ datasource: [AnyHashable]) {
-//        guard self.datasource != datasource else {
-//            return
-//        }
-//
-//        logger.info("datasource change, table view controller refresh...")
-////        self.datasource = datasource
-//    }
     
     override func loadView() {
         self.view = NSView()
@@ -129,6 +123,22 @@ class NTableController: NSViewController, NSTableViewDelegate, NSTableViewDataSo
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        if initialized {
+            return
+        }
+        initialized = true
+        
+        // listen app color scheme
+        observation = NSApp.observe(\.effectiveAppearance) { (app, _) in
+               app.effectiveAppearance.performAsCurrentDrawingAppearance {
+                   // Invoke your non-view code that needs to be aware of the
+                   // change in appearance.
+                   self.logger.info("app color scheme change, update table view ...")
+                   self.view.appearance = NSApp.appearance
+                   self.tableView.appearance = NSApp.appearance
+               }
+           }
+            
         tableView.allowsEmptySelection = false
         
         arrayController.bind(.contentArray, to: self, withKeyPath: "datasource", options: nil)
@@ -140,26 +150,40 @@ class NTableController: NSViewController, NSTableViewDelegate, NSTableViewDataSo
         setupTableView()
         
         // 监听
-        self.viewStore.publisher.selectIndex
+        self.viewStore.publisher.defaultSelectIndex
             .sink(receiveValue: {
                 self.logger.debug("table store select index publisher, index: \($0)")
-                self.arrayController.setSelectionIndex($0)
+                let selectIndex = min($0, self.viewStore.datasource.count - 1)
+                self.arrayController.setSelectionIndex(selectIndex)
             })
             .store(in: &self.cancellables)
         
         self.viewStore.publisher.datasource
             .sink(receiveValue: {
                 self.logger.debug("table store data source publisher, data source length: \($0.count)")
+                let selectIndex = min(self.viewStore.selectIndex, $0.count - 1)
+                
                 self.datasource = $0
+                self.arrayController.setSelectionIndex(selectIndex)
             })
             .store(in: &self.cancellables)
+        
+        // 初始化右键菜单
+        if !viewStore.contextMenus.isEmpty {
+            let menu = NSMenu()
+            viewStore.contextMenus.forEach { item in
+                menu.addItem(NSMenuItem(title: item, action: #selector(contextMenuAction(_:)), keyEquivalent: ""))
+            }
+            
+            tableView.menu = menu
+        }
     }
     
-    override func viewDidLayout() {
+//    override func viewDidLayout() {
 //        if !initialized {
 //            initialized = true
 //        }
-    }
+//    }
     
     /**
         NSLayoutConstraint(item: 视图,
@@ -244,12 +268,12 @@ class NTableController: NSViewController, NSTableViewDelegate, NSTableViewDataSo
         let selectIndex = tableView.selectedRow
         self.logger.info("table coordinator selection did change, selectedRow: \(selectIndex)")
         
-        guard self.datasource.count > selectIndex && selectIndex > -1 else {return}
+//        guard self.datasource.count > selectIndex && selectIndex > -1 else {return}
         
 //        self.selectIndex = tableView.selectedRow
 //        self.onChangeAction?(tableView.selectedRow, self.datasource[selectIndex])
         
-        self.viewStore.send(.onSelectionChange(selectIndex))
+        self.viewStore.send(.selectionChange(selectIndex))
     }
     
     // 监听键盘删除事件
@@ -260,7 +284,7 @@ class NTableController: NSViewController, NSTableViewDelegate, NSTableViewDataSo
             
             if selectIndex > -1 {
 //                self.onDeleteAction?(selectIndex, self.datasource[selectIndex])
-                self.viewStore.send(.onDelete(selectIndex))
+                self.viewStore.send(.delete(selectIndex))
             }
         }
     }
@@ -274,8 +298,22 @@ class NTableController: NSViewController, NSTableViewDelegate, NSTableViewDataSo
             return
         }
         
-//        self.onDoubleAction?(tableView.clickedRow, self.datasource[selectIndex])
-        self.viewStore.send(.onDouble(selectIndex))
+        self.viewStore.send(.double(selectIndex))
+    }
+    
+    
+    // context menu
+    @objc private func contextMenuAction(_ sender: AnyObject) {
+        guard let menuItem = sender as? NSMenuItem else {
+            return
+        }
+        
+        let index = tableView.clickedRow
+        if index < 0 {
+            return
+        }
+        logger.info("context menu action, index: \(index)")
+        self.viewStore.send(.contextMenu(menuItem.title, index))
     }
 }
 

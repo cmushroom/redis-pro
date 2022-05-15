@@ -13,17 +13,8 @@ import Logging
 import ComposableArchitecture
 
 class RedisInstanceModel:ObservableObject, Identifiable {
-    @Published var loading:Bool = false
-    @Published var isConnect:Bool = false
     @Published var redisModel:RedisModel
     private var rediStackClient:RediStackClient?
-    var globalContext:GlobalContext?
-    
-    // 页面处理 loading , alert 等
-    private var loadingStore: Store<LoadingState, LoadingAction>?
-    private var loadingViewStore: ViewStore<LoadingState, LoadingAction>?
-    private var alertStore: Store<AppAlertState, AlertAction>?
-    private var alertViewStore: ViewStore<AppAlertState, AlertAction>?
     
     let logger = Logger(label: "redis-instance")
     
@@ -41,17 +32,6 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         )
     }
     
-    func setUp(_ loadingStore:Store<LoadingState, LoadingAction>, alertStore: Store<AppAlertState, AlertAction>) -> Void {
-        self.loadingStore = loadingStore
-        self.loadingViewStore = ViewStore(loadingStore)
-        self.alertStore = alertStore
-        self.alertViewStore = ViewStore(alertStore)
-    }
-    
-    func setUp(_ globalContext:GlobalContext) -> Void {
-        self.globalContext = globalContext
-    }
-    
     func getClient() -> RediStackClient {
         if rediStackClient != nil {
             return rediStackClient!
@@ -59,7 +39,6 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         
         logger.info("get new redis client ...")
         rediStackClient = RediStackClient(redisModel:redisModel)
-        rediStackClient?.setUp(self.globalContext)
         return rediStackClient!
     }
     
@@ -67,9 +46,6 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         logger.info("connect to redis server: \(redisModel)")
         self.redisModel = redisModel
         let r = await self.getClient().initConnection()
-        DispatchQueue.main.async {
-            self.isConnect = r
-        }
         return r
     }
     
@@ -84,6 +60,5 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         logger.info("redis stack client close...")
         rediStackClient?.close()
         rediStackClient = nil
-        isConnect = false
     }
 }

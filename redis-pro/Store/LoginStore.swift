@@ -25,6 +25,7 @@ struct LoginState: Equatable {
     @BindableState var sshPass:String = ""
     
     var pingR: String = ""
+    var loading: Bool = false
     
     var height:CGFloat {
         connectionType == RedisConnectionTypeEnum.SSH.rawValue ? 500 : 380
@@ -34,6 +35,7 @@ struct LoginState: Equatable {
     var redisModel:RedisModel {
         get {
             let redisModel = RedisModel(name: name)
+            redisModel.id = id
             redisModel.host = host
             redisModel.port = port
             redisModel.database = database
@@ -47,6 +49,7 @@ struct LoginState: Equatable {
             return redisModel
         }
         set(n) {
+            self.id = n.id
             self.name = n.name
             self.host = n.host
             self.port = n.port
@@ -62,9 +65,12 @@ struct LoginState: Equatable {
 }
 
 enum LoginAction:BindableAction,Equatable {
-    case login
+    case add
+    case save
     case testConnect
+    case connect
     case ping(Bool)
+    case none
     case binding(BindingAction<LoginState>)
 }
 
@@ -79,12 +85,16 @@ private let logger = Logger(label: "login-store")
 let loginReducer = Reducer<LoginState, LoginAction, LoginEnvironment> {
     state, action, env in
     switch action {
-        // login redis server
-    case .login:
-        logger.info("login action ...")
+    case .add:
+        state.id = UUID().uuidString
+        return .result {
+            .success(.save)
+        }
+    case .save:
         return .none
     case .testConnect:
         logger.info("test connect to redis server, name: \(state.name), host: \(state.host)")
+        state.loading = true
         let redis = state.redisModel
         
         return Effect<LoginAction, Never>.task {
@@ -95,6 +105,11 @@ let loginReducer = Reducer<LoginState, LoginAction, LoginEnvironment> {
         .eraseToEffect()
     case let .ping(r):
         state.pingR =  r ? "Connect successed!" : "Connect fail! "
+        state.loading = false
+        return .none
+    case .connect:
+        return .none
+    case .none:
         return .none
     case .binding:
         return .none

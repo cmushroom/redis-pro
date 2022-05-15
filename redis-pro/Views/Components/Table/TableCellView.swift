@@ -37,7 +37,9 @@ class TableCellView: NSTableCellView {
         
         
         textField.bind(.value, to: self, withKeyPath: "objectValue.\(key)", options: nil)
-//        textField.stringValue = getColumnValue(column, row: row, rowAnyObj: rowObj)
+        if column.type == TableColumnType.KEY_TYPE {
+            textField.bind(.textColor, to: self, withKeyPath: "objectValue.textColor", options: nil)
+        }
         
         
         let stackView = NSStackView()
@@ -55,6 +57,9 @@ class TableCellView: NSTableCellView {
         
         stackView.addView(textField, in: .leading)
         
+        if (column.icon != nil) {
+            NSLayoutConstraint(item: textField, attribute: .left, relatedBy: .equal, toItem: stackView, attribute: .left, multiplier: 1, constant: 30).isActive = true
+        }
         
         stackView.translatesAutoresizingMaskIntoConstraints = false
         

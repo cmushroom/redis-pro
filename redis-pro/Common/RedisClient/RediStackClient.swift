@@ -21,7 +21,6 @@ class RediStackClient {
     
     var redisModel:RedisModel
     var connection:RedisConnection?
-    var globalContext:GlobalContext?
     
     // ssh
     var sshChannel:Channel?
@@ -29,6 +28,8 @@ class RediStackClient {
     var sshServer:PortForwardingServer?
     
     // 递归查询每页大小
+    let dataScanCount:Int = 2000
+    var dataCountScanCount:Int = 4000
     var recursionSize:Int = 2000
     var recursionCountSize:Int = 5000
     
@@ -36,46 +37,30 @@ class RediStackClient {
         self.redisModel = redisModel
     }
     
-    func setUp(_ globalContext:GlobalContext?) -> Void {
-        self.globalContext = globalContext
-    }
-    
     func begin() -> Void {
-        DispatchQueue.main.async {
-            self.globalContext?.loading = true
-        }
+        LoadingUtil.show()
     }
     
     func complete<T:Any, R:Any>(_ completion:Swift.Result<T, Error>, continuation:CheckedContinuation<R, Error>) -> Void {
         if case .failure(let error) = completion {
             continuation.resume(throwing: error)
         }
-        
-        DispatchQueue.main.async {
-            self.globalContext?.loading = false
-        }
+  
+        LoadingUtil.hide()
     }
     
     func complete() -> Void {
-        DispatchQueue.main.async {
-            self.globalContext?.loading = false
-        }
+        LoadingUtil.hide()
     }
     
     func handleError(_ error: Error) {
         logger.info("get an error \(error)")
-        DispatchQueue.main.async {
-            self.globalContext?.showError(error)
-            self.globalContext?.loading = false
-        }
+        LoadingUtil.hide()
+        AlertUtil.show(error)
     }
     
     func handleConnectionError(_ error:Error) {
         logger.info("get connection error \(error)")
-//        DispatchQueue.main.async {
-//            self.globalContext?.showError(error)
-//            self.globalContext?.loading = false
-//        }
     }
     
     /*
@@ -84,11 +69,16 @@ class RediStackClient {
     func initConnection() async -> Bool {
         begin()
         let conn = try? await getConn()
-        
-        DispatchQueue.main.async {
-            self.globalContext?.loading = false
-        }
+  
+        LoadingUtil.hide()
         return conn != nil
+    }
+    
+    func assertExist(_ key:String) async throws {
+        let exist = await exist(key)
+        if !exist {
+            throw BizError("key: \(key) is not exist!")
+        }
     }
     
     // string operator
@@ -122,6 +112,13 @@ class RediStackClient {
         } catch {
             handleError(error)
         }
+        
+    }
+    
+    func set(_ key:String, value:String) async -> Void {
+        logger.info("set value, key:\(key), value:\(value)")
+        
+        await set(key, value:value, ex: -1)
         
     }
     
@@ -259,8 +256,9 @@ class RediStackClient {
                             self.logger.info("query redis key ttl, key: \(key), r:\(r)")
                             var ttl = -1
                             if r == RedisKey.Lifetime.keyDoesNotExist {
-                                continuation.resume(throwing: BizError(message: "Key `\(key)` is not exist!"))
-                                return
+                                ttl = -2
+//                                continuation.resume(throwing: BizError(message: "Key `\(key)` is not exist!"))
+//                                return
                             } else if r == RedisKey.Lifetime.unlimited {
                                // ignore
                             } else {

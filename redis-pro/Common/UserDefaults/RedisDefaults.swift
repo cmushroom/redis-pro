@@ -76,19 +76,23 @@ class RedisDefaults {
         userDefaults.setValue(redisModel.id, forKey: UserDefaulsKeysEnum.RedisLastUseIdKey.rawValue)
     }
     
-    static func save(_ redisModel:RedisModel) -> Void {
+    static func save(_ redisModel:RedisModel) -> Int {
         var savedRedisList:[Dictionary<String, Any>] = getAllDict() ?? [Dictionary<String, Any>]()
         
+        var r:Int = 0
         if let index = savedRedisList.firstIndex(where: { (e) -> Bool in
             return e["id"] as! String == redisModel.id
         }) {
             savedRedisList[index] = redisModel.dictionary
+            r = index
         } else {
             savedRedisList.append(redisModel.dictionary)
+            r = savedRedisList.count - 1
         }
         
         userDefaults.set(savedRedisList, forKey: UserDefaulsKeysEnum.RedisFavoriteListKey.rawValue)
         logger.info("save redis to user defaults complete")
+        return r
     }
     
     

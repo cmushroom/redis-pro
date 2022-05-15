@@ -55,8 +55,8 @@ struct SettingsView: View {
                             Text(item.name)
                         }
                     }
-//                    Picker(selection: viewStore.binding(get: {$0.colorSchemeValue ?? ColorSchemeEnum.SYSTEM.rawValue}, send: SettingsAction.updateColorScheme),
-                    Picker(selection: $colorSchemeValue,
+                    Picker(selection: viewStore.binding(get: {$0.colorSchemeValue ?? ColorSchemeEnum.SYSTEM.rawValue}, send: SettingsAction.updateColorScheme),
+//                    Picker(selection: $colorSchemeValue,
                            label: Text("Appearance:").frame(width: labelWidth, alignment: .trailing)) {
                         ForEach(ColorSchemeEnum.allCases.map({$0.rawValue}), id: \.self) { item in
                             Text(verbatim: item)

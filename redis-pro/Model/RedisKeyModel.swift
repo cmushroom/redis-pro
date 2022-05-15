@@ -59,7 +59,7 @@ class RedisKeyModel:NSObject, ObservableObject, Identifiable {
 
 extension RedisKeyModel {
     // type 颜色
-    @objc var typeColor: NSColor {
+    @objc var textColor: NSColor {
         switch type {
         case RedisKeyTypeEnum.STRING.rawValue:
             return NSColor.systemBlue
@@ -74,48 +74,5 @@ extension RedisKeyModel {
         default:
             return NSColor.systemBrown
         }
-    }
-}
-
-class NSRedisKeyModel:NSObject, ObservableObject, Identifiable {
-    @objc @Published var key: String
-    @objc @Published var type: String
-    
-    var id:String {
-        key
-    }
-    
-    // type 颜色
-    @objc var typeColor: NSColor {
-        switch type {
-        case RedisKeyTypeEnum.STRING.rawValue:
-            return NSColor.systemBlue
-        case RedisKeyTypeEnum.HASH.rawValue:
-            return NSColor.systemPink
-        case RedisKeyTypeEnum.LIST.rawValue:
-            return NSColor.systemOrange
-        case RedisKeyTypeEnum.SET.rawValue:
-            return NSColor.systemGreen
-        case RedisKeyTypeEnum.ZSET.rawValue:
-            return NSColor.systemTeal
-        default:
-            return NSColor.systemBrown
-        }
-    }
-    
-    override init() {
-        self.key = ""
-        self.type = RedisKeyTypeEnum.STRING.rawValue
-        super.init()
-    }
-    convenience init(_ key:String, type:String) {
-        self.init()
-        self.key = key
-        self.type = type
-    }
-    
-
-    override var description: String {
-        return "RedisKeyModel:[key:\(key), type:\(type)]"
     }
 }

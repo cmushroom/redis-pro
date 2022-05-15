@@ -34,7 +34,7 @@ struct ZSetEditorView: View {
                 IconButton(icon: "plus", name: "Add", action: onAddAction)
                 IconButton(icon: "trash", name: "Delete", disabled:delButtonDisabled,
                            action: onDeleteAction)
-                SearchBar(keywords: $page.keywords, placeholder: "Search set...", onCommit: onQueryField)
+//                SearchBar(keywords: $page.keywords, placeholder: "Search set...", onCommit: onQueryField)
                 Spacer()
                 PageBar(page:page, action: onPageAction)
             }

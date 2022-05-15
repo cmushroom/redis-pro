@@ -6,6 +6,20 @@
   
 */
 
+// -------------------------------------------------- redis hash message start ---------------------------------------------------
+
+"HASH_DELETE_CONFIRM_TITLE'%@'" = "Delete hash field '%@'?";
+"HASH_DELETE_CONFIRM_MESSAGE'%@'" = "Are you sure you want to delete the hash field '%@'? This operation cannot be undone.";
+// -------------------------------------------------- redis hash message end -----------------------------------------------------
+
+
+// -------------------------------------------------- redis key message start ---------------------------------------------------
+
+"REDIS_KEY_DELETE_CONFIRM_TITLE'%@'" = "Delete key '%@'?";
+"REDIS_KEY_DELETE_CONFIRM_MESSAGE'%@'" = "Are you sure you want to delete the key '%@'? This operation cannot be undone.";
+
+// -------------------------------------------------- redis key message end -----------------------------------------------------
+
 // ------------------------------------------------ system confirm message start ------------------------------------------------
 "CONFIRM_FAVORITE_REDIS_TITLE'%@'" = "Delete list item '%@'?";
 "CONFIRM_FAVORITE_REDIS_MESSAGE'%@'" = "Are you sure you want to delete the item '%@'? This operation cannot be undone.";

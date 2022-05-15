@@ -17,27 +17,10 @@ struct SettingsState: Equatable {
     var defaultFavorite:String = "last"
     var redisModels: [RedisModel] = []
     
-    // 计算属性
-    var colorScheme: ColorScheme? {
-        guard let colorSchemeValue = colorSchemeValue else {
-            return nil
-        }
-        
-        if ColorSchemeEnum.LIGHT.rawValue == colorSchemeValue {
-            return .light
-        } else if ColorSchemeEnum.DARK.rawValue == colorSchemeValue {
-            return .dark
-        } else {
-            return nil
-        }
-    }
-    
     init() {
         logger.info("settings state init ...")
     }
 }
-
-let globalSettingsState = SettingsState()
 
 enum SettingsAction:Equatable {
     case initial
@@ -64,10 +47,17 @@ let settingsReducer = Reducer<SettingsState, SettingsAction, SettingsEnvironment
             logger.info("upate color scheme action, \(colorSchemeValue)")
             state.colorSchemeValue = colorSchemeValue
             UserDefaults.standard.set(colorSchemeValue, forKey: UserDefaulsKeysEnum.AppColorScheme.rawValue)
+            
+            if colorSchemeValue == ColorSchemeEnum.SYSTEM.rawValue {
+                NSApp.appearance = nil
+            } else {
+                NSApp.appearance = NSAppearance(named:  colorSchemeValue == ColorSchemeEnum.DARK.rawValue ? .darkAqua : .aqua)
+            }
             return .none
         // 默认选中设置
         case let .updateDefaultFavorite(defaultFavorite):
             logger.info("upate default favorite action, \(defaultFavorite)")
+            
             state.defaultFavorite = defaultFavorite
             UserDefaults.standard.set(defaultFavorite, forKey: UserDefaulsKeysEnum.RedisFavoriteDefaultSelectType.rawValue)
             return .none

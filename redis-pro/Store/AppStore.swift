@@ -13,12 +13,15 @@ import ComposableArchitecture
 private let logger = Logger(label: "app-store")
 
 struct AppState: Equatable {
-    var loading: Bool = false
+    // app title
+    var title:String = ""
+    // 是否已经连接 redis server
+    var isConnect: Bool = false
     var appAlertState: AppAlertState = AppAlertState()
     var loadingState: LoadingState = LoadingState()
     var favoriteState: FavoriteState = FavoriteState()
     var settingsState: SettingsState = SettingsState()
-    var alert: AlertState<AppAction>?
+    var redisKeysState: RedisKeysState = RedisKeysState()
 
     init() {
         logger.info("app state init ...")
@@ -27,13 +30,12 @@ struct AppState: Equatable {
 
 enum AppAction:Equatable {
     case onStart
-    case loading(Bool)
-    case alert
-    case clearAlert
+    case onClose
     case alertAction(AlertAction)
     case loadingAction(LoadingAction)
     case favoriteAction(FavoriteAction)
     case settingsAction(SettingsAction)
+    case redisKeysAction(RedisKeysAction)
 }
 
 struct AppEnvironment {
@@ -62,33 +64,36 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
       action: /AppAction.loadingAction,
       environment: { _ in LoadingEnvironment() }
     ),
+    redisKeysReducer.pullback(
+      state: \.redisKeysState,
+      action: /AppAction.redisKeysAction,
+      environment: { env in .init(redisInstanceModel: env.redisInstanceModel) }
+    ),
     Reducer<AppState, AppAction, AppEnvironment> {
-        state, action, _ in
+        state, action, env in
         switch action {
         case .onStart:
             let _ = settingsReducer.run(&state.settingsState, .initial, SettingsEnvironment())
             return .none
-        case let .loading(loading):
-            state.loading = loading
+        
+        case .onClose:
+            env.redisInstanceModel.close()
+            state.isConnect = false
             return .none
-        case .alert:
-            state.alert = .init(
-                    title: TextState("Delete"),
-                    message: TextState("Are you sure you want to delete this? It cannot be undone."),
-                    primaryButton: .default(TextState("Confirm"), action: .send(.onStart)),
-                    secondaryButton: .cancel(TextState("Cancel"))
-                  )
-            return .none
-        case .clearAlert:
-            state.alert = nil
-            return .none
+            
         case .alertAction:
             return .none
         case .loadingAction:
             return .none
+        case let .favoriteAction(.connectSuccess(redisModel)):
+            state.isConnect = true
+            state.title = redisModel.name
+            return .none
         case .favoriteAction:
             return .none
         case .settingsAction:
+            return .none
+        case .redisKeysAction:
             return .none
         }
     }.debug()

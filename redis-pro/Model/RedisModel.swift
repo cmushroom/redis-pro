@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-class RedisModel:NSObject, ObservableObject, Identifiable {
+class RedisModel: NSObject, ObservableObject, Identifiable {
     var id: String = UUID().uuidString
     @objc @Published var name: String = "New Favorite"
     @Published var host: String = "127.0.0.1"
@@ -78,7 +78,7 @@ class RedisModel:NSObject, ObservableObject, Identifiable {
     }
     
     static func == (a: RedisModel, b: RedisModel) -> Bool {
-        return a.id == b.id
+        return a === b || a.id == b.id
     }
     
     override var description: String {

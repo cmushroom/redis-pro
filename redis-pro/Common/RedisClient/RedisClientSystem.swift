@@ -261,7 +261,6 @@ extension RediStackClient {
             }
         } catch {
             handleError(error)
-//            appReducer.run(<#T##state: &AppState##AppState#>, <#T##action: AppAction##AppAction#>, <#T##environment: AppEnvironment##AppEnvironment#>)
         }
         
         return false

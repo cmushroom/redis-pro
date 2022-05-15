@@ -13,10 +13,9 @@ struct NSearchField: NSViewRepresentable {
     @Binding var value: String
     var placeholder: String
     var disable = false
-    var onChange: (() -> Void)?
-    var onCommit: (() -> Void)?
+    var onCommit: ((String) -> Void)?
     
-    let logger = Logger(label: "search-field")
+    private let logger = Logger(label: "search-field")
     
     func makeNSView(context: Context) -> NSSearchField {
         let textField = NSSearchField()
@@ -25,10 +24,7 @@ struct NSearchField: NSViewRepresentable {
         textField.delegate = context.coordinator
     
         logger.info("search field init \(value)")
-//        print("text field init")
-//        textField.alignment = .center
-//        textField.bezelStyle = .roundedBezel
-//        textField.tag = tag
+
         textField.isEnabled = !disable
         
 //        textField.bezelStyle = .roundedBezel
@@ -58,35 +54,45 @@ struct NSearchField: NSViewRepresentable {
         }
         
         // MARK: - NSTextFieldDelegate Methods
+//        func searchFieldDidStartSearching(textField: NSSearchField) {
+//            editing = true
+//            logger.debug("search field text change, value: \(textField.stringValue)")
+//        }
+//
+//        
+//        func searchFieldDidEndSearching(textField: NSSearchField) {
+//            parent.value = textField.stringValue
+//            editing = true
+//            logger.debug("search field text change, value: \(textField.stringValue)")
+//        }
         
         func controlTextDidChange(_ obj: Notification) {
             guard let textField = obj.object as? NSSearchField else { return }
             parent.value = textField.stringValue
             editing = true
             logger.debug("search field text change, value: \(textField.stringValue)")
-            parent.onChange?()
-            
+
         }
-        
+
         func controlTextDidEndEditing(_ obj: Notification) {
             guard let textField = obj.object as? NSSearchField else { return }
-            parent.value = textField.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
-            
-            logger.debug("search field end editing, value: \(textField.stringValue)")
+            let value = textField.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
+            parent.value =  value
+            logger.debug("search field end editing, value: \(value)")
             if editing {
                 editing = false
-                parent.onChange?()
-                parent.onCommit?()
+                parent.onCommit?(value)
             }
         }
         
-        func control(_ control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
-            parent.value = fieldEditor.string.trimmingCharacters(in: .whitespacesAndNewlines)
-            logger.debug("on search field commit, text: \(parent.value)")
-            parent.onCommit?()
-            editing = false
-            return true
-        }
+//        func control(_ control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
+//            let value = fieldEditor.string.trimmingCharacters(in: .whitespacesAndNewlines)
+//            parent.value = value
+//            logger.debug("on search field commit, text: \(parent.value)")
+//            parent.onCommit?(value)
+//            editing = false
+//            return true
+//        }
     }
     
     

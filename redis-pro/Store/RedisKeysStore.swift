@@ -193,7 +193,7 @@ let redisKeysReducer = Reducer<RedisKeysState, RedisKeysAction, RedisKeysEnviron
             }
             
         case let .onKeyChange(index):
-            guard index < 0 else { return .none }
+            guard index > -1 else { return .none }
                 
             let redisKeyModel = state.tableState.datasource[index] as! RedisKeyModel
             return .result{

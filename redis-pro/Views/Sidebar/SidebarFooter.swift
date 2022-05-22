@@ -28,7 +28,7 @@ struct SidebarFooter: View {
             .menuButtonStyle(BorderlessPullDownMenuButtonStyle())
             
             MIcon(icon: "arrow.clockwise", fontSize: 12, action: onRefreshAction)
-                .help(Helps.REFRESH)
+                .help("HELP_REFRESH")
             
             PageBar(page: page, action: pageAction)
         }

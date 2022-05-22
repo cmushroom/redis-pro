@@ -26,6 +26,7 @@ struct SearchBar: View {
 //            MTextField(value: $keywords, placeholder: placeholder, suffix: "magnifyingglass", onCommit: doAction)
 //                .help(Helps.SEARCH_PATTERN)
             NSearchField(value: $keywords, placeholder: placeholder, onCommit: doAction)
+                .help("HELP_SEARCH_BAR")
         }
     }
     

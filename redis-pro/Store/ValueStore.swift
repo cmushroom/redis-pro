@@ -16,6 +16,8 @@ struct ValueState: Equatable {
     var keyState: KeyState = KeyState()
     var stringValueState: StringValueState = StringValueState()
     var hashValueState: HashValueState = HashValueState()
+    var listValueState: ListValueState = ListValueState()
+    var setValueState: SetValueState = SetValueState()
     
     init() {
         logger.info("value state init ...")
@@ -32,6 +34,8 @@ enum ValueAction:BindableAction, Equatable {
     case keyAction(KeyAction)
     case stringValueAction(StringValueAction)
     case hashValueAction(HashValueAction)
+    case listValueAction(ListValueAction)
+    case setValueAction(SetValueAction)
     case binding(BindingAction<ValueState>)
 }
 
@@ -53,6 +57,16 @@ let valueReducer = Reducer<ValueState, ValueAction, ValueEnvironment>.combine(
     hashValueReducer.pullback(
         state: \.hashValueState,
         action: /ValueAction.hashValueAction,
+        environment: { env in .init(redisInstanceModel: env.redisInstanceModel) }
+    ),
+    listValueReducer.pullback(
+        state: \.listValueState,
+        action: /ValueAction.listValueAction,
+        environment: { env in .init(redisInstanceModel: env.redisInstanceModel) }
+    ),
+    setValueReducer.pullback(
+        state: \.setValueState,
+        action: /ValueAction.setValueAction,
         environment: { env in .init(redisInstanceModel: env.redisInstanceModel) }
     ),
     Reducer<ValueState, ValueAction, ValueEnvironment> {
@@ -82,6 +96,12 @@ let valueReducer = Reducer<ValueState, ValueAction, ValueEnvironment>.combine(
             } else if redisKeyModel.type == RedisKeyTypeEnum.HASH.rawValue {
                 state.hashValueState.redisKeyModel = redisKeyModel
                 valueAction = .hashValueAction(.initial)
+            } else if redisKeyModel.type == RedisKeyTypeEnum.LIST.rawValue {
+                state.listValueState.redisKeyModel = redisKeyModel
+                valueAction = .listValueAction(.initial)
+            } else if redisKeyModel.type == RedisKeyTypeEnum.SET.rawValue {
+                state.setValueState.redisKeyModel = redisKeyModel
+                valueAction = .setValueAction(.initial)
             }
             
             return .merge(
@@ -135,6 +155,20 @@ let valueReducer = Reducer<ValueState, ValueAction, ValueEnvironment>.combine(
                 .success(.submitSuccess(isNew))
             }
         case .hashValueAction:
+            return .none
+            
+        case .listValueAction(.refresh):
+            return .result {
+                .success(.refresh)
+            }
+        case .listValueAction:
+            return .none
+            
+        case .setValueAction(.refresh):
+            return .result {
+                .success(.refresh)
+            }
+        case .setValueAction:
             return .none
         case .binding:
             return .none

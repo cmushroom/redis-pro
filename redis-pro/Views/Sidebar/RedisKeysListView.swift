@@ -61,7 +61,7 @@ struct RedisKeysListView: View {
             .menuStyle(BorderlessButtonMenuStyle())
             
             MIcon(icon: "arrow.clockwise", fontSize: 12, action: {viewStore.send(.refresh)})
-                .help(Helps.REFRESH)
+                .help("HELP_REFRESH")
             
             Spacer(minLength: 0)
             Text("dbsize: \(viewStore.dbsize)")

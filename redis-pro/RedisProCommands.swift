@@ -53,27 +53,32 @@ struct RedisProCommands: Commands {
         
         CommandGroup(replacing: CommandGroupPlacement.toolbar) {
             Button("New Tab", action: {
-//                let controller = NSHostingController(rootView: IndexView())
-//                let win = NSWindow(contentViewController: controller)
-//                win.contentViewController = controller
-//                NSApp.keyWindow?.addTabbedWindow(win, ordered: .above)
-                
-                
+
                 if let currentWindow = NSApp.keyWindow,
                    let windowController = currentWindow.windowController {
                     windowController.newWindowForTab(nil)
-                    windowController.contentViewController = NSHostingController(rootView: IndexView())
-
                     if let newWindow = NSApp.keyWindow,
                        currentWindow != newWindow {
                         currentWindow.addTabbedWindow(newWindow, ordered: .above)
                     }
                 }
                 
+                //                if let currentWindow = NSApp.keyWindow,
+                //                   let windowController = currentWindow.windowController {
+                //                    windowController.newWindowForTab(nil)
+                //                    windowController.contentViewController = NSHostingController(rootView: IndexView())
+                //
+                //                    if let newWindow = NSApp.keyWindow,
+                //                       currentWindow != newWindow {
+                //                        currentWindow.setFrame(currentWindow.frame, display: true)
+                //                        currentWindow.addTabbedWindow(newWindow, ordered: .above)
+                //                    }
+                //                }
+                
             })
             .keyboardShortcut("t", modifiers: [.command])
         }
-
+        
         CommandGroup(replacing: CommandGroupPlacement.help) {
             CheckUpdateCommands()
             HomePageCommands()

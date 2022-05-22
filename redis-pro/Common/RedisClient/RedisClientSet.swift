@@ -12,7 +12,7 @@ import RediStack
 // set
 extension RediStackClient {
     
-    func pageSet(_ key:String, page: Page) async -> [String?] {
+    func pageSet(_ key:String, page: Page) async -> [String] {
         
         logger.info("redis set page, key: \(key), page: \(page)")
         
@@ -22,82 +22,87 @@ extension RediStackClient {
         }
         
         do {
+            try await assertExist(key)
             
-            let match = page.keywords.isEmpty ? nil : page.keywords
+            let isScan = isScan(page.keywords)
+            var r:[String] = []
             
-            let set:[String?] = [String?]()
-            let cursor:Int = 0
-            let maxCount = page.current * page.size
-            
-            let res = try await recursionSScan(key, keywords: match, cursor: cursor, maxCount: maxCount, items: set)
-            let start = (page.current - 1) * page.size
-            
-            if res.1.count <= start {
-                return []
+            if isScan {
+                let match = page.keywords.isEmpty ? nil : page.keywords
+                
+                let pageData:[String] = try await setPageScan(key, page: page)
+                r = r + pageData
+                
+                let total = try await setCountScan(key, keywords: match)
+                page.total = total
+            } else {
+                let exist = try await sexist(key, ele: page.keywords)
+                if exist {
+                    r = [page.keywords]
+                    page.total = 1
+                }
             }
-            
-            let end = min(start + page.size - 1, res.1.count)
-            let pageData:[String?] = Array(res.1[start..<end])
-            
-            let total = try await recursionSScanTotal(key, keywords: match)
-            page.total = total
-            
-            return pageData
+            return r
         } catch {
             handleError(error)
         }
         return []
     }
     
-    // 递归取出包含分页的数据
-    private func recursionSScan(_ key:String, keywords:String?, cursor:Int, maxCount:Int, items:[String?]) async throws -> (Int, [String?]) {
-        if items.count >= maxCount {
-            self.logger.info("recursion sscan get keys enough, max count: \(maxCount), current count: \(items.count)")
-            return (cursor, items)
-        } else {
-            let res = try await sscan(key, keywords: keywords, cursor: cursor, count: recursionSize)
-            
-            let newItems:[String?] = items + res.1
-            
-            if res.0 == 0 {
-                self.logger.info("recursion scan reach end, max count: \(maxCount), current count: \(newItems.count)")
-                
-                return (res.0, newItems)
-            }
-            
-            self.logger.info("recursion scan get more keys, current count: \(newItems.count)")
-            return try await recursionSScan(key, keywords: keywords, cursor: res.0, maxCount: maxCount, items: newItems)
-        }
-    }
     
-    private func sscanTotal(_ key:String, keywords:String?, cursor:Int, total:Int) async throws -> Int {
-        let res = try await sscan(key, keywords: keywords, cursor: cursor, count: 1000)
-        let newTotal:Int = total + res.1.count
-        
-        if res.0 == 0 {
-            self.logger.info("recursion scan total reach end, total: \(newTotal)")
-            
-            return newTotal
-        }
-        
-        self.logger.info("recursion scan total get more, current total: \(newTotal)")
-        return try await sscanTotal(key, keywords: keywords, cursor: res.0, total: newTotal)
-        
-    }
     
-    private func recursionSScanTotal(_ key:String, keywords:String?) async throws -> Int {
-        if isMatchAll(keywords) {
+    private func setCountScan(_ key:String, keywords:String?) async throws -> Int {
+        if isMatchAll(keywords ?? "") {
             logger.info("keywords is match all, use scard...")
             return try await scard(key)
         }
         
-        let cursor:Int = 0
-        let total:Int = 0
+        var cursor:Int = 0
+        var count:Int = 0
         
-        return try await sscanTotal(key, keywords: keywords, cursor: cursor, total: total)
+        while true {
+            let res = try await sscan(key, keywords: keywords, cursor: cursor, count: dataCountScanCount)
+            logger.info("set loop scan count, current cursor: \(cursor), total count: \(count)")
+            cursor = res.0
+            count = count + res.1.count
+            
+            // 取到结果，或者已满足分页数据
+            if cursor == 0{
+                break
+            }
+        }
+        return count
     }
     
-    private func sscan(_ key:String, keywords:String?, cursor:Int, count:Int? = 1) async throws -> (Int, [String?]) {
+    private func setPageScan(_ key:String, page: Page) async throws -> [String] {
+        let keywords = page.keywords.isEmpty ? nil : page.keywords
+        var end:Int = page.end
+        var cursor:Int = 0
+        var keys:[String] = []
+        
+        while true {
+            let res = try await sscan(key, keywords: keywords, cursor: cursor, count: dataScanCount)
+            logger.info("set loop scan page, current cursor: \(cursor), total count: \(keys.count)")
+            cursor = res.0
+            keys = keys + res.1.map { $0 ?? ""}
+            
+            // 取到结果，或者已满足分页数据
+            if cursor == 0 || keys.count >= end {
+                break
+            }
+        }
+        
+        let start = page.start
+        if start >= keys.count {
+            return []
+        }
+        
+        end = min(end, keys.count)
+        return Array(keys[start..<end])
+        
+    }
+    
+    private func sscan(_ key:String, keywords:String?, cursor:Int, count:Int = 1) async throws -> (Int, [String?]) {
         logger.debug("redis set scan, key: \(key) cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
         let conn = try await getConn()
         
@@ -111,6 +116,25 @@ extension RediStackClient {
                     
                     else if case .failure(let error) = completion {
                         self.logger.error("redis set scan key:\(key) error: \(error)")
+                        continuation.resume(throwing: error)
+                    }
+                })
+        }
+    }
+    
+    private func sexist(_ key:String, ele:String?) async throws -> Bool{
+        let conn = try await getConn()
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            
+            conn.sismember(ele, of: RedisKey(key))
+                .whenComplete({completion in
+                    if case .success(let r) = completion {
+                        continuation.resume(returning: r)
+                    }
+                    
+                    else if case .failure(let error) = completion {
+                        self.logger.error("redis set ele exist, key:\(key) error: \(error)")
                         continuation.resume(throwing: error)
                     }
                 })

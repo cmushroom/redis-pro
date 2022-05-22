@@ -16,19 +16,25 @@ struct RedisValueEditView: View {
     let logger = Logger(label: "redis-value-edit-view")
     
     var body: some View {
-        WithViewStore(store) {viewStore in
+        WithViewStore(store.scope(state: \.keyState)) {viewStore in
             VStack(alignment: .leading, spacing: 4)  {
-                if viewStore.keyState.type == RedisKeyTypeEnum.STRING.rawValue {
+                if viewStore.type == RedisKeyTypeEnum.STRING.rawValue {
                     StringEditorView(store: store.scope(state: \.stringValueState, action: ValueAction.stringValueAction))
                 }
-                else if viewStore.keyState.type == RedisKeyTypeEnum.HASH.rawValue {
+                // HASH
+                else if viewStore.type == RedisKeyTypeEnum.HASH.rawValue {
                     HashEditorView(store: store.scope(state: \.hashValueState, action: ValueAction.hashValueAction))
                 }
-//                else if RedisKeyTypeEnum.LIST.rawValue == redisKeyModel.type {
-                //                ListEditorView(onSubmit: onSubmit)
-                //            } else if RedisKeyTypeEnum.SET.rawValue == redisKeyModel.type {
-                //                SetEditorView(onSubmit: onSubmit)
-                //            } else if RedisKeyTypeEnum.ZSET.rawValue == redisKeyModel.type {
+                // LIST
+                else if viewStore.type == RedisKeyTypeEnum.LIST.rawValue {
+                    ListEditorView(store: store.scope(state: \.listValueState, action: ValueAction.listValueAction))
+                }
+                // SET
+                else if viewStore.type == RedisKeyTypeEnum.SET.rawValue {
+                    SetEditorView(store: store.scope(state: \.setValueState, action: ValueAction.setValueAction))
+                }
+                
+//                else if RedisKeyTypeEnum.ZSET.rawValue == redisKeyModel.type {
                 //                ZSetEditorView(onSubmit: onSubmit)
                 //            } else {
                 //                EmptyView()

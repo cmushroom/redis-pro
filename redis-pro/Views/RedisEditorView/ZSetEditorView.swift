@@ -175,9 +175,9 @@ struct ZSetEditorView: View {
         let item = self.datasource[index]
         let text = item.value
         
-        MAlert.confirm(String(format: Helps.DELETE_LIST_ITEM_CONFIRM_TITLE, text), message: String(format:Helps.DELETE_LIST_ITEM_CONFIRM_MESSAGE, text), primaryButton: "Delete", primaryAction: {
-            deleteEle(index)
-        })
+//        MAlert.confirm(String(format: Helps.DELETE_LIST_ITEM_CONFIRM_TITLE, text), message: String(format:Helps.DELETE_LIST_ITEM_CONFIRM_MESSAGE, text), primaryButton: "Delete", primaryAction: {
+//            deleteEle(index)
+//        })
         
     }
     

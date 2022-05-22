@@ -28,19 +28,19 @@ struct redis_proApp: App {
     }
     
     var body: some Scene {
+      
         WindowGroup {
             IndexView()
-        
         }
         .commands {
             RedisProCommands()
         }
-        
+
         WindowGroup("AboutView") {
               AboutView()
         }.handlesExternalEvents(matching: Set(arrayLiteral: "AboutView"))
 
-        
+
 
         Settings {
             SettingsView(store: settingsStore)
@@ -58,7 +58,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         logger.info("redis pro launch complete")
-        
         // appcenter
         AppCenter.start(withAppSecret: "310d1d33-2570-46f9-a60d-8a862cdef6c7", services:[
             Analytics.self,
@@ -72,6 +71,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             NSApp.appearance = NSAppearance(named:  colorSchemeValue == ColorSchemeEnum.DARK.rawValue ? .darkAqua : .aqua)
         }
         logger.info("redis pro launch, set color scheme complete...")
+        
     }
 
     func applicationWillTerminate(_ notification: Notification)  {
@@ -81,6 +81,5 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func didFinishLaunchingWithOptions(_ notification: Notification)  {
         logger.info("redis didFinishLaunchingWithOptions...")
     }
-
 
 }

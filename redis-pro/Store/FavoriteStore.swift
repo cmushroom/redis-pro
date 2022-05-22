@@ -134,7 +134,7 @@ let favoriteReducer = Reducer<FavoriteState, FavoriteAction, FavoriteEnvironment
                 .success(.connect(index))
             }
         case let .tableAction(.selectionChange(index)):
-            guard index < 0 else { return .none }
+            guard index > -1 else { return .none }
             
             logger.info("redis favorite table selection change action, index: \(index)")
             let redisModel = state.tableState.datasource[index] as! RedisModel

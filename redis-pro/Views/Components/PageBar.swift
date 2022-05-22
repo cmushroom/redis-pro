@@ -11,7 +11,7 @@ import ComposableArchitecture
 
 struct PageBar: View {
     @EnvironmentObject var globalContext:GlobalContext
-    @ObservedObject var page:Page
+    @ObservedObject var page:Page = Page()
     var action:() throws -> Void = {}
     var showTotal:Bool = true
     

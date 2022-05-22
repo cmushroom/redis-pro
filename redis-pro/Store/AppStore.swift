@@ -98,3 +98,11 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
         }
     }.debug()
 )
+
+
+struct Test {
+    var a:String = UUID().uuidString
+    init() {
+        logger.info("app state init ...")
+    }
+}

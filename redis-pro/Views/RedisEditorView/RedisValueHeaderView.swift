@@ -18,7 +18,7 @@ struct RedisValueHeaderView: View {
         HStack(alignment:.center, spacing: 0) {
             FormItemInt(label: "TTL(s)", value: viewStore.binding(get: \.ttl, send: KeyAction.setTtl), suffix: "square.and.pencil", onCommit: { viewStore.send(.saveTtl)})
                 .disabled(viewStore.isNew)
-                .help(Helps.TTL_HELP)
+                .help("HELP_TTL")
                 .frame(width: 260)
         }
     }

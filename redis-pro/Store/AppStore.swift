@@ -17,20 +17,34 @@ struct AppState: Equatable {
     var title:String = ""
     // 是否已经连接 redis server
     var isConnect: Bool = false
-    var appAlertState: AppAlertState = AppAlertState()
+    var globalState: GlobalState = GlobalState()
+//    var appAlertState: AppAlertState = AppAlertState()
     var loadingState: LoadingState = LoadingState()
-    var favoriteState: FavoriteState = FavoriteState()
+    private var _favoriteState: FavoriteState = FavoriteState()
+    var favoriteState: FavoriteState {
+        get {
+            var state = _favoriteState
+            state.globalState = globalState
+            return state
+        }
+        set {
+            _favoriteState = newValue
+            globalState = newValue.globalState!
+        }
+    }
     var settingsState: SettingsState = SettingsState()
     var redisKeysState: RedisKeysState = RedisKeysState()
 
     init() {
         logger.info("app state init ...")
+        
     }
 }
 
 enum AppAction:Equatable {
     case onStart
     case onClose
+    case globalAction(GlobalAction)
     case alertAction(AlertAction)
     case loadingAction(LoadingAction)
     case favoriteAction(FavoriteAction)
@@ -40,10 +54,16 @@ enum AppAction:Equatable {
 
 struct AppEnvironment {
     var redisInstanceModel:RedisInstanceModel = RedisInstanceModel(redisModel: RedisModel())
+    var mainQueue: AnySchedulerOf<DispatchQueue> = .main
 }
 
 
 let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
+    globalReducer.pullback(
+      state: \.globalState,
+      action: /AppAction.globalAction,
+      environment: { env in GlobalEnvironment() }
+    ),
     favoriteReducer.pullback(
       state: \.favoriteState,
       action: /AppAction.favoriteAction,
@@ -54,11 +74,11 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
       action: /AppAction.settingsAction,
       environment: { _ in SettingsEnvironment() }
     ),
-    alertReducer.pullback(
-      state: \.appAlertState,
-      action: /AppAction.alertAction,
-      environment: { _ in AlertEnvironment() }
-    ),
+//    alertReducer.pullback(
+//      state: \.appAlertState,
+//      action: /AppAction.alertAction,
+//      environment: { _ in AlertEnvironment() }
+//    ),
     loadingReducer.pullback(
       state: \.loadingState,
       action: /AppAction.loadingAction,
@@ -80,7 +100,8 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
             env.redisInstanceModel.close()
             state.isConnect = false
             return .none
-            
+        case .globalAction:
+            return .none
         case .alertAction:
             return .none
         case .loadingAction:

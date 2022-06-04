@@ -30,10 +30,10 @@ struct IndexView: View {
     
     var body: some View {
         if let state = appState {
-            let store = Store(
+            let store: Store<AppState, AppAction> = Store(
                 initialState: state,
                 reducer: appReducer,
-                environment: AppEnvironment()
+                environment:  AppEnvironment()
             )
             
             WithViewStore(store.scope(state: \.isConnect)) { viewStore in
@@ -47,10 +47,18 @@ struct IndexView: View {
                         } else {
                             LoginView(store: store)
                                 .environmentObject(redisInstanceModel)
+                            Button("loading", action: {
+                                viewStore.send(.globalAction(.show))
+                                LoadingUtil.show()
+                            })
+                        }
+                        
+                        WithViewStore(store.scope(state: \.globalState)) { v in
+                            Text("\(v.loading ? 1 : 0)")
                         }
                     }
                     
-                    AlertView(store.scope(state: \.appAlertState, action: AppAction.alertAction))
+//                    AlertView(store.scope(state: \.appAlertState, action: AppAction.alertAction))
                     LoadingView(store.scope(state: \.loadingState, action: AppAction.loadingAction))
                 }
                 .environmentObject(globalContext)

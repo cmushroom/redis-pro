@@ -33,12 +33,12 @@ struct RedisValueEditView: View {
                 else if viewStore.type == RedisKeyTypeEnum.SET.rawValue {
                     SetEditorView(store: store.scope(state: \.setValueState, action: ValueAction.setValueAction))
                 }
-                
-//                else if RedisKeyTypeEnum.ZSET.rawValue == redisKeyModel.type {
-                //                ZSetEditorView(onSubmit: onSubmit)
-                //            } else {
-                //                EmptyView()
-                //            }
+                // ZSET
+                else if viewStore.type == RedisKeyTypeEnum.ZSET.rawValue {
+                    ZSetEditorView(store: store.scope(state: \.zsetValueState, action: ValueAction.zsetValueAction))
+                } else {
+                    EmptyView()
+                }
             }
         }
         

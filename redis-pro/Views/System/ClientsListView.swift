@@ -19,8 +19,8 @@ struct ClientsListView: View {
     private var footer: some View {
         HStack(alignment: .center , spacing: 8) {
             Spacer()
-            MButton(text: "Kill Client", action: clientKill, disabled: selectRowIndex == -1, isConfirm: true, confirmTitle: selectRowIndex == -1 ? "" : "Kill Client?",
-                confirmMessage: "Are you sure you want to kill client:\(selectClientAddr)? This operation cannot be undone.")
+//            MButton(text: "Kill Client", action: clientKill, disabled: selectRowIndex == -1, isConfirm: true, confirmTitle: selectRowIndex == -1 ? "" : "Kill Client?",
+//                confirmMessage: "Are you sure you want to kill client:\(selectClientAddr)? This operation cannot be undone.")
             MButton(text: "Refresh", action: onRefrehAction)
         }
     }
@@ -29,7 +29,7 @@ struct ClientsListView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: MTheme.V_SPACING) {
             
-            ClientListTable(datasource: $clientModels, selectRowIndex: $selectRowIndex)
+//            ClientListTable(datasource: $clientModels, selectRowIndex: $selectRowIndex)
             footer
         }
 //        .padding(EdgeInsets(top: 10, leading: 8, bottom: 10, trailing: 8))

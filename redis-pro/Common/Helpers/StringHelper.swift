@@ -20,6 +20,16 @@ class StringHelper {
         newText.append("...")
         return newText
     }
+    
+    static func format(_ template:String, _ params:String...) -> String {
+        
+        return String(format: localized(template), arguments: params)
+    }
+    
+    static func localized(_ template:String) -> String {
+        
+        return NSLocalizedString(template, comment: "")
+    }
 }
 
 extension String {

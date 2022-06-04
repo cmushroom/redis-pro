@@ -12,12 +12,12 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "value-store")
 struct ValueState: Equatable {
-    var mainViewType: MainViewTypeEnum = .EDITOR
     var keyState: KeyState = KeyState()
     var stringValueState: StringValueState = StringValueState()
     var hashValueState: HashValueState = HashValueState()
     var listValueState: ListValueState = ListValueState()
     var setValueState: SetValueState = SetValueState()
+    var zsetValueState: ZSetValueState = ZSetValueState()
     
     init() {
         logger.info("value state init ...")
@@ -36,6 +36,7 @@ enum ValueAction:BindableAction, Equatable {
     case hashValueAction(HashValueAction)
     case listValueAction(ListValueAction)
     case setValueAction(SetValueAction)
+    case zsetValueAction(ZSetValueAction)
     case binding(BindingAction<ValueState>)
 }
 
@@ -67,6 +68,11 @@ let valueReducer = Reducer<ValueState, ValueAction, ValueEnvironment>.combine(
     setValueReducer.pullback(
         state: \.setValueState,
         action: /ValueAction.setValueAction,
+        environment: { env in .init(redisInstanceModel: env.redisInstanceModel) }
+    ),
+    zsetValueReducer.pullback(
+        state: \.zsetValueState,
+        action: /ValueAction.zsetValueAction,
         environment: { env in .init(redisInstanceModel: env.redisInstanceModel) }
     ),
     Reducer<ValueState, ValueAction, ValueEnvironment> {
@@ -102,6 +108,9 @@ let valueReducer = Reducer<ValueState, ValueAction, ValueEnvironment>.combine(
             } else if redisKeyModel.type == RedisKeyTypeEnum.SET.rawValue {
                 state.setValueState.redisKeyModel = redisKeyModel
                 valueAction = .setValueAction(.initial)
+            } else if redisKeyModel.type == RedisKeyTypeEnum.ZSET.rawValue {
+                state.zsetValueState.redisKeyModel = redisKeyModel
+                valueAction = .zsetValueAction(.initial)
             }
             
             return .merge(
@@ -161,6 +170,11 @@ let valueReducer = Reducer<ValueState, ValueAction, ValueEnvironment>.combine(
             return .result {
                 .success(.refresh)
             }
+            
+        case let .listValueAction(.submitSuccess(isNew)):
+            return .result {
+                .success(.submitSuccess(isNew))
+            }
         case .listValueAction:
             return .none
             
@@ -169,6 +183,13 @@ let valueReducer = Reducer<ValueState, ValueAction, ValueEnvironment>.combine(
                 .success(.refresh)
             }
         case .setValueAction:
+            return .none
+            
+        case .zsetValueAction(.refresh):
+            return .result {
+                .success(.refresh)
+            }
+        case .zsetValueAction:
             return .none
         case .binding:
             return .none

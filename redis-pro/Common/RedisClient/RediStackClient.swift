@@ -11,6 +11,7 @@ import RediStack
 import Logging
 import NIOSSH
 import Swift
+import ComposableArchitecture
 
 class Cons {
     static let EMPTY_STRING = ""
@@ -56,7 +57,7 @@ class RediStackClient {
     func handleError(_ error: Error) {
         logger.info("get an error \(error)")
         LoadingUtil.hide()
-        AlertUtil.show(error)
+        Messages.show(error)
     }
     
     func handleConnectionError(_ error:Error) {

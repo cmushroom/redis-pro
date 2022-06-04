@@ -19,7 +19,7 @@ struct HashEditorView: View {
                 HStack(alignment: .center , spacing: MTheme.H_SPACING) {
                     IconButton(icon: "plus", name: "Add", action: {viewStore.send(.addNew)})
                     IconButton(icon: "trash", name: "Delete", disabled: viewStore.tableState.selectIndex < 0, action: {viewStore.send(.deleteConfirm(viewStore.tableState.selectIndex))})
-                    Spacer()
+                
                     SearchBar(placeholder: "Search field...", onCommit: {viewStore.send(.search($0))})
                     PageBar(showTotal: true, store: store.scope(state: \.pageState, action: HashValueAction.pageAction))
                 }

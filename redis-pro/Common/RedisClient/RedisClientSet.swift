@@ -150,9 +150,9 @@ extension RediStackClient {
         
         do {
             let r = try await sremInner(key, ele: from)
-            if r > 0 {
-                return try await saddInner(key, ele: to)
-            }
+            try Assert.isTrue(r > 0, message: "set element: `\(from)` is not exist!")
+            
+            return try await saddInner(key, ele: to)
         } catch {
             handleError(error)
         }

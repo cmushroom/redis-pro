@@ -14,6 +14,10 @@
 // -------------------------------------------------- redis help message end -----------------------------------------------------
 
 // -------------------------------------------------- redis confirm message start ---------------------------------------------------
+
+"ZSET_DELETE_CONFIRM_TITLE" = "Delete zset element, value: '%@'?";
+"ZSET_DELETE_CONFIRM_MESSAGE" = "Are you sure you want to delete the zset element, value: '%@'? This operation cannot be undone.";
+
 "SET_DELETE_CONFIRM_TITLE" = "Delete set element, value: '%@'?";
 "SET_DELETE_CONFIRM_MESSAGE" = "Are you sure you want to delete the set element, value: '%@'? This operation cannot be undone.";
 

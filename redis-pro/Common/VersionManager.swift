@@ -13,8 +13,6 @@ import SwiftyJSON
 struct VersionManager {
     let logger = Logger(label: "version-manager")
     let checkUpdateUrl:String = "https://gitee.com/chengpan168_admin/redis-pro/raw/dev/.version"
-    let alert = MAlert()
-    
     
     func checkUpdate(isNoUpgradeHint:Bool = false) -> Void {
         let currentVersionNum = Bundle.main.infoDictionary?["CFBundleVersion"]
@@ -47,9 +45,9 @@ struct VersionManager {
                     
                     // 提示升级
                     if updateType == "hint" {
-                        MAlert.confirm("New version \(latestVersion) is available", message: releaseNotes,
+                        Messages.confirm("New version \(latestVersion) is available", message: releaseNotes,
                                       primaryButton: "Upgrade",
-                                      primaryAction: {
+                                      action: {
                                         if let url = URL(string: Constants.RELEASE_URL) {
                                             NSWorkspace.shared.open(url)
                                         }
@@ -62,7 +60,7 @@ struct VersionManager {
                     }
                 } else {
                     if isNoUpgradeHint {
-                        MAlert.show("Current version \(currentVersion ?? "") is latest!")
+                        Messages.show("Current version \(currentVersion ?? "") is latest!")
                     }
                 }
                 

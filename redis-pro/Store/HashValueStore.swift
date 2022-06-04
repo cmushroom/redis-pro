@@ -169,7 +169,7 @@ let hashValueReducer = Reducer<HashValueState, HashValueAction, HashValueEnviron
             
             let item = state.tableState.datasource[index] as! RedisHashEntryModel
             return .future { callback in
-                AlertUtil.confirm(String(format: NSLocalizedString("HASH_DELETE_CONFIRM_TITLE'%@'", comment: ""), item.field)
+                Messages.confirm(String(format: NSLocalizedString("HASH_DELETE_CONFIRM_TITLE'%@'", comment: ""), item.field)
                                   , message: String(format: NSLocalizedString("HASH_DELETE_CONFIRM_MESSAGE'%@'", comment: ""), item.field)
                                   , primaryButton: "Delete"
                                   , action: {

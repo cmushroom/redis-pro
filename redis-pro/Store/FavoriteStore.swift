@@ -9,8 +9,15 @@ import Foundation
 import ComposableArchitecture
 
 struct FavoriteState: Equatable {
+    var globalState: GlobalState?
     var tableState: TableState = TableState(columns: [NTableColumn(title: "FAVORITES", key: "name", width: 50, icon: .APP)], datasource: [], selectIndex: -1)
     var loginState: LoginState = LoginState()
+    
+//    init(globalState: GlobalState) {
+//        self.globalState = globalState
+//        self.tableState = TableState(columns: [NTableColumn(title: "FAVORITES", key: "name", width: 50, icon: .APP)], datasource: [], selectIndex: -1)
+//        self.loginState = LoginState()
+//    }
 }
 
 enum FavoriteAction:Equatable {
@@ -97,7 +104,7 @@ let favoriteReducer = Reducer<FavoriteState, FavoriteAction, FavoriteEnvironment
             let redisModel = state.tableState.datasource[index] as! RedisModel
             
             return Effect<FavoriteAction, Never>.future { callback in
-                AlertUtil.confirm(String(format: NSLocalizedString("CONFIRM_FAVORITE_REDIS_TITLE'%@'", comment: ""), redisModel.name)
+                Messages.confirm(String(format: NSLocalizedString("CONFIRM_FAVORITE_REDIS_TITLE'%@'", comment: ""), redisModel.name)
                                   , message: String(format: NSLocalizedString("CONFIRM_FAVORITE_REDIS_MESSAGE'%@'", comment: ""), redisModel.name)
                                   , primaryButton: "Delete"
                                   , action: {

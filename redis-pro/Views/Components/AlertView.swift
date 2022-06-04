@@ -79,23 +79,6 @@ class AlertUtil {
         DispatchQueue.main.async {
             instance?.viewStore.send(.confirm(title, message, primaryButton, action))
         }
-//        confirmAlert.messageText = StringHelper.ellipses(title, len: 100)
-//        confirmAlert.informativeText = StringHelper.ellipses(message, len: 200)
-//
-//        confirmAlert.buttons[0].title = primaryButton
-//        confirmAlert.buttons[1].title = secondButton
-////        confirmAlert.addButton(withTitle: secondButton)
-//        confirmAlert.alertStyle = style
-//
-//        confirmAlert.beginSheetModal(for: NSApplication.shared.keyWindow!, completionHandler: { (modalResponse: NSApplication.ModalResponse) -> Void in
-//            if(modalResponse == NSApplication.ModalResponse.alertFirstButtonReturn){
-//                self.logger.info("alert first action")
-//                primaryAction()
-//            } else if (modalResponse == NSApplication.ModalResponse.alertSecondButtonReturn) {
-//                self.logger.info("alert second action")
-//                secondAction()
-//            }
-//        })
     }
     
 }

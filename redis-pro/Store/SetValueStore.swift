@@ -157,7 +157,6 @@ let setValueReducer = Reducer<SetValueState, SetValueAction, SetValueEnvironment
             }
             .receive(on: env.mainQueue)
             .eraseToEffect()
-            return .none
         
         // 提交成功， 刷新列表
         case let .submitSuccess(isNewKey):
@@ -182,7 +181,7 @@ let setValueReducer = Reducer<SetValueState, SetValueAction, SetValueEnvironment
             
             let item = state.tableState.datasource[index] as! String
             return .future { callback in
-                AlertUtil.confirm(String(format: NSLocalizedString("SET_DELETE_CONFIRM_TITLE", comment: ""), item)
+                Messages.confirm(String(format: NSLocalizedString("SET_DELETE_CONFIRM_TITLE", comment: ""), item)
                                   , message: String(format: NSLocalizedString("SET_DELETE_CONFIRM_MESSAGE", comment: ""), item)
                                   , primaryButton: "Delete"
                                   , action: {

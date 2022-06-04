@@ -91,12 +91,12 @@ let stringValueReducer = Reducer<StringValueState, StringValueAction, StringValu
         case .jsonFormat:
             if state.text.count < 2 {
                 
-                AlertUtil.show(BizError("Format json error"))
+                Messages.show(BizError("Format json error"))
                 return .none
             }
             let jsonObj = JSON(parseJSON: state.text)
             if jsonObj == JSON.null {
-                AlertUtil.show(BizError("Format json error"))
+                Messages.show(BizError("Format json error"))
                 return .none
             }
             if let string = jsonObj.rawString() {

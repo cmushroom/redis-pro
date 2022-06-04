@@ -46,10 +46,10 @@ struct RedisKeysListView: View {
     private func sidebarFoot(_ viewStore: ViewStore<RedisKeysState, RedisKeysAction>) -> some View {
         HStack(alignment: .center, spacing: 4) {
             Menu(content: {
-                Button("Redis Info", action: onRedisInfoAction)
-                Button("Redis Config", action: onRedisConfigAction)
-                Button("Clients List", action: onShowClientsAction)
-                Button("Slow Log", action: onShowSlowLogAction)
+//                Button("Redis Info", action: { viewStore.send(.setMainViewType(.REDIS_INFO)) })
+//                Button("Redis Config", action: { viewStore.send(.setMainViewType(.REDIS_CONFIG)) })
+//                Button("Clients List", action: { viewStore.send(.setMainViewType(.CLIENT_LIST)) })
+//                Button("Slow Log", action: { viewStore.send(.setMainViewType(.SLOW_LOG)) })
                 Button("Flush DB", action: {viewStore.send(.flushDBConfirm)})
             }, label: {
                 Label("", systemImage: "ellipsis.circle")
@@ -95,7 +95,28 @@ struct RedisKeysListView: View {
                     .layoutPriority(0)
                 
                 // content
-                MainView(store: store.scope(state: \.valueState, action: RedisKeysAction.valueAction))
+//                MainView(store: store.scope(state: \.valueState, action: RedisKeysAction.valueAction))
+                
+//                VStack(alignment: .leading, spacing: 0){
+//                    if viewStore.mainViewType == MainViewTypeEnum.EDITOR {
+//                        RedisValueView(store: store.scope(state: \.valueState, action: RedisKeysAction.valueAction))
+//                    } else if viewStore.mainViewType == MainViewTypeEnum.REDIS_INFO {
+//                        RedisInfoView()
+//                    }  else if viewStore.mainViewType == MainViewTypeEnum.CLIENT_LIST {
+//                        ClientsListView()
+//                    } else if viewStore.mainViewType == MainViewTypeEnum.SLOW_LOG {
+//                        SlowLogView()
+//                    } else if viewStore.mainViewType == MainViewTypeEnum.REDIS_CONFIG {
+//                        RedisConfigView()
+//                    } else {
+//                        EmptyView()
+//                    }
+//                    
+//                    Spacer()
+//                }
+//                .padding(4)
+//                .frame(minWidth: 600, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
+//                .layoutPriority(1)
             }
             .onAppear{
                 viewStore.send(.initial)

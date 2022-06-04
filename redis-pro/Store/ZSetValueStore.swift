@@ -1,8 +1,8 @@
 //
-//  ListValueStore.swift
+//  ZSetValueStore.swift
 //  redis-pro
 //
-//  Created by chengpan on 2022/5/22.
+//  Created by chengpan on 2022/5/28.
 //
 
 import Logging
@@ -10,34 +10,34 @@ import Foundation
 import SwiftyJSON
 import ComposableArchitecture
 
-private let logger = Logger(label: "list-value-store")
-struct ListValueState: Equatable {
+private let logger = Logger(label: "zset-value-store")
+struct ZSetValueState: Equatable {
     @BindableState var editModalVisible:Bool = false
     @BindableState var editValue:String = ""
-    // 1: LPUSH, 2: RPUSH
-    var pushType:Int = 0
+    @BindableState var editScore:Double = 0
+    
     var editIndex:Int = -1
     var isNew:Bool = false
     var redisKeyModel:RedisKeyModel?
     var pageState: PageState = PageState()
-    var tableState: TableState = TableState(columns: [.init(title: "Index", key: "index", width: 100), .init(title: "Value", key: "value", width: 800)]
+    var tableState: TableState = TableState(columns: [.init(title: "Score", key: "score", width: 80), .init(title: "Value", key: "value", width: 800)]
                                             , datasource: [], contextMenus: ["Edit", "Delete"], selectIndex: -1)
     
     init() {
-        logger.info("list value state init ...")
+        logger.info("zset value state init ...")
         pageState.showTotal = true
     }
 }
 
-enum ListValueAction:BindableAction, Equatable {
+enum ZSetValueAction:BindableAction, Equatable {
     
     case initial
     case refresh
     case search(String)
     case getValue
-    case setValue(Page, [RedisListItemModel])
+    case setValue(Page, [RedisZSetItemModel])
     
-    case addNew(Int)
+    case addNew
     case edit(Int)
     case submit
     case submitSuccess(Bool)
@@ -49,26 +49,26 @@ enum ListValueAction:BindableAction, Equatable {
     case none
     case pageAction(PageAction)
     case tableAction(TableAction)
-    case binding(BindingAction<ListValueState>)
+    case binding(BindingAction<ZSetValueState>)
 }
 
-struct ListValueEnvironment {
+struct ZSetValueEnvironment {
     var redisInstanceModel:RedisInstanceModel
     var mainQueue: AnySchedulerOf<DispatchQueue> = .main
 }
 
-let listValueReducer = Reducer<ListValueState, ListValueAction, ListValueEnvironment>.combine(
+let zsetValueReducer = Reducer<ZSetValueState, ZSetValueAction, ZSetValueEnvironment>.combine(
     tableReducer.pullback(
         state: \.tableState,
-        action: /ListValueAction.tableAction,
+        action: /ZSetValueAction.tableAction,
         environment: { env in .init() }
     ),
     pageReducer.pullback(
         state: \.pageState,
-        action: /ListValueAction.pageAction,
+        action: /ZSetValueAction.pageAction,
         environment: { env in .init() }
     ),
-    Reducer<ListValueState, ListValueAction, ListValueEnvironment> {
+    Reducer<ZSetValueState, ZSetValueAction, ZSetValueEnvironment> {
         state, action, env in
         switch action {
         // 初始化已设置的值
@@ -108,7 +108,7 @@ let listValueReducer = Reducer<ListValueState, ListValueAction, ListValueEnviron
             let key = redisKeyModel.key
             let page = state.pageState.page
             return .task {
-                let res = await env.redisInstanceModel.getClient().pageList(key, page: page)
+                let res = await env.redisInstanceModel.getClient().pageZSet(key, page: page)
                 return .setValue(page, res)
             }
             .receive(on: env.mainQueue)
@@ -119,21 +119,21 @@ let listValueReducer = Reducer<ListValueState, ListValueAction, ListValueEnviron
             state.pageState.page = page
             return .none
          
-        case let .addNew(type):
+        case .addNew:
             state.editValue = ""
+            state.editScore = 0
             state.editIndex = -1
             
             state.isNew = true
-            state.pushType = type
             state.editModalVisible = true
             return .none
             
         case let .edit(index):
             // 编辑
-            state.pushType = 0
-            let item = state.tableState.datasource[index] as! RedisListItemModel
+            let item = state.tableState.datasource[index] as! RedisZSetItemModel
             state.editIndex = index
             state.editValue = item.value
+            state.editScore = Double(item.score) ?? 0
             state.isNew = false
             state.editModalVisible = true
             return .none
@@ -145,45 +145,38 @@ let listValueReducer = Reducer<ListValueState, ListValueAction, ListValueEnviron
 
             let key = redisKeyModel.key
             let editValue = state.editValue
+            let editScore = state.editScore
+            let isNew = state.isNew
             let isNewKey = state.redisKeyModel?.isNew ?? false
-            let pushType = state.pushType
-            let item = pushType == 0 ? state.tableState.datasource[state.editIndex] as? RedisListItemModel : nil
+            let originEle = isNew ? nil : state.tableState.datasource[state.editIndex] as? RedisZSetItemModel
             return .task {
-                if pushType == -1 {
-                    let _ = await env.redisInstanceModel.getClient().lpush(key, value: editValue)
-                } else if pushType == -2 {
-                    let _ = await env.redisInstanceModel.getClient().rpush(key, value: editValue)
-                } else if pushType == 0 {
-                    let _ = await env.redisInstanceModel.getClient().lset(key, index: item!.index, value: editValue)
-                    logger.info("redis list set success, update list")
+                var r = false
+                if isNew {
+                    r = await env.redisInstanceModel.getClient().zadd(key, score: editScore, ele: editValue)
                 } else {
-                    Messages.show("System error!!!")
-                    return .none
+                    r = await env.redisInstanceModel.getClient().zupdate(key, from: originEle!.value, to: editValue, score: editScore)
                 }
                 
-                return .submitSuccess(isNewKey)
+                return r ? .submitSuccess(isNewKey) : .none
+                
             }
             .receive(on: env.mainQueue)
             .eraseToEffect()
         
         // 提交成功， 刷新列表
         case let .submitSuccess(isNewKey):
-            if state.isNew {
-                state.isNew = false
-            }
-            let pushType = state.pushType
+            let editValue = state.editValue
+            let editScore = "\(state.editScore)"
             // 修改，刷新单个值
-            if pushType == 0 {
-                let item = state.tableState.datasource[state.editIndex] as! RedisListItemModel
-                let newItem = RedisListItemModel(item.index, state.editValue)
-                state.tableState.datasource[state.editIndex] = newItem
+            if state.isNew {
+                state.tableState.selectIndex = 0
+                state.tableState.datasource.insert(RedisZSetItemModel(value: editValue, score: editScore), at: 0)
                 return .none
             }
             // 刷新列表
             else {
-                return .result {
-                    .success(.refresh)
-                }
+                state.tableState.datasource[state.editIndex] = RedisZSetItemModel(value: editValue, score: editScore)
+                return .none
             }
          
             
@@ -192,10 +185,10 @@ let listValueReducer = Reducer<ListValueState, ListValueAction, ListValueEnviron
                 return .none
             }
             
-            let item = state.tableState.datasource[index] as! RedisListItemModel
+            let item = state.tableState.datasource[index] as! RedisZSetItemModel
             return .future { callback in
-                Messages.confirm(String(format: NSLocalizedString("LIST_DELETE_CONFIRM_TITLE'%@'", comment: ""), item.value)
-                                  , message: String(format: NSLocalizedString("LIST_DELETE_CONFIRM_MESSAGE", comment: ""), item.index, item.value)
+                Messages.confirm(StringHelper.format("ZSET_DELETE_CONFIRM_TITLE", item.value)
+                                  , message: StringHelper.format("ZSET_DELETE_CONFIRM_MESSAGE", item.value)
                                   , primaryButton: "Delete"
                                   , action: {
                     callback(.success(.deleteKey(index)))
@@ -205,12 +198,12 @@ let listValueReducer = Reducer<ListValueState, ListValueAction, ListValueEnviron
         case let .deleteKey(index):
             
             let redisKeyModel = state.redisKeyModel!
-            let item = state.tableState.datasource[index] as! RedisListItemModel
-            logger.info("delete list item, key: \(redisKeyModel.key), index: \(item.index), value: \(item.value)")
+            let item = state.tableState.datasource[index] as! RedisZSetItemModel
+            logger.info("delete zset item, key: \(redisKeyModel.key), value: \(item.value)")
             
             return .task {
-                let r = await env.redisInstanceModel.getClient().ldel(redisKeyModel.key, index: item.index, value: item.value)
-                logger.info("do delete list item, key: \(redisKeyModel.key), value: \(item.value), r:\(r)")
+                let r = await env.redisInstanceModel.getClient().zrem(redisKeyModel.key, ele: item.value)
+                logger.info("do delete zset item, key: \(redisKeyModel.key), value: \(item), r:\(r)")
                 
                 return r > 0 ? .deleteSuccess(index) : .none
             }

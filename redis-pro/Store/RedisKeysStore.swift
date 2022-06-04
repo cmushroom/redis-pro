@@ -17,6 +17,7 @@ struct RedisKeysState: Equatable {
     var dbsize:Int = 0
     var keywords:String = ""
     
+//    var mainViewType: MainViewTypeEnum = .EDITOR
     var tableState: TableState = TableState(columns: [.init(type: .KEY_TYPE,title: "Type", key: "type", width: 50), .init(title: "Key", key: "key", width: 50)]
                                             , datasource: [], contextMenus: ["Rename", "Delete"], selectIndex: -1)
     var valueState: ValueState = ValueState()
@@ -37,7 +38,8 @@ enum RedisKeysAction:Equatable {
     case refreshCount
     case search(String)
     case getKeys
-    case updateKeys(Page, [RedisKeyModel])
+    case setKeys(Page, [RedisKeyModel])
+//    case setMainViewType(MainViewTypeEnum)
     case addNew
     
     case deleteConfirm(Int)
@@ -138,11 +140,11 @@ let redisKeysReducer = Reducer<RedisKeysState, RedisKeysAction, RedisKeysEnviron
             let page = state.pageState.page
             return .task {
                 let keysPage = await env.redisInstanceModel.getClient().pageKeys(page)
-                return .updateKeys(page, keysPage)
+                return .setKeys(page, keysPage)
             }
             .receive(on: env.mainQueue)
             .eraseToEffect()
-        case let .updateKeys(page, redisKeys):
+        case let .setKeys(page, redisKeys):
             state.tableState.datasource = redisKeys
             state.pageState.total = page.total
             
@@ -150,6 +152,9 @@ let redisKeysReducer = Reducer<RedisKeysState, RedisKeysAction, RedisKeysEnviron
                 state.tableState.selectIndex = 0
             }
             return .none
+//        case let .setMainViewType(mainViewType):
+//            state.mainViewType = mainViewType
+//            return .none
         case let .updateDBSize(dbsize):
             state.dbsize = dbsize
             return .none
@@ -164,7 +169,7 @@ let redisKeysReducer = Reducer<RedisKeysState, RedisKeysAction, RedisKeysEnviron
         case let .deleteConfirm(index):
             let redisKeyModel = state.tableState.datasource[index] as! RedisKeyModel
             return Effect<RedisKeysAction, Never>.future { callback in
-                AlertUtil.confirm(String(format: NSLocalizedString("REDIS_KEY_DELETE_CONFIRM_TITLE'%@'", comment: ""), redisKeyModel.key)
+                Messages.confirm(String(format: NSLocalizedString("REDIS_KEY_DELETE_CONFIRM_TITLE'%@'", comment: ""), redisKeyModel.key)
                                   , message: String(format: NSLocalizedString("REDIS_KEY_DELETE_CONFIRM_MESSAGE'%@'", comment: ""), redisKeyModel.key)
                                   , primaryButton: "Delete"
                                   , action: {
@@ -202,7 +207,7 @@ let redisKeysReducer = Reducer<RedisKeysState, RedisKeysAction, RedisKeysEnviron
             
         case .flushDBConfirm:
             return Effect<RedisKeysAction, Never>.future { callback in
-                AlertUtil.confirm("Flush DB ?"
+                Messages.confirm("Flush DB ?"
                                   , message: "Are you sure you want to flush db? This operation cannot be undone."
                                   , primaryButton: "Ok"
                                   , action: {

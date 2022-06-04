@@ -15,17 +15,17 @@ struct MainView: View {
     var store: Store<ValueState, ValueAction>
     
     var body: some View {
-        WithViewStore(store) {viewStore in
+        WithViewStore(store.scope(state: \.mainViewType)) {viewStore in
             VStack(alignment: .leading, spacing: 0){
-                if viewStore.mainViewType == MainViewTypeEnum.EDITOR {
+                if viewStore.state == MainViewTypeEnum.EDITOR {
                     RedisValueView(store: store)
-                } else if viewStore.mainViewType == MainViewTypeEnum.REDIS_INFO {
+                } else if viewStore.state == MainViewTypeEnum.REDIS_INFO {
                     RedisInfoView()
-                }  else if viewStore.mainViewType == MainViewTypeEnum.CLIENT_LIST {
+                }  else if viewStore.state == MainViewTypeEnum.CLIENT_LIST {
                     ClientsListView()
-                } else if viewStore.mainViewType == MainViewTypeEnum.SLOW_LOG {
+                } else if viewStore.state == MainViewTypeEnum.SLOW_LOG {
                     SlowLogView()
-                } else if viewStore.mainViewType == MainViewTypeEnum.REDIS_CONFIG {
+                } else if viewStore.state == MainViewTypeEnum.REDIS_CONFIG {
                     RedisConfigView()
                 } else {
                     EmptyView()

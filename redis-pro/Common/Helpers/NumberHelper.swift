@@ -78,3 +78,15 @@ class NumberHelper {
     }
     
 }
+
+extension Double {
+    /// Max double value.
+    static var max: Double {
+        return Double(greatestFiniteMagnitude)
+    }
+    
+    /// Min double value.
+    static var min: Double {
+        return Double(-greatestFiniteMagnitude)
+    }
+}

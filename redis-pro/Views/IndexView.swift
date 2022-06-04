@@ -33,7 +33,7 @@ struct IndexView: View {
             let store: Store<AppState, AppAction> = Store(
                 initialState: state,
                 reducer: appReducer,
-                environment:  AppEnvironment()
+                environment:  .live(environment: AppEnvironment())
             )
             
             WithViewStore(store.scope(state: \.isConnect)) { viewStore in

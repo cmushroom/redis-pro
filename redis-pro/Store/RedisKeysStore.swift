@@ -17,9 +17,10 @@ struct RedisKeysState: Equatable {
     var dbsize:Int = 0
     var keywords:String = ""
     
-//    var mainViewType: MainViewTypeEnum = .EDITOR
+    var mainViewType: MainViewTypeEnum = .EDITOR
     var tableState: TableState = TableState(columns: [.init(type: .KEY_TYPE,title: "Type", key: "type", width: 50), .init(title: "Key", key: "key", width: 50)]
                                             , datasource: [], contextMenus: ["Rename", "Delete"], selectIndex: -1)
+    var redisSystemState:RedisSystemState = RedisSystemState()
     var valueState: ValueState = ValueState()
     var databaseState: DatabaseState = DatabaseState()
     var pageState: PageState = PageState()
@@ -39,7 +40,7 @@ enum RedisKeysAction:Equatable {
     case search(String)
     case getKeys
     case setKeys(Page, [RedisKeyModel])
-//    case setMainViewType(MainViewTypeEnum)
+    case setMainViewType(MainViewTypeEnum)
     case addNew
     
     case deleteConfirm(Int)
@@ -51,6 +52,7 @@ enum RedisKeysAction:Equatable {
     case flushDBConfirm
     case flushDB
     case tableAction(TableAction)
+    case redisSystemAction(RedisSystemAction)
     case valueAction(ValueAction)
     case databaseAction(DatabaseAction)
     case pageAction(PageAction)
@@ -68,6 +70,11 @@ let redisKeysReducer = Reducer<RedisKeysState, RedisKeysAction, RedisKeysEnviron
         state: \.tableState,
         action: /RedisKeysAction.tableAction,
         environment: { env in .init() }
+    ),
+    redisSystemReducer.pullback(
+        state: \.redisSystemState,
+        action: /RedisKeysAction.redisSystemAction,
+        environment: { env in .live(environment: RedisSystemEnvironment(redisInstanceModel: env.redisInstanceModel)) }
     ),
     valueReducer.pullback(
         state: \.valueState,
@@ -152,9 +159,9 @@ let redisKeysReducer = Reducer<RedisKeysState, RedisKeysAction, RedisKeysEnviron
                 state.tableState.selectIndex = 0
             }
             return .none
-//        case let .setMainViewType(mainViewType):
-//            state.mainViewType = mainViewType
-//            return .none
+        case let .setMainViewType(mainViewType):
+            state.mainViewType = mainViewType
+            return .none
         case let .updateDBSize(dbsize):
             state.dbsize = dbsize
             return .none
@@ -199,7 +206,8 @@ let redisKeysReducer = Reducer<RedisKeysState, RedisKeysAction, RedisKeysEnviron
             
         case let .onKeyChange(index):
             guard index > -1 else { return .none }
-                
+            
+            state.mainViewType = .EDITOR
             let redisKeyModel = state.tableState.datasource[index] as! RedisKeyModel
             return .result{
                 .success(.valueAction(.keyChange(redisKeyModel)))
@@ -226,6 +234,14 @@ let redisKeysReducer = Reducer<RedisKeysState, RedisKeysAction, RedisKeysEnviron
             .receive(on: env.mainQueue)
             .eraseToEffect()
         
+        // redis 系统信息
+            
+        case .redisSystemAction(.setSystemView):
+            state.mainViewType = .SYSTEM
+            return .none
+        case .redisSystemAction:
+            return .none
+            
         // submit 成功后， 如果是新增key，添加到列表
         case let .valueAction(.submitSuccess(isNew)):
             let redisKeyModel = state.valueState.keyState.redisKeyModel

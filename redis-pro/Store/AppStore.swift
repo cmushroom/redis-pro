@@ -58,7 +58,7 @@ struct AppEnvironment {
 }
 
 
-let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
+let appReducer = Reducer<AppState, AppAction, SystemEnvironment<AppEnvironment>>.combine(
     globalReducer.pullback(
       state: \.globalState,
       action: /AppAction.globalAction,
@@ -89,7 +89,7 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
       action: /AppAction.redisKeysAction,
       environment: { env in .init(redisInstanceModel: env.redisInstanceModel) }
     ),
-    Reducer<AppState, AppAction, AppEnvironment> {
+    Reducer<AppState, AppAction, SystemEnvironment<AppEnvironment>> {
         state, action, env in
         switch action {
         case .onStart:

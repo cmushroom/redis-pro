@@ -6,74 +6,45 @@
 //
 
 import SwiftUI
+import Logging
+import ComposableArchitecture
 
 struct RedisInfoView: View {
-    @EnvironmentObject var redisInstanceModel:RedisInstanceModel
-    @State private var redisInfoModels:[RedisInfoModel] = [RedisInfoModel(section: "# Server")]
-    @State private var selectIndex:Int?
-    
-    private var footer: some View {
-        HStack(alignment: .center , spacing: MTheme.H_SPACING) {
-            Spacer()
-            MButton(text: "Reset State", action: onResetStateAction)
-            MButton(text: "Refresh", action: onRefrehAction)
-        }
-    }
-    
+    var store:Store<RedisInfoState, RedisInfoAction>
     
     var body: some View {
-        VStack(alignment: .leading, spacing: MTheme.V_SPACING) {
-            TabView {
-                ForEach(redisInfoModels.indices, id:\.self) { index in
-                    
-                    RedisInfoTable(datasource: $redisInfoModels[index].infos, selectRowIndex: $selectIndex)
-                        .tabItem {
-                            Text(redisInfoModels[index].section)
-                        }
-                        .tag(redisInfoModels[index].section)
+        WithViewStore(store) { viewStore in
+            VStack(alignment: .leading, spacing: MTheme.V_SPACING) {
+                TabView(selection: viewStore.binding(get: \.section, send: RedisInfoAction.setTab)) {
+                    ForEach(viewStore.redisInfoModels.indices, id:\.self) { index in
+                        NTableView(store: store.scope(state: \.tableState, action: RedisInfoAction.tableAction))
+                            .tabItem {
+                                Text(viewStore.redisInfoModels[index].section)
+                            }
+                            .tag(viewStore.redisInfoModels[index].section)
+                    }
+                }
+                .frame(minWidth: 500, minHeight: 600)
+                
+                HStack(alignment: .center , spacing: MTheme.H_SPACING) {
+                    Spacer()
+                    MButton(text: "Reset State", action: {viewStore.send(.resetState)})
+                    MButton(text: "Refresh", action: {viewStore.send(.refresh)})
                 }
             }
-            .frame(minWidth: 500, minHeight: 600)
-            
-            footer
-        }
-        .onAppear {
-            getInfo()
-        }
-    }
-    
-    func getInfo() -> Void {
-        Task {
-            let res = await redisInstanceModel.getClient().info()
-            self.redisInfoModels = res
-        }
-    }
-    func onRefrehAction() -> Void {
-        Task {
-            let res = await redisInstanceModel.getClient().info()
-            for redisInfoModel in res {
-                if let index = self.redisInfoModels.firstIndex(where: {$0.section == redisInfoModel.section}) {
-                    self.redisInfoModels[index].infos = redisInfoModel.infos
-                }
+            .onAppear {
+                viewStore.send(.initial)
             }
-            
-        }
-    }
-    
-    func onResetStateAction() -> Void {
-        Task {
-            let _ = await redisInstanceModel.getClient().resetState()
-            self.onRefrehAction()
         }
     }
 }
 
-struct RedisInfoView_Previews: PreviewProvider {
-    
-    static var redisInstanceModel:RedisInstanceModel = RedisInstanceModel(redisModel: RedisModel(password: ""))
-    
-    static var previews: some View {
-        RedisInfoView().environmentObject(redisInstanceModel)
-    }
-    
-}
+//struct RedisInfoView_Previews: PreviewProvider {
+//
+//    static var redisInstanceModel:RedisInstanceModel = RedisInstanceModel(redisModel: RedisModel(password: ""))
+//
+//    static var previews: some View {
+//        RedisInfoView().environmentObject(redisInstanceModel)
+//    }
+//
+//}

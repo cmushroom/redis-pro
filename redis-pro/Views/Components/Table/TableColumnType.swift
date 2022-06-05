@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol TableColumnTypeData {
+protocol TableColumnTypeData:Equatable {
     var width:CGFloat { get }
 }
 
@@ -15,7 +15,10 @@ protocol TableColumnTypeData {
 enum TableColumnType: TableColumnTypeData {
 
     case DEFAULT
-    //    case INDEX
+    case INDEX
+    case IMAGE
+    case KEY_TYPE
+        
     //    case ID
     //    case DATE
     //    case DATETIME
@@ -25,6 +28,12 @@ enum TableColumnType: TableColumnTypeData {
         switch self {
         case .DEFAULT:
             return 100
+        case .INDEX:
+            return 20
+        case .IMAGE:
+            return 40
+        case .KEY_TYPE:
+            return 80
         }
     }
 }

@@ -11,7 +11,7 @@ import RediStack
 // list
 extension RediStackClient {
 
-    func pageList(_ key:String, page:Page) async -> [String?] {
+    func pageList(_ key:String, page:Page) async -> [RedisListItemModel] {
         
         logger.info("redis list page, key: \(key), page: \(page)")
         begin()
@@ -19,12 +19,19 @@ extension RediStackClient {
             complete()
         }
         do {
-            let cursor:Int = (page.current - 1) * page.size
+            let start:Int = (page.current - 1) * page.size
             let r1 = try await llen(key)
-            let r2 = try await lrange(key, start: cursor, stop: cursor + page.size - 1)
+            let r2 = try await lrange(key, start: start, stop: start + page.size - 1)
             let total = r1
             page.total = total
-            return r2
+            
+            var result:[RedisListItemModel] = []
+            
+            for (index, value) in r2.enumerated() {
+                result.append(RedisListItemModel(start + index, value ?? ""))
+            }
+     
+            return result
         } catch {
             handleError(error)
         }
@@ -53,7 +60,7 @@ extension RediStackClient {
         }
     }
     
-    func ldel(_ key:String, index:Int) async -> Int {
+    func ldel(_ key:String, index:Int, value:String) async -> Int {
         logger.debug("redis list delete, key: \(key), index:\(index)")
         
         begin()
@@ -62,24 +69,34 @@ extension RediStackClient {
         }
         
         do {
-            try await lsetInner(key, index: index, value: Constants.LIST_VALUE_DELETE_MARK)
-            
-            let conn = try await getConn()
-            return try await withCheckedThrowingContinuation { continuation in
-                
-                conn.lrem(Constants.LIST_VALUE_DELETE_MARK, from: RedisKey(key), count: 0)
-                    .whenComplete({completion in
-                        if case .success(let r) = completion {
-                            continuation.resume(returning: r)
-                        }
-                        
-                        self.complete(completion, continuation: continuation)
-                    })
+            let existValue = try await _lindex(key, index: index)
+            guard existValue == value else {
+                throw BizError("list value: \(value), index: \(index) have changed, please check!")
             }
+            
+            try await _lset(key, index: index, value: Constants.LIST_VALUE_DELETE_MARK)
+            
+            return try await _lrem(key,value: Constants.LIST_VALUE_DELETE_MARK)
         } catch {
             handleError(error)
         }
         return 0
+    }
+    
+    
+    private func _lrem(_ key:String, value:String) async throws -> Int {
+        let conn = try await getConn()
+        return try await withCheckedThrowingContinuation { continuation in
+            
+            conn.lrem(value, from: RedisKey(key), count: 0)
+                .whenComplete({completion in
+                    if case .success(let r) = completion {
+                        continuation.resume(returning: r)
+                    }
+                    
+                    self.complete(completion, continuation: continuation)
+                })
+        }
     }
     
     func lset(_ key:String, index:Int, value:String) async -> Void {
@@ -88,13 +105,13 @@ extension RediStackClient {
             complete()
         }
         do {
-            try await lsetInner(key, index: index, value: value)
+            try await _lset(key, index: index, value: value)
         } catch {
             handleError(error)
         }
     }
     
-    private func lsetInner(_ key:String, index:Int, value:String) async throws -> Void {
+    private func _lset(_ key:String, index:Int, value:String) async throws -> Void {
         let conn = try await getConn()
         
         return try await withCheckedThrowingContinuation { continuation in
@@ -161,6 +178,21 @@ extension RediStackClient {
             handleError(error)
         }
         return 0
+    }
+    
+    private func _lindex(_ key:String, index:Int) async throws -> String? {
+        let conn = try await getConn()
+        return try await withCheckedThrowingContinuation { continuation in
+            
+            conn.lindex(index, from: RedisKey(key))
+                .whenComplete({completion in
+                    if case .success(let r) = completion {
+                        continuation.resume(returning: r.string)
+                    }
+                    
+                    self.complete(completion, continuation: continuation)
+                })
+        }
     }
     
     private func llen(_ key:String) async throws -> Int {

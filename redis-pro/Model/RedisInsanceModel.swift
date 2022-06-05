@@ -10,14 +10,12 @@ import Foundation
 import NIO
 import RediStack
 import Logging
-
+import ComposableArchitecture
 
 class RedisInstanceModel:ObservableObject, Identifiable {
-    @Published var loading:Bool = false
-    @Published var isConnect:Bool = false
     @Published var redisModel:RedisModel
     private var rediStackClient:RediStackClient?
-    var globalContext:GlobalContext?
+    private var viewStore:ViewStore<GlobalState, GlobalAction>?
     
     let logger = Logger(label: "redis-instance")
     
@@ -35,8 +33,11 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         )
     }
     
-    func setUp(_ globalContext:GlobalContext) -> Void {
-        self.globalContext = globalContext
+    func setGlobalStore(_ viewStore: ViewStore<GlobalState, GlobalAction>?) {
+        guard let viewStore = viewStore else {
+            return
+        }
+        self.viewStore = viewStore
     }
     
     func getClient() -> RediStackClient {
@@ -46,7 +47,7 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         
         logger.info("get new redis client ...")
         rediStackClient = RediStackClient(redisModel:redisModel)
-        rediStackClient?.setUp(self.globalContext)
+        rediStackClient?.setGlobalStore(self.viewStore)
         return rediStackClient!
     }
     
@@ -54,15 +55,11 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         logger.info("connect to redis server: \(redisModel)")
         self.redisModel = redisModel
         let r = await self.getClient().initConnection()
-        DispatchQueue.main.async {
-            self.isConnect = r
-        }
         return r
     }
     
     func testConnect(_ redisModel:RedisModel) async -> Bool {
         self.redisModel = redisModel
-        
         let pong =  await self.getClient().ping()
         self.close()
         return pong
@@ -72,6 +69,5 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         logger.info("redis stack client close...")
         rediStackClient?.close()
         rediStackClient = nil
-        isConnect = false
     }
 }

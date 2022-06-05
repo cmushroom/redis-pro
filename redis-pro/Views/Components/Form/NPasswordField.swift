@@ -14,7 +14,7 @@ struct NPasswordField: View {
     var body: some View {
         ZStack(alignment: .trailing) {
             if !visible {
-                NSecureField(value:$value, placeholder: "Password")
+//                NSecureField(value:$value, placeholder: "Password")
             } else {
                 NTextField(stringValue:$value, placeholder: "Password")
             }

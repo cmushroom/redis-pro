@@ -7,93 +7,38 @@
 
 import SwiftUI
 import Logging
-import SwiftyJSON
-import Cocoa
+import ComposableArchitecture
 
 struct StringEditorView: View {
-    @State private var text: String = ""
-    
-    @EnvironmentObject var redisKeyModel:RedisKeyModel
-    @EnvironmentObject var redisInstanceModel:RedisInstanceModel
-    var onSubmit: (() -> Void)?
-    
-    let logger = Logger(label: "string-editor")
+    var store: Store<StringValueState, StringValueAction>
+    private let logger = Logger(label: "string-editor")
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            VStack(alignment: .leading, spacing: MTheme.V_SPACING){
-                // text editor
-//                MTextView(text: $text)
-                MTextEditor(text: $text)
+        WithViewStore(store) {viewStore in
+            VStack(alignment: .leading, spacing: 0) {
+                VStack(alignment: .leading, spacing: MTheme.V_SPACING){
+                    // text editor
+                    MTextEditor(text: viewStore.binding(\.$text))
+                }
+                .background(Color.init(NSColor.textBackgroundColor))
+                
+                // footer
+                HStack(alignment: .center, spacing: MTheme.H_SPACING) {
+                    Spacer()
+                    MButton(text: "Pretty Json", action: {viewStore.send(.jsonFormat)})
+                    IconButton(icon: "arrow.clockwise", name: "Refresh", action: {viewStore.send(.refresh)})
+                    IconButton(icon: "checkmark", name: "Submit", action: {viewStore.send(.submit)})
+                }
+                .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
+                
             }
-            .background(Color.init(NSColor.textBackgroundColor))
-
-            // footer
-            HStack(alignment: .center, spacing: MTheme.H_SPACING) {
-                Spacer()
-                MButton(text: "Pretty Json", action: onJsonFormat)
-                IconButton(icon: "arrow.clockwise", name: "Refresh", action: onRefreshAction)
-                IconButton(icon: "checkmark", name: "Submit", isConfirm: false, confirmTitle: "", confirmMessage: "", confirmPrimaryButtonText: "Submit", action: onSubmitAction)
+            
+            .onAppear {
+                logger.info("redis string value editor view appear ...")
             }
-            .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
-        }
-        .onChange(of: redisKeyModel.id, perform: { value in
-            logger.info("redis string value editor view change \(value)")
-            onLoad()
-        })
-        .onAppear {
-            logger.info("redis string value editor view init...")
-            onLoad()
-        }
-        
-    }
-    
-    func onJsonFormat() throws -> Void {
-        if text.count < 2 {
-            return
-        }
-        let jsonObj = JSON(parseJSON: text)
-        if jsonObj == JSON.null {
-            throw BizError(message: "Format json error")
-        }
-        if let string = jsonObj.rawString() {
-            self.text = string
         }
     }
     
-    func onSubmitAction() -> Void {
-        logger.info("redis string value editor on submit")
-        Task {
-            await redisInstanceModel.getClient().set(redisKeyModel.key, value: text, ex: redisKeyModel.ttl)
-            self.onSubmit?()
-        }
-    }
-    
-    func onRefreshAction() -> Void {
-        if redisKeyModel.key.isEmpty {
-            return
-        }
-        Task {
-            await getValue()
-            let ttl = await redisInstanceModel.getClient().ttl(redisKeyModel.key)
-            self.redisKeyModel.ttl = ttl
-        }
-    }
-    
-    func onLoad() -> Void {
-        if self.redisKeyModel.isNew || self.redisKeyModel.type != RedisKeyTypeEnum.STRING.rawValue {
-            text = ""
-            return
-        }
-        Task {
-            await getValue()
-        }
-    }
-    
-    func getValue() async -> Void {
-        let r = await redisInstanceModel.getClient().get(redisKeyModel.key)
-        self.text = r
-    }
 }
 
 //struct StringEditView_Previews: PreviewProvider {

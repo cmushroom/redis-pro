@@ -7,59 +7,58 @@
 
 import SwiftUI
 import Logging
+import ComposableArchitecture
 
 struct IndexView: View {
-    @StateObject var globalContext:GlobalContext = GlobalContext()
-    @StateObject var redisInstanceModel:RedisInstanceModel = RedisInstanceModel(redisModel: RedisModel())
+    @State var appState:AppState?
     
-    let logger = Logger(label: "index-view")
+    private let logger = Logger(label: "index-view")
+    
+    
+    init() {
+        logger.info("index view init ...")
+    }
     
     var body: some View {
-        HStack {
-            VStack {
-                if (!redisInstanceModel.isConnect) {
-                    LoginView()
-                        .environmentObject(redisInstanceModel)
+        if let state = appState {
+            let store: Store<AppState, AppAction> = Store(
+                initialState: state,
+                reducer: appReducer,
+                environment:  .live(environment: AppEnvironment())
+            )
+            
+            WithViewStore(store.scope(state: \.isConnect)) { viewStore in
+                ZStack {
+                    VStack {
+                        if (viewStore.state) {
+                            HomeView(store)
+                            // 设置window标题
+                            //                            .navigationTitle(viewStore.title)
+                        } else {
+                            LoginView(store: store)
+                        }
+                        
+                    }
                     
-                } else {
-                    HomeView()
-                        .environmentObject(redisInstanceModel)
-                        .navigationTitle(redisInstanceModel.redisModel.name)
+//                    AlertView(store.scope(state: \.appAlertState, action: AppAction.alertAction))
+                    LoadingView(store.scope(state: \.globalState, action: AppAction.globalAction))
+                }.onAppear {
+                    GlobalStoreContext.setContext(appState?.id, store: store.scope(state: \.globalState, action: AppAction.globalAction))
+                    viewStore.send(.initContext)
                 }
             }
+            
+        } else {
+            Spacer()
+                .onAppear {
+                    appState = AppState()
+                }
         }
-        .environmentObject(globalContext)
-        .onAppear {
-            redisInstanceModel.setUp(globalContext)
-        }
-        .overlay(MSpin(loading: globalContext.loading))
-        .alert(isPresented: $globalContext.alertVisible) {
-            globalContext.showSecondButton ? Alert(title: Text(globalContext.alertTitle), message: Text(globalContext.alertMessage),
-                                                   primaryButton: .default(Text(globalContext.primaryButtonText),
-                                                                           action: doAction),
-                                                   secondaryButton: .cancel(Text(globalContext.secondButtonText), action: cancelAction)) : Alert(title: Text(globalContext.alertTitle), message: Text(globalContext.alertMessage), dismissButton: .default(Text(globalContext.primaryButtonText)))
-        }
-        
-    }
-    
-    
-    func doAction() -> Void {
-        logger.info("alert ok action ...")
-        do {
-            try globalContext.primaryAction()
-        } catch {
-            globalContext.showError(error)
-        }
-        
-    }
-    func cancelAction() -> Void {
-        logger.info("alert cancel action ...")
-        logger.info("redis instance : \(redisInstanceModel.redisModel)")
     }
 }
 
-struct IndexView_Previews: PreviewProvider {
-    static var previews: some View {
-        IndexView()
-    }
-}
+//struct IndexView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        IndexView()
+//    }
+//}

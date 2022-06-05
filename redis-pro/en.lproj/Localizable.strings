@@ -6,6 +6,37 @@
   
 */
 
+// -------------------------------------------------- redis help message start ---------------------------------------------------
+
+"HELP_SEARCH_BAR" = "支持redis glob 风格的模式参数, 示例: key*, re?is";
+"HELP_TTL" = "单位(秒), -1表示永不过期, -2 表示key不存在, 修改后回车提交修改!";
+"HELP_REFRESH" = "Refresh";
+// -------------------------------------------------- redis help message end -----------------------------------------------------
+
+
+// -------------------------------------------------- redis confirm message start ---------------------------------------------------
+
+"ZSET_DELETE_CONFIRM_TITLE" = "Delete zset element, value: '%@'?";
+"ZSET_DELETE_CONFIRM_MESSAGE" = "Are you sure you want to delete the zset element, value: '%@'? This operation cannot be undone.";
+
+"SET_DELETE_CONFIRM_TITLE" = "Delete set element, value: '%@'?";
+"SET_DELETE_CONFIRM_MESSAGE" = "Are you sure you want to delete the set element, value: '%@'? This operation cannot be undone.";
+
+"LIST_DELETE_CONFIRM_TITLE'%@'" = "Delete list item, value: '%@'?";
+"LIST_DELETE_CONFIRM_MESSAGE" = "Are you sure you want to delete the list item, index: '1%d', value: '2%@'? This operation cannot be undone.";
+
+"HASH_DELETE_CONFIRM_TITLE'%@'" = "Delete hash field '%@'?";
+"HASH_DELETE_CONFIRM_MESSAGE'%@'" = "Are you sure you want to delete the hash field '%@'? This operation cannot be undone.";
+// -------------------------------------------------- redis confirm message end -----------------------------------------------------
+
+
+// -------------------------------------------------- redis key message start ---------------------------------------------------
+
+"REDIS_KEY_DELETE_CONFIRM_TITLE'%@'" = "Delete key '%@'?";
+"REDIS_KEY_DELETE_CONFIRM_MESSAGE'%@'" = "Are you sure you want to delete the key '%@'? This operation cannot be undone.";
+
+// -------------------------------------------------- redis key message end -----------------------------------------------------
+
 // ------------------------------------------------ system confirm message start ------------------------------------------------
 "CONFIRM_FAVORITE_REDIS_TITLE'%@'" = "Delete list item '%@'?";
 "CONFIRM_FAVORITE_REDIS_MESSAGE'%@'" = "Are you sure you want to delete the item '%@'? This operation cannot be undone.";

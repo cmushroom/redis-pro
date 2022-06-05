@@ -32,49 +32,65 @@ extension RediStackClient {
         }
     }
     
-    // 递归取出包含分页的数据
-    private func recursionScan(_ keywords:String?, cursor:Int, maxCount:Int, keys:[String]) async throws -> (cursor:Int, keys:[String]) {
-        if keys.count >= maxCount {
-            self.logger.info("recursion scan get keys enough, max count: \(maxCount), current count: \(keys.count)")
-            return (cursor, keys)
-        } else {
-            let res = try await keyScan(cursor: cursor, keywords: keywords, count: recursionSize)
-            let newKeys = keys + res.keys
-            
-            if res.cursor == 0 {
-                self.logger.info("recursion scan reach end, max count: \(maxCount), current count: \(keys.count)")
-                
-                return (res.cursor, newKeys)
-            }
-            
-            self.logger.info("recursion scan get more keys, current count: \(newKeys.count)")
-            return try await self.recursionScan(keywords, cursor: res.cursor, maxCount: maxCount, keys: newKeys)
-        }
-    }
     
-    private func scanTotal(_ keywords:String?, cursor:Int, total:Int) async throws -> Int {
-        let res = try await keyScan(cursor: cursor, keywords: keywords, count: recursionCountSize)
-        let newTotal:Int = total + res.keys.count
-        if res.cursor == 0 {
-            self.logger.info("recursion scan total reach end, total: \(newTotal)")
-            
-            return newTotal
-        }
+    private func countScan(cursor:Int, keywords:String?, count:Int? = 1) async throws -> (cursor:Int, count:Int) {
+        logger.debug("redis keys scan, cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
         
-        self.logger.info("recursion scan total get more, current total: \(newTotal)")
-        return try await self.scanTotal(keywords, cursor: res.cursor, total: newTotal)
+        
+        let res = try await keyScan(cursor: cursor, keywords: keywords, count: count)
+        return (res.0, res.1.count)
     }
     
-    private func recursionScanTotal(_ keywords:String?) async throws -> Int {
+    
+    private func keysCountScan(_ keywords:String?) async throws -> Int {
         if isMatchAll(keywords ?? "") {
             logger.info("keywords is match all, use dbsize...")
             return await dbsize()
         }
         
-        let cursor:Int = 0
-        let total:Int = 0
+        var cursor:Int = 0
+        var count:Int = 0
         
-        return try await scanTotal(keywords, cursor: cursor, total: total)
+        while true {
+            let res = try await countScan(cursor: cursor, keywords: keywords, count: dataCountScanCount)
+            logger.info("loop scan page, current cursor: \(cursor), total count: \(count)")
+            cursor = res.0
+            count = count + res.1
+            
+            // 取到结果，或者已满足分页数据
+            if cursor == 0{
+                break
+            }
+        }
+        return count
+    }
+    
+    private func keysPageScan(_ page: Page) async throws -> [String] {
+        let keywords = page.keywords.isEmpty ? nil : page.keywords
+        var end:Int = page.end
+        var cursor:Int = 0
+        var keys:[String] = []
+        
+        while true {
+            let res = try await keyScan(cursor: cursor, keywords: keywords, count: dataScanCount)
+            logger.info("loop scan page, current cursor: \(cursor), total count: \(keys.count)")
+            cursor = res.0
+            keys = keys + res.1
+            
+            // 取到结果，或者已满足分页数据
+            if cursor == 0 || keys.count >= end {
+                break
+            }
+        }
+        
+        let start = page.start
+        if start >= keys.count {
+            return []
+        }
+        
+        end = min(end, keys.count)
+        return Array(keys[start..<end])
+        
     }
     
     func pageKeys(_ page:Page) async -> [RedisKeyModel] {
@@ -87,9 +103,6 @@ extension RediStackClient {
         let isScan = isScan(page.keywords)
         let match = page.keywords.isEmpty ? nil : page.keywords
         
-        let keys:[String] = [String]()
-        let cursor:Int = 0
-        
         defer {
             self.logger.info("keys scan complete, spend: \(stopwatch.elapsedMillis()) ms")
             complete()
@@ -98,26 +111,13 @@ extension RediStackClient {
         do {
             // 带有占位符的情况，使用
             if isScan {
-                async let totalAsync = recursionScanTotal(match)
+                async let totalAsync = keysCountScan(match)
                 
-                async let res = self.recursionScan(match, cursor: cursor, maxCount: page.size, keys: keys)
                 
+                let pageData:[String] = try await keysPageScan(page)
+             
                 let total = try await totalAsync
-                let keys = try await res.keys
-                
-                let start = (page.current - 1) * page.size
-                
-                if keys.count <= start {
-                    return []
-                }
-                
-                let end = min(start + page.size - 1, keys.count)
-                let pageData:[String] = Array(keys[start..<end])
-                
-                
-                DispatchQueue.main.async {
-                    page.total = total
-                }
+                page.total = total
                 return await self.toRedisKeyModels(pageData)
             } else {
                 let exist = await self.exist(page.keywords)

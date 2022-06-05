@@ -30,4 +30,9 @@ class SlowLogModel:NSObject, Identifiable {
         self.client = client ?? MTheme.NULL_STRING
         self.clientName = clientName ?? MTheme.NULL_STRING
     }
+    
+    
+    static func == (lhs: SlowLogModel, rhs: SlowLogModel) -> Bool {
+        return lhs.id == rhs.id
+    }
 }

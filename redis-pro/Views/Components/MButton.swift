@@ -11,26 +11,13 @@ import Foundation
 
 struct MButton: View {
     var text:String
-    var action: (() throws -> Void)?
+    var action: (() -> Void)?
     var disabled:Bool = false
-    var isConfirm:Bool = false
-    var confirmTitle:String?
-    var confirmMessage:String?
-    var confirmPrimaryButtonText:String?
     
     var keyEquivalent:KeyEquivalent?
     
     var body: some View {
         NButton(title: text, keyEquivalent: keyEquivalent, action: doAction, disabled: disabled)
-            //        Button(action: doAction) {
-            //            Text(text)
-            //                .font(.system(size: MTheme.FONT_SIZE_BUTTON))
-            //                .multilineTextAlignment(.center)
-            //                .lineLimit(1)
-            //                .padding(.horizontal, 4.0)
-            //        }
-            //        .buttonStyle(BorderedButtonStyle())
-            //            .disabled(disabled)
             .onHover { inside in
                 if !disabled && inside {
                     NSCursor.pointingHand.push()
@@ -45,47 +32,9 @@ struct MButton: View {
     }
     
     func doAction() -> Void {
-        do {
-            if !isConfirm {
-                try action?()
-            } else {
-                MAlert.confirm(confirmTitle ?? "", message: confirmMessage ?? "", primaryButton: confirmPrimaryButtonText ?? "Ok", primaryAction: primaryAction)
-            }
-        } catch {
-            MAlert.error(error)
-        }
+        action?()
     }
     
-    func primaryAction() -> Void {
-        try? action?()
-    }
-    
-    struct MButton_Previews: PreviewProvider {
-        static var previews: some View {
-            Group {
-                VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 8) {
-                    Text(NSLocalizedString("hello", comment: "hello"))
-                    Text(LocalizedStringKey("hello"))
-                    Text("hello")
-                    MButton(text: "Hello", action: {})
-                    
-                    Button("default", action: {})
-                    
-                    Button("BorderedButtonStyle", action: {})
-                    
-                    Button("BorderlessButtonStyle", action: {}).buttonStyle(BorderlessButtonStyle())
-                    
-                    Button("LinkButtonStyle", action: {}).buttonStyle(LinkButtonStyle())
-                    
-                    Button("PlainButtonStyle", action: {}).preferredColorScheme(.dark).environment(\.sizeCategory, .small).buttonStyle(PlainButtonStyle())
-                    
-                    
-                }
-                .preferredColorScheme(.dark)
-                .padding(20)
-            }
-        }
-    }
 }
 
 enum KeyEquivalent: String {

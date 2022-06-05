@@ -8,7 +8,11 @@
 import Foundation
 import Logging
 
-class ScanModel:ObservableObject, CustomStringConvertible {
+class ScanModel:ObservableObject, CustomStringConvertible, Equatable {
+    static func == (lhs: ScanModel, rhs: ScanModel) -> Bool {
+        return lhs.cursor == rhs.cursor && lhs.size == rhs.size && lhs.keywords == rhs.keywords
+    }
+    
     var current:Int = 1
     @Published var total:Int = 0
     @Published var cursor:Int = 0

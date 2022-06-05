@@ -1,6 +1,6 @@
 {
-    "latestVersionNum": 12,
-    "latestVersion": "1.4.5",
+    "latestVersionNum": 14,
+    "latestVersion": "2.0.0-RC",
     "updateType": "hint",
-    "releaseNotes": "1. 删除favorite 列表时增加删除确认 #35 \n2. ssh连接 不支持 redis 没有密码的bug修复 #34 \n3. 左侧列表刷新，没有清空选中项，导致无法刷新 value 的 bug #33 \n4. key 重命名弹框样式问题修复 \n5. key删除增加 delete 快捷键 \n6. 过期时间超过Int64导致闪退bug"
+    "releaseNotes": "1. 使用TCA重构，逻辑代码抽离到store后，更清晰！ \n2. 使用Table组件，统一，删除，双击，右键操作。 \n3. zset默认按score顺序返回 \n4. keys, set , zset, hash等scan 优化，没有使用通配符时，直接查找 \n5. 还有很多改变，后面增加新功能时会顺手很多了！"
 }

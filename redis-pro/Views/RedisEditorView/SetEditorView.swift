@@ -41,7 +41,7 @@ struct SetEditorView: View {
         }) {
             ModalView("Edit set element", action: {viewStore.send(.submit)}) {
                 VStack(alignment:.leading, spacing: MTheme.V_SPACING) {
-                    FormItemTextArea(label: "Value", placeholder: "value", value: viewStore.binding(\.$editValue))
+                    FormItemTextArea(placeholder: "value", value: viewStore.binding(\.$editValue))
                 }
             }
         }

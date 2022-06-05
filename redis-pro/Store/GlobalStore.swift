@@ -14,6 +14,7 @@ private let logger = Logger(label: "global-store")
 
 struct GlobalState: Equatable {
     var loading:Bool = false
+    var loadingCount:Int = 0
     
     init() {
         logger.info("global state init ...")
@@ -34,13 +35,35 @@ let globalReducer = Reducer<GlobalState, GlobalAction, GlobalEnvironment>.combin
         state, action, _ in
         switch action {
         case .show:
-            print("show")
-            state.loading.toggle()
+            let loadingCount = state.loadingCount
+            if loadingCount <= 0 {
+                state.loading = true
+            }
+            
+            state.loadingCount = loadingCount + 1
+
             return .none
         case .hide:
-            print("hide")
-            state.loading = false
+            let loadingCount = state.loadingCount
+            state.loadingCount = min(loadingCount - 1, 0)
+            
+            if loadingCount <= 0 {
+                state.loading = false
+            }
+            
             return .none
         }
     }.debug()
 )
+
+
+class GlobalStoreContext {
+    static var contextDict:[String: ViewStore<GlobalState, GlobalAction>] = [:]
+    
+    static func setContext(_ id:String?, store: Store<GlobalState, GlobalAction>) {
+        guard  let id = id else {
+            return
+        }
+        contextDict[id] = ViewStore(store)
+    }
+}

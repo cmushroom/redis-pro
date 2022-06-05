@@ -13,6 +13,7 @@ import ComposableArchitecture
 private let logger = Logger(label: "app-store")
 
 struct AppState: Equatable {
+    var id:String = UUID().uuidString
     // app title
     var title:String = ""
     // 是否已经连接 redis server
@@ -41,7 +42,12 @@ struct AppState: Equatable {
     }
 }
 
+extension Store {
+    
+}
+
 enum AppAction:Equatable {
+    case initContext
     case onStart
     case onClose
     case globalAction(GlobalAction)
@@ -92,8 +98,15 @@ let appReducer = Reducer<AppState, AppAction, SystemEnvironment<AppEnvironment>>
     Reducer<AppState, AppAction, SystemEnvironment<AppEnvironment>> {
         state, action, env in
         switch action {
+        case .initContext:
+            logger.info("init context...")
+            env.redisInstanceModel.setGlobalStore(GlobalStoreContext.contextDict[state.id])
+            return .none
         case .onStart:
-            let _ = settingsReducer.run(&state.settingsState, .initial, SettingsEnvironment())
+//            let _ = settingsReducer.run(&state.settingsState, .initial, SettingsEnvironment())
+//            return .result {
+//                .success(.settingsAction(.initial))
+//            }
             return .none
         
         case .onClose:

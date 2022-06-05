@@ -44,10 +44,12 @@ class Messages {
     
     static func show(_ title:String) {
         DispatchQueue.main.async {
-            alert.messageText = title
+            self.alert.messageText = title
             //        alert.informativeText = message
-            alert.buttons[0].title = "Ok"
-            alert.alertStyle = NSAlert.Style.warning
+            self.alert.buttons[0].title = "Ok"
+            self.alert.alertStyle = NSAlert.Style.warning
+            
+            alert.runModal()
         }
     }
     static func show(_ error:Error) {

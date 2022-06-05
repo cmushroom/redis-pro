@@ -37,10 +37,14 @@ struct IndexView: View {
                         } else {
                             LoginView(store: store)
                         }
+                        
                     }
                     
 //                    AlertView(store.scope(state: \.appAlertState, action: AppAction.alertAction))
-                    LoadingView(store.scope(state: \.loadingState, action: AppAction.loadingAction))
+                    LoadingView(store.scope(state: \.globalState, action: AppAction.globalAction))
+                }.onAppear {
+                    GlobalStoreContext.setContext(appState?.id, store: store.scope(state: \.globalState, action: AppAction.globalAction))
+                    viewStore.send(.initContext)
                 }
             }
             

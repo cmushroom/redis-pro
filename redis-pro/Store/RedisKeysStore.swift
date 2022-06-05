@@ -18,7 +18,7 @@ struct RedisKeysState: Equatable {
     var keywords:String = ""
     
     var mainViewType: MainViewTypeEnum = .EDITOR
-    var tableState: TableState = TableState(columns: [.init(type: .KEY_TYPE,title: "Type", key: "type", width: 50), .init(title: "Key", key: "key", width: 50)]
+    var tableState: TableState = TableState(columns: [.init(type: .KEY_TYPE,title: "Type", key: "type", width: 40), .init(title: "Key", key: "key", width: 50)]
                                             , datasource: [], contextMenus: ["Rename", "Delete"], selectIndex: -1)
     var redisSystemState:RedisSystemState = RedisSystemState()
     var valueState: ValueState = ValueState()

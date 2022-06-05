@@ -165,7 +165,8 @@ let valueReducer = Reducer<ValueState, ValueAction, ValueEnvironment>.combine(
             }
         case .hashValueAction:
             return .none
-            
+        
+        // list action
         case .listValueAction(.refresh):
             return .result {
                 .success(.refresh)
@@ -178,13 +179,23 @@ let valueReducer = Reducer<ValueState, ValueAction, ValueEnvironment>.combine(
         case .listValueAction:
             return .none
             
+        // set action
         case .setValueAction(.refresh):
             return .result {
                 .success(.refresh)
             }
+        case let .setValueAction(.submitSuccess(isNew)):
+            return .result {
+                .success(.submitSuccess(isNew))
+            }
         case .setValueAction:
             return .none
             
+        // zset action
+        case let .zsetValueAction(.submitSuccess(isNew)):
+            return .result {
+                .success(.submitSuccess(isNew))
+            }
         case .zsetValueAction(.refresh):
             return .result {
                 .success(.refresh)

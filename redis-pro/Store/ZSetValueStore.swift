@@ -20,7 +20,7 @@ struct ZSetValueState: Equatable {
     var isNew:Bool = false
     var redisKeyModel:RedisKeyModel?
     var pageState: PageState = PageState()
-    var tableState: TableState = TableState(columns: [.init(title: "Score", key: "score", width: 80), .init(title: "Value", key: "value", width: 800)]
+    var tableState: TableState = TableState(columns: [.init(title: "Score", key: "score", width: 80), .init(title: "Value", key: "value", width: 200)]
                                             , datasource: [], contextMenus: ["Edit", "Delete"], selectIndex: -1)
     
     init() {

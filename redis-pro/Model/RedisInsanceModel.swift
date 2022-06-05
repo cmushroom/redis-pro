@@ -15,6 +15,7 @@ import ComposableArchitecture
 class RedisInstanceModel:ObservableObject, Identifiable {
     @Published var redisModel:RedisModel
     private var rediStackClient:RediStackClient?
+    private var viewStore:ViewStore<GlobalState, GlobalAction>?
     
     let logger = Logger(label: "redis-instance")
     
@@ -32,6 +33,13 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         )
     }
     
+    func setGlobalStore(_ viewStore: ViewStore<GlobalState, GlobalAction>?) {
+        guard let viewStore = viewStore else {
+            return
+        }
+        self.viewStore = viewStore
+    }
+    
     func getClient() -> RediStackClient {
         if rediStackClient != nil {
             return rediStackClient!
@@ -39,6 +47,7 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         
         logger.info("get new redis client ...")
         rediStackClient = RediStackClient(redisModel:redisModel)
+        rediStackClient?.setGlobalStore(self.viewStore)
         return rediStackClient!
     }
     

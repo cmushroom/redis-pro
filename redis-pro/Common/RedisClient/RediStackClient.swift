@@ -34,12 +34,28 @@ class RediStackClient {
     var recursionSize:Int = 2000
     var recursionCountSize:Int = 5000
     
+    var viewStore:ViewStore<GlobalState, GlobalAction>?
+    
     init(redisModel:RedisModel) {
         self.redisModel = redisModel
     }
     
+    func setGlobalStore(_ globalStore: ViewStore<GlobalState, GlobalAction>?) {
+        self.viewStore = globalStore
+    }
+    
+    func loading(_ bool: Bool) {
+        DispatchQueue.main.async {
+            if bool {
+                self.viewStore?.send(.show)
+            } else {
+                self.viewStore?.send(.hide)
+            }
+        }
+    }
+    
     func begin() -> Void {
-        LoadingUtil.show()
+        loading(true)
     }
     
     func complete<T:Any, R:Any>(_ completion:Swift.Result<T, Error>, continuation:CheckedContinuation<R, Error>) -> Void {
@@ -47,16 +63,16 @@ class RediStackClient {
             continuation.resume(throwing: error)
         }
   
-        LoadingUtil.hide()
+        loading(false)
     }
     
     func complete() -> Void {
-        LoadingUtil.hide()
+        loading(false)
     }
     
     func handleError(_ error: Error) {
         logger.info("get an error \(error)")
-        LoadingUtil.hide()
+        loading(false)
         Messages.show(error)
     }
     
@@ -71,7 +87,7 @@ class RediStackClient {
         begin()
         let conn = try? await getConn()
   
-        LoadingUtil.hide()
+        loading(false)
         return conn != nil
     }
     

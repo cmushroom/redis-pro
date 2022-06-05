@@ -20,7 +20,7 @@ struct SetValueState: Equatable {
     var isNew:Bool = false
     var redisKeyModel:RedisKeyModel?
     var pageState: PageState = PageState()
-    var tableState: TableState = TableState(columns: [.init(title: "Value", key: "self", width: 800)]
+    var tableState: TableState = TableState(columns: [.init(title: "Value", key: "self", width: 200)]
                                             , datasource: [], contextMenus: ["Edit", "Delete"], selectIndex: -1)
     
     init() {

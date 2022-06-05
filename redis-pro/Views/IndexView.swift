@@ -10,22 +10,13 @@ import Logging
 import ComposableArchitecture
 
 struct IndexView: View {
-    @StateObject var globalContext:GlobalContext = GlobalContext()
-    @StateObject var redisInstanceModel:RedisInstanceModel = RedisInstanceModel(redisModel: RedisModel())
-    
     @State var appState:AppState?
-    //    var store:Store<AppState, AppAction> = Store(initialState: AppState(), reducer: appReducer, environment: AppEnvironment())
-    //    private var store:Store<AppState, AppAction> = Store(initialState: AppState(), reducer: appReducer, environment: AppEnvironment())
-    //    @StateObject var viewStore:ViewStore<AppState, AppAction>?
     
     private let logger = Logger(label: "index-view")
     
     
     init() {
         logger.info("index view init ...")
-        //        let env = AppEnvironment()
-        //        self.store = Store(initialState: AppState(), reducer: appReducer, environment: env)
-        //        self.viewStore = ViewStore(store)
     }
     
     var body: some View {
@@ -41,27 +32,16 @@ struct IndexView: View {
                     VStack {
                         if (viewStore.state) {
                             HomeView(store)
-                                .environmentObject(redisInstanceModel)
                             // 设置window标题
                             //                            .navigationTitle(viewStore.title)
                         } else {
                             LoginView(store: store)
-                                .environmentObject(redisInstanceModel)
-                            Button("loading", action: {
-                                viewStore.send(.globalAction(.show))
-                                LoadingUtil.show()
-                            })
-                        }
-                        
-                        WithViewStore(store.scope(state: \.globalState)) { v in
-                            Text("\(v.loading ? 1 : 0)")
                         }
                     }
                     
 //                    AlertView(store.scope(state: \.appAlertState, action: AppAction.alertAction))
                     LoadingView(store.scope(state: \.loadingState, action: AppAction.loadingAction))
                 }
-                .environmentObject(globalContext)
             }
             
         } else {

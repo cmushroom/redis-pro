@@ -7,112 +7,52 @@
 
 import SwiftUI
 import Logging
+import ComposableArchitecture
 
 struct RedisConfigView: View {
+    
+    var store:Store<RedisConfigState, RedisConfigAction>
     let logger = Logger(label: "redis-config-view")
     
-    @State private var pattern:String = ""
-    @EnvironmentObject var redisInstanceModel:RedisInstanceModel
-    @State private var redisConfigItemModels:[RedisConfigItemModel] = []
-    @State private var selectIndex:Int?
-    @State private var refresh:Int = 0
-    
-    @State private var editModalVisible:Bool = false
-    @State private var editKey:String = ""
-    @State private var editValue:String = ""
-    @State private var editIndex = 0
-    
-    private var header: some View {
-        HStack(alignment: .center , spacing: MTheme.H_SPACING) {
-//            SearchBar(keywords: $pattern, onCommit: {
-//                self.onLoad()
-//            }).frame(width: 500)
-            Spacer()
-            // TODO
-            Text(editKey).hidden()
-            MButton(text: "Rewrite", action: onRewriteAction)
-                .help("REDIS_CONFIG_REWRITE")
-        }.padding(MTheme.HEADER_PADDING)
-    }
-    
-    private var footer: some View {
-        HStack(alignment: .center , spacing: MTheme.H_SPACING) {
-            Spacer()
-            MButton(text: "Refresh", action: onRefrehAction)
-        }
-    }
-    
-    
     var body: some View {
-        VStack(alignment: .leading, spacing: MTheme.V_SPACING) {
-            header
-            
-            RedisConfigTable(datasource: $redisConfigItemModels, selectRowIndex: $selectIndex, refresh: refresh, editAction: onReadyEditAction)
-            
-            footer
-        }
-        .sheet(isPresented: $editModalVisible, onDismiss: {
-            logger.info("on dismiss")
-        }) {
-            ModalView("Edit Config Key: \(editKey)", action: onUpdateItemAction) {
-                VStack(alignment:.leading, spacing: MTheme.V_SPACING) {
-                    MTextView(text: $editValue)
+        
+        WithViewStore(store) { viewStore in
+            VStack(alignment: .leading, spacing: MTheme.V_SPACING) {
+                HStack(alignment: .center , spacing: MTheme.H_SPACING) {
+                    
+                    SearchBar(placeholder: "Search config...", onCommit: {viewStore.send(.search($0))})
+
+                    Spacer()
+                    MButton(text: "Rewrite", action: {viewStore.send(.rewrite)})
+                        .help("REDIS_CONFIG_REWRITE")
+                }.padding(MTheme.HEADER_PADDING)
+                
+                NTableView(store: store.scope(state: \.tableState, action: RedisConfigAction.tableAction))
+                
+                HStack(alignment: .center , spacing: MTheme.H_SPACING) {
+                    Spacer()
+                    MButton(text: "Refresh", action: {viewStore.send(.refresh)})
                 }
-                .frame(minWidth:500, minHeight:300)
             }
-        }
-        .onAppear {
-            onLoad()
-        }
-    }
-    
-    
-    func onLoad() -> Void {
-        Task {
-            let res = await redisInstanceModel.getClient().getConfigList(self.pattern)
-            self.redisConfigItemModels = res
-        }
-    }
-    
-    func onRefrehAction() -> Void {
-        self.onLoad()
-    }
-    
-    func onRewriteAction() -> Void {
-        Task {
-            let _ = await redisInstanceModel.getClient().configRewrite()
-        }
-    }
-    
-    func onReadyEditAction(index:Int) -> Void {
-        if index < 0 {
-            return
-        }
-        
-        let editConfig = self.redisConfigItemModels[index]
-        
-        self.editIndex = index
-        self.editKey = editConfig.key
-        self.editValue = editConfig.value
-        
-        logger.info("......... \(editKey), \(editValue)")
-        self.editModalVisible = true
-    }
-    
-    func onUpdateItemAction() -> Void {
-        Task {
-            let r = await redisInstanceModel.getClient().setConfig(key: editKey, value: editValue)
-            if r {
-                self.redisConfigItemModels[editIndex].value = editValue
-                self.refresh += 1
+            .sheet(isPresented: viewStore.binding(\.$editModalVisible), onDismiss: {
+            }) {
+                ModalView("Edit Config Key: \(viewStore.editKey)", action: {viewStore.send(.submit)}) {
+                    VStack(alignment:.leading, spacing: MTheme.V_SPACING) {
+                        MTextView(text: viewStore.binding(\.$editValue))
+                    }
+                    .frame(minWidth:500, minHeight:300)
+                }
+            }
+            .onAppear {
+                viewStore.send(.initial)
             }
         }
     }
     
 }
 
-struct RedisConfigView_Previews: PreviewProvider {
-    static var previews: some View {
-        RedisConfigView()
-    }
-}
+//struct RedisConfigView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        RedisConfigView()
+//    }
+//}

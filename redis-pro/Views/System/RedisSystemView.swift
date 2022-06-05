@@ -17,11 +17,11 @@ struct RedisSystemView: View {
             if viewStore.systemView == RedisSystemViewTypeEnum.REDIS_INFO {
                 RedisInfoView(store: store.scope(state: \.redisInfoState, action: RedisSystemAction.redisInfoAction))
             }  else if viewStore.systemView == RedisSystemViewTypeEnum.CLIENT_LIST {
-                ClientsListView()
+                ClientsListView(store: store.scope(state: \.clientListState, action: RedisSystemAction.clientListAction))
             } else if viewStore.systemView == RedisSystemViewTypeEnum.SLOW_LOG {
-                SlowLogView()
+                SlowLogView(store: store.scope(state: \.slowLogState, action: RedisSystemAction.slowLogAction))
             } else if viewStore.systemView == RedisSystemViewTypeEnum.REDIS_CONFIG {
-                RedisConfigView()
+                RedisConfigView(store: store.scope(state: \.redisConfigState, action: RedisSystemAction.redisConfigAction))
             } else {
                 EmptyView()
             }

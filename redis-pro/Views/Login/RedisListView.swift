@@ -20,8 +20,6 @@ struct RedisListView: View {
                 VStack(alignment: .leading,
                        spacing: 0) {
                     
-                    Text("\(viewStore.globalState!.loading ? 1 : 0)")
-                    
                     NTableView(
                         store: store.scope(state: \.tableState, action: FavoriteAction.tableAction)
                     )

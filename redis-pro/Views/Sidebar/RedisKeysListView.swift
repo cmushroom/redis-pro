@@ -124,26 +124,6 @@ struct RedisKeysListView: View {
             }
         }
     }
-
-    
-    func onRedisInfoAction() -> Void {
-//        self.selectedRedisKeyIndex = -1
-//        self.mainViewType = MainViewTypeEnum.REDIS_INFO
-    }
-    func onRedisConfigAction() -> Void {
-//        self.selectedRedisKeyIndex = -1
-//        self.mainViewType = MainViewTypeEnum.REDIS_CONFIG
-    }
-    
-    func onShowClientsAction() -> Void {
-//        self.selectedRedisKeyIndex = -1
-//        self.mainViewType = MainViewTypeEnum.CLIENT_LIST
-    }
-    
-    func onShowSlowLogAction() -> Void {
-//        self.selectedRedisKeyIndex = -1
-//        self.mainViewType = MainViewTypeEnum.SLOW_LOG
-    }
 }
 
 //

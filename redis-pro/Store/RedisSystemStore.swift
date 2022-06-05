@@ -23,6 +23,9 @@ private let logger = Logger(label: "redis-system-store")
 struct RedisSystemState: Equatable {
     var systemView: RedisSystemViewTypeEnum = .REDIS_INFO
     var redisInfoState: RedisInfoState = RedisInfoState()
+    var redisConfigState: RedisConfigState = RedisConfigState()
+    var slowLogState: SlowLogState = SlowLogState()
+    var clientListState: ClientListState = ClientListState()
     
     init() {
         logger.info("redis system state init ...")
@@ -33,6 +36,9 @@ enum RedisSystemAction: Equatable {
     case initial
     case setSystemView(RedisSystemViewTypeEnum)
     case redisInfoAction(RedisInfoAction)
+    case redisConfigAction(RedisConfigAction)
+    case slowLogAction(SlowLogAction)
+    case clientListAction(ClientListAction)
 }
 
 struct RedisSystemEnvironment {
@@ -45,6 +51,21 @@ let redisSystemReducer = Reducer<RedisSystemState, RedisSystemAction, SystemEnvi
         action: /RedisSystemAction.redisInfoAction,
         environment: { env in  .live(environment: RedisInfoEnvironment(redisInstanceModel: env.redisInstanceModel)) }
     ),
+    redisConfigReducer.pullback(
+        state: \.redisConfigState,
+        action: /RedisSystemAction.redisConfigAction,
+        environment: { env in  .live(environment: RedisConfigEnvironment(redisInstanceModel: env.redisInstanceModel)) }
+    ),
+    slowLogReducer.pullback(
+        state: \.slowLogState,
+        action: /RedisSystemAction.slowLogAction,
+        environment: { env in  .live(environment: SlowLogEnvironment(redisInstanceModel: env.redisInstanceModel)) }
+    ),
+    clientListReducer.pullback(
+        state: \.clientListState,
+        action: /RedisSystemAction.clientListAction,
+        environment: { env in  .live(environment: ClientListEnvironment(redisInstanceModel: env.redisInstanceModel)) }
+    ),
     Reducer<RedisSystemState, RedisSystemAction, SystemEnvironment<RedisSystemEnvironment>> {
         state, action, env in
         switch action {
@@ -55,6 +76,13 @@ let redisSystemReducer = Reducer<RedisSystemState, RedisSystemAction, SystemEnvi
             state.systemView = type
             return .none
         case .redisInfoAction:
+            return .none
+            
+        case .redisConfigAction:
+            return .none
+        case .slowLogAction:
+            return .none
+        case .clientListAction:
             return .none
         }
     }

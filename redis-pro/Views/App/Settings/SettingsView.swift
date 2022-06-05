@@ -10,28 +10,9 @@ import SwiftUI
 import ComposableArchitecture
 
 struct SettingsView: View {
-    @AppStorage("User.colorSchemeValue")
-    private var colorSchemeValue:String = ColorSchemeEnum.SYSTEM.rawValue
-    @AppStorage("User.defaultFavorite")
-    private var defaultFavorite:String = "last"
-    @EnvironmentObject var redisInstanceModel:RedisInstanceModel
-    @StateObject var redisFavoriteModel: RedisFavoriteModel = RedisFavoriteModel()
-    
-//    @Environment(\.colorScheme) var colorScheme
+
     private var labelWidth:CGFloat = 100
-    
     let store:Store<SettingsState, SettingsAction>
-//    let store:Store<SettingsState, SettingsAction> = Store(initialState: globalSettingsState, reducer: settingsReducer, environment: SettingsEnvironment())
-    // 计算属性
-    var colorScheme: ColorScheme? {
-        if ColorSchemeEnum.LIGHT.rawValue == colorSchemeValue {
-            return .light
-        } else if ColorSchemeEnum.DARK.rawValue == colorSchemeValue {
-            return .dark
-        } else {
-            return nil
-        }
-    }
     
     private let logger = Logger(label: "settings-view")
     init(store:Store<SettingsState, SettingsAction>) {
@@ -65,9 +46,7 @@ struct SettingsView: View {
                     Spacer()
                 }
             }
-            .preferredColorScheme(colorScheme)
             .onAppear {
-                redisFavoriteModel.loadAll()
                 viewStore.send(.initial)
             }
             .navigationTitle("Preferences")

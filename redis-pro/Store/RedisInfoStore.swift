@@ -12,7 +12,7 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "redis-info-store")
 struct RedisInfoState: Equatable {
-    var section:String = "# Server"
+    var section:String = "Server"
     var tableState: TableState = TableState(columns: [.init(title: "Key", key: "key", width: 120), .init(title: "Value", key: "value", width: 100), .init(title: "Desc", key: "desc", width: 800)]
                                             , datasource: [], selectIndex: -1)
     var redisInfoModels:[RedisInfoModel] = [RedisInfoModel(section: "Server")]

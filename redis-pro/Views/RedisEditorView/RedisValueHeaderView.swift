@@ -27,7 +27,7 @@ struct RedisValueHeaderView: View {
         WithViewStore(store) {viewStore in
             
             HStack(alignment: .center, spacing: 6) {
-                FormItemText(label: "Key", labelWidth: 40, required: true, value: viewStore.binding(\.$key)).disabled(!viewStore.isNew)
+                FormItemText(label: "Key", labelWidth: 40, required: true, value: viewStore.binding(get: \.key, send: KeyAction.setKey)).disabled(!viewStore.isNew)
                 RedisKeyTypePicker(label: "Type", value: viewStore.binding(get: \.type, send: KeyAction.setType), disabled: !viewStore.isNew)
                 Spacer()
                 

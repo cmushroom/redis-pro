@@ -14,6 +14,7 @@ class RedisModel: NSObject, ObservableObject, Identifiable {
     @Published var host: String = "127.0.0.1"
     @Published var port: Int = 6379
     @Published var database: Int = 0
+    var user: String = "default"
     @Published var password: String = ""
     @Published var isFavorite: Bool = false
     @Published var ping: Bool = false

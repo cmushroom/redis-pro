@@ -41,7 +41,7 @@ struct KeyState: Equatable {
 enum KeyAction:BindableAction, Equatable {
     case initial
     case refresh
-    case updateKey(String)
+    case setKey(String)
     case getTtl
     case submit
     case saveTtl
@@ -70,7 +70,7 @@ let keyReducer = Reducer<KeyState, KeyAction, KeyEnvironment>.combine(
                 .success(.getTtl)
             }
             
-        case let .updateKey(key):
+        case let .setKey(key):
             state.key = key
             return .none
         case .getTtl:

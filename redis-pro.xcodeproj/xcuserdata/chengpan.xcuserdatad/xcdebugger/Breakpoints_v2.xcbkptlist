@@ -7,127 +7,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "6962DEF9-0B63-48A4-8ACD-30A312F6FCF1"
-            shouldBeEnabled = "Yes"
+            uuid = "610FCD96-2A2C-404D-8E30-3949F98E4FD2"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "redis-pro/Store/SetValueStore.swift"
+            filePath = "redis-pro/Store/StringValueStore.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "150"
-            endingLineNumber = "150"
-            landmarkName = "unknown"
-            landmarkType = "0">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "A5BD4C99-CE74-4A6E-8AEB-FAD9E29F23A0"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "redis-pro/Store/SetValueStore.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "156"
-            endingLineNumber = "156"
-            landmarkName = "unknown"
-            landmarkType = "0">
-            <Locations>
-               <Location
-                  uuid = "A5BD4C99-CE74-4A6E-8AEB-FAD9E29F23A0 - c5a512fa10522204"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(1) await resume partial function for closure #6 @Sendable () async -&gt; redis_pro.SetValueAction in closure #3 (inout redis_pro.SetValueState, redis_pro.SetValueAction, redis_pro.SetValueEnvironment) -&gt; ComposableArchitecture.Effect&lt;redis_pro.SetValueAction, Swift.Never&gt; in variable initialization expression of redis_pro.setValueReducer : ComposableArchitecture.Reducer&lt;redis_pro.SetValueState, redis_pro.SetValueAction, redis_pro.SetValueEnvironment&gt;"
-                  moduleName = "redis-pro"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/chengpan/work/dream/redis-pro/redis-pro/Store/SetValueStore.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "156"
-                  endingLineNumber = "156"
-                  offsetFromSymbolStart = "175">
-               </Location>
-               <Location
-                  uuid = "A5BD4C99-CE74-4A6E-8AEB-FAD9E29F23A0 - 1fd1b3299209602b"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(2) await resume partial function for closure #6 @Sendable () async -&gt; redis_pro.SetValueAction in closure #3 (inout redis_pro.SetValueState, redis_pro.SetValueAction, redis_pro.SetValueEnvironment) -&gt; ComposableArchitecture.Effect&lt;redis_pro.SetValueAction, Swift.Never&gt; in variable initialization expression of redis_pro.setValueReducer : ComposableArchitecture.Reducer&lt;redis_pro.SetValueState, redis_pro.SetValueAction, redis_pro.SetValueEnvironment&gt;"
-                  moduleName = "redis-pro"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/chengpan/work/dream/redis-pro/redis-pro/Store/SetValueStore.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "156"
-                  endingLineNumber = "156"
-                  offsetFromSymbolStart = "195">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "19724BF9-DFC8-4625-AA90-AF3595A1E450"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "redis-pro/Store/SetValueStore.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "163"
-            endingLineNumber = "163"
-            landmarkName = "unknown"
-            landmarkType = "0">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "6325D621-DC43-4180-9AC4-876CA4A6B282"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "redis-pro/Store/ValueStore.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "127"
-            endingLineNumber = "127"
-            landmarkName = "unknown"
-            landmarkType = "0">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "D6D52007-2C34-4C4A-8194-89D7C0900782"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "redis-pro/Store/KeyStore.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "77"
-            endingLineNumber = "77"
-            landmarkName = "unknown"
-            landmarkType = "0">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "FE2956AB-4DEB-44C8-977F-37FA9EA83C00"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "redis-pro/Store/KeyStore.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "99"
-            endingLineNumber = "99"
+            startingLineNumber = "70"
+            endingLineNumber = "70"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>

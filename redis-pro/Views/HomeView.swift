@@ -19,7 +19,7 @@ struct HomeView: View {
     }
     
     var body: some View {
-        WithViewStore(store) {viewStore in
+        WithViewStore(store.scope(state: \.title)) {viewStore in
             
             RedisKeysListView(store)
                 .onAppear {
@@ -29,6 +29,8 @@ struct HomeView: View {
                     logger.info("redis pro home view destroy...")
                     viewStore.send(.onClose)
                 }
+            // 设置window标题
+            .navigationTitle(viewStore.state)
             
         }
     }

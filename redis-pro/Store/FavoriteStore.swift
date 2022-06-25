@@ -135,7 +135,7 @@ let favoriteReducer = Reducer<FavoriteState, FavoriteAction, FavoriteEnvironment
             }
             .receive(on: env.mainQueue)
             .eraseToEffect()
-//            return .none
+
         case let .tableAction(.double(index)):
             return .result {
                 .success(.connect(index))

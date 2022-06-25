@@ -32,8 +32,6 @@ struct IndexView: View {
                     VStack {
                         if (viewStore.state) {
                             HomeView(store)
-                            // 设置window标题
-                            //                            .navigationTitle(viewStore.title)
                         } else {
                             LoginView(store: store)
                         }

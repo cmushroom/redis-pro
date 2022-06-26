@@ -1,6 +1,6 @@
 {
-    "latestVersionNum": 14,
-    "latestVersion": "2.0.0-RC",
+    "latestVersionNum": 15,
+    "latestVersion": "2.1.0",
     "updateType": "hint",
-    "releaseNotes": "1. 使用TCA重构，逻辑代码抽离到store后，更清晰！ \n2. 使用Table组件，统一，删除，双击，右键操作。 \n3. zset默认按score顺序返回 \n4. keys, set , zset, hash等scan 优化，没有使用通配符时，直接查找 \n5. 还有很多改变，后面增加新功能时会顺手很多了！"
+    "releaseNotes": "1. 使用界面添加Key时，无法同时设置key名和value bug #43！ \n2. 登录redis后修改窗标题 #41。 \n3. redis 列表拖拽排序 #35 \n4. 测试链接loading没有消失bug！"
 }

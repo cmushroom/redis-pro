@@ -10,7 +10,7 @@ import ComposableArchitecture
 
 struct FavoriteState: Equatable {
     var globalState: GlobalState?
-    var tableState: TableState = TableState(columns: [NTableColumn(title: "FAVORITES", key: "name", width: 50, icon: .APP)], datasource: [], selectIndex: -1)
+    var tableState: TableState = TableState(columns: [NTableColumn(title: "FAVORITES", key: "name", width: 50, icon: .APP)], datasource: [], selectIndex: -1, dragable: true)
     var loginState: LoginState = LoginState()
     
 //    init(globalState: GlobalState) {
@@ -135,7 +135,12 @@ let favoriteReducer = Reducer<FavoriteState, FavoriteAction, FavoriteEnvironment
             }
             .receive(on: env.mainQueue)
             .eraseToEffect()
-//            return .none
+
+        
+        case let .tableAction(.dragComplete(from, to)):
+            let _ = RedisDefaults.save(state.tableState.datasource as! [RedisModel])
+            return .none
+            
         case let .tableAction(.double(index)):
             return .result {
                 .success(.connect(index))

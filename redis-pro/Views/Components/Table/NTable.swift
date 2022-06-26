@@ -12,12 +12,6 @@ import Combine
 import ComposableArchitecture
 
 struct NTableView: NSViewControllerRepresentable {
-//    var columns:[NTableColumn] = [NTableColumn]()
-//    @Binding var datasource:[AnyHashable]
-//    @Binding var selectIndex:Int
-//    var onChange: ((Int, AnyHashable) -> Void)?
-//    var onDelete: ((Int, AnyHashable) -> Void)?
-//    var onDouble: ((Int, AnyHashable) -> Void)?
     
     let store: Store<TableState, TableAction>
     
@@ -32,17 +26,8 @@ struct NTableView: NSViewControllerRepresentable {
     
     func makeNSViewController(context: Context) -> NSViewController {
         let controller = NTableController(store)
-//        controller.onChangeAction = self.onChange
-//        controller.onDeleteAction = self.onDelete
-//        controller.onDoubleAction = self.onDouble
-//        controller.columns = columns
-        
-//        controller.tableView.delegate = context.coordinator
-        
-//        controller.datasource = datasource
-//        controller.setUp(action: self.onClick, deleteAction: self.deleteAction, renameAction: self.renameAction)
-//        controller.tableView.delegate = context.coordinator
-//        controller.tableView.dataSource = context.coordinator
+        //        controller.tableView.delegate = context.coordinator
+        //        controller.tableView.dataSource = context.coordinator
         
         logger.debug("ntable make nsview controller....")
         return controller
@@ -50,23 +35,7 @@ struct NTableView: NSViewControllerRepresentable {
     
     
     func updateNSViewController(_ nsViewController: NSViewController, context: Context) {
-//        guard let controller = nsViewController as? NTableController else {return}
-//        controller.setDatasource(datasource)
-//        controller.tableView.delegate = context.coordinator
-//        controller.tableView.dataSource = context.coordinator
-        
         logger.debug("ntable update nsview controller")
-        
-        //TODO 刷新次数太多，考虑优化
-//        controller.refresh(self.datasource)
-        
-//        if self.selectIndex != controller.arrayController.selectionIndex {
-//            controller.arrayController.setSelectionIndex(self.selectIndex)
-//        }
-        
-//        DispatchQueue.main.async {
-//            controller.arrayController.setSelectionIndex(self.selectIndex)
-//        }
     }
     
     class Coordinator: NSObject, NSTableViewDelegate, NSTableViewDataSource {
@@ -82,16 +51,19 @@ struct NTableView: NSViewControllerRepresentable {
     }
 }
 
-class NTableController: NSViewController, NSTableViewDelegate, NSTableViewDataSource {
+class NTableController: NSViewController{
     
-//    var columns:[NTableColumn] = [NTableColumn]()
+    //    var columns:[NTableColumn] = [NTableColumn]()
     @objc dynamic var datasource:[AnyHashable] = []
     var arrayController = NSArrayController()
     var initialized = false
     let scrollView = NSScrollView()
     let tableView = NSTableView()
     
-    let viewStore: ViewStore<TableState, TableAction>
+    // drag
+    let pasteboardType = NSPasteboard.PasteboardType.string
+    
+    var viewStore: ViewStore<TableState, TableAction>
     var cancellables: Set<AnyCancellable> = []
     
     var observation: NSKeyValueObservation?
@@ -120,7 +92,7 @@ class NTableController: NSViewController, NSTableViewDelegate, NSTableViewDataSo
     override func loadView() {
         self.view = NSView()
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         if initialized {
@@ -130,26 +102,32 @@ class NTableController: NSViewController, NSTableViewDelegate, NSTableViewDataSo
         
         // listen app color scheme
         observation = NSApp.observe(\.effectiveAppearance) { (app, _) in
-               app.effectiveAppearance.performAsCurrentDrawingAppearance {
-                   // Invoke your non-view code that needs to be aware of the
-                   // change in appearance.
-                   self.logger.info("app color scheme change, update table view ...")
-                   self.view.appearance = NSApp.appearance
-                   self.tableView.appearance = NSApp.appearance
-               }
-           }
-            
+            app.effectiveAppearance.performAsCurrentDrawingAppearance {
+                // Invoke your non-view code that needs to be aware of the
+                // change in appearance.
+                self.logger.info("app color scheme change, update table view ...")
+                self.view.appearance = NSApp.appearance
+                self.tableView.appearance = NSApp.appearance
+            }
+        }
+        
         tableView.allowsEmptySelection = false
         
+        // 设置可drag
+        if self.viewStore.dragable {
+            tableView.registerForDraggedTypes([pasteboardType])
+        }
+        
+        // bind datasource, select index
         arrayController.bind(.contentArray, to: self, withKeyPath: "datasource", options: nil)
         
         tableView.bind(.content, to: arrayController, withKeyPath: "arrangedObjects", options: nil)
         tableView.bind(.selectionIndexes, to: arrayController, withKeyPath:"selectionIndexes", options: nil)
-    
+        
         setupView()
         setupTableView()
         
-        // 监听
+        // 监听默认选中
         self.viewStore.publisher.defaultSelectIndex
             .sink(receiveValue: {
                 self.logger.debug("table store select index publisher, index: \($0)")
@@ -158,6 +136,7 @@ class NTableController: NSViewController, NSTableViewDelegate, NSTableViewDataSo
             })
             .store(in: &self.cancellables)
         
+        // 监听数据变化
         self.viewStore.publisher.datasource
             .sink(receiveValue: {
                 self.logger.debug("table store data source publisher, data source length: \($0.count)")
@@ -179,20 +158,20 @@ class NTableController: NSViewController, NSTableViewDelegate, NSTableViewDataSo
         }
     }
     
-//    override func viewDidLayout() {
-//        if !initialized {
-//            initialized = true
-//        }
-//    }
+    //    override func viewDidLayout() {
+    //        if !initialized {
+    //            initialized = true
+    //        }
+    //    }
     
     /**
-        NSLayoutConstraint(item: 视图,
-         attribute: 约束属性,
-         relatedBy: 约束关系,
-         toItem: 参照视图,
-         attribute: 参照属性,
-         multiplier: 乘积,
-         constant: 约束数值)
+     NSLayoutConstraint(item: 视图,
+     attribute: 约束属性,
+     relatedBy: 约束关系,
+     toItem: 参照视图,
+     attribute: 参照属性,
+     multiplier: 乘积,
+     constant: 约束数值)
      */
     func setupView() {
         //使用Auto Layout的方式来布局
@@ -208,10 +187,10 @@ class NTableController: NSViewController, NSTableViewDelegate, NSTableViewDataSo
         self.view.addConstraint(NSLayoutConstraint(item: self.scrollView, attribute: .bottom, relatedBy: .equal, toItem: self.view, attribute: .bottom, multiplier: 1.0, constant: 0))
         tableView.frame = scrollView.bounds
         tableView.delegate = self
+        tableView.dataSource = self
         
-//        tableView.dataSource = self
         tableView.usesAlternatingRowBackgroundColors = true
-//        tableView.headerView = nil
+        //        tableView.headerView = nil
         scrollView.backgroundColor = NSColor.clear
         scrollView.drawsBackground = false
         scrollView.autohidesScrollers = true
@@ -232,49 +211,18 @@ class NTableController: NSViewController, NSTableViewDelegate, NSTableViewDataSo
             col.title = column.title
             tableView.addTableColumn(col)
         }
-    
+        
         // 最后一列自适应
         tableView.sizeLastColumnToFit()
         
         scrollView.documentView = tableView
         
-//        scrollView.addSubview(tableView)
+        //        scrollView.addSubview(tableView)
         scrollView.hasHorizontalScroller = false
         scrollView.hasVerticalScroller = true
     }
     
-   
     
-    // 构建单元格
-    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
-        guard let tableColumn = tableColumn else {
-            return nil
-        }
-
-        
-        guard let column = self.viewStore.columns.filter({ $0.key == tableColumn.identifier.rawValue}).first else { return nil }
-        
-        var tableCellView = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(column.key), owner: self) as? TableCellView
-        if tableCellView == nil {
-            tableCellView = TableCellView(tableView, tableColumn: tableColumn, column: column, row: row)
-        }
-        
-        return tableCellView
-    }
-    
-    func tableViewSelectionDidChange(_ notification: Notification) {
-        guard let tableView = notification.object as? NSTableView else {return}
-        
-        let selectIndex = tableView.selectedRow
-        self.logger.info("table coordinator selection did change, selectedRow: \(selectIndex)")
-        
-//        guard self.datasource.count > selectIndex && selectIndex > -1 else {return}
-        
-//        self.selectIndex = tableView.selectedRow
-//        self.onChangeAction?(tableView.selectedRow, self.datasource[selectIndex])
-        
-        self.viewStore.send(.selectionChange(selectIndex))
-    }
     
     // 监听键盘删除事件
     override func keyDown(with event: NSEvent) {
@@ -283,7 +231,7 @@ class NTableController: NSViewController, NSTableViewDelegate, NSTableViewDataSo
             let selectIndex = tableView.selectedRow
             
             if selectIndex > -1 {
-//                self.onDeleteAction?(selectIndex, self.datasource[selectIndex])
+                //                self.onDeleteAction?(selectIndex, self.datasource[selectIndex])
                 self.viewStore.send(.delete(selectIndex))
             }
         }
@@ -314,6 +262,99 @@ class NTableController: NSViewController, NSTableViewDelegate, NSTableViewDataSo
         }
         logger.info("context menu action, index: \(index)")
         self.viewStore.send(.contextMenu(menuItem.title, index))
+    }
+    
+}
+
+//NSTableViewDelegate
+extension NTableController: NSTableViewDelegate {
+    
+    // 构建单元格
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        guard let tableColumn = tableColumn else {
+            return nil
+        }
+        
+        
+        guard let column = self.viewStore.columns.filter({ $0.key == tableColumn.identifier.rawValue}).first else { return nil }
+        
+        var tableCellView = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(column.key), owner: self) as? TableCellView
+        if tableCellView == nil {
+            tableCellView = TableCellView(tableView, tableColumn: tableColumn, column: column, row: row)
+        }
+        
+        return tableCellView
+    }
+    
+    func tableViewSelectionDidChange(_ notification: Notification) {
+        guard let tableView = notification.object as? NSTableView else {return}
+        
+        let selectIndex = tableView.selectedRow
+        self.logger.info("table coordinator selection did change, selectedRow: \(selectIndex)")
+        
+        //        guard self.datasource.count > selectIndex && selectIndex > -1 else {return}
+        
+        //        self.selectIndex = tableView.selectedRow
+        //        self.onChangeAction?(tableView.selectedRow, self.datasource[selectIndex])
+        
+        self.viewStore.send(.selectionChange(selectIndex))
+    }
+    
+}
+
+// NSTableViewDataSource
+extension NTableController: NSTableViewDataSource {
+    
+    // 获取id
+    // For the source table view
+    func tableView(_ tableView: NSTableView, pasteboardWriterForRow row: Int) -> NSPasteboardWriting? {
+
+        let rowAnyObj = self.viewStore.datasource[self.viewStore.selectIndex]
+      
+        let value = "\(rowAnyObj.hashValue)"
+        
+        let pasteboardItem = NSPasteboardItem()
+        pasteboardItem.setString(value, forType: pasteboardType)
+        return pasteboardItem
+    }
+    
+    // For the destination table view
+    func tableView(_ tableView: NSTableView, validateDrop info: NSDraggingInfo, proposedRow row: Int, proposedDropOperation dropOperation: NSTableView.DropOperation) -> NSDragOperation {
+        if dropOperation == .above {
+            return .move
+        } else {
+            return []
+        }
+    }
+    
+    // For the destination table view
+    func tableView(_ tableView: NSTableView, acceptDrop info: NSDraggingInfo, row: Int, dropOperation: NSTableView.DropOperation) -> Bool {
+        guard
+            let that = info.draggingPasteboard.pasteboardItems?.first,
+            let theString = that.string(forType: pasteboardType),
+//            let index = self.viewStore.datasource.first(where: { "\($0.hashValue)" == theString }),
+            let originalRow = self.viewStore.datasource.firstIndex(where: { item in
+                return "\(item.hashValue)" == theString
+            })
+        else { return false }
+        
+        var newRow = row
+        // When you drag an item downwards, the "new row" index is actually --1. Remember dragging operation is `.above`.
+        if originalRow < newRow {
+            newRow = row - 1
+        }
+        
+        // Animate the rows
+//        tableView.beginUpdates()
+//        tableView.moveRow(at: originalRow, to: newRow)
+//        tableView.endUpdates()
+        
+        // Persist the ordering by saving your data model
+        // saveAccountsReordered(at: originalRow, to: newRow)
+        self.viewStore.send(.dragComplete(originalRow, newRow))
+        logger.info("drad complete, at: \(originalRow), to: \(newRow)")
+        
+        return true
     }
 }
 

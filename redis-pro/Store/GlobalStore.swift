@@ -35,20 +35,17 @@ let globalReducer = Reducer<GlobalState, GlobalAction, GlobalEnvironment>.combin
         state, action, _ in
         switch action {
         case .show:
-            let loadingCount = state.loadingCount
-            if loadingCount <= 0 {
+            if state.loadingCount <= 0 {
                 state.loading = true
             }
             
-            state.loadingCount = loadingCount + 1
-
+            state.loadingCount += 1
             return .none
         case .hide:
-            let loadingCount = state.loadingCount
-            state.loadingCount = min(loadingCount - 1, 0)
-            
-            if loadingCount <= 0 {
+            state.loadingCount -= 1
+            if state.loadingCount <= 0 {
                 state.loading = false
+                state.loadingCount = 0
             }
             
             return .none

@@ -29,6 +29,7 @@ enum ValueAction:BindableAction, Equatable {
     case initial
     case refresh
     case none
+    case setKeyModel((RedisKeyModel))
     case keyChange(RedisKeyModel)
     case submitSuccess(Bool)
     case keyAction(KeyAction)
@@ -91,6 +92,21 @@ let valueReducer = Reducer<ValueState, ValueAction, ValueEnvironment>.combine(
         case .none:
             return .none
         
+        case let .setKeyModel(redisKeyModel):
+            state.keyState.redisKeyModel = redisKeyModel
+            
+            if redisKeyModel.type == RedisKeyTypeEnum.STRING.rawValue {
+                state.stringValueState.redisKeyModel = redisKeyModel
+            } else if redisKeyModel.type == RedisKeyTypeEnum.HASH.rawValue {
+                state.hashValueState.redisKeyModel = redisKeyModel
+            } else if redisKeyModel.type == RedisKeyTypeEnum.LIST.rawValue {
+                state.listValueState.redisKeyModel = redisKeyModel
+            } else if redisKeyModel.type == RedisKeyTypeEnum.SET.rawValue {
+                state.setValueState.redisKeyModel = redisKeyModel
+            } else if redisKeyModel.type == RedisKeyTypeEnum.ZSET.rawValue {
+                state.zsetValueState.redisKeyModel = redisKeyModel
+            }
+            return .none
         // key 变化统计走此action 分发
         case let .keyChange(redisKeyModel):
             state.keyState.redisKeyModel = redisKeyModel
@@ -130,7 +146,13 @@ let valueReducer = Reducer<ValueState, ValueAction, ValueEnvironment>.combine(
             return .result {
                 .success(.keyAction(.refresh))
             }
+        
             
+        case let .keyAction(.setKey(key)):
+            let redisKeyModel = state.keyState.redisKeyModel
+            return .result {
+                .success(.setKeyModel(redisKeyModel))
+            }
         case .keyAction(.setType):
             let redisKeyModel = state.keyState.redisKeyModel
             return .result {

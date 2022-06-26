@@ -95,6 +95,13 @@ class RedisDefaults {
         return r
     }
     
+    static func save(_ redisModels:[RedisModel]) -> Bool {
+        let redisDics = redisModels.map { $0.dictionary }
+        
+        userDefaults.set(redisDics, forKey: UserDefaulsKeysEnum.RedisFavoriteListKey.rawValue)
+        logger.info("save all redis to user defaults complete")
+        return true
+    }
     
     static func delete(redisModel:RedisModel) -> String? {
         return delete(id: redisModel.id)

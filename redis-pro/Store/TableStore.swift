@@ -17,6 +17,7 @@ struct TableState: Equatable {
     // 一定要设置-1, 其它值会在view 刷新时， 陷入无限循环
     var selectIndex:Int = -1
     var defaultSelectIndex:Int = -1
+    var dragable: Bool = false
 }
 
 enum TableAction:Equatable {
@@ -26,6 +27,7 @@ enum TableAction:Equatable {
     case contextMenu(String, Int)
     case refresh
     case reset
+    case dragComplete(Int, Int)
 }
 
 struct TableEnvironment { }
@@ -57,6 +59,15 @@ let tableReducer = Reducer<TableState, TableAction, TableEnvironment> {
     case .reset:
         state.selectIndex = -1
         state.datasource = []
+        return .none
+    
+    case let .dragComplete(from, to):
+        state.selectIndex = to
+        
+        let f = state.datasource[from]
+        state.datasource[from] = state.datasource[to]
+        state.datasource[to] = f
+        
         return .none
     }
 }.debug()

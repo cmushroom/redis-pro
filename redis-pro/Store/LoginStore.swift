@@ -82,8 +82,6 @@ struct LoginEnvironment {
     var mainQueue: AnySchedulerOf<DispatchQueue> = .main
 }
 
-
-
 private let logger = Logger(label: "login-store")
 let loginReducer = Reducer<LoginState, LoginAction, LoginEnvironment> {
     state, action, env in

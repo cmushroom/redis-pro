@@ -19,7 +19,7 @@ struct SetValueState: Equatable {
     var editIndex:Int = -1
     var isNew:Bool = false
     var redisKeyModel:RedisKeyModel?
-    var pageState: PageState = PageState()
+    var pageState: PageState = PageState(showTotal: true)
     var tableState: TableState = TableState(columns: [.init(title: "Value", key: "self", width: 200)]
                                             , datasource: [], contextMenus: ["Edit", "Delete"], selectIndex: -1)
     

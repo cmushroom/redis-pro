@@ -67,7 +67,7 @@ struct RedisKeysListView: View {
             Text("dbsize: \(viewStore.dbsize)")
                 .font(MTheme.FONT_FOOTER)
                 .lineLimit(1)
-            PageBar(page: Page(), action: {}, showTotal: false, store: store.scope(state: \.pageState, action: RedisKeysAction.pageAction))
+            PageBar(store: store.scope(state: \.pageState, action: RedisKeysAction.pageAction))
         }
     }
     

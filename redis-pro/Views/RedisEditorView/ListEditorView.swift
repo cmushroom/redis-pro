@@ -23,7 +23,7 @@ struct ListEditorView: View {
                 IconButton(icon: "trash", name: "Delete", disabled: viewStore.tableState.selectIndex < 0, action: {viewStore.send(.deleteConfirm(viewStore.tableState.selectIndex))})
                 
                 Spacer()
-                PageBar(showTotal: true, store: store.scope(state: \.pageState, action: ListValueAction.pageAction))
+                PageBar(store: store.scope(state: \.pageState, action: ListValueAction.pageAction))
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
             

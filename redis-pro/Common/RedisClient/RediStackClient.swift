@@ -76,19 +76,22 @@ class RediStackClient {
         Messages.show(error)
     }
     
-    func handleConnectionError(_ error:Error) {
-        logger.info("get connection error \(error)")
-    }
-    
     /*
      * 初始化redis 连接
      */
     func initConnection() async -> Bool {
         begin()
-        let conn = try? await getConn()
-  
-        loading(false)
-        return conn != nil
+        
+        do {
+            let _ = try await getConn()
+            return true
+            
+        } catch {
+            handleError(error)
+        }
+        
+        complete()
+        return false
     }
     
     func assertExist(_ key:String) async throws {
@@ -402,11 +405,9 @@ class RediStackClient {
                 })
                 future.whenFailure({ error in
                     self.logger.info("get new redis connection error: \(error)")
-                    self.handleConnectionError(error)
                     continuation.resume(throwing: error)
                 })
             } catch {
-                self.handleConnectionError(error)
                 continuation.resume(throwing: error)
             }
         }

@@ -60,7 +60,6 @@
 		437BC24726452AE400E2C84D /* StringFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BC24626452AE400E2C84D /* StringFormatter.swift */; };
 		437BC2492645413000E2C84D /* MDoubleField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BC2482645413000E2C84D /* MDoubleField.swift */; };
 		437BC24E26461E2100E2C84D /* NumberHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BC24D26461E2100E2C84D /* NumberHelper.swift */; };
-		437BC25126467A3D00E2C84D /* SidebarFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BC25026467A3D00E2C84D /* SidebarFooter.swift */; };
 		437C09352649039000F1904C /* DatabasePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437C09342649039000F1904C /* DatabasePicker.swift */; };
 		437C0937264952B300F1904C /* MTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437C0936264952B300F1904C /* MTabView.swift */; };
 		4382203E265668CC00DA7F9E /* MLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4382203D265668CC00DA7F9E /* MLoading.swift */; };
@@ -257,7 +256,6 @@
 		437BC24626452AE400E2C84D /* StringFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringFormatter.swift; sourceTree = "<group>"; };
 		437BC2482645413000E2C84D /* MDoubleField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDoubleField.swift; sourceTree = "<group>"; };
 		437BC24D26461E2100E2C84D /* NumberHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberHelper.swift; sourceTree = "<group>"; };
-		437BC25026467A3D00E2C84D /* SidebarFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarFooter.swift; sourceTree = "<group>"; };
 		437C09342649039000F1904C /* DatabasePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabasePicker.swift; sourceTree = "<group>"; };
 		437C0936264952B300F1904C /* MTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTabView.swift; sourceTree = "<group>"; };
 		4382203C26564D6900DA7F9E /* redis-proRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "redis-proRelease.entitlements"; sourceTree = "<group>"; };
@@ -585,7 +583,6 @@
 			children = (
 				62CB3D742619AEC20061E8C3 /* RedisKeysListView.swift */,
 				431266CE261C4E0900FB6B69 /* RedisKeySearchRowView.swift */,
-				437BC25026467A3D00E2C84D /* SidebarFooter.swift */,
 				437C09342649039000F1904C /* DatabasePicker.swift */,
 			);
 			path = Sidebar;
@@ -998,7 +995,6 @@
 				4314A34126243ED500053FEE /* PageBar.swift in Sources */,
 				62CB3D7D2619AF990061E8C3 /* RedisKeyModel.swift in Sources */,
 				CEF000FF2771B6640020A27E /* NTextEditor.swift in Sources */,
-				437BC25126467A3D00E2C84D /* SidebarFooter.swift in Sources */,
 				4301C86626BBF86E00C08E19 /* SSHForward.swift in Sources */,
 				4314A34F2625B46E00053FEE /* RediStackClient.swift in Sources */,
 				431266CC261C450300FB6B69 /* Tag.swift in Sources */,

@@ -21,7 +21,7 @@ struct HashEditorView: View {
                     IconButton(icon: "trash", name: "Delete", disabled: viewStore.tableState.selectIndex < 0, action: {viewStore.send(.deleteConfirm(viewStore.tableState.selectIndex))})
                 
                     SearchBar(placeholder: "Search field...", onCommit: {viewStore.send(.search($0))})
-                    PageBar(showTotal: true, store: store.scope(state: \.pageState, action: HashValueAction.pageAction))
+                    PageBar(store: store.scope(state: \.pageState, action: HashValueAction.pageAction))
                 }
                 .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
                 

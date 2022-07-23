@@ -375,17 +375,21 @@ class RediStackClient {
             self.close()
         }
         
+        self.connection = try await initConn()
+        return self.connection!
+    }
+    
+    func initConn() async throws -> RedisConnection {
         
         if self.redisModel.connectionType == RedisConnectionTypeEnum.SSH.rawValue {
             return try await getSSHConn()
         }
-        
-        
+
         return try await withUnsafeThrowingContinuation { continuation in
             self.logger.info("start get new redis connection...")
             
             do {
-                let eventLoop = MultiThreadedEventLoopGroup(numberOfThreads: 1).next()
+                let eventLoop = MultiThreadedEventLoopGroup(numberOfThreads: 3).next()
                 var configuration: RedisConnection.Configuration
                 if (self.redisModel.password.isEmpty) {
                     configuration = try RedisConnection.Configuration(hostname: self.redisModel.host, port: self.redisModel.port, initialDatabase: self.redisModel.database, defaultLogger: logger)
@@ -399,9 +403,8 @@ class RediStackClient {
                 )
                 
                 future.whenSuccess({ redisConnection in
-                    self.connection = redisConnection
                     self.logger.info("get new redis connection success, connection id: \(redisConnection.id)")
-                    continuation.resume(returning: self.connection!)
+                    continuation.resume(returning: redisConnection)
                 })
                 future.whenFailure({ error in
                     self.logger.info("get new redis connection error: \(error)")

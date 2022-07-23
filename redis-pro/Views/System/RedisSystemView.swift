@@ -22,6 +22,8 @@ struct RedisSystemView: View {
                 SlowLogView(store: store.scope(state: \.slowLogState, action: RedisSystemAction.slowLogAction))
             } else if viewStore.state == RedisSystemViewTypeEnum.REDIS_CONFIG {
                 RedisConfigView(store: store.scope(state: \.redisConfigState, action: RedisSystemAction.redisConfigAction))
+            } else if viewStore.state == RedisSystemViewTypeEnum.LUA {
+                LuaView(store: store.scope(state: \.luaState, action: RedisSystemAction.luaAction))
             } else {
                 EmptyView()
             }

@@ -50,6 +50,7 @@ struct RedisKeysListView: View {
                 Button("Redis Config", action: { viewStore.send(.redisSystemAction(.setSystemView(.REDIS_CONFIG))) })
                 Button("Clients List", action: { viewStore.send(.redisSystemAction(.setSystemView(.CLIENT_LIST))) })
                 Button("Slow Log", action: { viewStore.send(.redisSystemAction(.setSystemView(.SLOW_LOG))) })
+                Button("Lua", action: { viewStore.send(.redisSystemAction(.setSystemView(.LUA))) })
                 Button("Flush DB", action: {viewStore.send(.flushDBConfirm)})
             }, label: {
                 Label("", systemImage: "ellipsis.circle")

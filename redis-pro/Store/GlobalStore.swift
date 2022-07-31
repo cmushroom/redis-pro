@@ -52,15 +52,3 @@ let globalReducer = Reducer<GlobalState, GlobalAction, GlobalEnvironment>.combin
         }
     }.debug()
 )
-
-
-class GlobalStoreContext {
-    static var contextDict:[String: ViewStore<GlobalState, GlobalAction>] = [:]
-    
-    static func setContext(_ id:String?, store: Store<GlobalState, GlobalAction>) {
-        guard  let id = id else {
-            return
-        }
-        contextDict[id] = ViewStore(store)
-    }
-}

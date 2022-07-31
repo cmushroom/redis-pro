@@ -21,10 +21,11 @@ struct IndexView: View {
     
     var body: some View {
         if let state = appState {
+            let env = AppEnvironment()
             let store: Store<AppState, AppAction> = Store(
                 initialState: state,
                 reducer: appReducer,
-                environment:  .live(environment: AppEnvironment())
+                environment:  .live(environment: env)
             )
             
             WithViewStore(store.scope(state: \.isConnect)) { viewStore in
@@ -41,7 +42,7 @@ struct IndexView: View {
 //                    AlertView(store.scope(state: \.appAlertState, action: AppAction.alertAction))
                     LoadingView(store.scope(state: \.globalState, action: AppAction.globalAction))
                 }.onAppear {
-                    GlobalStoreContext.setContext(appState?.id, store: store.scope(state: \.globalState, action: AppAction.globalAction))
+                    env.redisInstanceModel.setAppStore(store)
                     viewStore.send(.initContext)
                 }
             }

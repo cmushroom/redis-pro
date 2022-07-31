@@ -76,19 +76,22 @@ class RediStackClient {
         Messages.show(error)
     }
     
-    func handleConnectionError(_ error:Error) {
-        logger.info("get connection error \(error)")
-    }
-    
     /*
      * 初始化redis 连接
      */
     func initConnection() async -> Bool {
         begin()
-        let conn = try? await getConn()
-  
-        loading(false)
-        return conn != nil
+        
+        do {
+            let _ = try await getConn()
+            return true
+            
+        } catch {
+            handleError(error)
+        }
+        
+        complete()
+        return false
     }
     
     func assertExist(_ key:String) async throws {
@@ -364,7 +367,7 @@ class RediStackClient {
         return false
     }
     
-    func getConn() async throws -> RedisConnection {
+    func getConn() async throws -> RedisClient {
         if self.connection != nil && self.connection!.isConnected {
             return self.connection!
         } else {
@@ -372,17 +375,21 @@ class RediStackClient {
             self.close()
         }
         
+        self.connection = try await initConn()
+        return self.connection!
+    }
+    
+    func initConn() async throws -> RedisConnection {
         
         if self.redisModel.connectionType == RedisConnectionTypeEnum.SSH.rawValue {
             return try await getSSHConn()
         }
-        
-        
+
         return try await withUnsafeThrowingContinuation { continuation in
             self.logger.info("start get new redis connection...")
             
             do {
-                let eventLoop = MultiThreadedEventLoopGroup(numberOfThreads: 1).next()
+                let eventLoop = MultiThreadedEventLoopGroup(numberOfThreads: 4).next()
                 var configuration: RedisConnection.Configuration
                 if (self.redisModel.password.isEmpty) {
                     configuration = try RedisConnection.Configuration(hostname: self.redisModel.host, port: self.redisModel.port, initialDatabase: self.redisModel.database, defaultLogger: logger)
@@ -396,32 +403,51 @@ class RediStackClient {
                 )
                 
                 future.whenSuccess({ redisConnection in
-                    self.connection = redisConnection
                     self.logger.info("get new redis connection success, connection id: \(redisConnection.id)")
-                    continuation.resume(returning: self.connection!)
+                    continuation.resume(returning: redisConnection)
                 })
                 future.whenFailure({ error in
                     self.logger.info("get new redis connection error: \(error)")
-                    self.handleConnectionError(error)
                     continuation.resume(throwing: error)
                 })
             } catch {
-                self.handleConnectionError(error)
                 continuation.resume(throwing: error)
             }
         }
     }
     
+    public func initPool() throws -> RedisConnectionPool {
+        let eventLoop = MultiThreadedEventLoopGroup(numberOfThreads: 4).next()
+        
+        let addresses = try [SocketAddress.makeAddressResolvingHost(self.redisModel.host, port: self.redisModel.port)]
+        let pool = RedisConnectionPool(
+            configuration: .init(
+                initialServerConnectionAddresses: addresses,
+                maximumConnectionCount: .maximumActiveConnections(4),
+                connectionFactoryConfiguration: .init(connectionInitialDatabase: self.redisModel.database, connectionPassword: self.redisModel.password, connectionDefaultLogger: nil, tcpClient: nil),
+                minimumConnectionCount: 2,
+                connectionBackoffFactor: 2,
+                initialConnectionBackoffDelay: .milliseconds(100),
+                connectionRetryTimeout: .seconds(60)
+                ),
+            boundEventLoop: eventLoop
+        )
+        pool.activate()
+        
+        self.logger.info("init redis connection pool complete...")
+        return pool
+    }
+    
     func close() -> Void {
-        if connection == nil {
+        guard let conn = self.connection else {
             logger.info("close redis connection, connection is nil, over...")
             return
         }
-        
-        connection!.close().whenComplete({completion in
-            self.connection = nil
-            self.logger.info("redis connection close success")
-        })
+            
+        conn.close().whenComplete({completion in
+                self.connection = nil
+                self.logger.info("redis connection close success")
+            })
         
         self.closeSSH()
     }

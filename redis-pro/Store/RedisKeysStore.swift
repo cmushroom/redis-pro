@@ -16,6 +16,7 @@ struct RedisKeysState: Equatable {
     var database:Int = 0
     var dbsize:Int = 0
     var keywords:String = ""
+    var searchGroup = 0
     
     var mainViewType: MainViewTypeEnum = .EDITOR
     var tableState: TableState = TableState(columns: [.init(type: .KEY_TYPE,title: "Type", key: "type", width: 40), .init(title: "Key", key: "key", width: 50)]
@@ -39,7 +40,11 @@ enum RedisKeysAction:Equatable {
     case refreshCount
     case search(String)
     case getKeys
+    // 1. cursor, 2. searchGroup 查询批次
+    case countKeys(Int, Int)
     case setKeys(Page, [RedisKeyModel])
+    // 1. cursor, 2. count, 3. searchGroup 查询批次
+    case setCount(Int, Int, Int)
     case setMainViewType(MainViewTypeEnum)
     case addNew
     
@@ -48,7 +53,7 @@ enum RedisKeysAction:Equatable {
     case deleteSuccess(Int)
     
     case onKeyChange(Int)
-    case updateDBSize(Int)
+    case setDBSize(Int)
     case flushDBConfirm
     case flushDB
     case tableAction(TableAction)
@@ -102,12 +107,10 @@ let redisKeysReducer = Reducer<RedisKeysState, RedisKeysAction, RedisKeysEnviron
             // 初始化已设置的值
         case .initial:
             logger.info("redis keys store initial...")
-            state.pageState.current = 1
-            state.pageState.total = 0
             
-            return Effect<RedisKeysAction, Never>.merge(
+            return .merge(
                 .result {
-                    .success(.getKeys)
+                    .success(.search(""))
                 }
                 , .result {
                     .success(.dbsize)
@@ -125,44 +128,83 @@ let redisKeysReducer = Reducer<RedisKeysState, RedisKeysAction, RedisKeysEnviron
             return .result {
                 .success(.initial)
             }
-            
+        
+        // 搜索
         case let .search(keywords):
+            state.searchGroup += 1
+            let searchGroup = state.searchGroup
+            
             state.pageState.current = 1
+            state.pageState.total = 0
             state.pageState.keywords = keywords
-            return .result {
-                .success(.getKeys)
-            }
             
+            return .merge(
+                .result {
+                    .success(.getKeys)
+                }
+                , .result {
+                    .success(.countKeys(0, searchGroup))
+                }
+            )
             
+        // dbsize 
         case .dbsize:
             return .task {
                 let r = await env.redisInstanceModel.getClient().dbsize()
-                return .updateDBSize(r)
+                return .setDBSize(r)
             }
             .receive(on: env.mainQueue)
             .eraseToEffect()
+            
         // 分页查询 key
         case .getKeys:
-            
             let page = state.pageState.page
             return .task {
                 let keysPage = await env.redisInstanceModel.getClient().pageKeys(page)
+                
                 return .setKeys(page, keysPage)
             }
             .receive(on: env.mainQueue)
             .eraseToEffect()
+        
+        // 异步计算key数量, 通过setCount 进行递归调用，直接cursor 返回0
+        // 后续可能增加开关，是否查询数量
+        case let .countKeys(cursor, searchGroup):
+            let page = state.pageState.page
+            if searchGroup < state.searchGroup {
+                logger.info("有新查询批次, 当前count终止")
+                return .none
+            }
+            
+            return .task {
+                let r = await env.redisInstanceModel.getClient().countKey(page, cursor: cursor)
+                return .setCount(r.0, r.1, searchGroup)
+            }
+            .receive(on: env.mainQueue)
+            .eraseToEffect()
+            
+            
         case let .setKeys(page, redisKeys):
             state.tableState.datasource = redisKeys
-            state.pageState.total = page.total
             
             if !redisKeys.isEmpty {
                 state.tableState.selectIndex = 0
             }
             return .none
+            
+        case let .setCount(cursor, count, searchGroup):
+            if searchGroup < state.searchGroup {
+                return .none
+            }
+            
+            state.pageState.total = state.pageState.total + count
+            return cursor == 0 ? .none : .result { .success(.countKeys(cursor, searchGroup)) }
+            
         case let .setMainViewType(mainViewType):
             state.mainViewType = mainViewType
             return .none
-        case let .updateDBSize(dbsize):
+            
+        case let .setDBSize(dbsize):
             state.dbsize = dbsize
             return .none
         
@@ -175,7 +217,7 @@ let redisKeysReducer = Reducer<RedisKeysState, RedisKeysAction, RedisKeysEnviron
             
         case let .deleteConfirm(index):
             let redisKeyModel = state.tableState.datasource[index] as! RedisKeyModel
-            return Effect<RedisKeysAction, Never>.future { callback in
+            return .future { callback in
                 Messages.confirm(String(format: NSLocalizedString("REDIS_KEY_DELETE_CONFIRM_TITLE'%@'", comment: ""), redisKeyModel.key)
                                   , message: String(format: NSLocalizedString("REDIS_KEY_DELETE_CONFIRM_MESSAGE'%@'", comment: ""), redisKeyModel.key)
                                   , primaryButton: "Delete"
@@ -223,6 +265,7 @@ let redisKeysReducer = Reducer<RedisKeysState, RedisKeysAction, RedisKeysEnviron
                 }
                 )
             }
+            
         case .flushDB:
             return .task {
                 let r = await env.redisInstanceModel.getClient().flushDB()
@@ -235,10 +278,10 @@ let redisKeysReducer = Reducer<RedisKeysState, RedisKeysAction, RedisKeysEnviron
             .eraseToEffect()
         
         // redis 系统信息
-            
         case .redisSystemAction(.setSystemView):
             state.mainViewType = .SYSTEM
             return .none
+            
         case .redisSystemAction:
             return .none
             

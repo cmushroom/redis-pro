@@ -19,7 +19,7 @@ struct ListValueState: Equatable {
     var editIndex:Int = -1
     var isNew:Bool = false
     var redisKeyModel:RedisKeyModel?
-    var pageState: PageState = PageState()
+    var pageState: PageState = PageState(showTotal: true)
     var tableState: TableState = TableState(columns: [.init(title: "Index", key: "index", width: 100), .init(title: "Value", key: "value", width: 200)]
                                             , datasource: [], contextMenus: ["Edit", "Delete"], selectIndex: -1)
     

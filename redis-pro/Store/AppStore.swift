@@ -99,14 +99,9 @@ let appReducer = Reducer<AppState, AppAction, SystemEnvironment<AppEnvironment>>
         state, action, env in
         switch action {
         case .initContext:
-            logger.info("init context...")
-            env.redisInstanceModel.setGlobalStore(GlobalStoreContext.contextDict[state.id])
+            logger.info("init app context complete...")
             return .none
         case .onStart:
-//            let _ = settingsReducer.run(&state.settingsState, .initial, SettingsEnvironment())
-//            return .result {
-//                .success(.settingsAction(.initial))
-//            }
             return .none
         
         case .onClose:

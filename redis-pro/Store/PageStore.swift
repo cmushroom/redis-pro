@@ -50,6 +50,10 @@ struct PageState: Equatable {
     init() {
         logger.info("page state init ...")
     }
+    init(showTotal:Bool) {
+        logger.info("page state init ...")
+        self.showTotal = showTotal
+    }
 }
 
 

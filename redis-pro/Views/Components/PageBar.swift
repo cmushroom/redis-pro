@@ -10,17 +10,12 @@ import Logging
 import ComposableArchitecture
 
 struct PageBar: View {
-    @EnvironmentObject var globalContext:GlobalContext
-    @ObservedObject var page:Page = Page()
-    var action:() throws -> Void = {}
-    var showTotal:Bool = true
-    
-    var store:Store<PageState, PageAction>?
+    var store:Store<PageState, PageAction>
     
     let logger = Logger(label: "page-bar")
     
     var body: some View {
-        WithViewStore(store!) { viewStore in
+        WithViewStore(store) { viewStore in
             
             HStack(alignment:.center, spacing: 4) {
                 if viewStore.showTotal {
@@ -29,7 +24,6 @@ struct PageBar: View {
                         .lineLimit(1)
                         .multilineTextAlignment(.trailing)
                 }
-                
                 Picker("", selection: viewStore.binding(get: \.size, send: PageAction.updateSize)) {
                     Text("10").tag(10)
                     Text("50").tag(50)

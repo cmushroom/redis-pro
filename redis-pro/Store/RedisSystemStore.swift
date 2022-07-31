@@ -16,6 +16,7 @@ enum RedisSystemViewTypeEnum{
     case REDIS_CONFIG
     case CLIENT_LIST
     case SLOW_LOG
+    case LUA
     
 }
 
@@ -26,6 +27,7 @@ struct RedisSystemState: Equatable {
     var redisConfigState: RedisConfigState = RedisConfigState()
     var slowLogState: SlowLogState = SlowLogState()
     var clientListState: ClientListState = ClientListState()
+    var luaState: LuaState = LuaState()
     
     init() {
         logger.info("redis system state init ...")
@@ -39,6 +41,7 @@ enum RedisSystemAction: Equatable {
     case redisConfigAction(RedisConfigAction)
     case slowLogAction(SlowLogAction)
     case clientListAction(ClientListAction)
+    case luaAction(LuaAction)
 }
 
 struct RedisSystemEnvironment {
@@ -66,6 +69,11 @@ let redisSystemReducer = Reducer<RedisSystemState, RedisSystemAction, SystemEnvi
         action: /RedisSystemAction.clientListAction,
         environment: { env in  .live(environment: ClientListEnvironment(redisInstanceModel: env.redisInstanceModel)) }
     ),
+    luaReducer.pullback(
+        state: \.luaState,
+        action: /RedisSystemAction.luaAction,
+        environment: { env in  .live(environment: LuaEnvironment(redisInstanceModel: env.redisInstanceModel)) }
+    ),
     Reducer<RedisSystemState, RedisSystemAction, SystemEnvironment<RedisSystemEnvironment>> {
         state, action, env in
         switch action {
@@ -83,6 +91,8 @@ let redisSystemReducer = Reducer<RedisSystemState, RedisSystemAction, SystemEnvi
         case .slowLogAction:
             return .none
         case .clientListAction:
+            return .none
+        case .luaAction:
             return .none
         }
     }

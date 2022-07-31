@@ -17,10 +17,12 @@ import ComposableArchitecture
 @main
 struct redis_proApp: App {
     
+    @Environment(\.scenePhase) var scenePhase
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-
+    
     let settingsStore = Store(initialState: SettingsState(), reducer: settingsReducer, environment: SettingsEnvironment())
-
+    let logger = Logger(label: "app")
+    
     // 应用启动只初始化一次
     init() {
         // logger
@@ -28,20 +30,31 @@ struct redis_proApp: App {
     }
     
     var body: some Scene {
-      
+        
         WindowGroup {
             IndexView()
+                .onChange(of: scenePhase) { newPhase in
+                    if newPhase == .active {
+                        logger.info("app active")
+                    } else if newPhase == .inactive {
+                        logger.info("app inactive")
+//                        NSApp.hide(self)
+//                        NSApp.miniaturizeAll(self)
+                    } else if newPhase == .background {
+                        logger.info("app background")
+                    }
+                }
         }
         .commands {
             RedisProCommands()
         }
-
+        
         WindowGroup("AboutView") {
-              AboutView()
+            AboutView()
         }.handlesExternalEvents(matching: Set(arrayLiteral: "AboutView"))
-
-
-
+        
+        
+        
         Settings {
             SettingsView(store: settingsStore)
         }
@@ -53,9 +66,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func applicationWillFinishLaunching(_: Notification) {
         logger.info("redis pro before launch ...")
-
+        
     }
-
+    
     func applicationDidFinishLaunching(_ notification: Notification) {
         logger.info("redis pro launch complete")
         // appcenter
@@ -73,13 +86,52 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         logger.info("redis pro launch, set color scheme complete...")
         
     }
-
+    
     func applicationWillTerminate(_ notification: Notification)  {
         logger.info("redis pro application will terminate...")
     }
-
+    
     func didFinishLaunchingWithOptions(_ notification: Notification)  {
         logger.info("redis didFinishLaunchingWithOptions...")
     }
-
+    
+    func applicationWillUnhide(_: Notification) {
+        logger.info("redis pro applicationWillUnhide...")
+    }
+    func applicationDidHide(_ notification:Notification) {
+        logger.info("redis pro applicationDidHide...")
+    }
+    
+    
+    func applicationWillBecomeActive(_ notification: Notification) {
+        logger.info("redis applicationWillBecomeActive...")
+//        NSApp.mainWindow?.makeKeyAndOrderFront(self)
+//        (notification.object as? NSApplication)?.windows.first?.makeKeyAndOrderFront(self)
+    }
+    
+    func applicationWillResignActive(_:Notification) {
+        logger.info("redis pro applicationWillResignActive...")
+    }
+    //    func applicationWillUpdate(_:Notification) {
+    //        logger.info("redis pro applicationWillUpdate...")
+    //    }
+    
+    
+//    func applicationShouldHandleReopen(_: NSApplication, hasVisibleWindows: Bool) -> Bool {
+//        logger.info("redis applicationShouldHandleReopen...")
+//        return true
+//    }
+//
+//    func applicationShouldOpenUntitledFile(_:NSApplication) -> Bool {
+//        logger.info("redis applicationShouldOpenUntitledFile...")
+//        return true
+//
+//    }
+    
 }
+
+//extension AppDelegate: NSWindowDelegate {
+//
+//    func windowDidMiniaturize(_: Notification) {
+//    }
+//}

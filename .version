@@ -1,6 +1,6 @@
 {
-    "latestVersionNum": 15,
-    "latestVersion": "2.1.0",
+    "latestVersionNum": 16,
+    "latestVersion": "2.2.0",
     "updateType": "hint",
-    "releaseNotes": "1. 使用界面添加Key时，无法同时设置key名和value bug #43！ \n2. 登录redis后修改窗标题 #41。 \n3. redis 列表拖拽排序 #35 \n4. 测试链接loading没有消失bug！"
+    "releaseNotes": "1. 查询key 分页列表时, 总数量使用异步查询，列表快速返回  #36 \n2. 增加lua脚本执行功能。"
 }

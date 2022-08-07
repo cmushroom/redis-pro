@@ -7,7 +7,7 @@
 
 import Foundation
 
-class RedisInfoItemModel: NSObject {
+public class RedisInfoItemModel: NSObject {
     @objc var section:String = ""
     @objc var key:String = ""
     @objc var value:String = ""

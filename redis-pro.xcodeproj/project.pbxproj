@@ -133,6 +133,10 @@
 		627E1BC6282FC72B00163D6B /* HashValueStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 627E1BC5282FC72B00163D6B /* HashValueStore.swift */; };
 		627E1BC8282FCEE300163D6B /* ScanStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 627E1BC7282FCEE300163D6B /* ScanStore.swift */; };
 		627E1BCA28328A0600163D6B /* WindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 627E1BC928328A0600163D6B /* WindowController.swift */; };
+		628F9A9E28967C120003B6C0 /* RediStack in Frameworks */ = {isa = PBXBuildFile; productRef = 628F9A9D28967C120003B6C0 /* RediStack */; };
+		628F9AA02896A3FB0003B6C0 /* RedisCommandExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 628F9A9F2896A3FB0003B6C0 /* RedisCommandExt.swift */; };
+		628F9AA2289EA7C50003B6C0 /* SSHTunnel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 628F9AA1289EA7C50003B6C0 /* SSHTunnel.swift */; };
+		628F9AA4289EAEE90003B6C0 /* RedisClientSSH.swift in Sources */ = {isa = PBXBuildFile; fileRef = 628F9AA3289EAEE90003B6C0 /* RedisClientSSH.swift */; };
 		62C262E02839D4380036A282 /* ListValueStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C262DF2839D4380036A282 /* ListValueStore.swift */; };
 		62C262E22839DD0B0036A282 /* RedisListItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C262E12839DD0B0036A282 /* RedisListItemModel.swift */; };
 		62C262E4283A31E40036A282 /* ListEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C262E3283A31E40036A282 /* ListEditorView.swift */; };
@@ -162,8 +166,6 @@
 		62E9F13F2849DA9F00F4FABF /* SystemEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E9F13E2849DA9F00F4FABF /* SystemEnvironment.swift */; };
 		CE0290CE2786B75A0058442B /* Puppy in Frameworks */ = {isa = PBXBuildFile; productRef = CE0290CD2786B75A0058442B /* Puppy */; };
 		CE0290D6278707280058442B /* redis_proTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0290D5278707280058442B /* redis_proTests.swift */; };
-		CE2B15C0275DAF0800A3C8CE /* RediStack in Frameworks */ = {isa = PBXBuildFile; productRef = CE2B15BF275DAF0800A3C8CE /* RediStack */; };
-		CE2B15C4275DAF0800A3C8CE /* RedisTypes in Frameworks */ = {isa = PBXBuildFile; productRef = CE2B15C3275DAF0800A3C8CE /* RedisTypes */; };
 		CE3A187D282525AB00988515 /* KeyStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3A187C282525AB00988515 /* KeyStore.swift */; };
 		CE3A18812825367000988515 /* ValueStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3A18802825367000988515 /* ValueStore.swift */; };
 		CE3A1883282536BB00988515 /* StringValueStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3A1882282536BB00988515 /* StringValueStore.swift */; };
@@ -336,6 +338,9 @@
 		627E1BC5282FC72B00163D6B /* HashValueStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashValueStore.swift; sourceTree = "<group>"; };
 		627E1BC7282FCEE300163D6B /* ScanStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanStore.swift; sourceTree = "<group>"; };
 		627E1BC928328A0600163D6B /* WindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowController.swift; sourceTree = "<group>"; };
+		628F9A9F2896A3FB0003B6C0 /* RedisCommandExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisCommandExt.swift; sourceTree = "<group>"; };
+		628F9AA1289EA7C50003B6C0 /* SSHTunnel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSHTunnel.swift; sourceTree = "<group>"; };
+		628F9AA3289EAEE90003B6C0 /* RedisClientSSH.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisClientSSH.swift; sourceTree = "<group>"; };
 		62C262DF2839D4380036A282 /* ListValueStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListValueStore.swift; sourceTree = "<group>"; };
 		62C262E12839DD0B0036A282 /* RedisListItemModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisListItemModel.swift; sourceTree = "<group>"; };
 		62C262E3283A31E40036A282 /* ListEditorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListEditorView.swift; sourceTree = "<group>"; };
@@ -382,15 +387,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEA1EF4D277C56DD00D300E9 /* NIO in Frameworks */,
-				CE2B15C0275DAF0800A3C8CE /* RediStack in Frameworks */,
 				CEA1EF55277C56DD00D300E9 /* NIOFoundationCompat in Frameworks */,
 				62D23AAF2818DCA000B2AA3F /* ComposableArchitecture in Frameworks */,
+				628F9A9E28967C120003B6C0 /* RediStack in Frameworks */,
 				CE0290CE2786B75A0058442B /* Puppy in Frameworks */,
 				CEA1EF53277C56DD00D300E9 /* NIOEmbedded in Frameworks */,
 				CEA1EF5E277C57BC00D300E9 /* SwiftyJSON in Frameworks */,
 				CEA1EF59277C56DD00D300E9 /* NIOTLS in Frameworks */,
 				CEA1EF4A277C56B100D300E9 /* NIOSSH in Frameworks */,
-				CE2B15C4275DAF0800A3C8CE /* RedisTypes in Frameworks */,
 				CE83D51827563C28000DF09D /* AppCenterAnalytics in Frameworks */,
 				CEA1EF57277C56DD00D300E9 /* NIOPosix in Frameworks */,
 				CE83D51A27563C28000DF09D /* AppCenterCrashes in Frameworks */,
@@ -417,6 +421,7 @@
 				4301C84426BBE68400C08E19 /* SSHAuthentication.swift */,
 				4301C86326BBF62600C08E19 /* SSHRediStackClient.swift */,
 				4301C86526BBF86E00C08E19 /* SSHForward.swift */,
+				628F9AA1289EA7C50003B6C0 /* SSHTunnel.swift */,
 			);
 			path = SSH;
 			sourceTree = "<group>";
@@ -660,6 +665,8 @@
 				620AF6C327D48973002D6895 /* RedisClientConfig.swift */,
 				620AF6C527D48996002D6895 /* RedisClientSlowLog.swift */,
 				62D741C2288416470049AB3C /* RedisClientLua.swift */,
+				628F9A9F2896A3FB0003B6C0 /* RedisCommandExt.swift */,
+				628F9AA3289EAEE90003B6C0 /* RedisClientSSH.swift */,
 			);
 			path = RedisClient;
 			sourceTree = "<group>";
@@ -804,8 +811,6 @@
 				CE83D51727563C28000DF09D /* AppCenterAnalytics */,
 				CE83D51927563C28000DF09D /* AppCenterCrashes */,
 				6237D031275C954A000ACD6A /* Logging */,
-				CE2B15BF275DAF0800A3C8CE /* RediStack */,
-				CE2B15C3275DAF0800A3C8CE /* RedisTypes */,
 				CEA1EF49277C56B100D300E9 /* NIOSSH */,
 				CEA1EF4C277C56DD00D300E9 /* NIO */,
 				CEA1EF4E277C56DD00D300E9 /* NIOConcurrencyHelpers */,
@@ -818,6 +823,7 @@
 				CEA1EF5D277C57BC00D300E9 /* SwiftyJSON */,
 				CE0290CD2786B75A0058442B /* Puppy */,
 				62D23AAE2818DCA000B2AA3F /* ComposableArchitecture */,
+				628F9A9D28967C120003B6C0 /* RediStack */,
 			);
 			productName = "redis-pro";
 			productReference = 4320AAF025B6740900A8E214 /* redis-pro.app */;
@@ -872,12 +878,12 @@
 			packageReferences = (
 				CE83D51627563C28000DF09D /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */,
 				6237D030275C954A000ACD6A /* XCRemoteSwiftPackageReference "swift-log" */,
-				CE2B15BE275DAF0800A3C8CE /* XCRemoteSwiftPackageReference "RediStack" */,
 				CEA1EF48277C56B100D300E9 /* XCRemoteSwiftPackageReference "swift-nio-ssh" */,
 				CEA1EF4B277C56DD00D300E9 /* XCRemoteSwiftPackageReference "swift-nio" */,
 				CEA1EF5C277C57BC00D300E9 /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
 				CE0290CC2786B75A0058442B /* XCRemoteSwiftPackageReference "Puppy" */,
 				62D23AAD2818DCA000B2AA3F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
+				628F9A9C28967C120003B6C0 /* XCRemoteSwiftPackageReference "RediStack" */,
 			);
 			productRefGroup = 4320AAF125B6740900A8E214 /* Products */;
 			projectDirPath = "";
@@ -1043,6 +1049,7 @@
 				43BB012326390BC20039565E /* ModalView.swift in Sources */,
 				43CD28712670C3DD00E11876 /* ColorSchemeEnum.swift in Sources */,
 				434047FA2611C828001519F9 /* RedisFavoriteModel.swift in Sources */,
+				628F9AA4289EAEE90003B6C0 /* RedisClientSSH.swift in Sources */,
 				43F22EED269ED9D500A00F97 /* SlowLogView.swift in Sources */,
 				CE83D51C2758E8D1000DF09D /* NTextField.swift in Sources */,
 				4373C50925C3F218002B700E /* RedisModel.swift in Sources */,
@@ -1050,6 +1057,7 @@
 				6237D034275CFF1F000ACD6A /* NIntField.swift in Sources */,
 				431FD83F26BD160800151934 /* RedisConnectionTypeEnum.swift in Sources */,
 				4373C50125C2E75B002B700E /* BizError.swift in Sources */,
+				628F9AA2289EA7C50003B6C0 /* SSHTunnel.swift in Sources */,
 				62D741BF288414E00049AB3C /* LuaView.swift in Sources */,
 				431266EE261D517500FB6B69 /* RedisKeyTypePicker.swift in Sources */,
 				62E8F9D62765EC97006A5326 /* NSecureField.swift in Sources */,
@@ -1069,6 +1077,7 @@
 				4301C86426BBF62600C08E19 /* SSHRediStackClient.swift in Sources */,
 				43822042265763D400DA7F9E /* RedisProCommands.swift in Sources */,
 				430A09E625C155F800B60DFC /* FormItemText.swift in Sources */,
+				628F9AA02896A3FB0003B6C0 /* RedisCommandExt.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1351,6 +1360,14 @@
 				minimumVersion = 1.4.2;
 			};
 		};
+		628F9A9C28967C120003B6C0 /* XCRemoteSwiftPackageReference "RediStack" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Mordil/RediStack";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 		62D23AAD2818DCA000B2AA3F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture";
@@ -1365,14 +1382,6 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 0.5.0;
-			};
-		};
-		CE2B15BE275DAF0800A3C8CE /* XCRemoteSwiftPackageReference "RediStack" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Mordil/RediStack.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.2.1;
 			};
 		};
 		CE83D51627563C28000DF09D /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */ = {
@@ -1415,6 +1424,11 @@
 			package = 6237D030275C954A000ACD6A /* XCRemoteSwiftPackageReference "swift-log" */;
 			productName = Logging;
 		};
+		628F9A9D28967C120003B6C0 /* RediStack */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 628F9A9C28967C120003B6C0 /* XCRemoteSwiftPackageReference "RediStack" */;
+			productName = RediStack;
+		};
 		62D23AAE2818DCA000B2AA3F /* ComposableArchitecture */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 62D23AAD2818DCA000B2AA3F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
@@ -1424,16 +1438,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = CE0290CC2786B75A0058442B /* XCRemoteSwiftPackageReference "Puppy" */;
 			productName = Puppy;
-		};
-		CE2B15BF275DAF0800A3C8CE /* RediStack */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = CE2B15BE275DAF0800A3C8CE /* XCRemoteSwiftPackageReference "RediStack" */;
-			productName = RediStack;
-		};
-		CE2B15C3275DAF0800A3C8CE /* RedisTypes */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = CE2B15BE275DAF0800A3C8CE /* XCRemoteSwiftPackageReference "RediStack" */;
-			productName = RedisTypes;
 		};
 		CE83D51727563C28000DF09D /* AppCenterAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;

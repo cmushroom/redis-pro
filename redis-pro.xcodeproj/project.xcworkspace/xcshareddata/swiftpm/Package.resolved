@@ -39,10 +39,19 @@
     {
       "identity" : "redistack",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Mordil/RediStack.git",
+      "location" : "https://github.com/Mordil/RediStack",
       "state" : {
-        "revision" : "16037bbb8248eccaf50b8499d3bb9ed945cfd44c",
-        "version" : "1.2.1"
+        "branch" : "master",
+        "revision" : "555062c62e1568ed3125a51103ac42a9e4f7a626"
+      }
+    },
+    {
+      "identity" : "swift-atomics",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-atomics",
+      "state" : {
+        "revision" : "919eb1d83e02121cdb434c7bfc1f0c66ef17febe",
+        "version" : "1.0.2"
       }
     },
     {
@@ -122,8 +131,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
       "state" : {
-        "revision" : "154f1d32366449dcccf6375a173adf4ed2a74429",
-        "version" : "2.38.0"
+        "revision" : "b4e0a274f7f34210e97e2f2c50ab02a10b549250",
+        "version" : "2.41.1"
       }
     },
     {
@@ -133,6 +142,15 @@
       "state" : {
         "revision" : "09778e0388bda898c7592887f2ec84bb81ef21eb",
         "version" : "0.3.3"
+      }
+    },
+    {
+      "identity" : "swift-service-discovery",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-service-discovery",
+      "state" : {
+        "revision" : "c83afedb1c95ef0111907cd6e2fd03d7175cc0d0",
+        "version" : "1.2.0"
       }
     },
     {

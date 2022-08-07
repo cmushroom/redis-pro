@@ -11,6 +11,7 @@ import NIO
 import NIOSSH
 import Logging
 
+
 extension RediStackClient {
     
     func getSSHConn() async throws -> RedisConnection {
@@ -34,8 +35,8 @@ extension RediStackClient {
             
             let bootstrap = ClientBootstrap(group: group)
                 .channelInitializer { channel in
-                    let _ = channel.pipeline.addHandlers([NIOSSHHandler(role: .client(.init(userAuthDelegate: UserPasswordDelegate(username: sshUser, password: sshPass), serverAuthDelegate: AcceptAllHostKeysDelegate())), allocator: channel.allocator, inboundChildChannelInitializer: nil), ErrorHandler()])
-                    return channel.addBaseRedisHandlers()
+                    return channel.pipeline.addHandlers([NIOSSHHandler(role: .client(.init(userAuthDelegate: UserPasswordDelegate(username: sshUser, password: sshPass), serverAuthDelegate: AcceptAllHostKeysDelegate())), allocator: channel.allocator, inboundChildChannelInitializer: nil), ErrorHandler()])
+//                    return channel.pipeline.addBaseRedisHandlers()
                 }
                 .channelOption(ChannelOptions.socket(SocketOptionLevel(SOL_SOCKET), SO_REUSEADDR), value: 1)
                 .channelOption(ChannelOptions.socket(SocketOptionLevel(IPPROTO_TCP), TCP_NODELAY), value: 1)

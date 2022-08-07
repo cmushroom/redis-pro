@@ -8,6 +8,7 @@
 import Foundation
 import RediStack
 
+// MARK: - zset function
 // zset
 extension RediStackClient {
     
@@ -125,22 +126,9 @@ extension RediStackClient {
         
         logger.debug("redis set scan, key: \(key) cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
         
-        let conn = try await getConn()
-        
-        return try await withCheckedThrowingContinuation { continuation in
-            
-            conn.zscan(RedisKey(key), startingFrom: cursor, matching: keywords, count: count, valueType: String.self)
-                .whenComplete({completion in
-                    if case .success(let r) = completion {
-                        continuation.resume(returning: r)
-                    }
-                    else if case .failure(let error) = completion {
-                        self.logger.error("redis set scan key:\(key) error: \(error)")
-                        continuation.resume(throwing: error)
-                    }
-                })
-            
-        }
+        let command: RedisCommand<(Int, [(RESPValue, Double)])> = .zscan(RedisKey(key), startingFrom: cursor, matching: keywords, count: count)
+        let r = try await _send(command)
+        return (r.0, r.1.map { ($0.0.string ?? Cons.EMPTY_STRING, $0.1) })
     }
     
     func zupdate(_ key:String, from:String, to:String, score:Double) async -> Bool {
@@ -177,39 +165,14 @@ extension RediStackClient {
     }
     
     private func _zadd(_ key:String, score:Double, ele:String) async throws -> Bool {
-        let conn = try await getConn()
-        
-        return try await withCheckedThrowingContinuation { continuation in
-            
-            conn.zadd((element: ele, score: score), to: RedisKey(key))
-                .whenComplete({completion in
-                    if case .success(let r) = completion {
-                        continuation.resume(returning: r)
-                    }
-                    else if case .failure(let error) = completion {
-                        self.logger.error("redis zset zadd key:\(key) error: \(error)")
-                        continuation.resume(throwing: error)
-                    }
-                })
-            
-        }
+        let command: RedisCommand<Int> = .zadd((ele, score), to: RedisKey(key))
+        return try await _send(command) > 0
     }
     
     
     private func _zcard(_ key:String) async throws -> Int {
-        let conn = try await getConn()
-        
-        return try await withCheckedThrowingContinuation { continuation in
-            
-            conn.zcard(of: RedisKey(key))
-                .whenComplete({completion in
-                    if case .success(let r) = completion {
-                        continuation.resume(returning: r)
-                    }
-                    
-                    self.complete(completion, continuation: continuation)
-                })
-        }
+        let command: RedisCommand<Int> = .zcard(of: RedisKey(key))
+        return try await _send(command)
     }
     
     func zrem(_ key:String, ele:String) async -> Int {
@@ -227,77 +190,35 @@ extension RediStackClient {
     }
     
     private func _zrem(_ key:String, ele:String) async throws -> Int {
-        
-        let conn = try await getConn()
-        
-        return try await withCheckedThrowingContinuation { continuation in
-            
-            conn.zrem(ele, from: RedisKey(key))
-                .whenComplete({completion in
-                    if case .success(let r) = completion {
-                        continuation.resume(returning: r)
-                    }
-                    else if case .failure(let error) = completion {
-                        continuation.resume(throwing: error)
-                    }
-                })
-            
-        }
-        
+        let command: RedisCommand<Int> = .zrem(ele, from: RedisKey(key))
+        return try await _send(command)
     }
     
     private func _zscore(_ key:String, ele:String) async throws -> Double? {
-        
-        let conn = try await getConn()
-        
-        return try await withCheckedThrowingContinuation { continuation in
-            
-            conn.zscore(of: ele, in: RedisKey(key))
-                .whenComplete({completion in
-                    if case .success(let r) = completion {
-                        continuation.resume(returning: r)
-                    }
-                    else if case .failure(let error) = completion {
-                        continuation.resume(throwing: error)
-                    }
-                })
-            
-        }
-        
+        let command: RedisCommand<Double?> = .zscore(of: ele, in: RedisKey(key))
+        return try await _send(command)
     }
     
     private func _zrangeByScore(_ key:String, page:Page) async throws -> [(String, String)] {
-        
-        let conn = try await getConn()
-        
-        return try await withCheckedThrowingContinuation { continuation in
-            
-            conn.zrangebyscore(from: RedisKey(key), withMinimumScoreOf: .inclusive(Double.min), limitBy: (offset: page.start, count: page.size), includeScoresInResponse: true)
-                .whenComplete({completion in
-                    if case .success(let r) = completion {
-                        continuation.resume(returning: self._mapRes(r))
-                    }
-                    else if case .failure(let error) = completion {
-                        continuation.resume(throwing: error)
-                    }
-                })
-            
-        }
+    
+        let command: RedisCommand<[(RESPValue, Double)]> = .zrangebyscore(from: RedisKey(key), withMinimumScoreOf: .inclusive(Double.min), limitBy: (offset: page.start, count: page.size), returning: .valuesAndScores)
+        let r:[(RESPValue, Double)] = try await _send(command)
+        return r.map { ($0.string ?? Cons.EMPTY_STRING, "\($1)") }
         
     }
     
-    private func _mapRes(_ values: [RESPValue]?) -> [(String, String)]{
-        guard let values = values else { return [] }
-        guard values.count > 0 else { return [] }
-
-        var result: [(String, String)] = []
-
-        var index = 0
-        repeat {
-            result.append((values[index].string ?? "", values[index + 1].string ?? "0"))
-            index += 2
-        } while (index < values.count)
-        
-        return result
-    }
+//    private func _mapRes(_ values: [RESPValue]?) -> [(String, String)]{
+//        guard let values = values else { return [] }
+//        guard values.count > 0 else { return [] }
+//
+//        var result: [(String, String)] = []
+//
+//        var index = 0
+//        repeat {
+//            result.append((values[index].string ?? "", values[index + 1].string ?? "0"))
+//            index += 2
+//        } while (index < values.count)
+//
+//        return result
+//    }
 }

@@ -72,7 +72,7 @@ enum LoginAction:BindableAction,Equatable {
     case save
     case testConnect
     case connect
-    case ping(Bool)
+    case setPingR(Bool)
     case none
     case binding(BindingAction<LoginState>)
 }
@@ -100,11 +100,11 @@ let loginReducer = Reducer<LoginState, LoginAction, LoginEnvironment> {
         
         return Effect<LoginAction, Never>.task {
             let r = await env.redisInstanceModel.testConnect(redis)
-            return .ping(r)
+            return .setPingR(r)
         }
         .receive(on: env.mainQueue)
         .eraseToEffect()
-    case let .ping(r):
+    case let .setPingR(r):
         state.pingR =  r ? "Connect successed!" : "Connect fail! "
         state.loading = false
         return .none

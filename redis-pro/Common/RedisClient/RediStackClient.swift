@@ -36,7 +36,7 @@ class RediStackClient {
     
     var viewStore:ViewStore<GlobalState, GlobalAction>?
     
-    init(redisModel:RedisModel) {
+    init(_ redisModel:RedisModel) {
         self.redisModel = redisModel
     }
     

@@ -128,7 +128,7 @@ let favoriteReducer = Reducer<FavoriteState, FavoriteAction, FavoriteEnvironment
             logger.info("connect to redis server, name: \(redisModel.name), host: \(redisModel.host)")
             
             return Effect<FavoriteAction, Never>.task {
-                let r = await env.redisInstanceModel.connect(redisModel:redisModel)
+                let r = await env.redisInstanceModel.connect(redisModel)
                 logger.info("on connect to redis server: \(redisModel) , result: \(r)")
                 RedisDefaults.saveLastUse(redisModel)
                 return r ? .connectSuccess(redisModel) : .none

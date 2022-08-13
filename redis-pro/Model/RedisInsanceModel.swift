@@ -45,29 +45,42 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         self.viewStore = ViewStore(globalStore)
     }
     
+    // get client
     func getClient() -> RediStackClient {
-        if rediStackClient != nil {
-            return rediStackClient!
+        if let client = rediStackClient {
+            return client
         }
         
-        logger.info("get new redis client ...")
-        rediStackClient = RediStackClient(redisModel:redisModel)
-        rediStackClient?.setGlobalStore(self.viewStore)
-        return rediStackClient!
+        return initRedisClient(self.redisModel)
     }
     
-    func connect(redisModel:RedisModel) async -> Bool {
-        logger.info("connect to redis server: \(redisModel)")
+    // init redis client
+    func initRedisClient(_ redisModel: RedisModel) -> RediStackClient {
+        
+        logger.info("init new redis client, redisModel: \(redisModel)")
         self.redisModel = redisModel
-        let r = await self.getClient().initConnection()
-        return r
+        let client = RediStackClient(redisModel)
+        client.setGlobalStore(self.viewStore)
+        
+        self.rediStackClient = client
+        return client
+    }
+    
+    func connect(_ redisModel:RedisModel) async -> Bool {
+        logger.info("connect to redis server: \(redisModel)")
+        
+        let client = initRedisClient(redisModel)
+        
+        return await client.ping()
     }
     
     func testConnect(_ redisModel:RedisModel) async -> Bool {
-        self.redisModel = redisModel
-        let pong =  await self.getClient().ping()
-        self.close()
-        return pong
+        defer {
+            self.close()
+        }
+        
+        logger.info("test connect to redis server: \(redisModel)")
+        return  await initRedisClient(redisModel).ping()
     }
     
     func close() -> Void {

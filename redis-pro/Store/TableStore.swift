@@ -62,11 +62,21 @@ let tableReducer = Reducer<TableState, TableAction, TableEnvironment> {
         return .none
     
     case let .dragComplete(from, to):
-        state.selectIndex = to
         
         let f = state.datasource[from]
-        state.datasource[from] = state.datasource[to]
-        state.datasource[to] = f
+        // 先删除原有的
+        state.datasource.remove(at: from)
+        
+    
+//         state.datasource[from] = state.datasource[to]
+        
+        if from > to {
+            state.datasource.insert(f, at: to)
+            state.selectIndex = to
+        } else {
+            state.datasource.insert(f, at: to - 1)
+            state.selectIndex = to - 1
+        }
         
         return .none
     }

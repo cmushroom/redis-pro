@@ -266,7 +266,7 @@ class NTableController: NSViewController{
     
 }
 
-//NSTableViewDelegate
+//MARK: - NSTableViewDelegate basic opration
 extension NTableController: NSTableViewDelegate {
     
     // 构建单元格
@@ -302,14 +302,14 @@ extension NTableController: NSTableViewDelegate {
     
 }
 
-// NSTableViewDataSource
+//MARK: - NSTableViewDelegate drag opration
 extension NTableController: NSTableViewDataSource {
     
     // 获取id
     // For the source table view
     func tableView(_ tableView: NSTableView, pasteboardWriterForRow row: Int) -> NSPasteboardWriting? {
 
-        let rowAnyObj = self.viewStore.datasource[self.viewStore.selectIndex]
+        let rowAnyObj = self.viewStore.datasource[row]
       
         let value = "\(rowAnyObj.hashValue)"
         
@@ -338,10 +338,14 @@ extension NTableController: NSTableViewDataSource {
             })
         else { return false }
         
-        var newRow = row
-        // When you drag an item downwards, the "new row" index is actually --1. Remember dragging operation is `.above`.
-        if originalRow < newRow {
-            newRow = row - 1
+//        var newRow = row
+//        // When you drag an item downwards, the "new row" index is actually --1. Remember dragging operation is `.above`.
+//        if originalRow < newRow {
+//            newRow = row - 1
+//        }
+        
+        if originalRow == row {
+            return false
         }
         
         // Animate the rows
@@ -351,8 +355,8 @@ extension NTableController: NSTableViewDataSource {
         
         // Persist the ordering by saving your data model
         // saveAccountsReordered(at: originalRow, to: newRow)
-        self.viewStore.send(.dragComplete(originalRow, newRow))
-        logger.info("drad complete, at: \(originalRow), to: \(newRow)")
+        self.viewStore.send(.dragComplete(originalRow, row))
+        logger.info("drad complete, at: \(originalRow), to: \(row)")
         
         return true
     }

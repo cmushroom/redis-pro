@@ -23,10 +23,7 @@ struct MSecureField: View {
     @ViewBuilder
     private var field: some View {
         if showPass {
-//            TextField(placeholder, text: $value, onEditingChanged: { isEditing in
-//                self.isEditing = isEditing
-//            }, onCommit: doCommit)
-            NTextField(stringValue: $value, placeholder: placeholder, onCommit: onCommit)
+            MTextField(value: $value, placeholder: placeholder, onCommit: onCommit)
         } else {
             SecureField(placeholder, text: $value, onCommit: doCommit)
         }

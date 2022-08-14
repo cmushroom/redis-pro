@@ -41,7 +41,7 @@ struct NTextField: NSViewRepresentable {
 //        textField.alignment = .center
 //        textField.bezelStyle = .roundedBezel
         textField.tag = tag
-        textField.isEnabled = !disabled
+        textField.isEditable = !disabled
         
         style(textField)
         return textField
@@ -122,7 +122,6 @@ struct NTextField: NSViewRepresentable {
         
         
         // MARK: - NSTextFieldDelegate Methods
-        
         func controlTextDidChange(_ obj: Notification) {
             guard let textField = obj.object as? NSTextField else { return }
             parent.stringValue = textField.stringValue

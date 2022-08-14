@@ -54,7 +54,7 @@ struct MPasswordField: View {
     }
     
     var body: some View {
-        ZStack(alignment: .trailing) {
+        HStack(alignment: .center) {
             field
                 .labelsHidden()
                 .lineLimit(1)

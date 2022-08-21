@@ -11,6 +11,7 @@ import RediStack
 
 private let logger: Logger = Logger(label: "redis-command")
 
+
 // MARK: - Bool
 extension RedisCommand where ResultType == Bool {
     
@@ -53,13 +54,39 @@ extension RedisCommand where ResultType == Bool {
 }
 
 
+// MARK: - String optional
+extension RedisCommand where ResultType == String? {
+    @usableFromInline
+    internal init(keyword: String, arguments: [RESPValue]) {
+        self.init(keyword: keyword, arguments: arguments, mapValueToResult: {
+            switch $0 {
+            case let .simpleString(buffer),
+                 let .bulkString(.some(buffer)):
+                guard let value = String(fromRESP: $0) else { return "\(buffer)" } // default to ByteBuffer's representation
+                return value
+
+            // .integer, .error, and .bulkString(.none) conversions to String always succeed
+            case .integer,
+                 .bulkString(.none):
+                return String(fromRESP: $0)!
+                
+            case .null, .error: return nil
+            case let .array(elements): return "[\(elements.map({ $0.description }).joined(separator: ","))]"
+            }
+        })
+    }
+    
+    public static func hget(_ key: String, field:String) -> RedisCommand<String?> {
+        return .init(keyword: "HGET", arguments: [.init(from: key), .init(from: field)])
+    }
+}
 
 // MARK: - String
 extension RedisCommand where ResultType == String {
     @usableFromInline
     internal init(keyword: String, arguments: [RESPValue]) {
         self.init(keyword: keyword, arguments: arguments, mapValueToResult: {
-            return $0.string ?? RedisKeyTypeEnum.NONE.rawValue
+            return $0.description
         })
     }
     
@@ -70,8 +97,6 @@ extension RedisCommand where ResultType == String {
     public static func getConfig(_ key: String) -> RedisCommand<String> {
         return .init(keyword: "CONFIG", arguments: [.init(from: "GET"), .init(from: key)])
     }
-    
-    
 }
 
 // MARK: - Int

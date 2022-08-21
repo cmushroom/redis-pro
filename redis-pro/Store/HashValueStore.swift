@@ -20,8 +20,11 @@ struct HashValueState: Equatable {
     var isNew:Bool = false
     var redisKeyModel:RedisKeyModel?
     var pageState: PageState = PageState(showTotal: true)
-    var tableState: TableState = TableState(columns: [.init(title: "Field", key: "field", width: 100), .init(title: "Value", key: "value", width: 200)]
-                                            , datasource: [], contextMenus: ["Edit", "Delete"], selectIndex: -1)
+    var tableState: TableState = TableState(
+        columns: [.init(title: "Field", key: "field", width: 100), .init(title: "Value", key: "value", width: 200)]
+        , datasource: []
+        , contextMenus: [.EDIT, .DELETE, .COPY, .COPY_FIELD, .COPY_VALUE]
+        , selectIndex: -1)
     
     init() {
         logger.info("hash value state init ...")
@@ -202,7 +205,7 @@ let hashValueReducer = Reducer<HashValueState, HashValueAction, HashValueEnviron
         case .none:
             return .none
             
-        // --------------------------- page action ---------------------------
+        //MARK: -Page action
         case .pageAction(.updateSize):
             return .result {
                 .success(.getValue)
@@ -218,8 +221,9 @@ let hashValueReducer = Reducer<HashValueState, HashValueAction, HashValueEnviron
         case .pageAction:
             return .none
         
-            
-        // delete key
+          
+        //MARK: - table action
+        // context menu
         case let .tableAction(.contextMenu(title, index)):
             if title == "Delete" {
                 return .result {
@@ -233,6 +237,19 @@ let hashValueReducer = Reducer<HashValueState, HashValueAction, HashValueEnviron
                 }
             }
             
+            else  if title == TableContextMenu.COPY_FIELD.rawValue {
+                let item = state.tableState.datasource[index] as! RedisHashEntryModel
+                PasteboardHelper.copy(item.field)
+            }
+            else  if title == TableContextMenu.COPY_VALUE.rawValue {
+                let item = state.tableState.datasource[index] as! RedisHashEntryModel
+                PasteboardHelper.copy(item.value)
+            }
+            return .none
+        
+        case let .tableAction(.copy(index)):
+            let item = state.tableState.datasource[index] as! RedisHashEntryModel
+            PasteboardHelper.copy("Field: \(item.field) \n Value: \(item.value)")
             return .none
             
         case let .tableAction(.double(index)):

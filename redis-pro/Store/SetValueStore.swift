@@ -20,8 +20,10 @@ struct SetValueState: Equatable {
     var isNew:Bool = false
     var redisKeyModel:RedisKeyModel?
     var pageState: PageState = PageState(showTotal: true)
-    var tableState: TableState = TableState(columns: [.init(title: "Value", key: "self", width: 200)]
-                                            , datasource: [], contextMenus: ["Edit", "Delete"], selectIndex: -1)
+    var tableState: TableState = TableState(
+        columns: [.init(title: "Value", key: "self", width: 200)]
+        , datasource: [], contextMenus: [.COPY, .EDIT, .DELETE]
+        , selectIndex: -1)
     
     init() {
         logger.info("set value state init ...")
@@ -214,7 +216,7 @@ let setValueReducer = Reducer<SetValueState, SetValueAction, SetValueEnvironment
         case .none:
             return .none
             
-        // --------------------------- page action ---------------------------
+        // MARK: - page action
         case .pageAction(.updateSize):
             return .result {
                 .success(.getValue)
@@ -230,7 +232,7 @@ let setValueReducer = Reducer<SetValueState, SetValueAction, SetValueEnvironment
         case .pageAction:
             return .none
         
-            
+        // MARK: - table action
         // delete key
         case let .tableAction(.contextMenu(title, index)):
             if title == "Delete" {
@@ -246,6 +248,15 @@ let setValueReducer = Reducer<SetValueState, SetValueAction, SetValueEnvironment
             }
             
             return .none
+            
+        case let .tableAction(.copy(index)):
+            guard let item = state.tableState.datasource[index] as? String else {
+                return .none
+            }
+            
+            PasteboardHelper.copy(item)
+            return .none
+            
             
         case let .tableAction(.double(index)):
             return .result {

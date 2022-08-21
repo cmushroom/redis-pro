@@ -78,7 +78,7 @@ extension RediStackClient {
             let res = try await _hscanCount(key, keywords: keywords, cursor: cursor, count: dataCountScanCount)
             logger.info("loop scan page, current cursor: \(cursor), total count: \(count)")
             cursor = res.0
-            count = count + (res.1 / 2)
+            count = count + res.1
             
             // 取到结果，或者已满足分页数据
             if cursor == 0{
@@ -100,7 +100,7 @@ extension RediStackClient {
             cursor = res.0
             keys = keys + res.1
             
-            // 取到结果，或者已满足分页数据
+            // 取到结尾，或者已满足分页数据
             if cursor == 0 || keys.count >= end {
                 break
             }
@@ -137,16 +137,9 @@ extension RediStackClient {
         return try await _send(command)
     }
     
-    func hget(_ key:String, field:String) async -> String {
-        logger.info("get hash field value, key:\(key), field: \(field)")
-        let command: RedisCommand<RESPValue?> = .hget(RedisHashFieldKey(field), from: RedisKey(key))
-        let r = await send(command)
-        return r??.string ?? Cons.EMPTY_STRING
-    }
-    
     private func _hget(_ key:String, field:String) async throws -> String? {
-        let command: RedisCommand<RESPValue?> = .hget(RedisHashFieldKey(field), from: RedisKey(key))
+        let command: RedisCommand<String?> = .hget(key, field: field)
         let r = try await _send(command)
-        return r?.string
+        return r
     }
 }

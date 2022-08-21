@@ -19,8 +19,10 @@ struct RedisKeysState: Equatable {
     var searchGroup = 0
     
     var mainViewType: MainViewTypeEnum = .EDITOR
-    var tableState: TableState = TableState(columns: [.init(type: .KEY_TYPE,title: "Type", key: "type", width: 40), .init(title: "Key", key: "key", width: 50)]
-                                            , datasource: [], contextMenus: ["Rename", "Delete"], selectIndex: -1)
+    var tableState: TableState = TableState(
+        columns: [.init(type: .KEY_TYPE,title: "Type", key: "type", width: 40), .init(title: "Key", key: "key", width: 50)]
+        , datasource: [], contextMenus: [.COPY, .RENAME, .DELETE]
+        , selectIndex: -1)
     var redisSystemState:RedisSystemState = RedisSystemState()
     var valueState: ValueState = ValueState()
     var databaseState: DatabaseState = DatabaseState()
@@ -299,7 +301,12 @@ let redisKeysReducer = Reducer<RedisKeysState, RedisKeysAction, RedisKeysEnviron
         case .valueAction:
             return .none
             
-        // --------------------------- table action ---------------------------
+        //MARK: --------------------------- table action ---------------------------
+        case let .tableAction(.copy(index)):
+            let item = state.tableState.datasource[index] as! RedisKeyModel
+            PasteboardHelper.copy(item.key)
+            return .none
+            
         case let .tableAction(.selectionChange(index)):
             return .result {
                 .success(.onKeyChange(index))
@@ -341,7 +348,7 @@ let redisKeysReducer = Reducer<RedisKeysState, RedisKeysAction, RedisKeysEnviron
         case .tableAction:
             return .none
         
-        // --------------------------- database action ---------------------------
+        //MARK:  --------------------------- database action ---------------------------
         case let .databaseAction(.change(database)):
             logger.info("change database, \(database)")
             return .task {
@@ -356,7 +363,7 @@ let redisKeysReducer = Reducer<RedisKeysState, RedisKeysAction, RedisKeysEnviron
         case .databaseAction:
             return .none
             
-        // --------------------------- page action ---------------------------
+        //MARK:  --------------------------- page action ---------------------------
         case .pageAction(.updateSize):
             return .result {
                 .success(.getKeys)

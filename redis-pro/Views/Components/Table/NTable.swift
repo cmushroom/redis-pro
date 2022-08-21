@@ -147,11 +147,13 @@ class NTableController: NSViewController{
             })
             .store(in: &self.cancellables)
         
-        // 初始化右键菜单
+        // init context menu
         if !viewStore.contextMenus.isEmpty {
             let menu = NSMenu()
             viewStore.contextMenus.forEach { item in
-                menu.addItem(NSMenuItem(title: item, action: #selector(contextMenuAction(_:)), keyEquivalent: ""))
+                let menuItem = NSMenuItem(title: item.rawValue, action: #selector(contextMenuAction(_:)), keyEquivalent: item.ext.keyEquivalent)
+                
+                menu.addItem(menuItem)
             }
             
             tableView.menu = menu
@@ -224,15 +226,33 @@ class NTableController: NSViewController{
     
     
     
+    //MARK: table event handler
     // 监听键盘删除事件
     override func keyDown(with event: NSEvent) {
+        
+        let selectIndex = tableView.selectedRow
         if event.specialKey == NSEvent.SpecialKey.delete {
-            logger.info("on delete key down, delete index: \(tableView.selectedRow)")
-            let selectIndex = tableView.selectedRow
+            logger.info("on delete key down, delete index: \(selectIndex)")
             
             if selectIndex > -1 {
-                //                self.onDeleteAction?(selectIndex, self.datasource[selectIndex])
                 self.viewStore.send(.delete(selectIndex))
+            }
+        }
+        // cmd
+        else if event.modifierFlags.intersection(.deviceIndependentFlagsMask) == .command {
+            if event.charactersIgnoringModifiers == "c" {
+                logger.info("on table keyboard event: copy, index: \(selectIndex)")
+                
+                if selectIndex > -1 {
+                    self.viewStore.send(.copy(selectIndex))
+                }
+            }
+            else if event.charactersIgnoringModifiers == "e" {
+                logger.info("on table keyboard event: edit, index: \(selectIndex)")
+                
+                if selectIndex > -1 {
+                    self.viewStore.send(.double(selectIndex))
+                }
             }
         }
     }
@@ -260,8 +280,13 @@ class NTableController: NSViewController{
         if index < 0 {
             return
         }
-        logger.info("context menu action, index: \(index)")
-        self.viewStore.send(.contextMenu(menuItem.title, index))
+        
+        logger.info("context menu action, menu: \(menuItem.title), index: \(index)")
+        if menuItem.title == "Copy" {
+            self.viewStore.send(.copy(index))
+        } else {
+            self.viewStore.send(.contextMenu(menuItem.title, index))
+        }
     }
     
 }
@@ -291,11 +316,6 @@ extension NTableController: NSTableViewDelegate {
         
         let selectIndex = tableView.selectedRow
         self.logger.info("table coordinator selection did change, selectedRow: \(selectIndex)")
-        
-        //        guard self.datasource.count > selectIndex && selectIndex > -1 else {return}
-        
-        //        self.selectIndex = tableView.selectedRow
-        //        self.onChangeAction?(tableView.selectedRow, self.datasource[selectIndex])
         
         self.viewStore.send(.selectionChange(selectIndex))
     }
@@ -332,17 +352,10 @@ extension NTableController: NSTableViewDataSource {
         guard
             let that = info.draggingPasteboard.pasteboardItems?.first,
             let theString = that.string(forType: pasteboardType),
-//            let index = self.viewStore.datasource.first(where: { "\($0.hashValue)" == theString }),
             let originalRow = self.viewStore.datasource.firstIndex(where: { item in
                 return "\(item.hashValue)" == theString
             })
         else { return false }
-        
-//        var newRow = row
-//        // When you drag an item downwards, the "new row" index is actually --1. Remember dragging operation is `.above`.
-//        if originalRow < newRow {
-//            newRow = row - 1
-//        }
         
         if originalRow == row {
             return false

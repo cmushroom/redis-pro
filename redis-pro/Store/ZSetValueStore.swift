@@ -11,6 +11,8 @@ import SwiftyJSON
 import ComposableArchitecture
 
 private let logger = Logger(label: "zset-value-store")
+
+// MARK: - state
 struct ZSetValueState: Equatable {
     @BindableState var editModalVisible:Bool = false
     @BindableState var editValue:String = ""
@@ -20,8 +22,10 @@ struct ZSetValueState: Equatable {
     var isNew:Bool = false
     var redisKeyModel:RedisKeyModel?
     var pageState: PageState = PageState(showTotal: true)
-    var tableState: TableState = TableState(columns: [.init(title: "Score", key: "score", width: 80), .init(title: "Value", key: "value", width: 200)]
-                                            , datasource: [], contextMenus: ["Edit", "Delete"], selectIndex: -1)
+    var tableState: TableState = TableState(
+        columns: [.init(title: "Score", key: "score", width: 80), .init(title: "Value", key: "value", width: 200)]
+        , datasource: [], contextMenus: [.COPY, .EDIT, .DELETE]
+        , selectIndex: -1)
     
     init() {
         logger.info("zset value state init ...")
@@ -29,6 +33,7 @@ struct ZSetValueState: Equatable {
     }
 }
 
+// MARK: - action
 enum ZSetValueAction:BindableAction, Equatable {
     
     case initial
@@ -57,6 +62,7 @@ struct ZSetValueEnvironment {
     var mainQueue: AnySchedulerOf<DispatchQueue> = .main
 }
 
+// MARK: - reducer
 let zsetValueReducer = Reducer<ZSetValueState, ZSetValueAction, ZSetValueEnvironment>.combine(
     tableReducer.pullback(
         state: \.tableState,
@@ -220,7 +226,7 @@ let zsetValueReducer = Reducer<ZSetValueState, ZSetValueAction, ZSetValueEnviron
         case .none:
             return .none
             
-        // --------------------------- page action ---------------------------
+        // MARK: - page action
         case .pageAction(.updateSize):
             return .result {
                 .success(.getValue)
@@ -236,7 +242,7 @@ let zsetValueReducer = Reducer<ZSetValueState, ZSetValueAction, ZSetValueEnviron
         case .pageAction:
             return .none
         
-            
+        // MARK: - table action
         // delete key
         case let .tableAction(.contextMenu(title, index)):
             if title == "Delete" {
@@ -251,6 +257,12 @@ let zsetValueReducer = Reducer<ZSetValueState, ZSetValueAction, ZSetValueEnviron
                 }
             }
             
+            return .none
+            
+        case let .tableAction(.copy(index)):
+            let item = state.tableState.datasource[index] as! RedisZSetItemModel
+            
+            PasteboardHelper.copy("Score: \(item.score) \nValue: \(item.value)")
             return .none
             
         case let .tableAction(.double(index)):

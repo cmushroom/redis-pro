@@ -136,6 +136,10 @@ let favoriteReducer = Reducer<FavoriteState, FavoriteAction, FavoriteEnvironment
             .receive(on: env.mainQueue)
             .eraseToEffect()
 
+        case let .tableAction(.copy(index)):
+            let redisModel = state.tableState.datasource[index] as! RedisModel
+            PasteboardHelper.copy(redisModel.name)
+            return .none
         
         case let .tableAction(.dragComplete(from, to)):
             let _ = RedisDefaults.save(state.tableState.datasource as! [RedisModel])

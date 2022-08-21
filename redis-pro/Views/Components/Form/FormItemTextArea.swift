@@ -13,7 +13,6 @@ struct FormItemTextArea: View {
     var placeholder: String?
     var required:Bool = false
     @Binding var value: String
-    var disabled:Bool = false
     
     var body: some View {
         HStack(alignment: .top) {

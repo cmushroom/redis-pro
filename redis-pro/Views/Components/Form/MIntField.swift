@@ -13,7 +13,6 @@ struct MIntField: View {
     var placeholder:String?
     @State private var isEditing = false
     var onCommit: (() -> Void)?
-    var disabled:Bool = false
     
     // 是否有编辑过，编辑过才会触commit
     @State private var isEdited:Bool = false
@@ -42,7 +41,6 @@ struct MIntField: View {
             field
                 .labelsHidden()
                 .lineLimit(1)
-                .disabled(disabled)
                 .multilineTextAlignment(.leading)
                 .font(.body)
                 .disableAutocorrection(true)
@@ -55,7 +53,7 @@ struct MIntField: View {
         .background(Color.init(NSColor.textBackgroundColor))
         .cornerRadius(MTheme.CORNER_RADIUS)
         .overlay(
-            RoundedRectangle(cornerRadius: MTheme.CORNER_RADIUS).stroke(Color.gray.opacity(!disabled && isEditing ?  0.4 : 0.2), lineWidth: 1)
+            RoundedRectangle(cornerRadius: MTheme.CORNER_RADIUS).stroke(Color.gray.opacity(isEditing ?  0.4 : 0.2), lineWidth: 1)
         )
     }
     

@@ -7,17 +7,33 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "D6EA6807-57C4-4E7C-B2A1-CB9D619A1DD6"
+            uuid = "1F235176-678E-4370-AF05-A5C7A05EA8C5"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../../Library/Developer/Xcode/DerivedData/redis-pro-dqdhwgmlxxtepdhgbmpmdcldlrxf/SourcePackages/checkouts/RediStack/Sources/RediStack/ConnectionPool/ConnectionPool.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "241"
+            endingLineNumber = "241"
+            landmarkName = "connectionCreationFailed(_:retryDelay:logger:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "EA7FEBA8-3D4F-4D85-B16B-E1AAEC4055BE"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "redis-pro/Views/Components/Form/NSearchField.swift"
+            filePath = "../../../Library/Developer/Xcode/DerivedData/redis-pro-dqdhwgmlxxtepdhgbmpmdcldlrxf/SourcePackages/checkouts/RediStack/Sources/RediStack/ConnectionPool/ConnectionPool.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "101"
-            endingLineNumber = "101"
-            landmarkName = "Coordinator"
-            landmarkType = "3">
+            startingLineNumber = "198"
+            endingLineNumber = "198"
+            landmarkName = "_createConnection(retryDelay:startIn:logger:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

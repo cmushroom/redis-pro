@@ -6,8 +6,8 @@
 //
 import Foundation
 
-class RedisInfoModel:NSObject, Identifiable {
-    var id = UUID()
+public class RedisInfoModel:NSObject, Identifiable {
+    public var id = UUID()
     var section:String = ""
     var infos:[RedisInfoItemModel] = [RedisInfoItemModel]()
     

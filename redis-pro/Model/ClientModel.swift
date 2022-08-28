@@ -8,8 +8,8 @@
 
 import Foundation
 
-class ClientModel:NSObject, Identifiable {
-    @objc var id:String = ""
+public class ClientModel:NSObject, Identifiable {
+    @objc public var id:String = ""
     @objc var name:String = ""
     @objc var addr:String = ""
     @objc var laddr:String = ""

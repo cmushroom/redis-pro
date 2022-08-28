@@ -8,6 +8,7 @@
 import Foundation
 import RediStack
 
+// MARK: - list function
 // list
 extension RediStackClient {
 
@@ -21,7 +22,7 @@ extension RediStackClient {
         do {
             let start:Int = (page.current - 1) * page.size
             let r1 = try await llen(key)
-            let r2 = try await lrange(key, start: start, stop: start + page.size - 1)
+            let r2 = try await _lrange(key, start: start, stop: start + page.size - 1)
             let total = r1
             page.total = total
             
@@ -38,26 +39,12 @@ extension RediStackClient {
         return []
     }
     
-    private func lrange(_ key:String, start:Int, stop:Int) async throws -> [String?] {
+    private func _lrange(_ key:String, start:Int, stop:Int) async throws -> [String?] {
         
         logger.debug("redis list range, key: \(key)")
-        
-        let conn = try await getConn()
-        
-        return try await withCheckedThrowingContinuation { continuation in
-            
-            conn.lrange(from: RedisKey(key), firstIndex: start, lastIndex: stop, as: String.self)
-                .whenComplete({completion in
-                    if case .success(let r) = completion {
-                        continuation.resume(returning: r)
-                    }
-                    
-                    else if case .failure(let error) = completion {
-                        self.logger.error("redis list range error \(error)")
-                        continuation.resume(throwing: error)
-                    }
-                })
-        }
+        let command: RedisCommand<[RESPValue]> = .lrange(from: RedisKey(key), firstIndex: start, lastIndex: stop)
+        let r = try await _send(command)
+        return r.map { $0.string }
     }
     
     func ldel(_ key:String, index:Int, value:String) async -> Int {
@@ -85,18 +72,9 @@ extension RediStackClient {
     
     
     private func _lrem(_ key:String, value:String) async throws -> Int {
-        let conn = try await getConn()
-        return try await withCheckedThrowingContinuation { continuation in
-            
-            conn.lrem(value, from: RedisKey(key), count: 0)
-                .whenComplete({completion in
-                    if case .success(let r) = completion {
-                        continuation.resume(returning: r)
-                    }
-                    
-                    self.complete(completion, continuation: continuation)
-                })
-        }
+        
+        let command: RedisCommand<Int> = .lrem(value, from: RedisKey(key), count: 0)
+        return try await _send(command)
     }
     
     func lset(_ key:String, index:Int, value:String) async -> Void {
@@ -112,106 +90,29 @@ extension RediStackClient {
     }
     
     private func _lset(_ key:String, index:Int, value:String) async throws -> Void {
-        let conn = try await getConn()
-        
-        return try await withCheckedThrowingContinuation { continuation in
-            
-            conn.lset(index: index, to: value, in: RedisKey(key))
-                .whenComplete({completion in
-                    if case .success(let r) = completion {
-                        continuation.resume(returning: r)
-                    }
-                    
-                    else if case .failure(let error) = completion {
-                        self.logger.error("redis list lset error \(error)")
-                        continuation.resume(throwing: error)
-                    }
-                })
-        }
+        let command: RedisCommand<Void> = .lset(index: index, to: value, in: RedisKey(key))
+        try await _send(command)
     }
     
     func lpush(_ key:String, value:String) async -> Int {
-        begin()
-        defer {
-            complete()
-        }
         
-        do {
-            let conn = try await getConn()
-            return try await withCheckedThrowingContinuation { continuation in
-                
-                conn.lpush(value, into: RedisKey(key))
-                    .whenComplete({completion in
-                        if case .success(let r) = completion {
-                            continuation.resume(returning: r)
-                        }
-                        
-                        self.complete(completion, continuation: continuation)
-                    })
-            }
-        } catch {
-            handleError(error)
-        }
-        return 0
+        let command: RedisCommand<Int> = .lpush(value, into: RedisKey(key))
+        return await send(command, 0)
     }
     
     func rpush(_ key:String, value:String) async -> Int {
-        begin()
-        defer {
-            complete()
-        }
-        
-        do {
-            let conn = try await getConn()
-            return try await withCheckedThrowingContinuation { continuation in
-                
-                conn.rpush(value, into: RedisKey(key))
-                    .whenComplete({completion in
-                        if case .success(let r) = completion {
-                            continuation.resume(returning: r)
-                        }
-                        
-                        self.complete(completion, continuation: continuation)
-                    })
-            }
-        } catch {
-            handleError(error)
-        }
-        return 0
+        let command: RedisCommand<Int> = .rpush(value, into: RedisKey(key))
+        return await send(command, 0)
     }
     
     private func _lindex(_ key:String, index:Int) async throws -> String? {
-        let conn = try await getConn()
-        return try await withCheckedThrowingContinuation { continuation in
-            
-            conn.lindex(index, from: RedisKey(key))
-                .whenComplete({completion in
-                    if case .success(let r) = completion {
-                        continuation.resume(returning: r.string)
-                    }
-                    
-                    self.complete(completion, continuation: continuation)
-                })
-        }
+        let command: RedisCommand<RESPValue?> = .lindex(index, from: RedisKey(key))
+        return try await _send(command)?.string
     }
     
     private func llen(_ key:String) async throws -> Int {
         logger.debug("redis list length, key: \(key)")
-        let conn = try await getConn()
-        
-        return try await withCheckedThrowingContinuation { continuation in
-            
-            conn.llen(of: RedisKey(key))
-                .whenComplete({completion in
-                    if case .success(let r) = completion {
-                        continuation.resume(returning: r)
-                    }
-                    
-                    else if case .failure(let error) = completion {
-                        self.logger.error("redis list llen error \(error)")
-                        continuation.resume(throwing: error)
-                    }
-                })
-        }
+        let command: RedisCommand<Int> = .llen(of: RedisKey(key))
+        return try await _send(command)
     }
 }

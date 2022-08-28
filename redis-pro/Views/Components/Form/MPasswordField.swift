@@ -15,7 +15,6 @@ struct MPasswordField: View {
     var onCommit:(() -> Void)?
     
     @State private var visible:Bool = false
-    var disabled = false
     
     let logger = Logger(label: "pass-field")
     
@@ -54,11 +53,10 @@ struct MPasswordField: View {
     }
     
     var body: some View {
-        ZStack(alignment: .trailing) {
+        HStack(alignment: .center) {
             field
                 .labelsHidden()
                 .lineLimit(1)
-                .disabled(disabled)
                 .multilineTextAlignment(.leading)
                 .font(.body)
                 .disableAutocorrection(true)
@@ -88,7 +86,7 @@ struct MPasswordField: View {
         .background(Color.init(NSColor.textBackgroundColor))
         .cornerRadius(MTheme.CORNER_RADIUS)
         .overlay(
-            RoundedRectangle(cornerRadius: MTheme.CORNER_RADIUS).stroke(Color.gray.opacity(!disabled && isEditing ?  0.4 : 0.2), lineWidth: 1)
+            RoundedRectangle(cornerRadius: MTheme.CORNER_RADIUS).stroke(Color.gray.opacity(isEditing ?  0.4 : 0.2), lineWidth: 1)
         )
     }
     

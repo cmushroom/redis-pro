@@ -12,6 +12,7 @@ struct FormItemText: View {
     var labelWidth:CGFloat = 80
     var placeholder: String?
     var required:Bool = false
+    var editable:Bool = true
     @Binding var value: String
     
     var body: some View {
@@ -19,9 +20,10 @@ struct FormItemText: View {
             if label != nil && !label!.isEmpty {
                 FormLabel(label: label!, width: labelWidth, required: required)
             }
-//            NTextField(stringValue: $value, placeholder: placeholder ?? label ?? "", disabled: disabled).disabled(disabled)
+//            NTextField(stringValue: $value, placeholder: placeholder ?? label ?? "")
 //            MNSTextField(text: $value)
-            MTextField(value: $value, placeholder: placeholder ?? label)
+            MTextField(value: $value, placeholder: placeholder ?? label, editable: editable)
+                .frame(maxWidth: .infinity)
         }
     }
 }

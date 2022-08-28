@@ -66,8 +66,7 @@ let luaReducer = Reducer<LuaState, LuaAction, SystemEnvironment<LuaEnvironment>>
         
         let lua = state.lua
         return .task {
-            let r = await env.redisInstanceModel.getClient().scriptLoad(lua)
-            return .setLuaSHA(r)
+            return .setLuaSHA("")
         }
         .receive(on: env.mainQueue)
         .eraseToEffect()

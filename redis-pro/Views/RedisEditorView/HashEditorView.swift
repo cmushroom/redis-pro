@@ -43,7 +43,7 @@ struct HashEditorView: View {
             }) {
                 ModalView("Edit hash entry", action: {viewStore.send(.submit)}) {
                     VStack(alignment:.leading, spacing: 8) {
-                        FormItemText(placeholder: "Field", value: viewStore.binding(\.$field)).disabled(!viewStore.isNew)
+                        FormItemText(placeholder: "Field", editable: viewStore.isNew, value: viewStore.binding(\.$field))
                         FormItemTextArea(placeholder: "Value", value: viewStore.binding(\.$value))
                     }
                 }

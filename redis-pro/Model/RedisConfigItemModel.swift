@@ -7,7 +7,7 @@
 
 import Foundation
 
-class RedisConfigItemModel:NSObject, Identifiable {
+public class RedisConfigItemModel:NSObject, Identifiable {
     @objc var key:String = ""
     @objc var value:String = ""
     

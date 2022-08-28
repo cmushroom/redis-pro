@@ -1,6 +1,6 @@
 {
-    "latestVersionNum": 16,
-    "latestVersion": "2.2.0",
+    "latestVersionNum": 17,
+    "latestVersion": "2.3.0",
     "updateType": "hint",
-    "releaseNotes": "1. 查询key 分页列表时, 总数量使用异步查询，列表快速返回  #36 \n2. 增加lua脚本执行功能。"
+    "releaseNotes": "1. 使用reids 连接池。 \n2. table通用组件支持拷贝行数据, 右键菜单添加快捷键。  #49 \n3. 文本框禁用情况下支持选中复制 #49。 \n4. 表格拖动排序问题修复。 \n5. 点击一个失败的链接,正常redis服务器也无法登录bug修复 #48。 \n6. redis client 重构。"
 }

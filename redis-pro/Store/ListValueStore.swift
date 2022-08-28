@@ -20,8 +20,10 @@ struct ListValueState: Equatable {
     var isNew:Bool = false
     var redisKeyModel:RedisKeyModel?
     var pageState: PageState = PageState(showTotal: true)
-    var tableState: TableState = TableState(columns: [.init(title: "Index", key: "index", width: 100), .init(title: "Value", key: "value", width: 200)]
-                                            , datasource: [], contextMenus: ["Edit", "Delete"], selectIndex: -1)
+    var tableState: TableState = TableState(
+        columns: [.init(title: "Index", key: "index", width: 100), .init(title: "Value", key: "value", width: 200)]
+        , datasource: [], contextMenus: [.COPY, .EDIT, .DELETE]
+        , selectIndex: -1)
     
     init() {
         logger.info("list value state init ...")
@@ -227,7 +229,7 @@ let listValueReducer = Reducer<ListValueState, ListValueAction, ListValueEnviron
         case .none:
             return .none
             
-        // --------------------------- page action ---------------------------
+        // MARK: - page action
         case .pageAction(.updateSize):
             return .result {
                 .success(.getValue)
@@ -243,7 +245,7 @@ let listValueReducer = Reducer<ListValueState, ListValueAction, ListValueEnviron
         case .pageAction:
             return .none
         
-            
+        // MARK: - table action
         // delete key
         case let .tableAction(.contextMenu(title, index)):
             if title == "Delete" {
@@ -258,6 +260,11 @@ let listValueReducer = Reducer<ListValueState, ListValueAction, ListValueEnviron
                 }
             }
             
+            return .none
+            
+        case let .tableAction(.copy(index)):
+            let item = state.tableState.datasource[index] as! RedisListItemModel
+            PasteboardHelper.copy(item.value)
             return .none
             
         case let .tableAction(.double(index)):

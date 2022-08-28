@@ -21,7 +21,13 @@ class RediStackClient {
     let logger = Logger(label: "redis-client")
     
     var redisModel:RedisModel
+    
+    // conn
+    private let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 3)
     var connection:RedisConnection?
+    var connPool:RedisConnectionPool?
+    
+    var keepaliveTask: RepeatedTask?
     
     // ssh
     var sshChannel:Channel?
@@ -36,7 +42,7 @@ class RediStackClient {
     
     var viewStore:ViewStore<GlobalState, GlobalAction>?
     
-    init(redisModel:RedisModel) {
+    init(_ redisModel:RedisModel) {
         self.redisModel = redisModel
     }
     
@@ -71,7 +77,7 @@ class RediStackClient {
     }
     
     func handleError(_ error: Error) {
-        logger.info("get an error \(error)")
+        logger.info("system error \(error)")
         loading(false)
         Messages.show(error)
     }
@@ -81,6 +87,9 @@ class RediStackClient {
      */
     func initConnection() async -> Bool {
         begin()
+        defer {
+            complete()
+        }
         
         do {
             let _ = try await getConn()
@@ -90,7 +99,6 @@ class RediStackClient {
             handleError(error)
         }
         
-        complete()
         return false
     }
     
@@ -101,300 +109,116 @@ class RediStackClient {
         }
     }
     
-    // string operator
-    func set(_ key:String, value:String, ex:Int?) async -> Void {
-        logger.info("set value, key:\(key), value:\(value), ex:\(ex ?? -1)")
+    // MARK: - Common function
+    /**
+    公共底层请求redis 数据方法, 不处理任何异常, 使用者需要自己行处理异常信息
+     */
+    func _send<R>(_ command: RedisCommand<R>) async throws -> R {
+        let conn = try await getConn()
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            conn.send(command, eventLoop: nil, logger: self.logger)
+                .whenComplete({completion in
+                    if case .success(let r) = completion {
+                        self.logger.info("string operator, setex complete")
+                        continuation.resume(returning: r)
+                    }
+                    else if case .failure(let error) = completion {
+                        continuation.resume(throwing: error)
+                    }
+                })
+        }
+    }
+    
+    func send<R>(_ command: RedisCommand<R>, _ defaultValue: R) async -> R {
+        self.logger.info("send redis command, command: \(command)")
         begin()
-        do {
-            let conn = try await getConn()
-            
-            return try await withCheckedThrowingContinuation { continuation in
-                if (ex == nil || ex! == -1) {
-                    conn.set(RedisKey(key), to: value)
-                        .whenComplete({completion in
-                            if case .success(_) = completion {
-                                continuation.resume()
-                            }
-                
-                            self.complete(completion, continuation: continuation)
-                        })
-                } else {
-                    conn.setex(RedisKey(key), to: value, expirationInSeconds: ex!)
-                        .whenComplete({completion in
-                            if case .success(_) = completion {
-                                continuation.resume()
-                            }
-                            
-                            self.complete(completion, continuation: continuation)
-                        })
-                }
-            }
-        } catch {
-            handleError(error)
+        defer {
+            complete()
         }
         
-    }
-    
-    func set(_ key:String, value:String) async -> Void {
-        logger.info("set value, key:\(key), value:\(value)")
-        
-        await set(key, value:value, ex: -1)
-        
-    }
-    
-    func get(_ key:String) async -> String {
-        logger.info("get value, key:\(key)")
-        begin()
         do {
-            let conn = try await getConn()
-            
-            return try await withCheckedThrowingContinuation { continuation in
-                
-                conn.get(RedisKey(key))
-                    .whenComplete({completion in
-                        if case .success(let r) = completion {
-                            self.logger.info("get value key: \(key) complete, r: \(r)")
-                            if r.isNull {
-                                continuation.resume(throwing: BizError(message: "Key `\(key)` is not exist!"))
-                            } else {
-                                continuation.resume(returning: r.string!)
-                            }
-                        }
-                        
-                        self.complete(completion, continuation: continuation)
-                    })
-                
-            }
+            return try await _send(command)
         } catch {
             handleError(error)
         }
-        return Cons.EMPTY_STRING
+        return defaultValue
     }
     
-    func del(_ key:String) async -> Int {
-        self.logger.info("delete key \(key)")
+    func send<R>(_ command: RedisCommand<R>) async -> R? {
+        self.logger.info("send redis command, command: \(command)")
         begin()
- 
-        do {
-            let conn = try await getConn()
-            
-            return try await withCheckedThrowingContinuation { continuation in
-                
-                conn.delete(RedisKey(key))
-                    .whenComplete({completion in
-                        if case .success(let r) = completion {
-                            self.logger.info("delete redis key \(key) complete, r: \(r)")
-                            continuation.resume(returning: r)
-                        }
-                        
-                        self.complete(completion, continuation: continuation)
-                    })
-                
-            }
-        } catch {
-            handleError(error)
-        }
-        return 0
-    }
-    
-    func expire(_ key:String, seconds:Int) async -> Bool {
-        logger.info("set key expire key:\(key), seconds:\(seconds)")
-        
-        begin()
-        do {
-            
-            let maxSeconds:Int64 = INT64_MAX / (1000 * 1000 * 1000)
-            try Assert.isTrue(seconds < maxSeconds, message: "过期时间最大值不能超过 \(maxSeconds) 秒")
-            
-            let conn = try await getConn()
-            
-            return try await withCheckedThrowingContinuation { continuation in
-                
-                if seconds < 0 {
-                    conn.send(command: "PERSIST", with: [RESPValue(from: key)]).whenComplete({completion in
-                        if case .success(let r) = completion {
-                            self.logger.info("clear key expire time \(key) complete, r: \(r)")
-                            continuation.resume(returning: true)
-                        }
-                        self.complete(completion, continuation: continuation)
-                    })
-                } else {
-                    conn.expire(RedisKey(key), after: TimeAmount.seconds(Int64(seconds))).whenComplete({completion in
-                        if case .success(let r) = completion {
-                            self.logger.info("set key expire time \(key) complete, r: \(r)")
-                            continuation.resume(returning: true)
-                        }
-                        
-                        self.complete(completion, continuation: continuation)
-                    })
-                }
-                
-            }
-        } catch {
-            handleError(error)
-        }
-        return false
-    }
-    
-    func exist(_ key:String) async -> Bool {
-        logger.info("get key exist: \(key)")
-        do {
-            let conn = try await getConn()
-            
-            return try await withCheckedThrowingContinuation { continuation in
-                
-                conn.exists(RedisKey(key))
-                    .whenComplete({completion in
-                        if case .success(let r) = completion {
-                            self.logger.info("query redis key exist, key: \(key), r:\(r)")
-                            continuation.resume(returning: r > 0)
-                        }
-                        else if case .failure(let error) = completion {
-                            self.logger.error("redis get key exist error \(error)")
-                            continuation.resume(returning: false)
-                        }
-                    })
-                
-            }
-        } catch {
-            self.logger.error("redis get key exist error \(error)")
-        }
-        return false
-    }
-    
-    func ttl(_ key:String) async -> Int {
-        logger.info("get ttl key: \(key)")
-        begin()
-        do {
-            let conn = try await getConn()
-            
-            return try await withCheckedThrowingContinuation { continuation in
-                
-                conn.ttl(RedisKey(key))
-                    .whenComplete({completion in
-                        if case .success(let r) = completion {
-                            self.logger.info("query redis key ttl, key: \(key), r:\(r)")
-                            var ttl = -1
-                            if r == RedisKey.Lifetime.keyDoesNotExist {
-                                ttl = -2
-//                                continuation.resume(throwing: BizError(message: "Key `\(key)` is not exist!"))
-//                                return
-                            } else if r == RedisKey.Lifetime.unlimited {
-                               // ignore
-                            } else {
-                                ttl = Int(r.timeAmount!.nanoseconds / 1000000000)
-                            }
-                            continuation.resume(returning: ttl)
-                        }
-                        
-                        self.complete(completion, continuation: continuation)
-                    })
-                
-            }
-        } catch {
-            handleError(error)
-        }
-        return -1
-    }
-    
-    func getTypes(_ keys:[String]) async -> [String:String] {
-        return await withTaskGroup(of: (String, String).self) { group in
-            var typeDict = [String:String]()
-            
-            // adding tasks to the group and fetching movies
-            for key in keys {
-                group.addTask {
-                    let type = await self.type(key)
-                    return (key, type)
-                }
-            }
-            
-            for await type in group {
-                typeDict[type.0] = type.1
-            }
-            
-            return typeDict
-        }
-    }
-    
-    private func type(_ key:String) async -> String {
-        do {
-            let conn = try await getConn()
-            
-            return try await withCheckedThrowingContinuation { continuation in
-                
-                conn.send(command: "type", with: [RESPValue.init(from: key)])
-                    .whenComplete({completion in
-                        if case .success(let r) = completion {
-                            continuation.resume(returning: r.string!)
-                        } else if case .failure(let error) = completion {
-                            self.logger.error("get key type error: \(error)")
-                            continuation.resume(returning: RedisKeyTypeEnum.NONE.rawValue)
-                        }
-                    })
-                
-            }
-        } catch {
-            self.logger.error("get key type error: \(error)")
+        defer {
+            complete()
         }
         
-        return RedisKeyTypeEnum.NONE.rawValue
-    }
-    
-    func rename(_ oldKey:String, newKey:String) async -> Bool {
-        logger.info("rename key, old key:\(oldKey), new key: \(newKey)")
-        begin()
- 
         do {
-            let conn = try await getConn()
-            
-            return try await withCheckedThrowingContinuation { continuation in
-                
-                conn.send(command: "RENAME", with: [RESPValue(from: oldKey), RESPValue(from: newKey)])
-                    .whenComplete({completion in
-                        if case .success(let r) = completion {
-                            self.logger.info("rename redis key, old key \(oldKey), new key: \(newKey) complete, r: \(r)")
-                            continuation.resume(returning: r.string == "OK")
-                        }
-                        
-                        self.complete(completion, continuation: continuation)
-                    })
-                
-            }
+            return try await _send(command)
         } catch {
             handleError(error)
         }
-        return false
+        return nil
+    }
+    
+    func ttlSecond(_ lifetime: RedisKey.Lifetime) -> Int {
+        switch lifetime {
+        case .keyDoesNotExist:
+            return -2
+        case .limited(let duration):
+            return Int(duration.timeAmount.nanoseconds / 1000000000)
+        default:
+            return -1
+        }
     }
     
     func getConn() async throws -> RedisClient {
-        if self.connection != nil && self.connection!.isConnected {
-            return self.connection!
+        return try await getConnPool()
+
+//        if self.connection != nil && self.connection!.isConnected {
+//            return self.connection!
+//        } else {
+//            self.logger.info("get redis connection, but connection is not available...")
+//            self.close()
+//        }
+//
+//        if self.redisModel.connectionType == RedisConnectionTypeEnum.SSH.rawValue {
+//            self.connection = try await initSSHConn()
+//        } else {
+//            self.connection = try await initConn(host: self.redisModel.host, port: self.redisModel.port, pass: self.redisModel.password, database: self.redisModel.database)
+//        }
+//
+//        return self.connection!
+    }
+    
+    func getConnPool() async throws -> RedisClient {
+        if self.connPool != nil {
+            return self.connPool!
         } else {
             self.logger.info("get redis connection, but connection is not available...")
             self.close()
         }
         
-        self.connection = try await initConn()
-        return self.connection!
+        if self.redisModel.connectionType == RedisConnectionTypeEnum.SSH.rawValue {
+            self.connection = try await initSSHConn()
+        } else {
+            self.connPool = try initPool(host: self.redisModel.host, port: self.redisModel.port, pass: self.redisModel.password, database: self.redisModel.database)
+        }
+        
+        return self.connPool!
     }
     
-    func initConn() async throws -> RedisConnection {
+    func initConn(host:String, port:Int, pass:String, database:Int) async throws -> RedisConnection {
         
-        if self.redisModel.connectionType == RedisConnectionTypeEnum.SSH.rawValue {
-            return try await getSSHConn()
-        }
 
-        return try await withUnsafeThrowingContinuation { continuation in
-            self.logger.info("start get new redis connection...")
-            
+        logger.info("init new redis connection, host: \(host), port: \(port), pass: \(pass), database: \(database)")
+        return try await withCheckedThrowingContinuation { continuation in
             do {
                 let eventLoop = MultiThreadedEventLoopGroup(numberOfThreads: 4).next()
                 var configuration: RedisConnection.Configuration
-                if (self.redisModel.password.isEmpty) {
-                    configuration = try RedisConnection.Configuration(hostname: self.redisModel.host, port: self.redisModel.port, initialDatabase: self.redisModel.database, defaultLogger: logger)
+                if (pass.isEmpty) {
+                    configuration = try RedisConnection.Configuration(hostname: host, port: port, initialDatabase: database, defaultLogger: logger)
                 } else {
-                    configuration = try RedisConnection.Configuration(hostname: self.redisModel.host, port: self.redisModel.port, password: self.redisModel.password, initialDatabase: self.redisModel.database, defaultLogger: logger)
+                    configuration = try RedisConnection.Configuration(hostname: host, port: port, password: pass, initialDatabase: database, defaultLogger: logger)
                 }
                 
                 let future = RedisConnection.make(
@@ -403,52 +227,98 @@ class RediStackClient {
                 )
                 
                 future.whenSuccess({ redisConnection in
-                    self.logger.info("get new redis connection success, connection id: \(redisConnection.id)")
+                    self.logger.info("init redis connection success, connection id: \(redisConnection.id)")
                     continuation.resume(returning: redisConnection)
                 })
                 future.whenFailure({ error in
-                    self.logger.info("get new redis connection error: \(error)")
+                    self.logger.info("init redis connection error: \(error)")
                     continuation.resume(throwing: error)
                 })
             } catch {
+                self.logger.info("init redis connection error: \(error)")
                 continuation.resume(throwing: error)
             }
         }
     }
     
-    public func initPool() throws -> RedisConnectionPool {
-        let eventLoop = MultiThreadedEventLoopGroup(numberOfThreads: 4).next()
+    public func initPool(host:String, port:Int, pass:String, database:Int) throws -> RedisConnectionPool {
+        let eventLoop = eventLoopGroup.next()
+
+        let addresses = try [SocketAddress.makeAddressResolvingHost(host, port: port)]
         
-        let addresses = try [SocketAddress.makeAddressResolvingHost(self.redisModel.host, port: self.redisModel.port)]
+        let password = pass.isEmpty ? nil : pass
+        
+        let config: RedisConnectionPool.PoolConnectionConfiguration = .init(
+            initialDatabase: database
+            , password: password
+            , defaultLogger: self.logger, tcpClient: nil)
+        
         let pool = RedisConnectionPool(
             configuration: .init(
-                initialServerConnectionAddresses: addresses,
-                maximumConnectionCount: .maximumActiveConnections(4),
-                connectionFactoryConfiguration: .init(connectionInitialDatabase: self.redisModel.database, connectionPassword: self.redisModel.password, connectionDefaultLogger: nil, tcpClient: nil),
-                minimumConnectionCount: 2,
-                connectionBackoffFactor: 2,
-                initialConnectionBackoffDelay: .milliseconds(100),
-                connectionRetryTimeout: .seconds(60)
-                ),
-            boundEventLoop: eventLoop
-        )
-        pool.activate()
+                initialServerConnectionAddresses: addresses
+                , connectionCountBehavior: .elastic(maximumConnectionCount: 3, minimumConnectionCount: 2)
+                , connectionConfiguration: config
+                , retryStrategy: .exponentialBackoff(initialDelay: .milliseconds(100), timeout: .seconds(5))
+                , poolDefaultLogger: self.logger
+            )
+            , boundEventLoop: eventLoop)
         
+        pool.activate()
+
+//        _keepalive()
         self.logger.info("init redis connection pool complete...")
         return pool
     }
     
-    func close() -> Void {
-        guard let conn = self.connection else {
-            logger.info("close redis connection, connection is nil, over...")
-            return
-        }
-            
-        conn.close().whenComplete({completion in
-                self.connection = nil
-                self.logger.info("redis connection close success")
+    private func _keepalive() {
+        let eventLoop = eventLoopGroup.next()
+        self.keepaliveTask = eventLoop.scheduleRepeatedAsyncTask(initialDelay: .seconds(10), delay: .seconds(5)) {_ in
+            self.logger.info("keep alive connection...")
+            self.connPool?.leaseConnection() { conn in
+                return conn.send(.echo("redis-pro heartbeat"))
+            }.whenComplete({completion in
+                if case .success(let r) = completion {
+                    self.logger.info("keepalive heartbeat echo: \(r)")
+                }
+                else if case .failure(let error) = completion {
+                    self.logger.info("keepalive heartbeat error: \(error)")
+                }
             })
+            
+            return eventLoop.makeSucceededVoidFuture()
+        }
+    }
+    
+    // close
+    func close() -> Void {
+        self.connection?.close().whenComplete({completion in
+                self.connection = nil
+                self.logger.info("redis connection close")
+            })
+        self.connPool?.close()
+        self.connPool = nil
+        self.logger.info("redis connection pool close")
         
         self.closeSSH()
+        
+        self.keepaliveTask?.cancel()
+    }
+    
+    deinit {
+        logger.info("gracefully shutdown event loop group start...")
+        self.eventLoopGroup.shutdownGracefully({ _ in
+            self.logger.info("gracefully shutdown event loop group complete...")
+        })
+    }
+}
+
+
+
+// MARK: RESPValue Conversion
+extension RESPValue {
+    @usableFromInline
+    func map<T: RESPValueConvertible>(to type: T.Type = T.self) throws -> T {
+        guard let value = T(fromRESP: self) else { throw RedisClientError.failedRESPConversion(to: type) }
+        return value
     }
 }

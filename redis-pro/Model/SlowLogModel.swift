@@ -7,8 +7,8 @@
 
 import Foundation
 
-class SlowLogModel:NSObject, Identifiable {
-    @objc var id:String = ""
+public class SlowLogModel:NSObject, Identifiable {
+    @objc public var id:String = ""
     @objc var timestamp:Int = -1
     @objc var execTime:String = ""
     @objc var cmd:String = ""

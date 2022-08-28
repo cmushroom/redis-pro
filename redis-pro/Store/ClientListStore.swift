@@ -12,32 +12,36 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "client-list-store")
 struct ClientListState: Equatable {
-
-    var tableState: TableState = TableState(columns: [
-        .init(title: "id", key: "id", width: 60),
-        .init(title: "name", key: "name", width: 60),
-        .init(title: "addr", key: "addr", width: 140),
-        .init(title: "laddr", key: "laddr", width: 140),
-        .init(title: "fd", key: "fd", width: 60),
-        .init(title: "age", key: "age", width: 60),
-        .init(title: "idle", key: "idle", width: 60),
-        .init(title: "flags", key: "flags", width: 60),
-        .init(title: "db", key: "db", width: 60),
-        .init(title: "sub", key: "sub", width: 60),
-        .init(title: "psub", key: "psub", width: 60),
-        .init(title: "multi", key: "multi", width: 60),
-        .init(title: "qbuf", key: "qbuf", width: 60),
-        .init(title: "qbuf_free", key: "qbuf_free", width: 60),
-        .init(title: "obl", key: "obl", width: 60),
-        .init(title: "oll", key: "oll", width: 60),
-        .init(title: "omem", key: "omem", width: 60),
-        .init(title: "events", key: "events", width: 60),
-        .init(title: "cmd", key: "cmd", width: 100),
-        .init(title: "argv_mem", key: "argv_mem", width: 60),
-        .init(title: "tot_mem", key: "tot_mem", width: 60),
-        .init(title: "redir", key: "redir", width: 60),
-        .init(title: "user", key: "user", width: 60)
-    ], datasource: [], contextMenus: ["Kill"], selectIndex: -1)
+    
+    var tableState: TableState = TableState(
+        columns: [
+            .init(title: "id", key: "id", width: 60),
+            .init(title: "name", key: "name", width: 60),
+            .init(title: "addr", key: "addr", width: 140),
+            .init(title: "laddr", key: "laddr", width: 140),
+            .init(title: "fd", key: "fd", width: 60),
+            .init(title: "age", key: "age", width: 60),
+            .init(title: "idle", key: "idle", width: 60),
+            .init(title: "flags", key: "flags", width: 60),
+            .init(title: "db", key: "db", width: 60),
+            .init(title: "sub", key: "sub", width: 60),
+            .init(title: "psub", key: "psub", width: 60),
+            .init(title: "multi", key: "multi", width: 60),
+            .init(title: "qbuf", key: "qbuf", width: 60),
+            .init(title: "qbuf_free", key: "qbuf_free", width: 60),
+            .init(title: "obl", key: "obl", width: 60),
+            .init(title: "oll", key: "oll", width: 60),
+            .init(title: "omem", key: "omem", width: 60),
+            .init(title: "events", key: "events", width: 60),
+            .init(title: "cmd", key: "cmd", width: 100),
+            .init(title: "argv_mem", key: "argv_mem", width: 60),
+            .init(title: "tot_mem", key: "tot_mem", width: 60),
+            .init(title: "redir", key: "redir", width: 60),
+            .init(title: "user", key: "user", width: 60)
+        ]
+        , datasource: []
+        , contextMenus: [.KILL]
+        , selectIndex: -1)
     
     init() {
         logger.info("client list state init ...")

@@ -105,8 +105,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func applicationWillBecomeActive(_ notification: Notification) {
         logger.info("redis applicationWillBecomeActive...")
-//        NSApp.mainWindow?.makeKeyAndOrderFront(self)
-//        (notification.object as? NSApplication)?.windows.first?.makeKeyAndOrderFront(self)
     }
     
     func applicationWillResignActive(_:Notification) {
@@ -129,9 +127,3 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //    }
     
 }
-
-//extension AppDelegate: NSWindowDelegate {
-//
-//    func windowDidMiniaturize(_: Notification) {
-//    }
-//}

@@ -12,7 +12,6 @@ import Logging
 struct NSearchField: NSViewRepresentable {
     @Binding var value: String
     var placeholder: String
-    var disable = false
     var onCommit: ((String) -> Void)?
     
     private let logger = Logger(label: "search-field")
@@ -24,8 +23,6 @@ struct NSearchField: NSViewRepresentable {
         textField.delegate = context.coordinator
     
         logger.info("search field init \(value)")
-
-        textField.isEnabled = !disable
         
 //        textField.bezelStyle = .roundedBezel
         return textField
@@ -85,10 +82,25 @@ struct NSearchField: NSViewRepresentable {
             }
         }
         
+        // enter
+        func control(_ control: NSControl, textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
+            
+            if (commandSelector == #selector(NSResponder.insertNewline(_:))) {
+                 // Do something against ENTER key
+                logger.debug("on search field enter commit, text: \(parent.value)")
+                parent.onCommit?(parent.value)
+                editing = false
+                
+                return true
+             }
+            
+            return false
+        }
+        
 //        func control(_ control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
 //            let value = fieldEditor.string.trimmingCharacters(in: .whitespacesAndNewlines)
 //            parent.value = value
-//            logger.debug("on search field commit, text: \(parent.value)")
+//            logger.debug("on search field enter commit, text: \(parent.value)")
 //            parent.onCommit?(value)
 //            editing = false
 //            return true

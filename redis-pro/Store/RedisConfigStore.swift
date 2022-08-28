@@ -20,8 +20,11 @@ struct RedisConfigState: Equatable {
     var editKey:String = ""
     var editIndex = 0
     
-    var tableState: TableState = TableState(columns: [.init(title: "Key", key: "key", width: 200), .init(title: "Value", key: "value", width: 800)]
-                                            , datasource: [], contextMenus: ["Edit"], selectIndex: -1)
+    var tableState: TableState = TableState(
+        columns: [.init(title: "Key", key: "key", width: 200), .init(title: "Value", key: "value", width: 800)]
+        , datasource: []
+        , contextMenus: [.EDIT]
+        , selectIndex: -1)
     
     init() {
         logger.info("redis config state init ...")

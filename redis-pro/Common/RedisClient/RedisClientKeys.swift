@@ -9,27 +9,15 @@ import Foundation
 import RediStack
 import Logging
 
-// key
+// MARK: - keys function
 extension RediStackClient {
     
     private func keyScan(cursor:Int, keywords:String?, count:Int? = 1) async throws -> (cursor:Int, keys:[String]) {
         logger.debug("redis keys scan, cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
         
-        
-        let conn = try await getConn()
-        
-        return try await withCheckedThrowingContinuation { continuation in
-            conn.scan(startingFrom: cursor, matching: keywords, count: count)
-                .whenComplete({completion in
-                    if case .success(let r) = completion {
-                        continuation.resume(returning: r)
-                    }
-                    else if case .failure(let error) = completion {
-                        self.logger.error("redis keys scan error \(error)")
-                        continuation.resume(throwing: error)
-                    }
-                })
-        }
+        let command:RedisCommand<(Int, [RedisKey])> = .scan(startingFrom: cursor, matching: keywords, count: count)
+        let r = try await _send(command)
+        return (r.0, r.1.map { $0.rawValue })
     }
     
     
@@ -111,12 +99,9 @@ extension RediStackClient {
         do {
             // 带有占位符的情况，使用
             if isScan {
-//                async let totalAsync = keysCountScan(match)
 
                 let pageData:[String] = try await keysPageScan(page)
              
-//                let total = try await totalAsync
-//                page.total = total
                 return await self.toRedisKeyModels(pageData)
             } else {
                 let exist = await self.exist(page.keywords)

@@ -33,13 +33,6 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         )
     }
     
-//    func setGlobalStore(_ viewStore: ViewStore<GlobalState, GlobalAction>?) {
-//        guard let viewStore = viewStore else {
-//            return
-//        }
-//        self.viewStore = viewStore
-//    }
-    
     func setAppStore(_ appStore: Store<AppState, AppAction>) {
         let globalStore = appStore.scope(state: \.globalState, action: AppAction.globalAction)
         self.viewStore = ViewStore(globalStore)

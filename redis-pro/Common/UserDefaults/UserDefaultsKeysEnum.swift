@@ -15,5 +15,7 @@ enum UserDefaulsKeysEnum: String {
     case RedisFavoriteDefaultSelectType = "User.defaultFavorite"
     // color scheme
     case AppColorScheme = "App.ColorScheme"
+    // keepalive second
+    case AppKeepalive = "App.Keepalive"
     
 }

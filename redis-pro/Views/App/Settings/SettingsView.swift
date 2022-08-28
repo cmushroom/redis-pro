@@ -25,7 +25,7 @@ struct SettingsView: View {
             Form {
                 VStack(alignment: .leading, spacing: 8) {
                     
-                    Picker(selection: viewStore.binding(get: {$0.defaultFavorite}, send: SettingsAction.updateDefaultFavorite),
+                    Picker(selection: viewStore.binding(get: {$0.defaultFavorite}, send: SettingsAction.setDefaultFavorite),
                            label: Text("Default Favorite:").frame(width: labelWidth, alignment: .trailing)
                     ) {
                         Section {
@@ -36,13 +36,13 @@ struct SettingsView: View {
                             Text(item.name)
                         }
                     }
-                    Picker(selection: viewStore.binding(get: {$0.colorSchemeValue ?? ColorSchemeEnum.SYSTEM.rawValue}, send: SettingsAction.updateColorScheme),
-//                    Picker(selection: $colorSchemeValue,
+                    Picker(selection: viewStore.binding(get: {$0.colorSchemeValue ?? ColorSchemeEnum.SYSTEM.rawValue}, send: SettingsAction.setColorScheme),
                            label: Text("Appearance:").frame(width: labelWidth, alignment: .trailing)) {
                         ForEach(ColorSchemeEnum.allCases.map({$0.rawValue}), id: \.self) { item in
                             Text(verbatim: item)
                         }
                     }
+//                    FormItemInt(label: "Keepalive(s)", value: viewStore.binding(get: {$0.keepalive} send: SettingsAction.setKeepalive))
                     Spacer()
                 }
             }

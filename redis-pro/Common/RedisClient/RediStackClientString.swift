@@ -33,7 +33,7 @@ extension RediStackClient {
         
         let command:RedisCommand<RESPValue?> = .get(RedisKey(key))
         let r = await send(command)
-        return r??.string ?? Cons.EMPTY_STRING
+        return r??.description ?? Cons.EMPTY_STRING
     }
     
     func del(_ key:String) async -> Int {

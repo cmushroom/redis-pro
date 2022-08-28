@@ -27,6 +27,8 @@ class RediStackClient {
     var connection:RedisConnection?
     var connPool:RedisConnectionPool?
     
+    var keepaliveTask: RepeatedTask?
+    
     // ssh
     var sshChannel:Channel?
     var sshLocalChannel:Channel?
@@ -240,7 +242,7 @@ class RediStackClient {
     }
     
     public func initPool(host:String, port:Int, pass:String, database:Int) throws -> RedisConnectionPool {
-        let eventLoop = MultiThreadedEventLoopGroup(numberOfThreads: 2).next()
+        let eventLoop = eventLoopGroup.next()
 
         let addresses = try [SocketAddress.makeAddressResolvingHost(host, port: port)]
         
@@ -263,8 +265,28 @@ class RediStackClient {
         
         pool.activate()
 
+//        _keepalive()
         self.logger.info("init redis connection pool complete...")
         return pool
+    }
+    
+    private func _keepalive() {
+        let eventLoop = eventLoopGroup.next()
+        self.keepaliveTask = eventLoop.scheduleRepeatedAsyncTask(initialDelay: .seconds(10), delay: .seconds(5)) {_ in
+            self.logger.info("keep alive connection...")
+            self.connPool?.leaseConnection() { conn in
+                return conn.send(.echo("redis-pro heartbeat"))
+            }.whenComplete({completion in
+                if case .success(let r) = completion {
+                    self.logger.info("keepalive heartbeat echo: \(r)")
+                }
+                else if case .failure(let error) = completion {
+                    self.logger.info("keepalive heartbeat error: \(error)")
+                }
+            })
+            
+            return eventLoop.makeSucceededVoidFuture()
+        }
     }
     
     // close
@@ -278,6 +300,15 @@ class RediStackClient {
         self.logger.info("redis connection pool close")
         
         self.closeSSH()
+        
+        self.keepaliveTask?.cancel()
+    }
+    
+    deinit {
+        logger.info("gracefully shutdown event loop group start...")
+        self.eventLoopGroup.shutdownGracefully({ _ in
+            self.logger.info("gracefully shutdown event loop group complete...")
+        })
     }
 }
 

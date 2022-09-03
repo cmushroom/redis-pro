@@ -13,7 +13,12 @@ import RediStack
 extension RediStackClient {
     
     func selectDB(_ database: Int) async -> Bool {
-    
+        self.logger.info("select db: \(database)")
+        self.redisModel.database = database
+        
+        self.connPool?.close()
+        self.connPool = nil
+        
         let command: RedisCommand<Void> = .select(database: database)
         let _ = await send(command)
         return true

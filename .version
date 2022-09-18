@@ -1,6 +1,6 @@
 {
-    "latestVersionNum": 17,
-    "latestVersion": "2.3.0",
+    "latestVersionNum": 18,
+    "latestVersion": "2.4.0",
     "updateType": "hint",
-    "releaseNotes": "1. 使用reids 连接池。 \n2. table通用组件支持拷贝行数据, 右键菜单添加快捷键。  #49 \n3. 文本框禁用情况下支持选中复制 #49。 \n4. 表格拖动排序问题修复。 \n5. 点击一个失败的链接,正常redis服务器也无法登录bug修复 #48。 \n6. redis client 重构。"
+    "releaseNotes": "1. 切换db Bug 修复 #53。 \n2. 连接池关闭错误修复。 \n3. 最小化到dock后无法唤起问题修复 #38。"
 }

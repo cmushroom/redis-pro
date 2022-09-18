@@ -23,7 +23,7 @@ class RediStackClient {
     var redisModel:RedisModel
     
     // conn
-    private let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 3)
+    private let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 2)
     var connection:RedisConnection?
     var connPool:RedisConnectionPool?
     
@@ -264,7 +264,7 @@ class RediStackClient {
             , boundEventLoop: eventLoop)
         
         pool.activate()
-
+        
 //        _keepalive()
         self.logger.info("init redis connection pool complete...")
         return pool
@@ -305,10 +305,12 @@ class RediStackClient {
     }
     
     deinit {
-        logger.info("gracefully shutdown event loop group start...")
-        self.eventLoopGroup.shutdownGracefully({ _ in
-            self.logger.info("gracefully shutdown event loop group complete...")
-        })
+        do {
+            logger.info("gracefully shutdown event loop group start...")
+            try self.eventLoopGroup.syncShutdownGracefully()
+        } catch {
+            logger.info("gracefully shutdown event loop group error: \(error)")
+        }
     }
 }
 

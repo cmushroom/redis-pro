@@ -349,17 +349,12 @@ let redisKeysReducer = Reducer<RedisKeysState, RedisKeysAction, RedisKeysEnviron
             return .none
         
         //MARK:  --------------------------- database action ---------------------------
-        case let .databaseAction(.change(database)):
+        case let .databaseAction(.onDBChange(database)):
             logger.info("change database, \(database)")
-            return .task {
-                let r = await env.redisInstanceModel.getClient().selectDB(database)
-                if r {
-                    return .initial
-                }
-                return .none
+            return .result {
+                .success(.initial)
             }
-            .receive(on: env.mainQueue)
-            .eraseToEffect()
+            
         case .databaseAction:
             return .none
             

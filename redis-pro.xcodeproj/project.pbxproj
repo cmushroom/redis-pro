@@ -17,7 +17,6 @@
 		430A09E225C1559400B60DFC /* FormLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430A09E125C1559400B60DFC /* FormLabel.swift */; };
 		430A09E625C155F800B60DFC /* FormItemText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430A09E525C155F800B60DFC /* FormItemText.swift */; };
 		431266CC261C450300FB6B69 /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431266CB261C450300FB6B69 /* Tag.swift */; };
-		431266CF261C4E0900FB6B69 /* RedisKeySearchRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431266CE261C4E0900FB6B69 /* RedisKeySearchRowView.swift */; };
 		431266D5261C5C9000FB6B69 /* ButtonTypeEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431266D4261C5C9000FB6B69 /* ButtonTypeEnum.swift */; };
 		431266D8261C66E100FB6B69 /* MTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431266D7261C66E100FB6B69 /* MTheme.swift */; };
 		431266DE261D45C500FB6B69 /* MIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431266DD261D45C500FB6B69 /* MIcon.swift */; };
@@ -213,7 +212,6 @@
 		430A09E125C1559400B60DFC /* FormLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormLabel.swift; sourceTree = "<group>"; };
 		430A09E525C155F800B60DFC /* FormItemText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormItemText.swift; sourceTree = "<group>"; };
 		431266CB261C450300FB6B69 /* Tag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
-		431266CE261C4E0900FB6B69 /* RedisKeySearchRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisKeySearchRowView.swift; sourceTree = "<group>"; };
 		431266D4261C5C9000FB6B69 /* ButtonTypeEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonTypeEnum.swift; sourceTree = "<group>"; };
 		431266D7261C66E100FB6B69 /* MTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTheme.swift; sourceTree = "<group>"; };
 		431266DD261D45C500FB6B69 /* MIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MIcon.swift; sourceTree = "<group>"; };
@@ -595,7 +593,6 @@
 			isa = PBXGroup;
 			children = (
 				62CB3D742619AEC20061E8C3 /* RedisKeysListView.swift */,
-				431266CE261C4E0900FB6B69 /* RedisKeySearchRowView.swift */,
 				437C09342649039000F1904C /* DatabasePicker.swift */,
 			);
 			path = Sidebar;
@@ -1026,7 +1023,6 @@
 				62E8F9D92765F197006A5326 /* MPasswordField.swift in Sources */,
 				431266F5261D912500FB6B69 /* StringEditorView.swift in Sources */,
 				43CD28AC267B67C600E11876 /* PuppyLogger.swift in Sources */,
-				431266CF261C4E0900FB6B69 /* RedisKeySearchRowView.swift in Sources */,
 				43F22EF5269FCE6000A00F97 /* DateHelper.swift in Sources */,
 				4314A34126243ED500053FEE /* PageBar.swift in Sources */,
 				62CB3D7D2619AF990061E8C3 /* RedisKeyModel.swift in Sources */,
@@ -1260,7 +1256,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 17;
+				CURRENT_PROJECT_VERSION = 18;
 				DEVELOPMENT_ASSET_PATHS = "\"redis-pro/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "redis-pro/Info.plist";
@@ -1269,7 +1265,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.3.0;
+				MARKETING_VERSION = 2.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.cmushroom.redis-pro";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -1285,7 +1281,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 17;
+				CURRENT_PROJECT_VERSION = 18;
 				DEVELOPMENT_ASSET_PATHS = "\"redis-pro/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
@@ -1295,7 +1291,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 2.3.0;
+				MARKETING_VERSION = 2.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.cmushroom.redis-pro";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

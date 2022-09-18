@@ -24,8 +24,9 @@ struct DatabaseState: Equatable {
 enum DatabaseAction:BindableAction, Equatable {
     case initial
     case getDatabases
-    case updateDatabases(Int)
-    case change(Int)
+    case setDB(Int)
+    case selectDB(Int)
+    case onDBChange(Int)
     case none
     case binding(BindingAction<DatabaseState>)
 }
@@ -49,15 +50,27 @@ let databaseReducer = Reducer<DatabaseState, DatabaseAction, DatabaseEnvironment
         case .getDatabases:
             return .task {
                 let r = await env.redisInstanceModel.getClient().databases()
-                return .updateDatabases(r)
+                return .setDB(r)
             }
             .receive(on: env.mainQueue)
             .eraseToEffect()
-        case let .updateDatabases(databases):
+        case let .setDB(databases):
             state.databases = databases
             return .none
-        case let .change(database):
+        case let .selectDB(database):
             state.database = database
+            
+            return .task {
+                let r = await env.redisInstanceModel.getClient().selectDB(database)
+                if r {
+                    return .onDBChange(database)
+                }
+                return .none
+            }
+            .receive(on: env.mainQueue)
+            .eraseToEffect()
+            
+        case .onDBChange:
             return .none
         case .none:
             return .none

@@ -9,12 +9,7 @@ import SwiftUI
 import ComposableArchitecture
 
 struct DatabasePicker: View {
-//    @EnvironmentObject var redisInstanceModel:RedisInstanceModel
-//    @State private var databases:Int = 16
-//    @State var database:Int = 0
-//    @State var selection = 0
-//    var onChange: (() -> Void)?
-//
+
     var store:Store<DatabaseState, DatabaseAction>
     
     var body: some View {
@@ -22,7 +17,7 @@ struct DatabasePicker: View {
             
             Menu(content: {
                 ForEach(0 ..< viewStore.databases, id: \.self) { item in
-                    Button("DB\(item)", action: { viewStore.send(.change(item))})
+                    Button("DB\(item)", action: { viewStore.send(.selectDB(item))})
                         .font(.system(size: 10.0))
                         .foregroundColor(.primary)
                 }
@@ -37,23 +32,6 @@ struct DatabasePicker: View {
             }
         }
     }
-    
-//
-//    func onSelectDatabaseAction(_ database:Int) -> Void {
-//        Task {
-//            let r = await redisInstanceModel.getClient().selectDB(database)
-//            if r {
-//                self.database = database
-//                self.onChange?()
-//            }
-//        }
-//    }
-//
-//    func queryDBList() -> Void {
-//        Task {
-//            let r = await redisInstanceModel.getClient().databases()
-//            self.databases = r
-//        }
-//    }
+ 
 }
 

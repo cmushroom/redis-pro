@@ -23,7 +23,7 @@ class RediStackClient {
     var redisModel:RedisModel
     
     // conn
-    private let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 3)
+    private let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 2)
     var connection:RedisConnection?
     var connPool:RedisConnectionPool?
     

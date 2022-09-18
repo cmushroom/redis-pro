@@ -34,14 +34,12 @@ struct redis_proApp: App {
         WindowGroup {
             IndexView()
                 .onChange(of: scenePhase) { newPhase in
+                    logger.info("redis pro scene phase change: \(newPhase)")
                     if newPhase == .active {
-                        logger.info("app active")
                     } else if newPhase == .inactive {
-                        logger.info("app inactive")
 //                        NSApp.hide(self)
 //                        NSApp.miniaturizeAll(self)
                     } else if newPhase == .background {
-                        logger.info("app background")
                     }
                 }
         }
@@ -71,6 +69,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         logger.info("redis pro launch complete")
+        
+        //必须加上 applicationShouldHandleReopen 方法才会被执行，参考: https://developer.apple.com/forums/thread/706772?answerId=715063022#715063022
+        NSApplication.shared.delegate = self
+        
         // appcenter
         AppCenter.start(withAppSecret: "310d1d33-2570-46f9-a60d-8a862cdef6c7", services:[
             Analytics.self,
@@ -105,25 +107,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func applicationWillBecomeActive(_ notification: Notification) {
         logger.info("redis applicationWillBecomeActive...")
+        if let window = NSApp.windows.first {
+                window.deminiaturize(nil)
+            }
     }
     
     func applicationWillResignActive(_:Notification) {
         logger.info("redis pro applicationWillResignActive...")
     }
-    //    func applicationWillUpdate(_:Notification) {
-    //        logger.info("redis pro applicationWillUpdate...")
-    //    }
-    
-    
-//    func applicationShouldHandleReopen(_: NSApplication, hasVisibleWindows: Bool) -> Bool {
-//        logger.info("redis applicationShouldHandleReopen...")
-//        return true
-//    }
-//
-//    func applicationShouldOpenUntitledFile(_:NSApplication) -> Bool {
-//        logger.info("redis applicationShouldOpenUntitledFile...")
-//        return true
-//
-//    }
+
+    func applicationShouldHandleReopen(_: NSApplication, hasVisibleWindows: Bool) -> Bool {
+        logger.info("redis pro applicationShouldHandleReopen...")
+        return true
+    }
+
+    func applicationShouldOpenUntitledFile(_:NSApplication) -> Bool {
+        logger.info("redis pro applicationShouldOpenUntitledFile...")
+        return true
+
+    }
     
 }

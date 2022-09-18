@@ -55,7 +55,7 @@ struct RedisProCommands: Commands {
             Button("New Tab", action: {
 
                 if let currentWindow = NSApp.keyWindow,
-                   let windowController = currentWindow.windowController {
+                    let windowController = currentWindow.windowController {
                     windowController.newWindowForTab(nil)
                     if let newWindow = NSApp.keyWindow,
                        currentWindow != newWindow {

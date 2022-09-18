@@ -17,7 +17,7 @@ struct DatabasePicker: View {
             
             Menu(content: {
                 ForEach(0 ..< viewStore.databases, id: \.self) { item in
-                    Button("DB\(item)(232422)", action: { viewStore.send(.selectDB(item))})
+                    Button("DB\(item)", action: { viewStore.send(.selectDB(item))})
                         .font(.system(size: 10.0))
                         .foregroundColor(.primary)
                 }

@@ -68,10 +68,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         logger.info("redis pro launch complete")
         
-        // 必须加上 applicationShouldHandleReopen 方法才会被执行，参考: https://developer.apple.com/forums/thread/706772?answerId=715063022#715063022
-        // 关闭时还会有问题，无法唤起
-//        NSApplication.shared.delegate = self
-        
         // appcenter
         AppCenter.start(withAppSecret: "310d1d33-2570-46f9-a60d-8a862cdef6c7", services:[
             Analytics.self,
@@ -106,9 +102,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func applicationWillBecomeActive(_ notification: Notification) {
         logger.info("redis applicationWillBecomeActive...")
-        if let window = NSApp.windows.first {
-                window.deminiaturize(nil)
-            }
     }
     
     func applicationWillResignActive(_:Notification) {
@@ -117,7 +110,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationShouldHandleReopen(_: NSApplication, hasVisibleWindows: Bool) -> Bool {
         logger.info("redis pro applicationShouldHandleReopen, hasVisibleWindows: \(hasVisibleWindows)")
-        
         return true
     }
 

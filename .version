@@ -1,6 +1,6 @@
 {
-    "latestVersionNum": 18,
-    "latestVersion": "2.4.0",
+    "latestVersionNum": 19,
+    "latestVersion": "2.5.0",
     "updateType": "hint",
-    "releaseNotes": "1. 切换db Bug 修复 #53。 \n2. 连接池关闭错误修复。 \n3. 最小化到dock后无法唤起问题修复 #38。"
+    "releaseNotes": "1. 解决失焦后重新获取焦点tab切换问题,同时解决了最小化到dock唤起的问题  #55 #38。 \n2. 增加用户名登录。"
 }

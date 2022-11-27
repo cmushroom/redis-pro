@@ -8,23 +8,23 @@
 import Foundation
 import SwiftUI
 
-class RedisModel: NSObject, ObservableObject, Identifiable {
+class RedisModel: NSObject, Identifiable {
     @objc var id: String = UUID().uuidString
-    @objc @Published var name: String = "New Favorite"
-    @Published var host: String = "127.0.0.1"
-    @Published var port: Int = 6379
-    @Published var database: Int = 0
-    var user: String = "default"
-    @Published var password: String = ""
-    @Published var isFavorite: Bool = false
-    @Published var ping: Bool = false
-    @Published var connectionType:String = "tcp"
+    @objc var name: String = "New Favorite"
+    var host: String = "127.0.0.1"
+    var port: Int = 6379
+    var database: Int = 0
+    var username: String = "default"
+    var password: String = ""
+    var isFavorite: Bool = false
+    var ping: Bool = false
+    var connectionType:String = "tcp"
     
     // ssh
-    @Published var sshHost:String = ""
-    @Published var sshPort:Int = 22
-    @Published var sshUser:String = ""
-    @Published var sshPass:String = ""
+    var sshHost:String = ""
+    var sshPort:Int = 22
+    var sshUser:String = ""
+    var sshPass:String = ""
     
     var image:Image  = Image("icon-redis")
     

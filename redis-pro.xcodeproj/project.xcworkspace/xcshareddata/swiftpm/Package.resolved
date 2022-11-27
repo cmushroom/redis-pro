@@ -39,10 +39,10 @@
     {
       "identity" : "redistack",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Mordil/RediStack",
+      "location" : "https://github.com/chengpan168/RediStack",
       "state" : {
-        "branch" : "master",
-        "revision" : "555062c62e1568ed3125a51103ac42a9e4f7a626"
+        "branch" : "feat/username",
+        "revision" : "fd298674d753396482e029d0628a7c82316ea199"
       }
     },
     {
@@ -122,8 +122,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-metrics.git",
       "state" : {
-        "revision" : "3edd2f57afc4e68e23c3e4956bc8b65ca6b5b2ff",
-        "version" : "2.2.0"
+        "revision" : "53be78637ecd165d1ddedc4e20de69b8f43ec3b7",
+        "version" : "2.3.2"
       }
     },
     {
@@ -131,8 +131,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
       "state" : {
-        "revision" : "b4e0a274f7f34210e97e2f2c50ab02a10b549250",
-        "version" : "2.41.1"
+        "revision" : "e855380cb5234e96b760d93e0bfdc403e381e928",
+        "version" : "2.45.0"
       }
     },
     {

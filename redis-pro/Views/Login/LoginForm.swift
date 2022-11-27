@@ -77,7 +77,7 @@ struct LoginForm: View {
                     FormItemText(label: "Name", placeholder: "name", value: viewStore.binding(\.$name))
                     FormItemText(label: "Host", placeholder: "host", value: viewStore.binding(\.$host))
                     FormItemInt(label: "Port", placeholder: "port", value: viewStore.binding(\.$port))
-//                    FormItemText(label: "User", placeholder: "default", value: viewStore.binding(\.$user))
+                    FormItemText(label: "User", placeholder: "default", value: viewStore.binding(\.$username))
                     FormItemPassword(label: "Password", value: viewStore.binding(\.$password))
                     FormItemInt(label: "Database", value: viewStore.binding(\.$database))
                 }
@@ -98,7 +98,7 @@ struct LoginForm: View {
                     FormItemText(label: "Name", placeholder: "name", value: viewStore.binding(\.$name))
                     FormItemText(label: "Host", placeholder: "host", value: viewStore.binding(\.$host))
                     FormItemInt(label: "Port", placeholder: "port", value: viewStore.binding(\.$port))
-//                    FormItemText(label: "User", placeholder: "default", value: viewStore.binding(\.$user))
+                    FormItemText(label: "User", placeholder: "default", value: viewStore.binding(\.$username))
                     FormItemPassword(label: "Password", value: viewStore.binding(\.$password))
                     FormItemInt(label: "Database", value: viewStore.binding(\.$database))
                 }

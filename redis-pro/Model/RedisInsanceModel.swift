@@ -61,10 +61,17 @@ class RedisInstanceModel:ObservableObject, Identifiable {
     
     func connect(_ redisModel:RedisModel) async -> Bool {
         logger.info("connect to redis server: \(redisModel)")
-        
-        let client = initRedisClient(redisModel)
-        
-        return await client.ping()
+        do {
+            let r = await testConnect(redisModel)
+            if r {
+                let _ = try await initRedisClient(redisModel).getConn()
+            }
+            
+            return r
+        } catch {
+            Messages.show(error)
+            return false
+        }
     }
     
     func testConnect(_ redisModel:RedisModel) async -> Bool {
@@ -73,7 +80,7 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         }
         
         logger.info("test connect to redis server: \(redisModel)")
-        return  await initRedisClient(redisModel).ping()
+        return  await initRedisClient(redisModel).testConn()
     }
     
     func close() -> Void {

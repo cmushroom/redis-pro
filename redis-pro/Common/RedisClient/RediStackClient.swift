@@ -19,7 +19,6 @@ class Cons {
 
 class RediStackClient {
     let logger = Logger(label: "redis-client")
-    
     var redisModel:RedisModel
     
     // conn
@@ -110,12 +109,7 @@ class RediStackClient {
     }
     
     // MARK: - Common function
-    /**
-    公共底层请求redis 数据方法, 不处理任何异常, 使用者需要自己行处理异常信息
-     */
-    func _send<R>(_ command: RedisCommand<R>) async throws -> R {
-        let conn = try await getConn()
-        
+    func _send<R>(_ conn: RedisClient, _ command: RedisCommand<R>) async throws -> R {
         return try await withCheckedThrowingContinuation { continuation in
             conn.send(command, eventLoop: nil, logger: self.logger)
                 .whenComplete({completion in
@@ -128,6 +122,14 @@ class RediStackClient {
                     }
                 })
         }
+    }
+    
+    /**
+    公共底层请求redis 数据方法, 不处理任何异常, 使用者需要自己行处理异常信息
+     */
+    func _send<R>(_ command: RedisCommand<R>) async throws -> R {
+        let conn = try await getConn()
+        return try await _send(conn, command)
     }
     
     func send<R>(_ command: RedisCommand<R>, _ defaultValue: R) async -> R {
@@ -171,23 +173,35 @@ class RediStackClient {
         }
     }
     
+    
+    /// test redis connection
+    ///
+    func testConn() async -> Bool {
+        do {
+            var conn:RedisConnection
+            
+            if self.redisModel.connectionType == RedisConnectionTypeEnum.SSH.rawValue {
+                conn = try await initSSHConn()
+            } else {
+                conn = try await initConn(host: self.redisModel.host, port: self.redisModel.port, username: self.redisModel.username, pass: self.redisModel.password, database: self.redisModel.database)
+            }
+            
+            defer {
+                conn.close()
+            }
+            
+            return try await _send(conn, .ping) == "PONG"
+        } catch {
+            Messages.show(error)
+            return false
+        }
+    }
+    
     func getConn() async throws -> RedisClient {
+        if self.connPool != nil {
+            return self.connPool!
+        }
         return try await getConnPool()
-
-//        if self.connection != nil && self.connection!.isConnected {
-//            return self.connection!
-//        } else {
-//            self.logger.info("get redis connection, but connection is not available...")
-//            self.close()
-//        }
-//
-//        if self.redisModel.connectionType == RedisConnectionTypeEnum.SSH.rawValue {
-//            self.connection = try await initSSHConn()
-//        } else {
-//            self.connection = try await initConn(host: self.redisModel.host, port: self.redisModel.port, pass: self.redisModel.password, database: self.redisModel.database)
-//        }
-//
-//        return self.connection!
     }
     
     func getConnPool() async throws -> RedisClient {
@@ -199,18 +213,20 @@ class RediStackClient {
         }
         
         if self.redisModel.connectionType == RedisConnectionTypeEnum.SSH.rawValue {
-            self.connection = try await initSSHConn()
+            self.connPool = try await initSSHPool()
         } else {
-            self.connPool = try initPool(host: self.redisModel.host, port: self.redisModel.port, pass: self.redisModel.password, database: self.redisModel.database)
+            self.connPool = try initPool(host: self.redisModel.host, port: self.redisModel.port, username: self.redisModel.username, pass: self.redisModel.password, database: self.redisModel.database)
         }
         
         return self.connPool!
     }
     
-    func initConn(host:String, port:Int, pass:String, database:Int) async throws -> RedisConnection {
-        
-
-        logger.info("init new redis connection, host: \(host), port: \(port), pass: \(pass), database: \(database)")
+    func initConn(host:String, port:Int,
+                  username: String? = nil,
+                  pass:String,
+                  database:Int
+    ) async throws -> RedisConnection {
+        logger.info("redis client- init new redis connection, host: \(host), port: \(port), pass: \(pass), database: \(database)")
         return try await withCheckedThrowingContinuation { continuation in
             do {
                 let eventLoop = MultiThreadedEventLoopGroup(numberOfThreads: 4).next()
@@ -218,7 +234,8 @@ class RediStackClient {
                 if (pass.isEmpty) {
                     configuration = try RedisConnection.Configuration(hostname: host, port: port, initialDatabase: database, defaultLogger: logger)
                 } else {
-                    configuration = try RedisConnection.Configuration(hostname: host, port: port, password: pass, initialDatabase: database, defaultLogger: logger)
+                    let _username = username?.isEmpty ?? false ? nil : username
+                    configuration = try RedisConnection.Configuration(hostname: host, port: port, username: _username, password: pass, initialDatabase: database, defaultLogger: logger)
                 }
                 
                 let future = RedisConnection.make(
@@ -241,7 +258,7 @@ class RediStackClient {
         }
     }
     
-    public func initPool(host:String, port:Int, pass:String, database:Int) throws -> RedisConnectionPool {
+    public func initPool(host:String, port:Int, username:String?, pass:String, database:Int) throws -> RedisConnectionPool {
         let eventLoop = eventLoopGroup.next()
 
         let addresses = try [SocketAddress.makeAddressResolvingHost(host, port: port)]
@@ -250,6 +267,7 @@ class RediStackClient {
         
         let config: RedisConnectionPool.PoolConnectionConfiguration = .init(
             initialDatabase: database
+            , username: username
             , password: password
             , defaultLogger: self.logger, tcpClient: nil)
         
@@ -258,13 +276,14 @@ class RediStackClient {
                 initialServerConnectionAddresses: addresses
                 , connectionCountBehavior: .elastic(maximumConnectionCount: 3, minimumConnectionCount: 2)
                 , connectionConfiguration: config
-                , retryStrategy: .exponentialBackoff(initialDelay: .milliseconds(100), timeout: .seconds(5))
+//                , retryStrategy: .none
+                , retryStrategy: .exponentialBackoff(initialDelay: .milliseconds(100), backoffFactor: 3, timeout: .seconds(3))
                 , poolDefaultLogger: self.logger
             )
-            , boundEventLoop: eventLoop)
+            , boundEventLoop: eventLoop
+        )
         
         pool.activate()
-        
 //        _keepalive()
         self.logger.info("init redis connection pool complete...")
         return pool
@@ -293,15 +312,15 @@ class RediStackClient {
     func close() -> Void {
         self.connection?.close().whenComplete({completion in
                 self.connection = nil
-                self.logger.info("redis connection close")
+                self.logger.info("redis client- connection close")
             })
         self.connPool?.close()
         self.connPool = nil
-        self.logger.info("redis connection pool close")
+        self.logger.info("redis client- connection pool close")
         
         self.closeSSH()
         
-        self.keepaliveTask?.cancel()
+//        self.keepaliveTask?.cancel()
     }
     
     deinit {

@@ -7,31 +7,31 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "1F235176-678E-4370-AF05-A5C7A05EA8C5"
+            uuid = "A32249BE-C08D-404F-8C04-721C3D133539"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../../Library/Developer/Xcode/DerivedData/redis-pro-dqdhwgmlxxtepdhgbmpmdcldlrxf/SourcePackages/checkouts/RediStack/Sources/RediStack/ConnectionPool/ConnectionPool.swift"
+            filePath = "redis-pro/Model/RedisInsanceModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "241"
-            endingLineNumber = "241"
-            landmarkName = "connectionCreationFailed(_:retryDelay:logger:)"
+            startingLineNumber = "66"
+            endingLineNumber = "66"
+            landmarkName = "connect(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "EA7FEBA8-3D4F-4D85-B16B-E1AAEC4055BE"
+            uuid = "6945253B-FF99-4C59-88D4-ADE8E67A2DEF"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../Library/Developer/Xcode/DerivedData/redis-pro-dqdhwgmlxxtepdhgbmpmdcldlrxf/SourcePackages/checkouts/RediStack/Sources/RediStack/ConnectionPool/ConnectionPool.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "198"
-            endingLineNumber = "198"
+            startingLineNumber = "204"
+            endingLineNumber = "204"
             landmarkName = "_createConnection(retryDelay:startIn:logger:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -39,48 +39,64 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "5BE6502F-970F-4408-94FF-3C0CD5C53636"
+            uuid = "FA0B1998-4489-4999-825D-6C10E55F25C1"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../../Library/Developer/Xcode/DerivedData/redis-pro-dqdhwgmlxxtepdhgbmpmdcldlrxf/SourcePackages/checkouts/RediStack/Sources/RediStack/ConnectionPool/ConnectionPool.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "207"
+            endingLineNumber = "207"
+            landmarkName = "_createConnection(retryDelay:startIn:logger:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "F575DF91-758C-43CB-83FE-2AF52258FB3A"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "redis-pro/Common/RedisClient/RediStackClient.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "294"
-            endingLineNumber = "294"
-            landmarkName = "close()"
+            startingLineNumber = "208"
+            endingLineNumber = "208"
+            landmarkName = "getConnPool()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "C83B50A6-5CE2-4A4F-BC9F-34837FA9E29A"
+            uuid = "22260EB1-4165-4C46-9FCC-6CAABDD72ECC"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "redis-pro/Common/RedisClient/RedisClientSystem.swift"
+            filePath = "redis-pro/Common/RedisClient/RediStackClient.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "22"
-            endingLineNumber = "22"
-            landmarkName = "selectDB(_:)"
+            startingLineNumber = "218"
+            endingLineNumber = "218"
+            landmarkName = "getConnPool()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "06DDB51C-119C-4DEF-80DB-9901923A6A49"
+            uuid = "D30A974A-E026-4F0F-9798-3DCF3A9D1159"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../../Library/Developer/Xcode/DerivedData/redis-pro-dqdhwgmlxxtepdhgbmpmdcldlrxf/SourcePackages/checkouts/RediStack/Sources/RediStack/Commands/ConnectionCommands.swift"
+            filePath = "redis-pro/Common/RedisClient/RediStackClient.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "58"
-            endingLineNumber = "58"
-            landmarkName = "select(database:)"
+            startingLineNumber = "232"
+            endingLineNumber = "232"
+            landmarkName = "initConn(host:port:username:pass:database:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

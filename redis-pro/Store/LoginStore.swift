@@ -15,7 +15,7 @@ struct LoginState: Equatable {
     @BindableState var host: String = "127.0.0.1"
     @BindableState var port: Int = 6379
     @BindableState var database: Int = 0
-    @BindableState var user: String = "default"
+    @BindableState var username: String = "default"
     @BindableState var password: String = ""
     @BindableState var connectionType:String = "tcp"
     
@@ -40,7 +40,7 @@ struct LoginState: Equatable {
             redisModel.host = host
             redisModel.port = port
             redisModel.database = database
-            redisModel.user = user
+            redisModel.username = username
             redisModel.password = password
             redisModel.connectionType = connectionType
             redisModel.sshHost = sshHost
@@ -56,7 +56,7 @@ struct LoginState: Equatable {
             self.host = n.host
             self.port = n.port
             self.database = n.database
-            self.user = n.user
+            self.username = n.username
             self.password = n.password
             self.connectionType = n.connectionType
             self.sshHost = n.sshHost
@@ -98,7 +98,7 @@ let loginReducer = Reducer<LoginState, LoginAction, LoginEnvironment> {
         state.loading = true
         let redis = state.redisModel
         
-        return Effect<LoginAction, Never>.task {
+        return .task {
             let r = await env.redisInstanceModel.testConnect(redis)
             return .setPingR(r)
         }

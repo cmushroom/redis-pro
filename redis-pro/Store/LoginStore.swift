@@ -15,7 +15,7 @@ struct LoginState: Equatable {
     @BindableState var host: String = "127.0.0.1"
     @BindableState var port: Int = 6379
     @BindableState var database: Int = 0
-    @BindableState var username: String = "default"
+    @BindableState var username: String = ""
     @BindableState var password: String = ""
     @BindableState var connectionType:String = "tcp"
     

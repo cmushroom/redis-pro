@@ -1,15 +1,13 @@
 //
-//  redis_proTests.swift
-//  redis-proTests
+//  Tests.swift
+//  Tests
 //
-//  Created by chenpanwang on 2022/1/6.
+//  Created by chengpan on 2022/12/3.
 //
 
 import XCTest
-import RediStack
-@testable import redis_pro
 
-class redis_proTests: XCTestCase {
+final class Tests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -20,15 +18,6 @@ class redis_proTests: XCTestCase {
     }
 
     func testExample() throws {
-   
-//        defer {
-//            instance.getClient().close()
-//        }
-//        
-            
-        
-//
-        
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
         // Any test you write for XCTest can be annotated as throws and async.

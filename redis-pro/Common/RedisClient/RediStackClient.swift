@@ -263,12 +263,13 @@ class RediStackClient {
 
         let addresses = try [SocketAddress.makeAddressResolvingHost(host, port: port)]
         
-        let password = pass.isEmpty ? nil : pass
+        let _username = username?.isEmpty ?? false ? nil : username
+        let _password = pass.isEmpty ? nil : pass
         
         let config: RedisConnectionPool.PoolConnectionConfiguration = .init(
             initialDatabase: database
-            , username: username
-            , password: password
+            , username: _username
+            , password: _password
             , defaultLogger: self.logger, tcpClient: nil)
         
         let pool = RedisConnectionPool(

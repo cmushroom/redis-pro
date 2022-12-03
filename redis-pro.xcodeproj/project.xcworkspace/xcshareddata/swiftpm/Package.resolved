@@ -3,10 +3,10 @@
     {
       "identity" : "appcenter-sdk-apple",
       "kind" : "remoteSourceControl",
-      "location" : "https://gitee.com/chengpan168_admin/appcenter-sdk-apple.git",
+      "location" : "https://github.com/microsoft/appcenter-sdk-apple.git",
       "state" : {
-        "revision" : "25f64229373de97ff3920941cd52203193e5d8be",
-        "version" : "4.3.0"
+        "revision" : "88e65475ffd3a7cf2bbde07df9e62159a1fd60a8",
+        "version" : "5.0.0"
       }
     },
     {
@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/microsoft/PLCrashReporter.git",
       "state" : {
-        "revision" : "6b27393cad517c067dceea85fadf050e70c4ceaa",
-        "version" : "1.10.1"
+        "revision" : "b1a342da19ed9b3af61ea2efa7656c2af30aeb7c",
+        "version" : "1.11.0"
       }
     },
     {
@@ -32,8 +32,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/sushichop/Puppy.git",
       "state" : {
-        "revision" : "7cfae42becac2d8916cb1a866dd12d9843199df9",
-        "version" : "0.5.0"
+        "revision" : "9f3cf02dc92bc233e40ba8a66af20abb97978929",
+        "version" : "0.6.0"
       }
     },
     {
@@ -41,8 +41,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/chengpan168/RediStack",
       "state" : {
-        "branch" : "feat/username",
-        "revision" : "fd298674d753396482e029d0628a7c82316ea199"
+        "branch" : "feat/user",
+        "revision" : "07a005e97530334efec8ed4b5c96a91e2b45c3f5"
       }
     },
     {
@@ -113,8 +113,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-log.git",
       "state" : {
-        "revision" : "5d66f7ba25daf4f94100e7022febf3c75e37a6c7",
-        "version" : "1.4.2"
+        "revision" : "6fe203dc33195667ce1759bf0182975e4653ba1c",
+        "version" : "1.4.4"
       }
     },
     {

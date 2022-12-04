@@ -1,6 +1,6 @@
 {
-    "latestVersionNum": 19,
-    "latestVersion": "2.5.0",
+    "latestVersionNum": 20,
+    "latestVersion": "2.5.1",
     "updateType": "hint",
-    "releaseNotes": "1. 解决失焦后重新获取焦点tab切换问题,同时解决了最小化到dock唤起的问题  #55 #38。 \n2. 增加用户名登录。"
+    "releaseNotes": "1. 修复低版本用户名问题。"
 }

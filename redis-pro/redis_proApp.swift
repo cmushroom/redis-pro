@@ -33,13 +33,6 @@ struct redis_proApp: App {
         
         WindowGroup {
             IndexView()
-                .onChange(of: scenePhase) { newPhase in
-                    logger.info("redis pro scene phase change: \(newPhase)")
-                    if newPhase == .active {
-                    } else if newPhase == .inactive {
-                    } else if newPhase == .background {
-                    }
-                }
         }
         .commands {
             RedisProCommands()

@@ -14,7 +14,7 @@ class RedisModel: NSObject, Identifiable {
     var host: String = "127.0.0.1"
     var port: Int = 6379
     var database: Int = 0
-    var username: String = "default"
+    var username: String = ""
     var password: String = ""
     var isFavorite: Bool = false
     var ping: Bool = false
@@ -55,6 +55,14 @@ class RedisModel: NSObject, Identifiable {
     convenience init(password: String) {
         self.init()
         self.password = password
+    }
+    
+    convenience init(host: String = "localhost", port: Int = 6379, username: String? = nil, password: String? = nil) {
+        self.init()
+        self.host = host
+        self.port = port
+        self.username = username ?? ""
+        self.password = password ?? ""
     }
     
     convenience init(dictionary: [String: Any]) {

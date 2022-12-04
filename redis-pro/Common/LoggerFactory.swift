@@ -10,26 +10,21 @@ import Logging
 import Puppy
 
 class LoggerFactory {
-    var puppy = Puppy.default
+    var puppy = Puppy.init()
     
     init() {
-        let console = ConsoleLogger("com.cmushroom.redis-pro.console")
-        console.format = LogFormatter()
-        
-        let delegate = PuppyFileRotationDelegate()
-        
+        let console = ConsoleLogger("com.cmushroom.redis-pro.console", logFormat: LogFormatter())
+
         let fileURL = URL(fileURLWithPath: "./redis-pro.log").absoluteURL
         let fileRotation = try! FileRotationLogger("com.cmushroom.redis-pro.file",
-                                                   fileURL: fileURL)
-        fileRotation.maxFileSize = 10 * 1024 * 1024
-        fileRotation.maxArchivedFilesCount = 5
-        fileRotation.delegate = delegate
-        fileRotation.format = LogFormatter()
-        
+                                                   fileURL: fileURL,
+                                                   rotationConfig: RotationConfig(
+                                                    maxFileSize: 10 * 1024 * 1024,
+                                                    maxArchivedFilesCount: 5
+                                                   ))
         self.puppy.add(console)
         self.puppy.add(fileRotation)
         
- 
         self.puppy.info("init logger complete...")
     }
     

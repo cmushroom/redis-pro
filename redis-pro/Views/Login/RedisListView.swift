@@ -42,7 +42,7 @@ struct RedisListView: View {
                            onLoad(viewStore)
                        }
                 LoginForm(store: store.scope(state: \.loginState, action: FavoriteAction.loginAction))
-                    .frame(minWidth: 600, maxWidth: .infinity, minHeight: 420, maxHeight: .infinity)
+                    .frame(minWidth: 700, maxWidth: .infinity, minHeight: 520, maxHeight: .infinity)
             }
         }
     }

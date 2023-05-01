@@ -12,7 +12,7 @@ final class LogFormatter: LogFormattable {
     func formatMessage(_ level: LogLevel, message: String, tag: String, function: String,
                        file: String, line: UInt, swiftLogInfo: [String : String],
                        label: String, date: Date, threadID: UInt64) -> String {
-        let date = dateFormatter(date, dateFormat: "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+        let date = dateFormatter(date, withFormatter: .init(), dateFormat: "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
         let file = fileName(file)
         return "\(date) [\(level.emoji) \(level)] \(file)#L.\(line) \(function) \(message)"
     }

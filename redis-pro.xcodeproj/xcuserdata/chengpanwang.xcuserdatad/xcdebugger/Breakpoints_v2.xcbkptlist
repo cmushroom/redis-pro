@@ -34,6 +34,38 @@
             endingLineNumber = "46"
             landmarkName = "getSSHConnection()"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "9D39A2D8-B6EA-4BD7-A77B-0FEEF357806F - 6ba00c96e1fac648"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.UnsafeContinuation&lt;RediStack.RedisConnection, Swift.Error&gt;) -&gt; () in redis_pro.RediStackClient.getSSHConn() async throws -&gt; RediStack.RedisConnection"
+                  moduleName = "redis-pro"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/chengpanwang/work/redis-pro/redis-pro/Common/SSH/SSHRediStackClient.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "47"
+                  endingLineNumber = "47"
+                  offsetFromSymbolStart = "1849">
+               </Location>
+               <Location
+                  uuid = "9D39A2D8-B6EA-4BD7-A77B-0FEEF357806F - 6ca25af5c6119117"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 @Sendable (Swift.Error) -&gt; () in closure #1 (Swift.UnsafeContinuation&lt;RediStack.RedisConnection, Swift.Error&gt;) -&gt; () in redis_pro.RediStackClient.getSSHConn() async throws -&gt; RediStack.RedisConnection"
+                  moduleName = "redis-pro"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/chengpanwang/work/redis-pro/redis-pro/Common/SSH/SSHRediStackClient.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "48"
+                  endingLineNumber = "48"
+                  offsetFromSymbolStart = "80">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

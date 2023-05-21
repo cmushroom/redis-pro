@@ -128,7 +128,7 @@ extension RediStackClient {
         
         let command: RedisCommand<(Int, [(RESPValue, Double)])> = .zscan(RedisKey(key), startingFrom: cursor, matching: keywords, count: count)
         let r = try await _send(command)
-        return (r.0, r.1.map { ($0.0.string ?? Cons.EMPTY_STRING, $0.1) })
+        return (r.0, r.1.map { ($0.0.string ?? Const.EMPTY_STRING, $0.1) })
     }
     
     func zupdate(_ key:String, from:String, to:String, score:Double) async -> Bool {
@@ -203,7 +203,7 @@ extension RediStackClient {
     
         let command: RedisCommand<[(RESPValue, Double)]> = .zrangebyscore(from: RedisKey(key), withMinimumScoreOf: .inclusive(Double.min), limitBy: (offset: page.start, count: page.size), returning: .valuesAndScores)
         let r:[(RESPValue, Double)] = try await _send(command)
-        return r.map { ($0.string ?? Cons.EMPTY_STRING, "\($1)") }
+        return r.map { ($0.string ?? Const.EMPTY_STRING, "\($1)") }
         
     }
     

@@ -25,7 +25,7 @@ struct LoginForm: View {
                 HStack(alignment: .center){
                     if !viewStore.loading {
                         Button(action: {
-                            guard let url = URL(string: Constants.REPO_URL) else {
+                            guard let url = URL(string: Const.REPO_URL) else {
                                 return
                             }
                             openURL(url)

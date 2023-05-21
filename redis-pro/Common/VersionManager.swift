@@ -48,7 +48,7 @@ struct VersionManager {
                         Messages.confirm("New version \(latestVersion) is available", message: releaseNotes,
                                       primaryButton: "Upgrade",
                                       action: {
-                                        if let url = URL(string: Constants.RELEASE_URL) {
+                                        if let url = URL(string: Const.RELEASE_URL) {
                                             NSWorkspace.shared.open(url)
                                         }
                                       }

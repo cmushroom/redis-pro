@@ -36,13 +36,15 @@ struct SettingsView: View {
                             Text(item.name)
                         }
                     }
+                    
                     Picker(selection: viewStore.binding(get: {$0.colorSchemeValue ?? ColorSchemeEnum.SYSTEM.rawValue}, send: SettingsAction.setColorScheme),
                            label: Text("Appearance:").frame(width: labelWidth, alignment: .trailing)) {
                         ForEach(ColorSchemeEnum.allCases.map({$0.rawValue}), id: \.self) { item in
                             Text(verbatim: item)
                         }
                     }
-//                    FormItemInt(label: "Keepalive(s)", value: viewStore.binding(get: {$0.keepalive} send: SettingsAction.setKeepalive))
+                    
+                    FormItemInt(label: "String Max Length", labelWidth:120, tips:"HELP_STRING_GET_RANGE_LENGTH", value: viewStore.binding(get: {$0.stringMaxLength}, send: SettingsAction.setStringMaxLength))
                     Spacer()
                 }
             }

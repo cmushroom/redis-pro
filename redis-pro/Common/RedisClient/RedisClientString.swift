@@ -33,7 +33,23 @@ extension RediStackClient {
         
         let command:RedisCommand<RESPValue?> = .get(RedisKey(key))
         let r = await send(command)
-        return r??.description ?? Cons.EMPTY_STRING
+        return r??.description ?? Const.EMPTY_STRING
+    }
+    
+    func getRange(_ key:String, start:Int = 0, end:Int) async -> String {
+        logger.info("get value range, key:\(key), start:\(start), end:\(end)")
+        
+        let command:RedisCommand<String> = .getRange(key, start: start, end: end)
+        let r = await send(command)
+        return r?.description ?? Const.EMPTY_STRING
+    }
+    
+    func strLen(_ key:String) async -> Int {
+        logger.info("get value length, key:\(key)")
+        
+        let command:RedisCommand<Int> = .strln(RedisKey(key))
+        let r = await send(command)
+        return r ?? 0
     }
     
     func del(_ key:String) async -> Int {

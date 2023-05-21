@@ -13,10 +13,6 @@ import NIOSSH
 import Swift
 import ComposableArchitecture
 
-class Cons {
-    static let EMPTY_STRING = ""
-}
-
 class RediStackClient {
     let logger = Logger(label: "redis-client")
     var redisModel:RedisModel
@@ -114,7 +110,7 @@ class RediStackClient {
             conn.send(command, eventLoop: nil, logger: self.logger)
                 .whenComplete({completion in
                     if case .success(let r) = completion {
-                        self.logger.info("string operator, setex complete")
+                        self.logger.info("send redis command: \(command) complete")
                         continuation.resume(returning: r)
                     }
                     else if case .failure(let error) = completion {
@@ -124,9 +120,8 @@ class RediStackClient {
         }
     }
     
-    /**
-    公共底层请求redis 数据方法, 不处理任何异常, 使用者需要自己行处理异常信息
-     */
+
+    // 公共底层请求redis 数据方法, 不处理任何异常, 使用者需要自己行处理异常信息
     func _send<R>(_ command: RedisCommand<R>) async throws -> R {
         let conn = try await getConn()
         return try await _send(conn, command)
@@ -320,11 +315,9 @@ class RediStackClient {
         self.logger.info("redis client- connection pool close")
         
         self.closeSSH()
-        
-//        self.keepaliveTask?.cancel()
     }
     
-    deinit {
+    func shutdown() {
         do {
             logger.info("gracefully shutdown event loop group start...")
             try self.eventLoopGroup.syncShutdownGracefully()

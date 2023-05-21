@@ -11,6 +11,7 @@ struct FormItemInt: View {
     var label:String
     var labelWidth:CGFloat = 80
     var placeholder:String?
+    var tips:LocalizedStringKey?
     @Binding var value:Int
     var suffix:String?
     var onCommit:(() -> Void)?
@@ -24,7 +25,10 @@ struct FormItemInt: View {
             }
 //            NIntField(value: $value, placeholder: placeholder ?? label, onCommit: onCommit)
 //            MTextField(value: valueProxy, placeholder: placeholder ?? label, suffix: suffix, onCommit: onCommit, autoCommit: autoCommit)
-            MIntField(value: $value, placeholder: placeholder ?? label, onCommit: onCommit)
+            MIntField(value: $value, placeholder: placeholder ?? label, onCommit: onCommit).help(tips ?? "")
+            if(tips != nil) {
+                MIcon(icon: "questionmark.circle", fontSize: 12).help(tips!)
+            }
         }
     }
 }

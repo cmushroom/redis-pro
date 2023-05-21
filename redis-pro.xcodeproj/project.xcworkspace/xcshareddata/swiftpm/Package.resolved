@@ -32,8 +32,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/sushichop/Puppy.git",
       "state" : {
-        "revision" : "9f3cf02dc92bc233e40ba8a66af20abb97978929",
-        "version" : "0.6.0"
+        "revision" : "b5af02a72a5a1f92a68e6eceee19cac804067ad9",
+        "version" : "0.7.0"
       }
     },
     {
@@ -113,8 +113,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-log.git",
       "state" : {
-        "revision" : "6fe203dc33195667ce1759bf0182975e4653ba1c",
-        "version" : "1.4.4"
+        "revision" : "32e8d724467f8fe623624570367e3d50c5638e46",
+        "version" : "1.5.2"
       }
     },
     {
@@ -140,8 +140,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio-ssh",
       "state" : {
-        "revision" : "fe02717fa9f7eb8d82957d6784bc3d1793f9c1e6",
-        "version" : "0.4.1"
+        "revision" : "baa05dc6ff3de89c589a9d582659f0f6699f62ab",
+        "version" : "0.6.1"
       }
     },
     {

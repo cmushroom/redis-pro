@@ -1,6 +1,6 @@
 {
-    "latestVersionNum": 20,
-    "latestVersion": "2.5.1",
+    "latestVersionNum": 22,
+    "latestVersion": "2.5.2",
     "updateType": "hint",
-    "releaseNotes": "1. 修复低版本用户名问题。"
+    "releaseNotes": "1. 增加字符串长度查询设置，对于超长字符通守getrange改善性能。\n2. 优化线程池关闭方式。"
 }

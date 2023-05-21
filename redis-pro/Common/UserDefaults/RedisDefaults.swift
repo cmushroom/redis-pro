@@ -47,30 +47,20 @@ class RedisDefaults {
         return userDefaults.string(forKey: UserDefaulsKeysEnum.RedisLastUseIdKey.rawValue)
     }
     
+    // string 最大显示长度
+    static func getStringMaxLength() -> Int {
+        let string:String? = userDefaults.string(forKey: UserDefaulsKeysEnum.AppStringMaxLength.rawValue)
+        if let string = string {
+            return Int(string) ?? Const.DEFAULT_STRING_MAX_LENGTH
+        }
+        
+        return Const.DEFAULT_STRING_MAX_LENGTH
+    }
+    
     
     private static func getAllDict() -> [Dictionary<String, Any>]? {
         return userDefaults.array(forKey: UserDefaulsKeysEnum.RedisFavoriteListKey.rawValue) as? [Dictionary<String, Any>]
     }
-    
-    
-//    func loadAll() -> Void {
-//        redisModels.removeAll()
-//
-//        let redisDicts = getAll()
-//
-//        redisDicts.forEach{ (element) in
-//            let item = RedisModel(dictionary: element)
-//            redisModels.append(item)
-//        }
-//
-//        if redisModels.count == 0 {
-//            let item = RedisModel()
-//            redisModels.append(item)
-//        }
-//
-//        self.lastRedisModelId = userDefaults.string(forKey: UserDefaulsKeysEnum.RedisLastUseIdKey.rawValue)
-//        logger.info("last select redis model id: \(String(describing: lastRedisModelId))")
-//    }
     
     static func saveLastUse(_ redisModel:RedisModel) -> Void {
         userDefaults.setValue(redisModel.id, forKey: UserDefaulsKeysEnum.RedisLastUseIdKey.rawValue)

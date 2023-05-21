@@ -15,6 +15,8 @@ enum UserDefaulsKeysEnum: String {
     case RedisFavoriteDefaultSelectType = "User.defaultFavorite"
     // color scheme
     case AppColorScheme = "App.ColorScheme"
+    // string editor default max length
+    case AppStringMaxLength = "App.StringMaxLength"
     // keepalive second
     case AppKeepalive = "App.Keepalive"
     

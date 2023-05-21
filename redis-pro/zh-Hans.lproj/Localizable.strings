@@ -13,7 +13,11 @@
 "HELP_REFRESH" = "刷新";
 // -------------------------------------------------- redis help message end -----------------------------------------------------
 
-// -------------------------------------------------- redis confirm message start ---------------------------------------------------
+// -------------------------------------------------- redis string message start -------------------------------------------------
+"HELP_STRING_GET_RANGE_LENGTH" = "查询redis string类型数据时最大长度, 用于控制在查询超大字符串时引起的性能问题, -1表过查询整个字符串, 大于-1使用GETRANGE方法查询";
+// -------------------------------------------------- redis string message end ---------------------------------------------------
+
+// -------------------------------------------------- redis confirm message start ------------------------------------------------
 
 "ZSET_DELETE_CONFIRM_TITLE" = "Delete zset element, value: '%@'?";
 "ZSET_DELETE_CONFIRM_MESSAGE" = "Are you sure you want to delete the zset element, value: '%@'? This operation cannot be undone.";
@@ -26,10 +30,10 @@
 
 "HASH_DELETE_CONFIRM_TITLE'%@'" = "Delete hash field '%@'?";
 "HASH_DELETE_CONFIRM_MESSAGE'%@'" = "Are you sure you want to delete the hash field '%@'? This operation cannot be undone.";
-// -------------------------------------------------- redis confirm message end -----------------------------------------------------
+// -------------------------------------------------- redis confirm message end --------------------------------------------------
 
 
-// -------------------------------------------------- redis key message start ---------------------------------------------------
+// -------------------------------------------------- redis key message start ----------------------------------------------------
 
 "REDIS_KEY_DELETE_CONFIRM_TITLE'%@'" = "Delete key '%@'?";
 "REDIS_KEY_DELETE_CONFIRM_MESSAGE'%@'" = "Are you sure you want to delete the key '%@'? This operation cannot be undone.";

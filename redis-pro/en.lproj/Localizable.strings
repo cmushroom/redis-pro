@@ -14,7 +14,12 @@
 // -------------------------------------------------- redis help message end -----------------------------------------------------
 
 
-// -------------------------------------------------- redis confirm message start ---------------------------------------------------
+// -------------------------------------------------- redis string message start -------------------------------------------------
+"HELP_STRING_GET_RANGE_LENGTH" = "查询redis string类型数据时最大长度, 用于控制在查询超大字符串时引起的性能问题, -1表过查询整个字符串, 大于-1使用GETRANGE方法查询";
+// -------------------------------------------------- redis string message end ---------------------------------------------------
+
+
+// -------------------------------------------------- redis confirm message start ------------------------------------------------
 
 "ZSET_DELETE_CONFIRM_TITLE" = "Delete zset element, value: '%@'?";
 "ZSET_DELETE_CONFIRM_MESSAGE" = "Are you sure you want to delete the zset element, value: '%@'? This operation cannot be undone.";
@@ -27,31 +32,31 @@
 
 "HASH_DELETE_CONFIRM_TITLE'%@'" = "Delete hash field '%@'?";
 "HASH_DELETE_CONFIRM_MESSAGE'%@'" = "Are you sure you want to delete the hash field '%@'? This operation cannot be undone.";
-// -------------------------------------------------- redis confirm message end -----------------------------------------------------
+// -------------------------------------------------- redis confirm message end --------------------------------------------------
 
 
-// -------------------------------------------------- redis key message start ---------------------------------------------------
+// -------------------------------------------------- redis key message start ----------------------------------------------------
 
 "REDIS_KEY_DELETE_CONFIRM_TITLE'%@'" = "Delete key '%@'?";
 "REDIS_KEY_DELETE_CONFIRM_MESSAGE'%@'" = "Are you sure you want to delete the key '%@'? This operation cannot be undone.";
 
-// -------------------------------------------------- redis key message end -----------------------------------------------------
+// -------------------------------------------------- redis key message end ------------------------------------------------------
 
-// ------------------------------------------------ system confirm message start ------------------------------------------------
+// ------------------------------------------------ system confirm message start -------------------------------------------------
 "CONFIRM_FAVORITE_REDIS_TITLE'%@'" = "Delete list item '%@'?";
 "CONFIRM_FAVORITE_REDIS_MESSAGE'%@'" = "Are you sure you want to delete the item '%@'? This operation cannot be undone.";
-// ------------------------------------------------ system confirm message end --------------------------------------------------
+// ------------------------------------------------ system confirm message end ---------------------------------------------------
 
 
-// ------------------------------------------------ system start ----------------------------------------------------------------
+// ------------------------------------------------ system start -----------------------------------------------------------------
 "UNIT_MICROSECOND" = "1 second = 1,000,000 microsecond";
-// ------------------------------------------------ system start ----------------------------------------------------------------
+// ------------------------------------------------ system start -----------------------------------------------------------------
 
-// ------------------------------------------------ Redis Config Start...--------------------------------------------------------
+// ------------------------------------------------ Redis Config Start...---------------------------------------------------------
 "REDIS_CONFIG_REWRITE" = "The CONFIG REWRITE command rewrites the redis.conf file the server was started with, applying the minimal changes needed to make it reflect the configuration currently used by the server, which may be different compared to the original one because of the use of the CONFIG SET command.";
-// ------------------------------------------------ Redis Config End...----------------------------------------------------------
+// ------------------------------------------------ Redis Config End...-----------------------------------------------------------
 
-// ------------------------------------------------ Redis Slow Log Start...------------------------------------------------------
+// ------------------------------------------------ Redis Slow Log Start...-------------------------------------------------------
 "REDIS_SLOW_LOG_ID" = "A unique progressive identifier for every slow log entry, The ID is never reset in the course of the Redis server execution, only a server restart will reset it";
 "REDIS_SLOW_LOG_TIMESTAMP" = "The timestamp at which the logged command was processed";
 "REDIS_SLOW_LOG_EXEC_TIME" = "The amount of time needed for its execution, in microseconds";

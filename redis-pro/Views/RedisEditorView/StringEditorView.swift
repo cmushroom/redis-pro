@@ -24,10 +24,17 @@ struct StringEditorView: View {
                 
                 // footer
                 HStack(alignment: .center, spacing: MTheme.H_SPACING) {
+                    if (viewStore.isIntactString) {
+                        Text("lenth: \(viewStore.length)")
+                    } else {
+                        Text("range: 0~\(viewStore.stringMaxLength + 1) / \(viewStore.length)")
+                        MButton(text: "Show Intact", action: {viewStore.send(.getIntactString)})
+                    }
+                
                     Spacer()
                     MButton(text: "Pretty Json", action: {viewStore.send(.jsonFormat)})
                     IconButton(icon: "arrow.clockwise", name: "Refresh", action: {viewStore.send(.refresh)})
-                    IconButton(icon: "checkmark", name: "Submit", action: {viewStore.send(.submit)})
+                    IconButton(icon: "checkmark", name: "Submit", disabled: !viewStore.isIntactString, action: {viewStore.send(.submit)})
                 }
                 .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
                 

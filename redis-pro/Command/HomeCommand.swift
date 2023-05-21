@@ -13,7 +13,7 @@ struct HomeCommands: View {
     
     var body: some View {
         Button("Home") {
-            guard let url = URL(string: Constants.REPO_URL) else {
+            guard let url = URL(string: Const.REPO_URL) else {
                 return
             }
             openURL(url)

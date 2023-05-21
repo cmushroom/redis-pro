@@ -13,10 +13,6 @@ import NIOSSH
 import Swift
 import ComposableArchitecture
 
-class Cons {
-    static let EMPTY_STRING = ""
-}
-
 class RediStackClient {
     let logger = Logger(label: "redis-client")
     var redisModel:RedisModel

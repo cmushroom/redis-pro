@@ -33,7 +33,7 @@ extension RediStackClient {
         
         let command:RedisCommand<RESPValue?> = .get(RedisKey(key))
         let r = await send(command)
-        return r??.description ?? Cons.EMPTY_STRING
+        return r??.description ?? Const.EMPTY_STRING
     }
     
     func getRange(_ key:String, start:Int = 0, end:Int) async -> String {
@@ -41,7 +41,7 @@ extension RediStackClient {
         
         let command:RedisCommand<String> = .getRange(key, start: start, end: end)
         let r = await send(command)
-        return r?.description ?? Cons.EMPTY_STRING
+        return r?.description ?? Const.EMPTY_STRING
     }
     
     func strLen(_ key:String) async -> Int {

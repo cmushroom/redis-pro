@@ -91,7 +91,7 @@ extension RedisCommand where ResultType == String {
     }
     
     public static func getRange(_ key: String, start:Int = 0, end:Int) -> RedisCommand<String> {
-        return .init(keyword: "GETRANGE", arguments: [.init(from: start), .init(from: end)])
+        return .init(keyword: "GETRANGE", arguments: [.init(from: key), .init(from: start), .init(from: end)])
     }
     
     public static func type(_ key: String) -> RedisCommand<String> {

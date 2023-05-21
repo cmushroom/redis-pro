@@ -64,7 +64,7 @@
 		4382204026574E3F00DA7F9E /* MSpin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4382203F26574E3F00DA7F9E /* MSpin.swift */; };
 		43822042265763D400DA7F9E /* RedisProCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43822041265763D400DA7F9E /* RedisProCommands.swift */; };
 		4385D32E261ED26200BA8ED1 /* IndexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4385D32D261ED26200BA8ED1 /* IndexView.swift */; };
-		4397288C2643E43800803BE9 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4397288B2643E43800803BE9 /* Constants.swift */; };
+		4397288C2643E43800803BE9 /* Const.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4397288B2643E43800803BE9 /* Const.swift */; };
 		43BB012326390BC20039565E /* ModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BB012226390BC20039565E /* ModalView.swift */; };
 		43BCCD3526A919B8000BE45F /* MSecureField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BCCD3426A919B8000BE45F /* MSecureField.swift */; };
 		43BCCD3726A91E85000BE45F /* FormItemPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BCCD3626A91E85000BE45F /* FormItemPassword.swift */; };
@@ -267,7 +267,7 @@
 		4382203F26574E3F00DA7F9E /* MSpin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSpin.swift; sourceTree = "<group>"; };
 		43822041265763D400DA7F9E /* RedisProCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisProCommands.swift; sourceTree = "<group>"; };
 		4385D32D261ED26200BA8ED1 /* IndexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexView.swift; sourceTree = "<group>"; };
-		4397288B2643E43800803BE9 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		4397288B2643E43800803BE9 /* Const.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Const.swift; sourceTree = "<group>"; };
 		43BB012226390BC20039565E /* ModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalView.swift; sourceTree = "<group>"; };
 		43BCCD3426A919B8000BE45F /* MSecureField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSecureField.swift; sourceTree = "<group>"; };
 		43BCCD3626A91E85000BE45F /* FormItemPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormItemPassword.swift; sourceTree = "<group>"; };
@@ -560,7 +560,7 @@
 				62D1BA9428435C0C00F41CAD /* Helpers */,
 				431266D7261C66E100FB6B69 /* MTheme.swift */,
 				4373C50025C2E75B002B700E /* BizError.swift */,
-				4397288B2643E43800803BE9 /* Constants.swift */,
+				4397288B2643E43800803BE9 /* Const.swift */,
 				437BC2442645272E00E2C84D /* DoubleFormatter.swift */,
 				437BC24626452AE400E2C84D /* StringFormatter.swift */,
 				43CD286D2670A03800E11876 /* VersionManager.swift */,
@@ -972,7 +972,7 @@
 				436BB6932644D126008B4866 /* SetEditorView.swift in Sources */,
 				4373C50525C3F0B6002B700E /* UserDefaultsKeysEnum.swift in Sources */,
 				4340E2CA2666494300F51F19 /* ScanModel.swift in Sources */,
-				4397288C2643E43800803BE9 /* Constants.swift in Sources */,
+				4397288C2643E43800803BE9 /* Const.swift in Sources */,
 				620AF6C627D48996002D6895 /* RedisClientSlowLog.swift in Sources */,
 				62BDAB3E293B7C0000ADA406 /* AbountCommand.swift in Sources */,
 				43F22F1326A5546000A00F97 /* RedisInfoItemModel.swift in Sources */,

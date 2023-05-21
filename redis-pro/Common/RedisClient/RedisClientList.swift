@@ -61,9 +61,9 @@ extension RediStackClient {
                 throw BizError("list value: \(value), index: \(index) have changed, please check!")
             }
             
-            try await _lset(key, index: index, value: Constants.LIST_VALUE_DELETE_MARK)
+            try await _lset(key, index: index, value: Const.LIST_VALUE_DELETE_MARK)
             
-            return try await _lrem(key,value: Constants.LIST_VALUE_DELETE_MARK)
+            return try await _lrem(key,value: Const.LIST_VALUE_DELETE_MARK)
         } catch {
             handleError(error)
         }

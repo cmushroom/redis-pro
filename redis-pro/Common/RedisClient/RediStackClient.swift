@@ -319,11 +319,9 @@ class RediStackClient {
         self.logger.info("redis client- connection pool close")
         
         self.closeSSH()
-        
-//        self.keepaliveTask?.cancel()
     }
     
-    deinit {
+    func shutdown() {
         do {
             logger.info("gracefully shutdown event loop group start...")
             try self.eventLoopGroup.syncShutdownGracefully()

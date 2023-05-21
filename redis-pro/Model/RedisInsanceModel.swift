@@ -29,6 +29,8 @@ class RedisInstanceModel:ObservableObject, Identifiable {
             NotificationCenter.default.addObserver(forName: NSApplication.willTerminateNotification, object: nil, queue: .main) { [self] _ in
                 logger.info("redis pro will exit...")
                 close()
+                
+                shutdown()
             }
         )
     }
@@ -87,5 +89,9 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         logger.info("redis stack client close...")
         rediStackClient?.close()
         rediStackClient = nil
+    }
+    
+    func shutdown() -> Void {
+        rediStackClient?.shutdown()
     }
 }

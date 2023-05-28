@@ -10,11 +10,11 @@ import Logging
 import ComposableArchitecture
 
 struct StringEditorView: View {
-    var store: Store<StringValueState, StringValueAction>
+    var store: StoreOf<StringValueStore>
     private let logger = Logger(label: "string-editor")
     
     var body: some View {
-        WithViewStore(store) {viewStore in
+        WithViewStore(self.store, observe: { $0 }) {viewStore in
             VStack(alignment: .leading, spacing: 0) {
                 VStack(alignment: .leading, spacing: MTheme.V_SPACING){
                     // text editor

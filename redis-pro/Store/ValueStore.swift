@@ -13,7 +13,7 @@ import ComposableArchitecture
 private let logger = Logger(label: "value-store")
 struct ValueState: Equatable {
     var keyState: KeyState = KeyState()
-    var stringValueState: StringValueState = StringValueState()
+    var stringValueState = StringValueStore.State()
     var hashValueState: HashValueState = HashValueState()
     var listValueState: ListValueState = ListValueState()
     var setValueState: SetValueState = SetValueState()
@@ -33,7 +33,7 @@ enum ValueAction:BindableAction, Equatable {
     case keyChange(RedisKeyModel)
     case submitSuccess(Bool)
     case keyAction(KeyAction)
-    case stringValueAction(StringValueAction)
+    case stringValueAction(StringValueStore.Action)
     case hashValueAction(HashValueAction)
     case listValueAction(ListValueAction)
     case setValueAction(SetValueAction)
@@ -51,11 +51,19 @@ let valueReducer = Reducer<ValueState, ValueAction, ValueEnvironment>.combine(
         action: /ValueAction.keyAction,
         environment: { env in .init(redisInstanceModel: env.redisInstanceModel) }
     ),
-    stringValueReducer.pullback(
-        state: \.stringValueState,
-        action: /ValueAction.stringValueAction,
-        environment: { env in .init(redisInstanceModel: env.redisInstanceModel) }
+    AnyReducer { environment in
+        StringValueStore(redisInstanceModel: environment.redisInstanceModel)
+    }
+    .pullback(
+      state: \.stringValueState,
+      action: /ValueAction.stringValueAction,
+      environment: { $0 }
     ),
+//    stringValueReducer.pullback(
+//        state: \.stringValueState,
+//        action: /ValueAction.stringValueAction,
+//        environment: { env in .init(redisInstanceModel: env.redisInstanceModel) }
+//    ),
     hashValueReducer.pullback(
         state: \.hashValueState,
         action: /ValueAction.hashValueAction,

@@ -10,11 +10,11 @@ import Logging
 import ComposableArchitecture
 
 struct SlowLogView: View {
-    var store:Store<SlowLogState, SlowLogAction>
+    var store:StoreOf<SlowLogStore>
     let logger = Logger(label: "slow-log-view")
     
     var body: some View {
-        WithViewStore(store) { viewStore in
+        WithViewStore(self.store, observe: { $0 }) {viewStore in
             VStack(alignment: .leading, spacing: MTheme.V_SPACING) {
                 // header
                 HStack(alignment: .center, spacing: MTheme.H_SPACING) {
@@ -34,7 +34,7 @@ struct SlowLogView: View {
                         .help("REDIS_SLOW_LOG_RESET")
                 }
                 
-                NTableView(store: store.scope(state: \.tableState, action: SlowLogAction.tableAction))
+                NTableView(store: store.scope(state: \.tableState, action: SlowLogStore.Action.tableAction))
                 
                 // footer
                 HStack(alignment: .center, spacing: MTheme.H_SPACING_L) {

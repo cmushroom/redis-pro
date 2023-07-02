@@ -15,7 +15,7 @@ import ComposableArchitecture
 class RedisInstanceModel:ObservableObject, Identifiable {
     @Published var redisModel:RedisModel
     private var rediStackClient:RediStackClient?
-    private var viewStore:ViewStore<GlobalState, GlobalAction>?
+    private var viewStore:ViewStore<GlobalStore.State, GlobalStore.Action>?
     
     let logger = Logger(label: "redis-instance")
     
@@ -35,8 +35,8 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         )
     }
     
-    func setAppStore(_ appStore: Store<AppState, AppAction>) {
-        let globalStore = appStore.scope(state: \.globalState, action: AppAction.globalAction)
+    func setAppStore(_ appStore: StoreOf<AppStore>) {
+        let globalStore = appStore.scope(state: \.globalState, action: AppStore.Action.globalAction)
         self.viewStore = ViewStore(globalStore)
     }
     

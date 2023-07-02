@@ -11,11 +11,11 @@ import ComposableArchitecture
 
 
 struct LuaView: View {
-    var store:Store<LuaState, LuaAction>
+    var store:StoreOf<LuaStore>
     let logger = Logger(label: "lua-view")
     
     var body: some View {
-        WithViewStore(store) { viewStore in
+        WithViewStore(self.store, observe: { $0 }) {viewStore in
             VStack(alignment: .leading, spacing: MTheme.V_SPACING) {
                 
                 // header

@@ -17,8 +17,7 @@ struct StringEditorView: View {
         WithViewStore(self.store, observe: { $0 }) {viewStore in
             VStack(alignment: .leading, spacing: 0) {
                 VStack(alignment: .leading, spacing: MTheme.V_SPACING){
-                    // text editor
-                    MTextEditor(text: viewStore.binding(\.$text))
+                    MTextEditor(text: viewStore.$text)
                 }
                 .background(Color.init(NSColor.textBackgroundColor))
                 

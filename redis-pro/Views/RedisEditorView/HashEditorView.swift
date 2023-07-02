@@ -10,22 +10,22 @@ import Logging
 import ComposableArchitecture
 
 struct HashEditorView: View {
-    var store: Store<HashValueState, HashValueAction>
+    var store: StoreOf<HashValueStore>
     private let logger = Logger(label: "redis-hash-editor")
     
     var body: some View {
-        WithViewStore(store) {viewStore in
+        WithViewStore(self.store, observe: { $0 }) {viewStore in
             VStack(alignment: .leading, spacing: 0) {
                 HStack(alignment: .center , spacing: MTheme.H_SPACING) {
                     IconButton(icon: "plus", name: "Add", action: {viewStore.send(.addNew)})
                     IconButton(icon: "trash", name: "Delete", disabled: viewStore.tableState.selectIndex < 0, action: {viewStore.send(.deleteConfirm(viewStore.tableState.selectIndex))})
                 
                     SearchBar(placeholder: "Search field...", onCommit: {viewStore.send(.search($0))})
-                    PageBar(store: store.scope(state: \.pageState, action: HashValueAction.pageAction))
+                    PageBar(store: store.scope(state: \.pageState, action: HashValueStore.Action.pageAction))
                 }
                 .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
                 
-                NTableView(store: store.scope(state: \.tableState, action: HashValueAction.tableAction))
+                NTableView(store: store.scope(state: \.tableState, action: HashValueStore.Action.tableAction))
 
                 // footer
                 HStack(alignment: .center, spacing: 4) {

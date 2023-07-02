@@ -18,7 +18,7 @@ struct ScanBar: View {
     var showTotal:Bool = true
     
     
-    var store:Store<PageState, PageAction>?
+    var store:StoreOf<PageStore>?
     let logger = Logger(label: "scan-bar")
     
     var body: some View {

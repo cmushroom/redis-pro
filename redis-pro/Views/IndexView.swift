@@ -10,9 +10,12 @@ import Logging
 import ComposableArchitecture
 
 struct IndexView: View {
-    @State var appState:AppState?
+    @State var appState:AppStore.State?
+//    var store: StoreOf<AppStore> = Store(initialState: AppStore.State()) {
+//        AppStore(redisInstanceModel: RedisInstanceModel(redisModel: RedisModel()))
+//    }
     
-    private let logger = Logger(label: "index-view")
+    let logger = Logger(label: "index-view")
     
     
     init() {
@@ -20,37 +23,41 @@ struct IndexView: View {
     }
     
     var body: some View {
+//        Text("Hamlet")
+//            .onAppear {
+//                logger.info("index view appear ...")
+//            }
+//            .onDisappear {
+//                logger.info("index view appear ...")
+//            }
         if let state = appState {
-            let env = AppEnvironment()
-            let store: Store<AppState, AppAction> = Store(
-                initialState: state,
-                reducer: appReducer,
-                environment:  .live(environment: env)
-            )
             
-            WithViewStore(store.scope(state: \.isConnect)) { viewStore in
+            var redisInstanceModel = RedisInstanceModel(redisModel: RedisModel())
+            let store: StoreOf<AppStore> = Store(initialState: state) {
+                AppStore(redisInstanceModel: redisInstanceModel)
+            }
+
+            WithViewStore(store, observe: { $0.isConnect }) {viewStore in
                 ZStack {
                     VStack {
                         if (viewStore.state) {
-                            HomeView(store)
+                            HomeView(store: store)
                         } else {
                             LoginView(store: store)
                         }
-                        
                     }
-                    
-//                    AlertView(store.scope(state: \.appAlertState, action: AppAction.alertAction))
-                    LoadingView(store.scope(state: \.globalState, action: AppAction.globalAction))
+
+                    LoadingView(store.scope(state: \.globalState, action: AppStore.Action.globalAction))
                 }.onAppear {
-                    env.redisInstanceModel.setAppStore(store)
-                    viewStore.send(.initContext)
+                    redisInstanceModel.setAppStore(store)
+//                    viewStore.send(.initContext)
                 }
             }
             
         } else {
             Spacer()
                 .onAppear {
-                    appState = AppState()
+                    appState = AppStore.State()
                 }
         }
     }

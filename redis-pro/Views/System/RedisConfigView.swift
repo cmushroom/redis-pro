@@ -11,12 +11,12 @@ import ComposableArchitecture
 
 struct RedisConfigView: View {
     
-    var store:Store<RedisConfigState, RedisConfigAction>
+    var store:StoreOf<RedisConfigStore>
     let logger = Logger(label: "redis-config-view")
     
     var body: some View {
         
-        WithViewStore(store) { viewStore in
+        WithViewStore(self.store, observe: { $0 }) {viewStore in
             VStack(alignment: .leading, spacing: MTheme.V_SPACING) {
                 HStack(alignment: .center , spacing: MTheme.H_SPACING) {
                     
@@ -27,7 +27,7 @@ struct RedisConfigView: View {
                         .help("REDIS_CONFIG_REWRITE")
                 }.padding(MTheme.HEADER_PADDING)
                 
-                NTableView(store: store.scope(state: \.tableState, action: RedisConfigAction.tableAction))
+                NTableView(store: store.scope(state: \.tableState, action: RedisConfigStore.Action.tableAction))
                 
                 HStack(alignment: .center , spacing: MTheme.H_SPACING) {
                     Spacer()

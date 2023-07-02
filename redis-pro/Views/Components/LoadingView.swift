@@ -10,18 +10,17 @@ import SwiftUI
 import ComposableArchitecture
 
 struct LoadingView: View {
-    let store:Store<GlobalState, GlobalAction>
+    let store:StoreOf<GlobalStore>
     
     private var logger = Logger(label: "loading-view")
     
-    init(_ store: Store<GlobalState, GlobalAction>) {
+    init(_ store: Store<GlobalStore.State, GlobalStore.Action>) {
         logger.info("loading view init...")
         self.store = store
-//        LoadingUtil.initial(store)
     }
     
     var body: some View {
-        WithViewStore(store) { viewStore in
+        WithViewStore(self.store, observe: { $0 }) {viewStore in
             HStack{
                 EmptyView()
             }
@@ -30,49 +29,3 @@ struct LoadingView: View {
         }
     }
 }
-
-//
-//class LoadingUtil {
-//    var store:Store<LoadingState, LoadingAction>
-//    var viewStore: ViewStore<LoadingState, LoadingAction>
-//    static var globalContext:[String: ViewStore<GlobalState, GlobalAction>] = [:]
-//
-//    static var instance:LoadingUtil?
-//
-//    private var logger = Logger(label: "loading-util")
-//
-//    init(_ store: Store<LoadingState, LoadingAction>) {
-//        logger.info("loading util init...")
-//
-//        self.store = store
-//        self.viewStore = ViewStore(store)
-//    }
-//
-//    static func setContext(_ id:String?, store: Store<GlobalState, GlobalAction>) {
-//        guard  let id = id else {
-//            return
-//        }
-//        globalContext[id] = ViewStore(store)
-//    }
-//
-//    static func initial(_ store: Store<LoadingState, LoadingAction>) {
-//        if instance != nil {
-//            return
-//        }
-//
-//        LoadingUtil.instance = .init(store)
-//    }
-//
-//    static func show() {
-//        DispatchQueue.main.async {
-//            instance?.viewStore.send(.show)
-//        }
-//
-//    }
-//    static func hide() {
-//        DispatchQueue.main.async {
-//        instance?.viewStore.send(.hide)
-//        }
-//    }
-//
-//}

@@ -35,13 +35,13 @@ class RediStackClient {
     var recursionSize:Int = 2000
     var recursionCountSize:Int = 5000
     
-    var viewStore:ViewStore<GlobalState, GlobalAction>?
+    var viewStore:ViewStore<GlobalStore.State, GlobalStore.Action>?
     
     init(_ redisModel:RedisModel) {
         self.redisModel = redisModel
     }
     
-    func setGlobalStore(_ globalStore: ViewStore<GlobalState, GlobalAction>?) {
+    func setGlobalStore(_ globalStore: ViewStore<GlobalStore.State, GlobalStore.Action>?) {
         self.viewStore = globalStore
     }
     

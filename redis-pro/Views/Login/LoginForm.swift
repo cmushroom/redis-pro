@@ -15,9 +15,9 @@ struct LoginForm: View {
     
     @Environment(\.openURL) var openURL
     
-    let store:Store<LoginState, LoginAction>
+    let store:StoreOf<LoginStore>
    
-    private func footer(_ viewStore: ViewStore<LoginState, LoginAction>) -> some View {
+    private func footer(_ viewStore: ViewStore<LoginStore.State, LoginStore.Action>) -> some View {
         Section {
             Divider()
                 .padding(.vertical, 8)
@@ -70,7 +70,7 @@ struct LoginForm: View {
         }
     }
     
-    private func tcpTab(_ viewStore: ViewStore<LoginState, LoginAction>) -> some View {
+    private func tcpTab(_ viewStore: ViewStore<LoginStore.State, LoginStore.Action>) -> some View {
         Form {
             Section {
                 VStack(alignment: .leading, spacing: 14) {
@@ -91,7 +91,7 @@ struct LoginForm: View {
         }.tag(RedisConnectionTypeEnum.TCP.rawValue)
     }
     
-    private func sshTab(_ viewStore: ViewStore<LoginState, LoginAction>) -> some View {
+    private func sshTab(_ viewStore: ViewStore<LoginStore.State, LoginStore.Action>) -> some View {
         Form {
             Section {
                 VStack(alignment: .leading, spacing: 12) {
@@ -123,7 +123,7 @@ struct LoginForm: View {
     }
     
     var body: some View {
-        WithViewStore(store) { viewStore in
+        WithViewStore(self.store, observe: { $0 }) {viewStore in
             TabView(selection: viewStore.binding(\.$connectionType)) {
                 tcpTab(viewStore)
                 sshTab(viewStore)

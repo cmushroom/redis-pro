@@ -12,16 +12,16 @@ import ComposableArchitecture
 struct RedisListView: View {
     let logger = Logger(label: "redis-login")
 
-    var store:Store<FavoriteState, FavoriteAction>
+    var store:StoreOf<FavoriteStore>
     
     var body: some View {
-        WithViewStore(store) { viewStore in
+        WithViewStore(self.store, observe: { $0 }) {viewStore in
             HSplitView {
                 VStack(alignment: .leading,
                        spacing: 0) {
                     
                     NTableView(
-                        store: store.scope(state: \.tableState, action: FavoriteAction.tableAction)
+                        store: store.scope(state: \.tableState, action: FavoriteStore.Action.tableAction)
                     )
                     
                     // footer
@@ -41,27 +41,14 @@ struct RedisListView: View {
                        .onAppear{
                            onLoad(viewStore)
                        }
-                LoginForm(store: store.scope(state: \.loginState, action: FavoriteAction.loginAction))
+                LoginForm(store: store.scope(state: \.loginState, action: FavoriteStore.Action.loginAction))
                     .frame(minWidth: 700, maxWidth: .infinity, minHeight: 520, maxHeight: .infinity)
             }
         }
     }
     
-    func onLoad(_ viewStore:ViewStore<FavoriteState, FavoriteAction>) {
+    func onLoad(_ viewStore:ViewStore<FavoriteStore.State, FavoriteStore.Action>) {
         viewStore.send(.getAll)
         viewStore.send(.initDefaultSelection)
     }
 }
-
-
-//struct RedisInstanceList_Previews: PreviewProvider {
-//    private static var redisFavoriteModel: RedisFavoriteModel = RedisFavoriteModel()
-//    static var previews: some View {
-//        RedisListView()
-//            .environmentObject(redisFavoriteModel)
-//            .onAppear{
-//                redisFavoriteModel.loadAll()
-//            }
-//
-//    }
-//}

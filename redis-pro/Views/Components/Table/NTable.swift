@@ -13,7 +13,7 @@ import ComposableArchitecture
 
 struct NTableView: NSViewControllerRepresentable {
     
-    let store: Store<TableState, TableAction>
+    let store: StoreOf<TableStore>
     
     let logger = Logger(label: "ntable")
     
@@ -63,14 +63,14 @@ class NTableController: NSViewController{
     // drag
     let pasteboardType = NSPasteboard.PasteboardType.string
     
-    var viewStore: ViewStore<TableState, TableAction>
+    var viewStore: ViewStore<TableStore.State, TableStore.Action>
     var cancellables: Set<AnyCancellable> = []
     
     var observation: NSKeyValueObservation?
     
     let logger = Logger(label: "table-view-controller")
     
-    init(_ store: Store<TableState, TableAction>) {
+    init(_ store: StoreOf<TableStore>) {
         logger.info("table controller init...")
         self.viewStore = ViewStore(store)
         
@@ -80,7 +80,7 @@ class NTableController: NSViewController{
         
         super.init(nibName: nil, bundle: nil)
         
-        // set table dark mode
+        // set table dark light mode
         self.view.appearance = NSApp.appearance
         self.tableView.appearance = NSApp.appearance
     }
@@ -130,7 +130,7 @@ class NTableController: NSViewController{
         // 监听默认选中
         self.viewStore.publisher.defaultSelectIndex
             .sink(receiveValue: {
-                self.logger.debug("table store select index publisher, index: \($0)")
+                self.logger.info("table store select index publisher, index: \($0)")
                 let selectIndex = min($0, self.viewStore.datasource.count - 1)
                 self.arrayController.setSelectionIndex(selectIndex)
             })
@@ -139,7 +139,7 @@ class NTableController: NSViewController{
         // 监听数据变化
         self.viewStore.publisher.datasource
             .sink(receiveValue: {
-                self.logger.debug("table store data source publisher, data source length: \($0.count)")
+                self.logger.info("table store data source publisher, data source length: \($0.count)")
                 let selectIndex = min(self.viewStore.selectIndex, $0.count - 1)
                 
                 self.datasource = $0

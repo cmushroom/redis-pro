@@ -15,8 +15,6 @@ struct SearchBar: View {
     var placeholder:String = "Search..."
     
     var onCommit: ((String) -> Void)?
-    
-    var store:Store<PageState, PageAction>?
     let logger = Logger(label: "search-bar")
     
     var body: some View {
@@ -33,10 +31,3 @@ struct SearchBar: View {
         onCommit?(keywords)
     }
 }
-
-//struct SearchBar_Previews: PreviewProvider {
-//    @State static var keywords:String = ""
-//    static var previews: some View {
-//        SearchBar()
-//    }
-//}

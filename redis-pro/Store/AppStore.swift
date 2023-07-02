@@ -12,126 +12,105 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "app-store")
 
-struct AppState: Equatable {
-    var id:String = UUID().uuidString
-    // app title
-    var title:String = ""
-    // 是否已经连接 redis server
-    var isConnect: Bool = false
-    var globalState: GlobalState = GlobalState()
-//    var appAlertState: AppAlertState = AppAlertState()
-    var loadingState: LoadingState = LoadingState()
-    private var _favoriteState: FavoriteState = FavoriteState()
-    var favoriteState: FavoriteState {
-        get {
-            var state = _favoriteState
-            state.globalState = globalState
-            return state
-        }
-        set {
-            _favoriteState = newValue
-            globalState = newValue.globalState!
-        }
-    }
-    var settingsState: SettingsState = SettingsState()
-    var redisKeysState: RedisKeysState = RedisKeysState()
 
-    init() {
-        logger.info("app state init ...")
-        
-    }
-}
-
-extension Store {
+struct AppStore: ReducerProtocol {
     
-}
-
-enum AppAction:Equatable {
-    case initContext
-    case onStart
-    case onClose
-    case globalAction(GlobalAction)
-    case alertAction(AlertAction)
-    case loadingAction(LoadingAction)
-    case favoriteAction(FavoriteAction)
-    case settingsAction(SettingsAction)
-    case redisKeysAction(RedisKeysAction)
-}
-
-struct AppEnvironment {
-    var redisInstanceModel:RedisInstanceModel = RedisInstanceModel(redisModel: RedisModel())
-    var mainQueue: AnySchedulerOf<DispatchQueue> = .main
-}
-
-
-let appReducer = Reducer<AppState, AppAction, SystemEnvironment<AppEnvironment>>.combine(
-    globalReducer.pullback(
-      state: \.globalState,
-      action: /AppAction.globalAction,
-      environment: { env in GlobalEnvironment() }
-    ),
-    favoriteReducer.pullback(
-      state: \.favoriteState,
-      action: /AppAction.favoriteAction,
-      environment: { env in FavoriteEnvironment(redisInstanceModel: env.redisInstanceModel) }
-    ),
-    settingsReducer.pullback(
-      state: \.settingsState,
-      action: /AppAction.settingsAction,
-      environment: { _ in SettingsEnvironment() }
-    ),
-//    alertReducer.pullback(
-//      state: \.appAlertState,
-//      action: /AppAction.alertAction,
-//      environment: { _ in AlertEnvironment() }
-//    ),
-    loadingReducer.pullback(
-      state: \.loadingState,
-      action: /AppAction.loadingAction,
-      environment: { _ in LoadingEnvironment() }
-    ),
-    redisKeysReducer.pullback(
-      state: \.redisKeysState,
-      action: /AppAction.redisKeysAction,
-      environment: { env in .init(redisInstanceModel: env.redisInstanceModel) }
-    ),
-    Reducer<AppState, AppAction, SystemEnvironment<AppEnvironment>> {
-        state, action, env in
-        switch action {
-        case .initContext:
-            logger.info("init app context complete...")
-            return .none
-        case .onStart:
-            return .none
-        
-        case .onClose:
-            env.redisInstanceModel.close()
-            state.isConnect = false
-            return .none
-        case .globalAction:
-            return .none
-        case .alertAction:
-            return .none
-        case .loadingAction:
-            return .none
-        case let .favoriteAction(.connectSuccess(redisModel)):
-            state.isConnect = true
-            state.title = redisModel.name
-            return .none
-        case .favoriteAction:
-            return .none
-        case .settingsAction:
-            return .none
-        case .redisKeysAction:
-            return .none
+    struct State: Equatable {
+        var id:String = UUID().uuidString
+        // app title
+        var title:String = ""
+        // 是否已经连接 redis server
+        var isConnect: Bool = false
+        var globalState: GlobalStore.State = GlobalStore.State()
+        var loadingState: LoadingStore.State = LoadingStore.State()
+        private var _favoriteState: FavoriteStore.State = FavoriteStore.State()
+        var favoriteState: FavoriteStore.State {
+            get {
+                var state = _favoriteState
+                state.globalState = globalState
+                return state
+            }
+            set {
+                _favoriteState = newValue
+                globalState = newValue.globalState!
+            }
         }
-    }.debug()
-)
+        var settingsState: SettingsStore.State = SettingsStore.State()
+        var redisKeysState: RedisKeysStore.State = RedisKeysStore.State()
 
+        init() {
+            logger.info("app state init ...")
+            
+        }
+    }
 
-struct Test {
-    var a:String = UUID().uuidString
-    init() {
-        logger.info("app state init ...")
+    enum Action:Equatable {
+        case initContext
+        case onStart
+        case onClose
+        case globalAction(GlobalStore.Action)
+        case alertAction(AlertAction)
+        case loadingAction(LoadingStore.Action)
+        case favoriteAction(FavoriteStore.Action)
+        case settingsAction(SettingsStore.Action)
+        case redisKeysAction(RedisKeysStore.Action)
+    }
+
+    
+    var redisInstanceModel:RedisInstanceModel
+    var mainQueue: AnySchedulerOf<DispatchQueue> = .main
+    
+    
+    var body: some ReducerProtocol<State, Action> {
+        
+        Scope(state: \.globalState, action: /Action.globalAction) {
+            GlobalStore()
+        }
+        Scope(state: \.loadingState, action: /Action.loadingAction) {
+            LoadingStore()
+        }
+        Scope(state: \.settingsState, action: /Action.settingsAction) {
+            SettingsStore()
+        }
+        Scope(state: \.favoriteState, action: /Action.favoriteAction) {
+            FavoriteStore(redisInstanceModel: redisInstanceModel)
+        }
+        Scope(state: \.redisKeysState, action: /Action.redisKeysAction) {
+            RedisKeysStore(redisInstanceModel: redisInstanceModel)
+        }
+        Scope(state: \.redisKeysState, action: /Action.redisKeysAction) {
+            RedisKeysStore(redisInstanceModel: redisInstanceModel)
+        }
+        
+        Reduce { state, action in
+            switch action {
+            case .initContext:
+                logger.info("init app context complete...")
+                return .none
+            case .onStart:
+                return .none
+            
+            case .onClose:
+                redisInstanceModel.close()
+                state.isConnect = false
+                return .none
+            case .globalAction:
+                return .none
+            case .alertAction:
+                return .none
+            case .loadingAction:
+                return .none
+            case let .favoriteAction(.connectSuccess(redisModel)):
+                state.isConnect = true
+                state.title = redisModel.name
+                return .none
+            case .favoriteAction:
+                return .none
+            case .settingsAction:
+                return .none
+            case .redisKeysAction:
+                return .none
+            }
+        }
     }
 }

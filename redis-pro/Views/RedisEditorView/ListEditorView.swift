@@ -11,11 +11,11 @@ import ComposableArchitecture
 
 struct ListEditorView: View {
     
-    var store:Store<ListValueState, ListValueAction>
+    var store:StoreOf<ListValueStore>
     let logger = Logger(label: "redis-list-editor")
     
     var body: some View {
-        WithViewStore(store) {viewStore in
+        WithViewStore(self.store, observe: { $0 }) { viewStore in
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .center , spacing: 4) {
                 IconButton(icon: "plus", name: "Add head", action: { viewStore.send(.addNew(-1))})
@@ -23,12 +23,12 @@ struct ListEditorView: View {
                 IconButton(icon: "trash", name: "Delete", disabled: viewStore.tableState.selectIndex < 0, action: {viewStore.send(.deleteConfirm(viewStore.tableState.selectIndex))})
                 
                 Spacer()
-                PageBar(store: store.scope(state: \.pageState, action: ListValueAction.pageAction))
+                PageBar(store: store.scope(state: \.pageState, action: ListValueStore.Action.pageAction))
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
             
             
-            NTableView(store: store.scope(state: \.tableState, action: ListValueAction.tableAction))
+            NTableView(store: store.scope(state: \.tableState, action: ListValueStore.Action.tableAction))
 
             // footer
             HStack(alignment: .center, spacing: MTheme.H_SPACING) {

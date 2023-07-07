@@ -47,23 +47,23 @@ struct RedisSystemStore: ReducerProtocol {
         case luaAction(LuaStore.Action)
     }
     
-    var redisInstanceModel:RedisInstanceModel
+    @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
     
     var body: some ReducerProtocol<State, Action> {
         Scope(state: \.redisInfoState, action: /Action.redisInfoAction) {
-            RedisInfoStore(redisInstanceModel: redisInstanceModel)
+            RedisInfoStore()
         }
         Scope(state: \.redisConfigState, action: /Action.redisConfigAction) {
-            RedisConfigStore(redisInstanceModel: redisInstanceModel)
+            RedisConfigStore()
         }
         Scope(state: \.slowLogState, action: /Action.slowLogAction) {
-            SlowLogStore(redisInstanceModel: redisInstanceModel)
+            SlowLogStore()
         }
         Scope(state: \.clientListState, action: /Action.clientListAction) {
-            ClientListStore(redisInstanceModel: redisInstanceModel)
+            ClientListStore()
         }
         Scope(state: \.luaState, action: /Action.luaAction) {
-            LuaStore(redisInstanceModel: redisInstanceModel)
+            LuaStore()
         }
         Reduce { state, action in
             switch action {

@@ -33,7 +33,7 @@ struct DatabaseStore: ReducerProtocol {
         case binding(BindingAction<State>)
     }
     
-    var redisInstanceModel:RedisInstanceModel
+    @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
     var mainQueue: AnySchedulerOf<DispatchQueue> = .main
     
     var body: some ReducerProtocol<State, Action> {

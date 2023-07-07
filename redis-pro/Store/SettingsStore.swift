@@ -13,7 +13,6 @@ import ComposableArchitecture
 private let logger = Logger(label: "settings-store")
 private let userDefaults = UserDefaults.standard
 
-
 struct SettingsStore: ReducerProtocol {
     struct State: Equatable {
         var colorSchemeValue:String?

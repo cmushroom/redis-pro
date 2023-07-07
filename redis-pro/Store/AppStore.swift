@@ -45,7 +45,7 @@ struct AppStore: ReducerProtocol {
     }
 
     enum Action:Equatable {
-        case initContext
+        case initial
         case onStart
         case onClose
         case globalAction(GlobalStore.Action)
@@ -56,8 +56,7 @@ struct AppStore: ReducerProtocol {
         case redisKeysAction(RedisKeysStore.Action)
     }
 
-    
-    var redisInstanceModel:RedisInstanceModel
+    @Dependency(\.redisInstance) var redisInstanceModel: RedisInstanceModel
     var mainQueue: AnySchedulerOf<DispatchQueue> = .main
     
     
@@ -73,20 +72,17 @@ struct AppStore: ReducerProtocol {
             SettingsStore()
         }
         Scope(state: \.favoriteState, action: /Action.favoriteAction) {
-            FavoriteStore(redisInstanceModel: redisInstanceModel)
+            FavoriteStore()
         }
         Scope(state: \.redisKeysState, action: /Action.redisKeysAction) {
-            RedisKeysStore(redisInstanceModel: redisInstanceModel)
-        }
-        Scope(state: \.redisKeysState, action: /Action.redisKeysAction) {
-            RedisKeysStore(redisInstanceModel: redisInstanceModel)
+            RedisKeysStore()
         }
         
         Reduce { state, action in
             switch action {
-            case .initContext:
+            case .initial:
                 logger.info("init app context complete...")
-                return .none
+                return .send(.redisKeysAction(.initial))
             case .onStart:
                 return .none
             

@@ -46,7 +46,7 @@ struct RedisConfigStore: ReducerProtocol {
         case binding(BindingAction<State>)
     }
     
-    var redisInstanceModel:RedisInstanceModel
+    @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
     let mainQueue: AnySchedulerOf<DispatchQueue> = .main
     
     var body: some ReducerProtocol<State, Action> {

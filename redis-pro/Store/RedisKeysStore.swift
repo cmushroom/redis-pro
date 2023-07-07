@@ -70,7 +70,7 @@ struct RedisKeysStore: ReducerProtocol {
         case none
     }
 
-    var redisInstanceModel:RedisInstanceModel
+    @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
     var mainQueue: AnySchedulerOf<DispatchQueue> = .main
     
     var body: some ReducerProtocol<State, Action> {
@@ -81,16 +81,16 @@ struct RedisKeysStore: ReducerProtocol {
             PageStore()
         }
         Scope(state: \.redisSystemState, action: /Action.redisSystemAction) {
-            RedisSystemStore(redisInstanceModel: redisInstanceModel)
+            RedisSystemStore()
         }
         Scope(state: \.valueState, action: /Action.valueAction) {
-            ValueStore(redisInstanceModel: redisInstanceModel)
+            ValueStore()
         }
         Scope(state: \.databaseState, action: /Action.databaseAction) {
-            DatabaseStore(redisInstanceModel: redisInstanceModel)
+            DatabaseStore()
         }
         Scope(state: \.renameState, action: /Action.renameAction) {
-            RenameStore(redisInstanceModel: redisInstanceModel)
+            RenameStore()
         }
         
         Reduce { state, action in
@@ -100,12 +100,8 @@ struct RedisKeysStore: ReducerProtocol {
                 logger.info("redis keys store initial...")
                 
                 return .merge(
-                    .result {
-                        .success(.search(""))
-                    }
-                    , .result {
-                        .success(.dbsize)
-                    }
+                    .send(.search("")),
+                    .send(.dbsize)
                 )
                 
                 // 只刷新数量，比如删除时不刷新列表数据， 只刷新数量
@@ -116,9 +112,7 @@ struct RedisKeysStore: ReducerProtocol {
                 
                 // 全部刷新
             case .refresh:
-                return .result {
-                    .success(.initial)
-                }
+                return .send(.initial)
                 
                 // 搜索
             case let .search(keywords):
@@ -130,13 +124,10 @@ struct RedisKeysStore: ReducerProtocol {
                 state.pageState.keywords = keywords
                 
                 return .merge(
-                    .result {
-                        .success(.getKeys)
-                    }
-                    , .result {
-                        .success(.countKeys(0, searchGroup))
-                    }
+                    .init(value: .getKeys),
+                    .init(value: .countKeys(0, searchGroup))
                 )
+                .eraseToEffect()
                 
                 // dbsize
             case .dbsize:
@@ -150,16 +141,16 @@ struct RedisKeysStore: ReducerProtocol {
                 // 分页查询 key
             case .getKeys:
                 let page = state.pageState.page
-                return .task {
+                return .run { send in
                     let keysPage = await redisInstanceModel.getClient().pageKeys(page)
                     
-                    return .setKeys(page, keysPage)
+                    await send(.setKeys(page, keysPage))
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
+//                .receive(on: mainQueue)
+//                .eraseToEffect()
                 
-                // 异步计算key数量, 通过setCount 进行递归调用，直接cursor 返回0
-                // 后续可能增加开关，是否查询数量
+            // 异步计算key数量, 通过setCount 进行递归调用，直接cursor 返回0
+            // 后续可能增加开关，是否查询数量
             case let .countKeys(cursor, searchGroup):
                 let page = state.pageState.page
                 if searchGroup < state.searchGroup {

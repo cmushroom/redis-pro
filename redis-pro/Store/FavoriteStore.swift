@@ -16,7 +16,6 @@ struct FavoriteStore: ReducerProtocol {
         var globalState: GlobalStore.State?
         var tableState: TableStore.State = TableStore.State(columns: [NTableColumn(title: "FAVORITES", key: "name", width: 50, icon: .APP)], datasource: [], selectIndex: -1, dragable: true)
         var loginState: LoginStore.State = LoginStore.State()
-        
     }
 
     enum Action:Equatable {
@@ -34,7 +33,8 @@ struct FavoriteStore: ReducerProtocol {
         case none
     }
     
-    var redisInstanceModel:RedisInstanceModel
+    
+    @Dependency(\.redisInstance) var redisInstanceModel: RedisInstanceModel
     var mainQueue: AnySchedulerOf<DispatchQueue> = .main
     
     
@@ -43,7 +43,7 @@ struct FavoriteStore: ReducerProtocol {
             TableStore()
         }
         Scope(state: \.loginState, action: /Action.loginAction) {
-            LoginStore(redisInstanceModel: redisInstanceModel)
+            LoginStore()
         }
         
         Reduce { state, action in

@@ -44,26 +44,26 @@ struct ValueStore: ReducerProtocol {
         case zsetValueAction(ZSetValueStore.Action)
     }
     
-    var redisInstanceModel:RedisInstanceModel
+    @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
     
     var body: some ReducerProtocol<State, Action> {
         Scope(state: \.keyState, action: /Action.keyAction) {
-            KeyStore(redisInstanceModel: redisInstanceModel)
+            KeyStore()
         }
         Scope(state: \.stringValueState, action: /Action.stringValueAction) {
-            StringValueStore(redisInstanceModel: redisInstanceModel)
+            StringValueStore()
         }
         Scope(state: \.hashValueState, action: /Action.hashValueAction) {
-            HashValueStore(redisInstanceModel: redisInstanceModel)
+            HashValueStore()
         }
         Scope(state: \.listValueState, action: /Action.listValueAction) {
-            ListValueStore(redisInstanceModel: redisInstanceModel)
+            ListValueStore()
         }
         Scope(state: \.setValueState, action: /Action.setValueAction) {
-            SetValueStore(redisInstanceModel: redisInstanceModel)
+            SetValueStore()
         }
         Scope(state: \.zsetValueState, action: /Action.zsetValueAction) {
-            ZSetValueStore(redisInstanceModel: redisInstanceModel)
+            ZSetValueStore()
         }
         Reduce { state, action in
             switch action {
@@ -118,12 +118,8 @@ struct ValueStore: ReducerProtocol {
                 }
                 
                 return .merge(
-                    .result {
-                        .success(.keyAction(.refresh))
-                    },
-                    .result {
-                        .success(valueAction)
-                    }
+                    .send(.keyAction(.refresh)),
+                    .send(valueAction)
                 )
                 
             // 各个编辑器成功后调用此action

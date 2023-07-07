@@ -17,9 +17,9 @@ private let logger = Logger(label: "redis-config-store")
 struct SlowLogStore: ReducerProtocol {
     struct State: Equatable {
         
-        @BindableState var slowerThan:Int = 10000
-        @BindableState var maxLen:Int = 128
-        @BindableState var size:Int = 50
+        @BindingState var slowerThan:Int = 10000
+        @BindingState var maxLen:Int = 128
+        @BindingState var size:Int = 50
         var total:Int = 0
         
         var tableState: TableStore.State = TableStore.State(columns: [
@@ -50,7 +50,7 @@ struct SlowLogStore: ReducerProtocol {
         case binding(BindingAction<State>)
     }
     
-    var redisInstanceModel:RedisInstanceModel
+    @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
     let mainQueue: AnySchedulerOf<DispatchQueue> = .main
     
     var body: some ReducerProtocol<State, Action> {

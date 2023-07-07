@@ -21,6 +21,7 @@ struct HomeView: View {
             RedisKeysListView(store)
                 .onAppear {
                     logger.info("redis pro home view init complete")
+                    viewStore.send(.initial)
                 }
                 .onDisappear {
                     logger.info("redis pro home view destroy...")

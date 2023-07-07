@@ -16,9 +16,9 @@ struct ZSetValueStore: ReducerProtocol {
     
     // MARK: - state
     struct State: Equatable {
-        @BindableState var editModalVisible:Bool = false
-        @BindableState var editValue:String = ""
-        @BindableState var editScore:Double = 0
+        @BindingState var editModalVisible:Bool = false
+        @BindingState var editValue:String = ""
+        @BindingState var editScore:Double = 0
         
         var editIndex:Int = -1
         var isNew:Bool = false
@@ -60,7 +60,7 @@ struct ZSetValueStore: ReducerProtocol {
     }
     
     
-    var redisInstanceModel:RedisInstanceModel
+    @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
     var mainQueue: AnySchedulerOf<DispatchQueue> = .main
 
     

@@ -35,7 +35,7 @@ struct RedisInfoStore: ReducerProtocol {
         case tableAction(TableStore.Action)
     }
     
-    var redisInstanceModel:RedisInstanceModel
+    @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
     let mainQueue: AnySchedulerOf<DispatchQueue> = .main
     
     

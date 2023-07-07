@@ -114,7 +114,7 @@ struct RedisKeysListView: View {
                 .layoutPriority(1)
             }
             .onAppear{
-                viewStore.send(.initial)
+//                viewStore.send(.setDBSize(20))
             }
             .sheet(isPresented: viewStore.binding(get: \.renameState.visible, send: .renameAction(.hide))) {
                 ModalView("Rename", width: MTheme.DIALOG_W, height: 100, action: {viewStore.send(.renameAction(.submit))}) {

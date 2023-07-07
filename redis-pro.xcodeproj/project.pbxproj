@@ -109,6 +109,9 @@
 		6237D032275C954A000ACD6A /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 6237D031275C954A000ACD6A /* Logging */; };
 		6237D034275CFF1F000ACD6A /* NIntField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6237D033275CFF1F000ACD6A /* NIntField.swift */; };
 		6240E0AB280303890005E793 /* RedisDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6240E0AA280303890005E793 /* RedisDefaults.swift */; };
+		624770212A51450000A4AF74 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 624770202A51450000A4AF74 /* ComposableArchitecture */; };
+		624770232A515D9700A4AF74 /* DependencyKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 624770222A515D9700A4AF74 /* DependencyKeys.swift */; };
+		624770252A53A56800A4AF74 /* AppContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 624770242A53A56800A4AF74 /* AppContext.swift */; };
 		624F940427FADDD400DF3D3E /* TableCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 624F940327FADDD400DF3D3E /* TableCellView.swift */; };
 		6252A4B627F0450200C9536A /* NTableColumn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6252A4B527F0450200C9536A /* NTableColumn.swift */; };
 		6252A4B827F04ACC00C9536A /* TableColumnType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6252A4B727F04ACC00C9536A /* TableColumnType.swift */; };
@@ -156,7 +159,6 @@
 		62D1BA9828437F5900F41CAD /* Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D1BA9728437F5900F41CAD /* Messages.swift */; };
 		62D1BA9A2847990F00F41CAD /* Loadings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D1BA992847990F00F41CAD /* Loadings.swift */; };
 		62D1BA9C2848F1F800F41CAD /* GlobalStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D1BA9B2848F1F800F41CAD /* GlobalStore.swift */; };
-		62D23AAF2818DCA000B2AA3F /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 62D23AAE2818DCA000B2AA3F /* ComposableArchitecture */; };
 		62D741B3284B536A0049AB3C /* RedisInfoStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D741B2284B536A0049AB3C /* RedisInfoStore.swift */; };
 		62D741B5284B67B00049AB3C /* RedisSystemStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D741B4284B67B00049AB3C /* RedisSystemStore.swift */; };
 		62D741B7284B69040049AB3C /* RedisSystemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D741B6284B69040049AB3C /* RedisSystemView.swift */; };
@@ -313,6 +315,8 @@
 		621EFD8D276CC52E0079D1E3 /* NPasswordField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NPasswordField.swift; sourceTree = "<group>"; };
 		6237D033275CFF1F000ACD6A /* NIntField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NIntField.swift; sourceTree = "<group>"; };
 		6240E0AA280303890005E793 /* RedisDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisDefaults.swift; sourceTree = "<group>"; };
+		624770222A515D9700A4AF74 /* DependencyKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyKeys.swift; sourceTree = "<group>"; };
+		624770242A53A56800A4AF74 /* AppContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContext.swift; sourceTree = "<group>"; };
 		624F940327FADDD400DF3D3E /* TableCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableCellView.swift; sourceTree = "<group>"; };
 		6252A4B527F0450200C9536A /* NTableColumn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NTableColumn.swift; sourceTree = "<group>"; };
 		6252A4B727F04ACC00C9536A /* TableColumnType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableColumnType.swift; sourceTree = "<group>"; };
@@ -391,8 +395,8 @@
 			files = (
 				CEA1EF4D277C56DD00D300E9 /* NIO in Frameworks */,
 				CEA1EF55277C56DD00D300E9 /* NIOFoundationCompat in Frameworks */,
-				62D23AAF2818DCA000B2AA3F /* ComposableArchitecture in Frameworks */,
 				625B41B9293AEBD700C7766D /* RediStack in Frameworks */,
+				624770212A51450000A4AF74 /* ComposableArchitecture in Frameworks */,
 				CE0290CE2786B75A0058442B /* Puppy in Frameworks */,
 				CEA1EF53277C56DD00D300E9 /* NIOEmbedded in Frameworks */,
 				CEA1EF5E277C57BC00D300E9 /* SwiftyJSON in Frameworks */,
@@ -707,6 +711,8 @@
 				62D741BA284B82790049AB3C /* SlowLogStore.swift */,
 				62D741BC284C66560049AB3C /* ClientListStore.swift */,
 				62D741C0288415180049AB3C /* LuaStore.swift */,
+				624770222A515D9700A4AF74 /* DependencyKeys.swift */,
+				624770242A53A56800A4AF74 /* AppContext.swift */,
 			);
 			path = Store;
 			sourceTree = "<group>";
@@ -846,11 +852,11 @@
 				CEA1EF5A277C56DD00D300E9 /* _NIOConcurrency */,
 				CEA1EF5D277C57BC00D300E9 /* SwiftyJSON */,
 				CE0290CD2786B75A0058442B /* Puppy */,
-				62D23AAE2818DCA000B2AA3F /* ComposableArchitecture */,
 				625B41B8293AEBD700C7766D /* RediStack */,
 				625B41BA293AEBD700C7766D /* RedisTypes */,
 				625B41BD293AF81100C7766D /* AppCenterAnalytics */,
 				625B41BF293AF81100C7766D /* AppCenterCrashes */,
+				624770202A51450000A4AF74 /* ComposableArchitecture */,
 			);
 			productName = "redis-pro";
 			productReference = 4320AAF025B6740900A8E214 /* redis-pro.app */;
@@ -908,9 +914,9 @@
 				CEA1EF4B277C56DD00D300E9 /* XCRemoteSwiftPackageReference "swift-nio" */,
 				CEA1EF5C277C57BC00D300E9 /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
 				CE0290CC2786B75A0058442B /* XCRemoteSwiftPackageReference "Puppy" */,
-				62D23AAD2818DCA000B2AA3F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
 				625B41B7293AEBD700C7766D /* XCRemoteSwiftPackageReference "RediStack" */,
 				625B41BC293AF81100C7766D /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */,
+				6247701F2A51450000A4AF74 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
 			);
 			productRefGroup = 4320AAF125B6740900A8E214 /* Products */;
 			projectDirPath = "";
@@ -976,6 +982,7 @@
 				620AF6C627D48996002D6895 /* RedisClientSlowLog.swift in Sources */,
 				62BDAB3E293B7C0000ADA406 /* AbountCommand.swift in Sources */,
 				43F22F1326A5546000A00F97 /* RedisInfoItemModel.swift in Sources */,
+				624770252A53A56800A4AF74 /* AppContext.swift in Sources */,
 				62C262E4283A31E40036A282 /* ListEditorView.swift in Sources */,
 				62D741B5284B67B00049AB3C /* RedisSystemStore.swift in Sources */,
 				43CD28B6267C7CF400E11876 /* Objects.swift in Sources */,
@@ -1009,6 +1016,7 @@
 				431266EB261D4EED00FB6B69 /* RedisKeyValueModel.swift in Sources */,
 				626C4C10281D331D00B7A542 /* FavoriteStore.swift in Sources */,
 				620AF6BE27D488C4002D6895 /* RedisClientSet.swift in Sources */,
+				624770232A515D9700A4AF74 /* DependencyKeys.swift in Sources */,
 				431266F2261D89E600FB6B69 /* RedisValueEditView.swift in Sources */,
 				62C262E22839DD0B0036A282 /* RedisListItemModel.swift in Sources */,
 				62D1BA9828437F5900F41CAD /* Messages.swift in Sources */,
@@ -1403,6 +1411,14 @@
 				minimumVersion = 1.5.2;
 			};
 		};
+		6247701F2A51450000A4AF74 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.55.0;
+			};
+		};
 		625B41B7293AEBD700C7766D /* XCRemoteSwiftPackageReference "RediStack" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/chengpan168/RediStack";
@@ -1419,14 +1435,6 @@
 				minimumVersion = 5.0.0;
 			};
 		};
-		62D23AAD2818DCA000B2AA3F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
-		};
 		CE0290CC2786B75A0058442B /* XCRemoteSwiftPackageReference "Puppy" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sushichop/Puppy.git";
@@ -1440,7 +1448,7 @@
 			repositoryURL = "https://github.com/apple/swift-nio-ssh";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.6.1;
+				minimumVersion = 0.7.1;
 			};
 		};
 		CEA1EF4B277C56DD00D300E9 /* XCRemoteSwiftPackageReference "swift-nio" */ = {
@@ -1467,6 +1475,11 @@
 			package = 6237D030275C954A000ACD6A /* XCRemoteSwiftPackageReference "swift-log" */;
 			productName = Logging;
 		};
+		624770202A51450000A4AF74 /* ComposableArchitecture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6247701F2A51450000A4AF74 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
+			productName = ComposableArchitecture;
+		};
 		625B41B8293AEBD700C7766D /* RediStack */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 625B41B7293AEBD700C7766D /* XCRemoteSwiftPackageReference "RediStack" */;
@@ -1486,11 +1499,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 625B41BC293AF81100C7766D /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
 			productName = AppCenterCrashes;
-		};
-		62D23AAE2818DCA000B2AA3F /* ComposableArchitecture */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 62D23AAD2818DCA000B2AA3F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
-			productName = ComposableArchitecture;
 		};
 		CE0290CD2786B75A0058442B /* Puppy */ = {
 			isa = XCSwiftPackageProductDependency;

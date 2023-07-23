@@ -37,7 +37,7 @@ class RediStackClient {
     
     private var observers = [NSObjectProtocol]()
     
-    var viewStore:ViewStore<AppContextStore.State, AppContextStore.Action>?
+    var appContextViewStore:ViewStore<AppContextStore.State, AppContextStore.Action>?
     var settingViewStore: ViewStoreOf<SettingsStore>?
     
     convenience init(_ redisModel:RedisModel, settingViewStore: ViewStoreOf<SettingsStore>?) {
@@ -62,16 +62,16 @@ class RediStackClient {
         observers.forEach(NotificationCenter.default.removeObserver)
     }
     
-    func setGlobalStore(_ globalStore: ViewStore<AppContextStore.State, AppContextStore.Action>?) {
-        self.viewStore = globalStore
+    func setAppContextStore(_ globalStore: ViewStore<AppContextStore.State, AppContextStore.Action>?) {
+        self.appContextViewStore = globalStore
     }
     
     func loading(_ bool: Bool) {
         DispatchQueue.main.async {
             if bool {
-                self.viewStore?.send(.show)
+                self.appContextViewStore?.send(.show)
             } else {
-                self.viewStore?.send(.hide)
+                self.appContextViewStore?.send(.hide)
             }
         }
     }

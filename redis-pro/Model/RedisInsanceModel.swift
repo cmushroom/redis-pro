@@ -15,9 +15,16 @@ import ComposableArchitecture
 class RedisInstanceModel: Identifiable {
     var redisModel:RedisModel
     private var rediStackClient:RediStackClient?
-    private var viewStore:ViewStore<AppContextStore.State, AppContextStore.Action>?
+    private var appContextviewStore:ViewStoreOf<AppContextStore>?
+    private var settingViewStore:ViewStoreOf<SettingsStore>?
     
     let logger = Logger(label: "redis-instance")
+    
+    
+    convenience init(_ redisModel:RedisModel, settingViewStore: ViewStoreOf<SettingsStore>?) {
+        self.init(redisModel: redisModel)
+        self.settingViewStore = settingViewStore
+    }
     
     init(redisModel: RedisModel) {
         self.redisModel = redisModel
@@ -26,7 +33,7 @@ class RedisInstanceModel: Identifiable {
     
     func setAppStore(_ appStore: StoreOf<AppStore>) {
         let globalStore = appStore.scope(state: \.globalState, action: AppStore.Action.globalAction)
-        self.viewStore = ViewStore(globalStore)
+        self.appContextviewStore = ViewStore(globalStore)
     }
     
     // get client
@@ -43,8 +50,8 @@ class RedisInstanceModel: Identifiable {
         
         logger.info("init new redis client, redisModel: \(redisModel)")
         self.redisModel = redisModel
-        let client = RediStackClient(redisModel)
-        client.setGlobalStore(self.viewStore)
+        let client = RediStackClient(redisModel, settingViewStore: settingViewStore)
+        client.setAppContextStore(self.appContextviewStore)
         
         self.rediStackClient = client
         return client

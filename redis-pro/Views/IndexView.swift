@@ -22,7 +22,7 @@ struct IndexView: View {
     
     var body: some View {
         if let state = appState {
-            let redisInstanceModel = RedisInstanceModel(redisModel: RedisModel())
+            let redisInstanceModel = RedisInstanceModel(RedisModel(), settingViewStore: ViewStore(settingStore))
             let redisClient = RediStackClient(RedisModel(), settingViewStore: ViewStore(settingStore))
             
             let store: StoreOf<AppStore> = Store(initialState: state) {
@@ -31,6 +31,7 @@ struct IndexView: View {
                 $0.redisInstance = redisInstanceModel
                 $0.redisClient = redisClient
             }
+            
             
             WithViewStore(store, observe: { $0.isConnect }) {viewStore in
                 ZStack {

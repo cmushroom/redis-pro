@@ -141,7 +141,7 @@ extension RediStackClient {
                 logger.info("count scan keys, current cursor: \(cursor), r: \(res)")
                 
                 // 检查fast page
-                if settingViewStore?.fastPage ?? true && (res.1 + page.total) > (settingViewStore?.fastPageMax ?? 99 * page.size) {
+                if settingViewStore?.fastPage ?? true && ((res.1 + page.total) > ((settingViewStore?.fastPageMax ?? 99) * page.size)) {
                     logger.info("count scan keys, fast page switch is open, stop scan")
                     return (0, res.1)
                 }

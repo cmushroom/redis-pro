@@ -16,7 +16,7 @@ extension RediStackClient {
         logger.debug("redis keys scan, cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
         
         let command:RedisCommand<(Int, [RedisKey])> = .scan(startingFrom: cursor, matching: keywords, count: count)
-        let r = try await _send(command)
+        let r = await _send(command)!
         return (r.0, r.1.map { $0.rawValue })
     }
     
@@ -53,6 +53,10 @@ extension RediStackClient {
         return count
     }
     
+    /// 分页查询 key
+    /// - Parameters:
+    ///     - page:  分页参数
+    /// - Returns: keys array
     private func keysPageScan(_ page: Page) async throws -> [String] {
         let keywords = page.keywords.isEmpty ? nil : page.keywords
         var end:Int = page.end
@@ -89,7 +93,6 @@ extension RediStackClient {
         logger.info("redis keys page scan, page: \(page)")
         
         let isScan = isScan(page.keywords)
-//        let match = page.keywords.isEmpty ? nil : page.keywords
         
         defer {
             self.logger.info("keys scan complete, spend: \(stopwatch.elapsedMillis()) ms")
@@ -131,9 +134,17 @@ extension RediStackClient {
         let match = page.keywords.isEmpty ? nil : page.keywords
         
         do {
+            // 是否走scan扫描key
             if isScan {
+                
                 let res = try await countScan(cursor: cursor, keywords: match, count: dataCountScanCount)
                 logger.info("count scan keys, current cursor: \(cursor), r: \(res)")
+                
+                // 检查fast page
+                if settingViewStore?.fastPage ?? true && (res.1 + page.total) > (settingViewStore?.fastPageMax ?? 99 * page.size) {
+                    logger.info("count scan keys, fast page switch is open, stop scan")
+                    return (0, res.1)
+                }
                 
                 return res
             } else {

@@ -21,7 +21,7 @@ struct AppStore: ReducerProtocol {
         var title:String = ""
         // 是否已经连接 redis server
         var isConnect: Bool = false
-        var globalState: GlobalStore.State = GlobalStore.State()
+        var globalState: AppContextStore.State = AppContextStore.State()
         var loadingState: LoadingStore.State = LoadingStore.State()
         private var _favoriteState: FavoriteStore.State = FavoriteStore.State()
         var favoriteState: FavoriteStore.State {
@@ -48,7 +48,7 @@ struct AppStore: ReducerProtocol {
         case initial
         case onStart
         case onClose
-        case globalAction(GlobalStore.Action)
+        case globalAction(AppContextStore.Action)
         case alertAction(AlertAction)
         case loadingAction(LoadingStore.Action)
         case favoriteAction(FavoriteStore.Action)
@@ -63,7 +63,7 @@ struct AppStore: ReducerProtocol {
     var body: some ReducerProtocol<State, Action> {
         
         Scope(state: \.globalState, action: /Action.globalAction) {
-            GlobalStore()
+            AppContextStore()
         }
         Scope(state: \.loadingState, action: /Action.loadingAction) {
             LoadingStore()

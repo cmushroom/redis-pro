@@ -19,5 +19,7 @@ enum UserDefaulsKeysEnum: String {
     case AppStringMaxLength = "App.StringMaxLength"
     // keepalive second
     case AppKeepalive = "App.Keepalive"
+    // fast page
+    case AppFastPage = "App.FastPage"
     
 }

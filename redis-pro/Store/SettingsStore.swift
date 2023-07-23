@@ -20,6 +20,9 @@ struct SettingsStore: ReducerProtocol {
         var stringMaxLength:Int = Const.DEFAULT_STRING_MAX_LENGTH
         var keepalive:Int = 30
         var redisModels: [RedisModel] = []
+        var fastPage = true
+        // 快速分页阈值, 超过这个数值后, 不再继续查询, 提高查询性能, 减少对redis影响
+        var fastPageMax = 99
     }
 
     enum Action: Equatable {
@@ -28,6 +31,7 @@ struct SettingsStore: ReducerProtocol {
         case setDefaultFavorite(String)
         case setStringMaxLength(Int)
         case setKeepalive(Int)
+        case setFastPage(Bool)
     }
     
     var body: some ReducerProtocol<State, Action> {
@@ -35,6 +39,7 @@ struct SettingsStore: ReducerProtocol {
             switch action {
             // 初始化已设置的值
             case .initial:
+                
                 logger.info("settings store initial...")
                 state.colorSchemeValue = UserDefaults.standard.string(forKey: UserDefaulsKeysEnum.AppColorScheme.rawValue) ?? ColorSchemeEnum.SYSTEM.rawValue
                 
@@ -47,9 +52,12 @@ struct SettingsStore: ReducerProtocol {
                 
                 state.defaultFavorite = UserDefaults.standard.string(forKey: UserDefaulsKeysEnum.RedisFavoriteDefaultSelectType.rawValue) ?? RedisFavoriteDefaultSelectTypeEnum.LAST.rawValue
                 
+                // fast apge
+                state.fastPage = Bool(UserDefaults.standard.string(forKey: UserDefaulsKeysEnum.AppFastPage.rawValue) ?? "true") ?? true
                 
                 state.redisModels = RedisDefaults.getAll()
                 return .none
+                
             // 显示模式设置， 明亮，暗黑，系统
             case let .setColorScheme(colorSchemeValue):
                 logger.info("upate color scheme action, \(colorSchemeValue)")
@@ -62,6 +70,7 @@ struct SettingsStore: ReducerProtocol {
                     NSApp.appearance = NSAppearance(named:  colorSchemeValue == ColorSchemeEnum.DARK.rawValue ? .darkAqua : .aqua)
                 }
                 return .none
+                
             // 默认选中设置
             case let .setDefaultFavorite(defaultFavorite):
                 logger.info("upate default favorite action, \(defaultFavorite)")
@@ -82,6 +91,13 @@ struct SettingsStore: ReducerProtocol {
                 
                 state.keepalive = keepalive
                 UserDefaults.standard.set(keepalive, forKey: UserDefaulsKeysEnum.AppKeepalive.rawValue)
+                return .none
+                
+            case let .setFastPage(fastPage):
+                logger.info("set fast page action, \(fastPage)")
+                
+                state.fastPage = fastPage
+                UserDefaults.standard.set("\(fastPage)", forKey: UserDefaulsKeysEnum.AppFastPage.rawValue)
                 return .none
             }
         }

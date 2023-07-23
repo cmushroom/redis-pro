@@ -48,8 +48,7 @@ extension RediStackClient {
         logger.info("get value length, key:\(key)")
         
         let command:RedisCommand<Int> = .strln(RedisKey(key))
-        let r = await send(command)
-        return r ?? 0
+        return await _send(command, 0)
     }
     
     func del(_ key:String) async -> Int {
@@ -89,7 +88,7 @@ extension RediStackClient {
     func ttl(_ key:String) async -> Int {
         logger.info("get ttl key: \(key)")
         let command:RedisCommand<RedisKey.Lifetime> = .ttl(RedisKey(key))
-        return ttlSecond(await send(command, RedisKey.Lifetime.keyDoesNotExist))
+        return ttlSecond(await _send(command, RedisKey.Lifetime.keyDoesNotExist))
     }
     
     func getTypes(_ keys:[String]) async -> [String:String] {
@@ -113,13 +112,8 @@ extension RediStackClient {
     }
     
     private func type(_ key:String) async -> String {
-        do {
-            let command:RedisCommand<String> = .type(key)
-            return try await _send(command)
-        } catch {
-            self.logger.error("get type error: \(error)")
-        }
-        return RedisKeyTypeEnum.NONE.rawValue
+        let command:RedisCommand<String> = .type(key)
+        return await _send(command, RedisKeyTypeEnum.NONE.rawValue)
     }
     
     

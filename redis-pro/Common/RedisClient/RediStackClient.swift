@@ -10,15 +10,15 @@ import NIO
 import RediStack
 import Logging
 import NIOSSH
-import Swift
 import ComposableArchitecture
+import Cocoa
 
 class RediStackClient {
     let logger = Logger(label: "redis-client")
     var redisModel:RedisModel
     
     // conn
-    private let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 2)
+    let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 2)
     var connection:RedisConnection?
     var connPool:RedisConnectionPool?
     
@@ -31,17 +31,38 @@ class RediStackClient {
     
     // 递归查询每页大小
     let dataScanCount:Int = 2000
-    var dataCountScanCount:Int = 4000
+    var dataCountScanCount:Int = 2000
     var recursionSize:Int = 2000
     var recursionCountSize:Int = 5000
     
-    var viewStore:ViewStore<GlobalStore.State, GlobalStore.Action>?
+    private var observers = [NSObjectProtocol]()
+    
+    var viewStore:ViewStore<AppContextStore.State, AppContextStore.Action>?
+    var settingViewStore: ViewStoreOf<SettingsStore>?
+    
+    convenience init(_ redisModel:RedisModel, settingViewStore: ViewStoreOf<SettingsStore>?) {
+        self.init(redisModel)
+        self.settingViewStore = settingViewStore
+    }
     
     init(_ redisModel:RedisModel) {
         self.redisModel = redisModel
+        
+        // 监听app退出
+        observers.append(
+            NotificationCenter.default.addObserver(forName: NSApplication.willTerminateNotification, object: nil, queue: .main) { [self] _ in
+                logger.info("redis pro will exit...")
+                
+                shutdown()
+            }
+        )
     }
     
-    func setGlobalStore(_ globalStore: ViewStore<GlobalStore.State, GlobalStore.Action>?) {
+    deinit {
+        observers.forEach(NotificationCenter.default.removeObserver)
+    }
+    
+    func setGlobalStore(_ globalStore: ViewStore<AppContextStore.State, AppContextStore.Action>?) {
         self.viewStore = globalStore
     }
     
@@ -77,25 +98,6 @@ class RediStackClient {
         Messages.show(error)
     }
     
-    /*
-     * 初始化redis 连接
-     */
-    func initConnection() async -> Bool {
-        begin()
-        defer {
-            complete()
-        }
-        
-        do {
-            let _ = try await getConn()
-            return true
-            
-        } catch {
-            handleError(error)
-        }
-        
-        return false
-    }
     
     func assertExist(_ key:String) async throws {
         let exist = await exist(key)
@@ -122,9 +124,20 @@ class RediStackClient {
     
 
     // 公共底层请求redis 数据方法, 不处理任何异常, 使用者需要自己行处理异常信息
-    func _send<R>(_ command: RedisCommand<R>) async throws -> R {
-        let conn = try await getConn()
-        return try await _send(conn, command)
+    func _send<R>(_ command: RedisCommand<R>) async -> R? {
+        do {
+            let conn = try await getConn()
+            return try await _send(conn, command)
+        } catch {
+            handleError(error)
+        }
+        
+        return nil
+    }
+    
+    // 公共底层请求redis 数据方法, 不处理任何异常, 使用者需要自己行处理异常信息
+    func _send<R>(_ command: RedisCommand<R>, _ defaultValue: R) async -> R {
+        return await _send(command) ?? defaultValue
     }
     
     func send<R>(_ command: RedisCommand<R>, _ defaultValue: R) async -> R {
@@ -134,12 +147,7 @@ class RediStackClient {
             complete()
         }
         
-        do {
-            return try await _send(command)
-        } catch {
-            handleError(error)
-        }
-        return defaultValue
+        return await _send(command) ?? defaultValue
     }
     
     func send<R>(_ command: RedisCommand<R>) async -> R? {
@@ -149,12 +157,7 @@ class RediStackClient {
             complete()
         }
         
-        do {
-            return try await _send(command)
-        } catch {
-            handleError(error)
-        }
-        return nil
+        return await _send(command)
     }
     
     func ttlSecond(_ lifetime: RedisKey.Lifetime) -> Int {
@@ -168,122 +171,6 @@ class RediStackClient {
         }
     }
     
-    
-    /// test redis connection
-    ///
-    func testConn() async -> Bool {
-        do {
-            var conn:RedisConnection
-            
-            if self.redisModel.connectionType == RedisConnectionTypeEnum.SSH.rawValue {
-                conn = try await initSSHConn()
-            } else {
-                conn = try await initConn(host: self.redisModel.host, port: self.redisModel.port, username: self.redisModel.username, pass: self.redisModel.password, database: self.redisModel.database)
-            }
-            
-            defer {
-                conn.close()
-            }
-            
-            return try await _send(conn, .ping) == "PONG"
-        } catch {
-            Messages.show(error)
-            return false
-        }
-    }
-    
-    func getConn() async throws -> RedisClient {
-        if self.connPool != nil {
-            return self.connPool!
-        }
-        return try await getConnPool()
-    }
-    
-    func getConnPool() async throws -> RedisClient {
-        if self.connPool != nil {
-            return self.connPool!
-        } else {
-            self.logger.info("get redis connection, but connection is not available...")
-            self.close()
-        }
-        
-        if self.redisModel.connectionType == RedisConnectionTypeEnum.SSH.rawValue {
-            self.connPool = try await initSSHPool()
-        } else {
-            self.connPool = try initPool(host: self.redisModel.host, port: self.redisModel.port, username: self.redisModel.username, pass: self.redisModel.password, database: self.redisModel.database)
-        }
-        
-        return self.connPool!
-    }
-    
-    func initConn(host:String, port:Int,
-                  username: String? = nil,
-                  pass:String,
-                  database:Int
-    ) async throws -> RedisConnection {
-        logger.info("redis client- init new redis connection, host: \(host), port: \(port), pass: \(pass), database: \(database)")
-        return try await withCheckedThrowingContinuation { continuation in
-            do {
-                let eventLoop = MultiThreadedEventLoopGroup(numberOfThreads: 4).next()
-                var configuration: RedisConnection.Configuration
-                if (pass.isEmpty) {
-                    configuration = try RedisConnection.Configuration(hostname: host, port: port, initialDatabase: database, defaultLogger: logger)
-                } else {
-                    let _username = username?.isEmpty ?? false ? nil : username
-                    configuration = try RedisConnection.Configuration(hostname: host, port: port, username: _username, password: pass, initialDatabase: database, defaultLogger: logger)
-                }
-                
-                let future = RedisConnection.make(
-                    configuration: configuration
-                    , boundEventLoop: eventLoop
-                )
-                
-                future.whenSuccess({ redisConnection in
-                    self.logger.info("init redis connection success, connection id: \(redisConnection.id)")
-                    continuation.resume(returning: redisConnection)
-                })
-                future.whenFailure({ error in
-                    self.logger.info("init redis connection error: \(error)")
-                    continuation.resume(throwing: error)
-                })
-            } catch {
-                self.logger.info("init redis connection error: \(error)")
-                continuation.resume(throwing: error)
-            }
-        }
-    }
-    
-    public func initPool(host:String, port:Int, username:String?, pass:String, database:Int) throws -> RedisConnectionPool {
-        let eventLoop = eventLoopGroup.next()
-
-        let addresses = try [SocketAddress.makeAddressResolvingHost(host, port: port)]
-        
-        let _username = username?.isEmpty ?? false ? nil : username
-        let _password = pass.isEmpty ? nil : pass
-        
-        let config: RedisConnectionPool.PoolConnectionConfiguration = .init(
-            initialDatabase: database
-            , username: _username
-            , password: _password
-            , defaultLogger: self.logger, tcpClient: nil)
-        
-        let pool = RedisConnectionPool(
-            configuration: .init(
-                initialServerConnectionAddresses: addresses
-                , connectionCountBehavior: .elastic(maximumConnectionCount: 3, minimumConnectionCount: 2)
-                , connectionConfiguration: config
-//                , retryStrategy: .none
-                , retryStrategy: .exponentialBackoff(initialDelay: .milliseconds(100), backoffFactor: 3, timeout: .seconds(3))
-                , poolDefaultLogger: self.logger
-            )
-            , boundEventLoop: eventLoop
-        )
-        
-        pool.activate()
-//        _keepalive()
-        self.logger.info("init redis connection pool complete...")
-        return pool
-    }
     
     private func _keepalive() {
         let eventLoop = eventLoopGroup.next()
@@ -319,6 +206,8 @@ class RediStackClient {
     
     func shutdown() {
         do {
+            close()
+            
             logger.info("gracefully shutdown event loop group start...")
             try self.eventLoopGroup.syncShutdownGracefully()
         } catch {

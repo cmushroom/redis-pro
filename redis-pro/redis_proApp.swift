@@ -21,6 +21,7 @@ struct redis_proApp: App {
     // @Environment(\.scenePhase) var scenePhase
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
+    // settings
     var settingsStore:Store<SettingsStore.State, SettingsStore.Action> = Store(initialState: SettingsStore.State()) {
         SettingsStore()
     }
@@ -35,7 +36,10 @@ struct redis_proApp: App {
     var body: some Scene {
         
         WindowGroup {
-            IndexView()
+            IndexView(settingStore: settingsStore)
+                .onAppear {
+                    ViewStore(settingsStore).send(.initial)
+                }
         }
         .commands {
             RedisProCommands()

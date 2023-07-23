@@ -12,27 +12,16 @@ import RediStack
 import Logging
 import ComposableArchitecture
 
-class RedisInstanceModel:ObservableObject, Identifiable {
-    @Published var redisModel:RedisModel
+class RedisInstanceModel: Identifiable {
+    var redisModel:RedisModel
     private var rediStackClient:RediStackClient?
-    private var viewStore:ViewStore<GlobalStore.State, GlobalStore.Action>?
+    private var viewStore:ViewStore<AppContextStore.State, AppContextStore.Action>?
     
     let logger = Logger(label: "redis-instance")
-    
-    private var observers = [NSObjectProtocol]()
     
     init(redisModel: RedisModel) {
         self.redisModel = redisModel
         logger.info("redis instance model init")
-        
-        observers.append(
-            NotificationCenter.default.addObserver(forName: NSApplication.willTerminateNotification, object: nil, queue: .main) { [self] _ in
-                logger.info("redis pro will exit...")
-                close()
-                
-                shutdown()
-            }
-        )
     }
     
     func setAppStore(_ appStore: StoreOf<AppStore>) {

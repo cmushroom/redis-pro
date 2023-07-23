@@ -18,12 +18,26 @@ struct PageStore: ReducerProtocol {
         @BindingState var size:Int = 50
         var total:Int = 0
         var keywords:String = ""
+        var fastPage = true
+        var fastPageMax = 99
         
+        /// 总页数
         var totalPage:Int {
             get {
                 return total < 1 ? 1 : (total % size == 0 ? total / size : total / size + 1)
             }
         }
+        
+        var totalPageText: String {
+            get {
+                if fastPage {
+                    return totalPage > fastPageMax ? "\(fastPageMax)+" : "\(totalPage)"
+                }
+                return "\(totalPage)"
+            }
+        }
+        
+        
         var hasPrev:Bool {
             totalPage > 1 && current > 1
         }
@@ -90,36 +104,3 @@ struct PageStore: ReducerProtocol {
         }
     }
 }
-
-//struct PageEnvironment {
-//}
-//
-//let pageReducer = Reducer<PageState, PageAction, PageEnvironment>.combine(
-//    Reducer<PageState, PageAction, PageEnvironment> {
-//        state, action, env in
-//        switch action {
-//        // 初始化已设置的值
-//        case .initial:
-//            logger.info("page store initial...")
-//            return .none
-//
-//        case let .updateSize(size):
-//            state.current = 1
-//            state.size = size
-//            return .none
-//        case .nextPage:
-//            state.current = state.current + 1
-//            return .none
-//        case .prevPage:
-//            state.current -= 1
-//            if state.current <= 1 {
-//                state.current = 1
-//            }
-//            return .none
-//        case .none:
-//            return .none
-//        case .binding:
-//            return .none
-//        }
-//    }
-//).binding().debug()

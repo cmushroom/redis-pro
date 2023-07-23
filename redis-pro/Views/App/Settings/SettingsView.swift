@@ -11,7 +11,7 @@ import ComposableArchitecture
 
 struct SettingsView: View {
 
-    private let labelWidth:CGFloat = 100
+    private let labelWidth:CGFloat = 160
     var store:StoreOf<SettingsStore>
     
     private let logger = Logger(label: "settings-view")
@@ -40,7 +40,14 @@ struct SettingsView: View {
                         }
                     }
                     
-                    FormItemInt(label: "String Max Length", labelWidth:120, tips:"HELP_STRING_GET_RANGE_LENGTH", value: viewStore.binding(get: {$0.stringMaxLength}, send: SettingsStore.Action.setStringMaxLength))
+                    FormItemInt(label: "String Max Length", labelWidth: labelWidth, tips:"HELP_STRING_GET_RANGE_LENGTH", value: viewStore.binding(get: {$0.stringMaxLength}, send: SettingsStore.Action.setStringMaxLength))
+                    
+                    Toggle(isOn: viewStore.binding(get: {$0.fastPage}, send: SettingsStore.Action.setFastPage)) {
+                        Text("Fast Page:")
+                            .frame(width: labelWidth, alignment: .trailing)
+                        }
+                        .toggleStyle(.switch)
+                        .help("HELP_FAST_PAGE")
                     Spacer()
                 }
             }

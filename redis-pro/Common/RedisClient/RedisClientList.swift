@@ -43,8 +43,8 @@ extension RediStackClient {
         
         logger.debug("redis list range, key: \(key)")
         let command: RedisCommand<[RESPValue]> = .lrange(from: RedisKey(key), firstIndex: start, lastIndex: stop)
-        let r = try await _send(command)
-        return r.map { $0.string }
+        let r = await _send(command)
+        return r!.map { $0.description }
     }
     
     func ldel(_ key:String, index:Int, value:String) async -> Int {
@@ -56,14 +56,14 @@ extension RediStackClient {
         }
         
         do {
-            let existValue = try await _lindex(key, index: index)
+            let existValue = await _lindex(key, index: index)
             guard existValue == value else {
                 throw BizError("list value: \(value), index: \(index) have changed, please check!")
             }
             
-            try await _lset(key, index: index, value: Const.LIST_VALUE_DELETE_MARK)
+            await _lset(key, index: index, value: Const.LIST_VALUE_DELETE_MARK)
             
-            return try await _lrem(key,value: Const.LIST_VALUE_DELETE_MARK)
+            return await _lrem(key,value: Const.LIST_VALUE_DELETE_MARK)
         } catch {
             handleError(error)
         }
@@ -71,10 +71,10 @@ extension RediStackClient {
     }
     
     
-    private func _lrem(_ key:String, value:String) async throws -> Int {
+    private func _lrem(_ key:String, value:String) async -> Int {
         
         let command: RedisCommand<Int> = .lrem(value, from: RedisKey(key), count: 0)
-        return try await _send(command)
+        return await _send(command, 0)
     }
     
     func lset(_ key:String, index:Int, value:String) async -> Void {
@@ -82,16 +82,12 @@ extension RediStackClient {
         defer {
             complete()
         }
-        do {
-            try await _lset(key, index: index, value: value)
-        } catch {
-            handleError(error)
-        }
+        await _lset(key, index: index, value: value)
     }
     
-    private func _lset(_ key:String, index:Int, value:String) async throws -> Void {
+    private func _lset(_ key:String, index:Int, value:String) async -> Void {
         let command: RedisCommand<Void> = .lset(index: index, to: value, in: RedisKey(key))
-        try await _send(command)
+        await _send(command)
     }
     
     func lpush(_ key:String, value:String) async -> Int {
@@ -105,14 +101,14 @@ extension RediStackClient {
         return await send(command, 0)
     }
     
-    private func _lindex(_ key:String, index:Int) async throws -> String? {
+    private func _lindex(_ key:String, index:Int) async -> String? {
         let command: RedisCommand<RESPValue?> = .lindex(index, from: RedisKey(key))
-        return try await _send(command)?.string
+        return await _send(command)??.description
     }
     
-    private func llen(_ key:String) async throws -> Int {
+    private func llen(_ key:String) async -> Int {
         logger.debug("redis list length, key: \(key)")
         let command: RedisCommand<Int> = .llen(of: RedisKey(key))
-        return try await _send(command)
+        return await _send(command, 0)
     }
 }

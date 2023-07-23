@@ -10,16 +10,16 @@ import Logging
 import Foundation
 import ComposableArchitecture
 
-private let logger = Logger(label: "global-store")
+private let logger = Logger(label: "app-context-store")
 
 
-struct GlobalStore: ReducerProtocol {
+struct AppContextStore: ReducerProtocol {
     struct State: Equatable {
         var loading:Bool = false
         var loadingCount:Int = 0
         
         init() {
-            logger.info("global state init ...")
+            logger.info("app context state init ...")
         }
     }
 

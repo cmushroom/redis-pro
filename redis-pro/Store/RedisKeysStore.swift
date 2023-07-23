@@ -71,6 +71,7 @@ struct RedisKeysStore: ReducerProtocol {
     }
 
     @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
+    @Dependency(\.redisClient) var redisClient:RediStackClient
     var mainQueue: AnySchedulerOf<DispatchQueue> = .main
     
     var body: some ReducerProtocol<State, Action> {
@@ -127,7 +128,6 @@ struct RedisKeysStore: ReducerProtocol {
                     .init(value: .getKeys),
                     .init(value: .countKeys(0, searchGroup))
                 )
-                .eraseToEffect()
                 
                 // dbsize
             case .dbsize:
@@ -135,8 +135,6 @@ struct RedisKeysStore: ReducerProtocol {
                     let r = await redisInstanceModel.getClient().dbsize()
                     return .setDBSize(r)
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
                 
                 // 分页查询 key
             case .getKeys:
@@ -146,8 +144,6 @@ struct RedisKeysStore: ReducerProtocol {
                     
                     await send(.setKeys(page, keysPage))
                 }
-//                .receive(on: mainQueue)
-//                .eraseToEffect()
                 
             // 异步计算key数量, 通过setCount 进行递归调用，直接cursor 返回0
             // 后续可能增加开关，是否查询数量
@@ -158,28 +154,31 @@ struct RedisKeysStore: ReducerProtocol {
                     return .none
                 }
                 
-                return .task {
+                // 是否开启了快速分页, 默认启用
+                state.pageState.fastPage = redisClient.settingViewStore?.fastPage ?? true
+                state.pageState.fastPageMax = redisClient.settingViewStore?.fastPageMax ?? 99
+                
+                return .run { send in
                     let r = await redisInstanceModel.getClient().countKey(page, cursor: cursor)
-                    return .setCount(r.0, r.1, searchGroup)
+                    return await send(.setCount(r.0, r.1, searchGroup))
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
                 
                 
-            case let .setKeys(page, redisKeys):
+            case let .setKeys(_, redisKeys):
                 state.tableState.datasource = redisKeys
                 
                 if !redisKeys.isEmpty {
                     state.tableState.selectIndex = 0
                 }
                 return .none
-                
+            
             case let .setCount(cursor, count, searchGroup):
                 if searchGroup < state.searchGroup {
                     return .none
                 }
                 
                 state.pageState.total = state.pageState.total + count
+                
                 return cursor == 0 ? .none : .result { .success(.countKeys(cursor, searchGroup)) }
                 
             case let .setMainViewType(mainViewType):

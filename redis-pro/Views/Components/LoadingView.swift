@@ -10,11 +10,11 @@ import SwiftUI
 import ComposableArchitecture
 
 struct LoadingView: View {
-    let store:StoreOf<GlobalStore>
+    let store:StoreOf<AppContextStore>
     
     private var logger = Logger(label: "loading-view")
     
-    init(_ store: Store<GlobalStore.State, GlobalStore.Action>) {
+    init(_ store: Store<AppContextStore.State, AppContextStore.Action>) {
         logger.info("loading view init...")
         self.store = store
     }

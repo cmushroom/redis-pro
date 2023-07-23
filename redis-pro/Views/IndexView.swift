@@ -11,22 +11,25 @@ import ComposableArchitecture
 
 struct IndexView: View {
     @State var appState:AppStore.State?
+    var settingStore: StoreOf<SettingsStore>
     let logger = Logger(label: "index-view")
     
     
-    init() {
+    init(settingStore: StoreOf<SettingsStore>) {
         logger.info("index view init ...")
+        self.settingStore = settingStore
     }
     
     var body: some View {
         if let state = appState {
             let redisInstanceModel = RedisInstanceModel(redisModel: RedisModel())
-//            let appContext = AppContext()
+            let redisClient = RediStackClient(RedisModel(), settingViewStore: ViewStore(settingStore))
+            
             let store: StoreOf<AppStore> = Store(initialState: state) {
                 AppStore()
             } withDependencies: {
                 $0.redisInstance = redisInstanceModel
-//                $0.appContext = appContext
+                $0.redisClient = redisClient
             }
             
             WithViewStore(store, observe: { $0.isConnect }) {viewStore in

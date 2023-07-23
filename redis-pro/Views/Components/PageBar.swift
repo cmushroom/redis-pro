@@ -34,7 +34,7 @@ struct PageBar: View {
                 
                 HStack(alignment:.center, spacing: 2) {
                     MIcon(icon: "chevron.left", disabled: !viewStore.hasPrev, action: {viewStore.send(.prevPage)})
-                    Text("\(viewStore.current)/\(viewStore.totalPage)")
+                    Text("\(viewStore.current)/\(viewStore.totalPageText)")
                         .font(MTheme.FONT_FOOTER)
                         .multilineTextAlignment(.center)
                         .lineLimit(1)

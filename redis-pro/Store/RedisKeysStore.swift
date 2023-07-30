@@ -107,8 +107,8 @@ struct RedisKeysStore: ReducerProtocol {
                 
                 // 只刷新数量，比如删除时不刷新列表数据， 只刷新数量
             case .refreshCount:
-                return .result {
-                    .success(.dbsize)
+                return .run { send in
+                    await send(.dbsize)
                 }
                 
                 // 全部刷新
@@ -125,8 +125,8 @@ struct RedisKeysStore: ReducerProtocol {
                 state.pageState.keywords = keywords
                 
                 return .merge(
-                    .init(value: .getKeys),
-                    .init(value: .countKeys(0, searchGroup))
+                    .send(.getKeys),
+                    .send(.countKeys(0, searchGroup))
                 )
                 
                 // dbsize
@@ -179,7 +179,7 @@ struct RedisKeysStore: ReducerProtocol {
                 
                 state.pageState.total = state.pageState.total + count
                 
-                return cursor == 0 ? .none : .result { .success(.countKeys(cursor, searchGroup)) }
+                return cursor == 0 ? .none : .run { send in await send(.countKeys(cursor, searchGroup)) }
                 
             case let .setMainViewType(mainViewType):
                 state.mainViewType = mainViewType
@@ -192,8 +192,8 @@ struct RedisKeysStore: ReducerProtocol {
             case .addNew:
                 let newKey = RedisKeyModel()
                 newKey.initNew()
-                return .result{
-                    .success(.valueAction(.keyChange(newKey)))
+                return .run{ send in
+                    await send(.valueAction(.keyChange(newKey)))
                 }
                 
             case let .deleteConfirm(index):
@@ -211,20 +211,18 @@ struct RedisKeysStore: ReducerProtocol {
                 let redisKeyModel = state.tableState.datasource[index] as! RedisKeyModel
                 logger.info("delete key: \(redisKeyModel.key)")
                 
-                return .task {
+                return .run { send in
                     let r = await redisInstanceModel.getClient().del(redisKeyModel.key)
                     logger.info("on delete redis key: \(index), r:\(r)")
                     
-                    return r > 0 ? .deleteSuccess(index) : .none
+                    return r > 0 ? await send(.deleteSuccess(index)) : await send(.none)
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
                 
             case let .deleteSuccess(index):
                 state.tableState.datasource.remove(at: index)
                 
-                return .result {
-                    .success(.refreshCount)
+                return .run { send in
+                    await send(.refreshCount)
                 }
                 
             case let .onKeyChange(index):
@@ -232,8 +230,8 @@ struct RedisKeysStore: ReducerProtocol {
                 
                 state.mainViewType = .EDITOR
                 let redisKeyModel = state.tableState.datasource[index] as! RedisKeyModel
-                return .result{
-                    .success(.valueAction(.keyChange(redisKeyModel)))
+                return .run { send in
+                    await send(.valueAction(.keyChange(redisKeyModel)))
                 }
                 
             case .flushDBConfirm:
@@ -243,20 +241,17 @@ struct RedisKeysStore: ReducerProtocol {
                                      , primaryButton: "Ok"
                                      , action: {
                         callback(.success(.flushDB))
-                    }
-                    )
+                    })
                 }
                 
             case .flushDB:
-                return .task {
+                return .run { send in
                     let r = await redisInstanceModel.getClient().flushDB()
                     if r {
-                        return .initial
+                        return await  send(.initial)
                     }
-                    return .none
+                    return await send(.none)
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
                 
                 // redis 系统信息
             case .redisSystemAction(.setSystemView):
@@ -287,16 +282,16 @@ struct RedisKeysStore: ReducerProtocol {
                 return .none
                 
             case let .tableAction(.selectionChange(index)):
-                return .result {
-                    .success(.onKeyChange(index))
+                return .run { send in
+                    await send(.onKeyChange(index))
                 }
                 
                 // delete key
             case let .tableAction(.contextMenu(title, index)):
                 if title == "Delete" {
                     
-                    return .result {
-                        .success(.deleteConfirm(index))
+                    return .run { send in
+                        await send(.deleteConfirm(index))
                     }
                 }
                 
@@ -320,35 +315,35 @@ struct RedisKeysStore: ReducerProtocol {
                 return .none
                 
             case let .tableAction(.delete(index)):
-                return .result {
-                    .success(.deleteConfirm(index))
+                return .run { send in
+                    await send(.deleteConfirm(index))
                 }
                 
             case .tableAction:
                 return .none
                 
-                //MARK:  --------------------------- database action ---------------------------
+            //MARK:  --------------------------- database action ---------------------------
             case let .databaseAction(.onDBChange(database)):
                 logger.info("change database, \(database)")
-                return .result {
-                    .success(.initial)
+                return .run { send in
+                    await send(.initial)
                 }
                 
             case .databaseAction:
                 return .none
                 
-                //MARK:  --------------------------- page action ---------------------------
+            //MARK:  --------------------------- page action ---------------------------
             case .pageAction(.updateSize):
-                return .result {
-                    .success(.getKeys)
+                return .run { send in
+                    await send(.getKeys)
                 }
             case .pageAction(.nextPage):
-                return .result {
-                    .success(.getKeys)
+                return .run { send in
+                    await send(.getKeys)
                 }
             case .pageAction(.prevPage):
-                return .result {
-                    .success(.getKeys)
+                return .run { send in
+                    await send(.getKeys)
                 }
             case .pageAction:
                 return .none

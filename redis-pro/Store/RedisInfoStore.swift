@@ -7,7 +7,6 @@
 
 import Logging
 import Foundation
-import SwiftyJSON
 import ComposableArchitecture
 
 private let logger = Logger(label: "redis-info-store")
@@ -49,24 +48,22 @@ struct RedisInfoStore: ReducerProtocol {
             case .initial:
             
                 logger.info("redis info store initial...")
-                return .result {
-                    .success(.getValue)
+                return .run { send in
+                    await send(.getValue)
                 }
             
             case .getValue:
-                return .task {
+                return .run { send in
                     let r = await redisInstanceModel.getClient().info()
-                    return .setValue(r)
+                    return await send(.setValue(r))
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
             
             case let .setValue(redisInfos):
                 let section = redisInfos.count > 0 ? redisInfos[0].section : ""
                 state.redisInfoModels = redisInfos
                 
-                return .result {
-                    .success(.setTab(section))
+                return .run { send in
+                    await send(.setTab(section))
                 }
                 
             case let .setTab(tab):
@@ -75,8 +72,8 @@ struct RedisInfoStore: ReducerProtocol {
                 let redisInfoModels = state.redisInfoModels
                 
                 guard redisInfoModels.count > 0 else {
-                    return .result {
-                        .success(.tableAction(.reset))
+                    return .run { send in
+                        await send(.tableAction(.reset))
                     }
                 }
                 
@@ -88,17 +85,15 @@ struct RedisInfoStore: ReducerProtocol {
                 return .none
             
             case .refresh:
-                return .result {
-                    .success(.getValue)
+                return .run { send in
+                    await send(.getValue)
                 }
                 
             case .resetState:
-                return .task {
+                return .run { send in
                     let _ = await redisInstanceModel.getClient().resetState()
-                    return .refresh
+                    return await send(.refresh)
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
                 
             case .tableAction:
                 return .none

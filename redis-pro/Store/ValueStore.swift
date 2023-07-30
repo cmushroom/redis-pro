@@ -17,6 +17,7 @@ struct ValueStore: ReducerProtocol {
     
     struct State: Equatable {
         var keyState: KeyStore.State = KeyStore.State()
+        var keyObjectState: KeyObjectStore.State = KeyObjectStore.State()
         var stringValueState = StringValueStore.State()
         var hashValueState: HashValueStore.State = HashValueStore.State()
         var listValueState: ListValueStore.State = ListValueStore.State()
@@ -37,6 +38,7 @@ struct ValueStore: ReducerProtocol {
         case keyChange(RedisKeyModel)
         case submitSuccess(Bool)
         case keyAction(KeyStore.Action)
+        case keyObjectAction(KeyObjectStore.Action)
         case stringValueAction(StringValueStore.Action)
         case hashValueAction(HashValueStore.Action)
         case listValueAction(ListValueStore.Action)
@@ -49,6 +51,9 @@ struct ValueStore: ReducerProtocol {
     var body: some ReducerProtocol<State, Action> {
         Scope(state: \.keyState, action: /Action.keyAction) {
             KeyStore()
+        }
+        Scope(state: \.keyObjectState, action: /Action.keyObjectAction) {
+            KeyObjectStore()
         }
         Scope(state: \.stringValueState, action: /Action.stringValueAction) {
             StringValueStore()
@@ -73,8 +78,8 @@ struct ValueStore: ReducerProtocol {
                 return .none
                 
             case .refresh:
-                return .result {
-                    .success(.keyAction(.getTtl))
+                return .run { send in
+                    await send(.keyAction(.getTtl))
                 }
                 
             case .none:
@@ -98,6 +103,7 @@ struct ValueStore: ReducerProtocol {
             // key 变化统计走此action 分发
             case let .keyChange(redisKeyModel):
                 state.keyState.redisKeyModel = redisKeyModel
+                state.keyObjectState.key = redisKeyModel.key
                 
                 var valueAction:ValueStore.Action = .stringValueAction(.initial)
                 
@@ -119,6 +125,7 @@ struct ValueStore: ReducerProtocol {
                 
                 return .merge(
                     .send(.keyAction(.refresh)),
+                    .send(.keyObjectAction(.refresh)),
                     .send(valueAction)
                 )
                 
@@ -127,84 +134,92 @@ struct ValueStore: ReducerProtocol {
                 if isNew {
                     state.keyState.isNew = false
                 }
-                return .result {
-                    .success(.keyAction(.refresh))
+                return .run { send in
+                    await send(.keyAction(.refresh))
                 }
             
-                
+            // MARK: key action
             case let .keyAction(.setKey(key)):
                 let redisKeyModel = state.keyState.redisKeyModel
-                return .result {
-                    .success(.setKeyModel(redisKeyModel))
+                return .run {  send in
+                    await send(.setKeyModel(redisKeyModel))
                 }
+                
             case .keyAction(.setType):
                 let redisKeyModel = state.keyState.redisKeyModel
-                return .result {
-                    .success(.keyChange(redisKeyModel))
+                return .run { send in
+                    await send(.keyChange(redisKeyModel))
                 }
                 
             case .keyAction:
                 return .none
+             
+            // MARK: key object action
+            case .keyObjectAction:
+                return .none
                 
+            // MARK: string value action
             // submit 成功后统一调用 submitSuccess, 此后的动作再依次分发
             case let .stringValueAction(.submitSuccess(isNew)):
-                return .result {
-                    .success(.submitSuccess(isNew))
+                return .run { send in
+                    await send(.submitSuccess(isNew))
                 }
                 
             case .stringValueAction(.refresh):
-                return .result {
-                    .success(.refresh)
+                return .run { send in
+                    await send(.refresh)
                 }
                 
             case .stringValueAction:
                 return .none
                 
+            // MARK: hash value action
             case .hashValueAction(.refresh):
-                return .result {
-                    .success(.refresh)
+                return .run { send in
+                    await send(.refresh)
                 }
                 
             case let .hashValueAction(.submitSuccess(isNew)):
-                return .result {
-                    .success(.submitSuccess(isNew))
+                return .run { send in
+                    await send(.submitSuccess(isNew))
                 }
             case .hashValueAction:
                 return .none
             
-            // list action
+                
+            // MARK: list value action
             case .listValueAction(.refresh):
-                return .result {
-                    .success(.refresh)
+                return .run { send in
+                    await send(.refresh)
                 }
                 
             case let .listValueAction(.submitSuccess(isNew)):
-                return .result {
-                    .success(.submitSuccess(isNew))
+                return .run { send in
+                    await send(.submitSuccess(isNew))
                 }
             case .listValueAction:
                 return .none
                 
-            // set action
+            //MARK: set action
             case .setValueAction(.refresh):
-                return .result {
-                    .success(.refresh)
+                return .run { send in
+                    await send(.refresh)
                 }
             case let .setValueAction(.submitSuccess(isNew)):
-                return .result {
-                    .success(.submitSuccess(isNew))
+                return .run { send in
+                    await send(.submitSuccess(isNew))
                 }
             case .setValueAction:
                 return .none
                 
-            // zset action
+            //MARK: zset action
             case let .zsetValueAction(.submitSuccess(isNew)):
-                return .result {
-                    .success(.submitSuccess(isNew))
+                return .run { send in
+                    await send(.submitSuccess(isNew))
                 }
             case .zsetValueAction(.refresh):
-                return .result {
-                    .success(.refresh)
+                return .run { send in
+                    await send(.refresh)
                 }
             case .zsetValueAction:
                 return .none

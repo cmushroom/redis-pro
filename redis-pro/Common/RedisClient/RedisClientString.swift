@@ -91,6 +91,12 @@ extension RediStackClient {
         return ttlSecond(await _send(command, RedisKey.Lifetime.keyDoesNotExist))
     }
     
+    func objectEncoding(_ key:String) async -> String {
+        logger.info("get object encoding, key: \(key)")
+        let command:RedisCommand<String> = .objectEncoding(key)
+        return await _send(command, "")
+    }
+    
     func getTypes(_ keys:[String]) async -> [String:String] {
         return await withTaskGroup(of: (String, String).self) { group in
             var typeDict = [String:String]()

@@ -49,7 +49,6 @@ struct AppStore: ReducerProtocol {
         case onStart
         case onClose
         case globalAction(AppContextStore.Action)
-        case alertAction(AlertAction)
         case loadingAction(LoadingStore.Action)
         case favoriteAction(FavoriteStore.Action)
         case settingsAction(SettingsStore.Action)
@@ -91,8 +90,6 @@ struct AppStore: ReducerProtocol {
                 state.isConnect = false
                 return .none
             case .globalAction:
-                return .none
-            case .alertAction:
                 return .none
             case .loadingAction:
                 return .none

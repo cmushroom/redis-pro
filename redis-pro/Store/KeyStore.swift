@@ -66,8 +66,8 @@ struct KeyStore: ReducerProtocol {
                 return .none
                 
             case .refresh:
-                return .result {
-                    .success(.getTtl)
+                return .run { send in
+                    await send(.getTtl)
                 }
                 
             case let .setKey(key):
@@ -103,7 +103,7 @@ struct KeyStore: ReducerProtocol {
                 
                 let key = state.key
                 let ttl = state.ttl
-                return Effect<Action, Never>.task {
+                return .task {
                     let _ = await redisInstanceModel.getClient().expire(key, seconds: ttl)
                     return .none
                 }

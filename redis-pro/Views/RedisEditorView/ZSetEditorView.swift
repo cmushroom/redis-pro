@@ -12,7 +12,14 @@ import ComposableArchitecture
 struct ZSetEditorView: View {
     
     var store:StoreOf<ZSetValueStore>
+    var keyObjectStore: StoreOf<KeyObjectStore>
     let logger = Logger(label: "redis-set-editor")
+    
+    
+    init(store: StoreOf<ValueStore>) {
+        self.store = store.scope(state: \.zsetValueState, action: ValueStore.Action.zsetValueAction)
+        self.keyObjectStore = store.scope(state: \.keyObjectState, action: ValueStore.Action.keyObjectAction)
+    }
     
     var body: some View {
 
@@ -31,6 +38,7 @@ struct ZSetEditorView: View {
 
             // footer
             HStack(alignment: .center, spacing: 4) {
+                KeyObjectBar(store: keyObjectStore)
                 Spacer()
                 IconButton(icon: "arrow.clockwise", name: "Refresh", action: {viewStore.send(.refresh)})
             }

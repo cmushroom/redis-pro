@@ -96,14 +96,13 @@ struct FavoriteStore: ReducerProtocol {
                 
                 let redisModel = state.tableState.datasource[index] as! RedisModel
                 
-                return Effect<Action, Never>.future { callback in
+                return .future { callback in
                     Messages.confirm(String(format: NSLocalizedString("CONFIRM_FAVORITE_REDIS_TITLE'%@'", comment: ""), redisModel.name)
                                       , message: String(format: NSLocalizedString("CONFIRM_FAVORITE_REDIS_MESSAGE'%@'", comment: ""), redisModel.name)
                                       , primaryButton: "Delete"
                                       , action: {
                         callback(.success(.delete(index)))
-                    }
-                    )
+                    })
                 }
             case let .delete(index):
                 let r = RedisDefaults.delete(index)

@@ -16,7 +16,6 @@ struct HomeView: View {
 
     var body: some View {
         WithViewStore(self.store, observe: { $0.title }) { viewStore in
-//        WithViewStore(store.scope(state: \.title)) {viewStore in
             
             RedisKeysListView(store)
                 .onAppear {

@@ -11,7 +11,13 @@ import ComposableArchitecture
 
 struct StringEditorView: View {
     var store: StoreOf<StringValueStore>
+    var keyObjectStore: StoreOf<KeyObjectStore>
     private let logger = Logger(label: "string-editor")
+    
+    init(store: StoreOf<ValueStore>) {
+        self.store = store.scope(state: \.stringValueState, action: ValueStore.Action.stringValueAction)
+        self.keyObjectStore = store.scope(state: \.keyObjectState, action: ValueStore.Action.keyObjectAction)
+    }
     
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) {viewStore in
@@ -23,10 +29,12 @@ struct StringEditorView: View {
                 
                 // footer
                 HStack(alignment: .center, spacing: MTheme.H_SPACING) {
+                    KeyObjectBar(store: keyObjectStore)
+                    
                     if (viewStore.isIntactString) {
-                        Text("lenth: \(viewStore.length)")
+                        Text("Lenth: \(viewStore.length)")
                     } else {
-                        Text("range: 0~\(viewStore.stringMaxLength + 1) / \(viewStore.length)")
+                        Text("Range: 0~\(viewStore.stringMaxLength + 1) / \(viewStore.length)")
                         MButton(text: "Show Intact", action: {viewStore.send(.getIntactString)})
                     }
                 

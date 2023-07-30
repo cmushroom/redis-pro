@@ -11,7 +11,14 @@ import ComposableArchitecture
 
 struct HashEditorView: View {
     var store: StoreOf<HashValueStore>
+    var keyObjectStore: StoreOf<KeyObjectStore>
     private let logger = Logger(label: "redis-hash-editor")
+    
+    init(store: StoreOf<ValueStore>) {
+        self.store = store.scope(state: \.hashValueState, action: ValueStore.Action.hashValueAction)
+        self.keyObjectStore = store.scope(state: \.keyObjectState, action: ValueStore.Action.keyObjectAction)
+    }
+    
     
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) {viewStore in
@@ -29,6 +36,7 @@ struct HashEditorView: View {
 
                 // footer
                 HStack(alignment: .center, spacing: 4) {
+                    KeyObjectBar(store: keyObjectStore)
                     Spacer()
                     IconButton(icon: "arrow.clockwise", name: "Refresh", action: {viewStore.send(.refresh)})
 
@@ -52,10 +60,3 @@ struct HashEditorView: View {
     }
     
 }
-
-//struct KeyValueRowEditorView_Previews: PreviewProvider {
-//    static var redisKeyModel:RedisKeyModel = RedisKeyModel("tes", type: "string")
-//    static var previews: some View {
-//        HashEditorView(redisKeyModel: redisKeyModel)
-//    }
-//}

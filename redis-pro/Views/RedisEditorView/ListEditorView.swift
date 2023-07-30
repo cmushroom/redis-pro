@@ -12,7 +12,13 @@ import ComposableArchitecture
 struct ListEditorView: View {
     
     var store:StoreOf<ListValueStore>
+    var keyObjectStore: StoreOf<KeyObjectStore>
     let logger = Logger(label: "redis-list-editor")
+    
+    init(store: StoreOf<ValueStore>) {
+        self.store = store.scope(state: \.listValueState, action: ValueStore.Action.listValueAction)
+        self.keyObjectStore = store.scope(state: \.keyObjectState, action: ValueStore.Action.keyObjectAction)
+    }
     
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
@@ -32,6 +38,7 @@ struct ListEditorView: View {
 
             // footer
             HStack(alignment: .center, spacing: MTheme.H_SPACING) {
+                KeyObjectBar(store: keyObjectStore)
                 Spacer()
                 IconButton(icon: "arrow.clockwise", name: "Refresh", action: {viewStore.send(.refresh)})
             }

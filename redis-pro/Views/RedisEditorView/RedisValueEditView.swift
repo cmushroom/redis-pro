@@ -17,26 +17,25 @@ struct RedisValueEditView: View {
     
     var body: some View {
         WithViewStore(self.store, observe: { $0.keyState }) { viewStore in
-//        WithViewStore(self.store.scope(state: \.keyState)) {viewStore in
             VStack(alignment: .leading, spacing: 4)  {
                 if viewStore.type == RedisKeyTypeEnum.STRING.rawValue {
-                    StringEditorView(store: store.scope(state: \.stringValueState, action: ValueStore.Action.stringValueAction))
+                    StringEditorView(store: store)
                 }
                 // HASH
                 else if viewStore.type == RedisKeyTypeEnum.HASH.rawValue {
-                    HashEditorView(store: store.scope(state: \.hashValueState, action: ValueStore.Action.hashValueAction))
+                    HashEditorView(store: store)
                 }
                 // LIST
                 else if viewStore.type == RedisKeyTypeEnum.LIST.rawValue {
-                    ListEditorView(store: store.scope(state: \.listValueState, action: ValueStore.Action.listValueAction))
+                    ListEditorView(store: store)
                 }
                 // SET
                 else if viewStore.type == RedisKeyTypeEnum.SET.rawValue {
-                    SetEditorView(store: store.scope(state: \.setValueState, action: ValueStore.Action.setValueAction))
+                    SetEditorView(store: store)
                 }
                 // ZSET
                 else if viewStore.type == RedisKeyTypeEnum.ZSET.rawValue {
-                    ZSetEditorView(store: store.scope(state: \.zsetValueState, action: ValueStore.Action.zsetValueAction))
+                    ZSetEditorView(store: store)
                 } else {
                     EmptyView()
                 }

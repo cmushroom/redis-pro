@@ -25,7 +25,7 @@ struct StringEditorView: View {
                 // footer
                 HStack(alignment: .center, spacing: MTheme.H_SPACING) {
                     if (viewStore.isIntactString) {
-                        Text("lenth: \(viewStore.length)")
+                        Text("length: \(viewStore.length)")
                     } else {
                         Text("range: 0~\(viewStore.stringMaxLength + 1) / \(viewStore.length)")
                         MButton(text: "Show Intact", action: {viewStore.send(.getIntactString)})

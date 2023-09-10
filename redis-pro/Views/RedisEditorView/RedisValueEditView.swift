@@ -11,31 +11,31 @@ import ComposableArchitecture
 
 struct RedisValueEditView: View {
     
-    var store: Store<ValueState, ValueAction>
+    var store: StoreOf<ValueStore>
     
     let logger = Logger(label: "redis-value-edit-view")
     
     var body: some View {
-        WithViewStore(store.scope(state: \.keyState)) {viewStore in
+        WithViewStore(self.store, observe: { $0.keyState }) { viewStore in
             VStack(alignment: .leading, spacing: 4)  {
                 if viewStore.type == RedisKeyTypeEnum.STRING.rawValue {
-                    StringEditorView(store: store.scope(state: \.stringValueState, action: ValueAction.stringValueAction))
+                    StringEditorView(store: store)
                 }
                 // HASH
                 else if viewStore.type == RedisKeyTypeEnum.HASH.rawValue {
-                    HashEditorView(store: store.scope(state: \.hashValueState, action: ValueAction.hashValueAction))
+                    HashEditorView(store: store)
                 }
                 // LIST
                 else if viewStore.type == RedisKeyTypeEnum.LIST.rawValue {
-                    ListEditorView(store: store.scope(state: \.listValueState, action: ValueAction.listValueAction))
+                    ListEditorView(store: store)
                 }
                 // SET
                 else if viewStore.type == RedisKeyTypeEnum.SET.rawValue {
-                    SetEditorView(store: store.scope(state: \.setValueState, action: ValueAction.setValueAction))
+                    SetEditorView(store: store)
                 }
                 // ZSET
                 else if viewStore.type == RedisKeyTypeEnum.ZSET.rawValue {
-                    ZSetEditorView(store: store.scope(state: \.zsetValueState, action: ValueAction.zsetValueAction))
+                    ZSetEditorView(store: store)
                 } else {
                     EmptyView()
                 }

@@ -31,7 +31,7 @@ extension RediStackClient {
             // 查询所有时使用 ZRANGEBYSCORE 按顺序返回
             if isMatchAll(page.keywords) {
                 r = try await _zrangeByScore(key, page: page)
-                page.total = try await _zcard(key)
+                page.total = await _zcard(key)
             }
             else if isScan {
                 let match = page.keywords.isEmpty ? nil : page.keywords
@@ -60,7 +60,7 @@ extension RediStackClient {
     private func zsetCountScan(_ key:String, keywords:String?) async throws -> Int {
         if isMatchAll(keywords ?? "") {
             logger.info("keywords is match all, use scard...")
-            return try await _zcard(key)
+            return await _zcard(key)
         }
         
         var cursor:Int = 0
@@ -127,7 +127,7 @@ extension RediStackClient {
         logger.debug("redis set scan, key: \(key) cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
         
         let command: RedisCommand<(Int, [(RESPValue, Double)])> = .zscan(RedisKey(key), startingFrom: cursor, matching: keywords, count: count)
-        let r = try await _send(command)
+        let r = await _send(command)!
         return (r.0, r.1.map { ($0.0.string ?? Const.EMPTY_STRING, $0.1) })
     }
     
@@ -142,7 +142,7 @@ extension RediStackClient {
             let r = try await _zrem(key, ele: from)
             try Assert.isTrue(r > 0, message: "set zset element: `\(from)` is not exist!")
             
-            return try await _zadd(key, score: score, ele: to)
+            return await _zadd(key, score: score, ele: to)
             
         } catch {
             handleError(error)
@@ -155,24 +155,19 @@ extension RediStackClient {
         defer {
             complete()
         }
-        do {
-            return try await _zadd(key, score: score, ele: ele)
-        } catch {
-            handleError(error)
-        }
         
-        return false
+        return await _zadd(key, score: score, ele: ele)
     }
     
-    private func _zadd(_ key:String, score:Double, ele:String) async throws -> Bool {
+    private func _zadd(_ key:String, score:Double, ele:String) async -> Bool {
         let command: RedisCommand<Int> = .zadd((ele, score), to: RedisKey(key))
-        return try await _send(command) > 0
+        return await _send(command, 0) > 0
     }
     
     
-    private func _zcard(_ key:String) async throws -> Int {
+    private func _zcard(_ key:String) async -> Int {
         let command: RedisCommand<Int> = .zcard(of: RedisKey(key))
-        return try await _send(command)
+        return await _send(command, 0)
     }
     
     func zrem(_ key:String, ele:String) async -> Int {
@@ -191,18 +186,18 @@ extension RediStackClient {
     
     private func _zrem(_ key:String, ele:String) async throws -> Int {
         let command: RedisCommand<Int> = .zrem(ele, from: RedisKey(key))
-        return try await _send(command)
+        return await _send(command, 0)
     }
     
     private func _zscore(_ key:String, ele:String) async throws -> Double? {
         let command: RedisCommand<Double?> = .zscore(of: ele, in: RedisKey(key))
-        return try await _send(command)
+        return await _send(command)!
     }
     
     private func _zrangeByScore(_ key:String, page:Page) async throws -> [(String, String)] {
     
         let command: RedisCommand<[(RESPValue, Double)]> = .zrangebyscore(from: RedisKey(key), withMinimumScoreOf: .inclusive(Double.min), limitBy: (offset: page.start, count: page.size), returning: .valuesAndScores)
-        let r:[(RESPValue, Double)] = try await _send(command)
+        let r:[(RESPValue, Double)] = await _send(command)!
         return r.map { ($0.string ?? Const.EMPTY_STRING, "\($1)") }
         
     }

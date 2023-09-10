@@ -11,11 +11,11 @@ import ComposableArchitecture
 
 
 struct LuaView: View {
-    var store:Store<LuaState, LuaAction>
+    var store:StoreOf<LuaStore>
     let logger = Logger(label: "lua-view")
     
     var body: some View {
-        WithViewStore(store) { viewStore in
+        WithViewStore(self.store, observe: { $0 }) {viewStore in
             VStack(alignment: .leading, spacing: MTheme.V_SPACING) {
                 
                 // header
@@ -28,7 +28,7 @@ struct LuaView: View {
                 VSplitView {
                     VStack(alignment: .leading, spacing: MTheme.V_SPACING){
                         // text editor
-                        MTextEditor(text: viewStore.binding(\.$lua))
+                        MTextEditor(text: viewStore.$lua)
                         
                         // btns
                         HStack(alignment: .center, spacing: MTheme.H_SPACING) {
@@ -42,7 +42,7 @@ struct LuaView: View {
                         
                     }
                     
-                    MTextEditor(text: viewStore.binding(\.$evalResult))
+                    MTextEditor(text: viewStore.$evalResult)
                 }
                 
             }

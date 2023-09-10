@@ -8,11 +8,11 @@
 import Foundation
 import Cocoa
 
-class RedisKeyModel:NSObject, ObservableObject, Identifiable {
-    @objc @Published var key: String = ""
-    @objc @Published var type: String = RedisKeyTypeEnum.STRING.rawValue
-    @Published var ttl: Int = -1
-    @Published var isNew: Bool = false
+class RedisKeyModel: NSObject, Identifiable {
+    @objc var key: String = ""
+    @objc var type: String = RedisKeyTypeEnum.STRING.rawValue
+    var ttl: Int = -1
+    var isNew: Bool = false
     
     private var _id:String = ""
     var id:String {
@@ -22,7 +22,6 @@ class RedisKeyModel:NSObject, ObservableObject, Identifiable {
         return key
     }
     
-    override init() {}
     
     convenience init(_ key:String, type:String) {
         self.init()

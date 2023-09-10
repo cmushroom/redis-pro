@@ -12,32 +12,28 @@ import RediStack
 import Logging
 import ComposableArchitecture
 
-class RedisInstanceModel:ObservableObject, Identifiable {
-    @Published var redisModel:RedisModel
+class RedisInstanceModel: Identifiable {
+    var redisModel:RedisModel
     private var rediStackClient:RediStackClient?
-    private var viewStore:ViewStore<GlobalState, GlobalAction>?
+    private var appContextviewStore:ViewStoreOf<AppContextStore>?
+    private var settingViewStore:ViewStoreOf<SettingsStore>?
     
     let logger = Logger(label: "redis-instance")
     
-    private var observers = [NSObjectProtocol]()
+    
+    convenience init(_ redisModel:RedisModel, settingViewStore: ViewStoreOf<SettingsStore>?) {
+        self.init(redisModel: redisModel)
+        self.settingViewStore = settingViewStore
+    }
     
     init(redisModel: RedisModel) {
         self.redisModel = redisModel
         logger.info("redis instance model init")
-        
-        observers.append(
-            NotificationCenter.default.addObserver(forName: NSApplication.willTerminateNotification, object: nil, queue: .main) { [self] _ in
-                logger.info("redis pro will exit...")
-                close()
-                
-                shutdown()
-            }
-        )
     }
     
-    func setAppStore(_ appStore: Store<AppState, AppAction>) {
-        let globalStore = appStore.scope(state: \.globalState, action: AppAction.globalAction)
-        self.viewStore = ViewStore(globalStore)
+    func setAppStore(_ appStore: StoreOf<AppStore>) {
+        let globalStore = appStore.scope(state: \.globalState, action: AppStore.Action.globalAction)
+        self.appContextviewStore = ViewStore(globalStore, observe: { $0 })
     }
     
     // get client
@@ -54,8 +50,8 @@ class RedisInstanceModel:ObservableObject, Identifiable {
         
         logger.info("init new redis client, redisModel: \(redisModel)")
         self.redisModel = redisModel
-        let client = RediStackClient(redisModel)
-        client.setGlobalStore(self.viewStore)
+        let client = RediStackClient(redisModel, settingViewStore: settingViewStore)
+        client.setAppContextStore(self.appContextviewStore)
         
         self.rediStackClient = client
         return client

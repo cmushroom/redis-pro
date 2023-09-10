@@ -101,6 +101,10 @@ extension RedisCommand where ResultType == String {
     public static func getConfig(_ key: String) -> RedisCommand<String> {
         return .init(keyword: "CONFIG", arguments: [.init(from: "GET"), .init(from: key)])
     }
+    
+    public static func objectEncoding(_ key: String) -> RedisCommand<String> {
+        return .init(keyword: "OBJECT", arguments: [.init(from: "ENCODING"), .init(from: key)])
+    }
 }
 
 // MARK: - Int

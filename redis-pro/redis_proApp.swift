@@ -17,10 +17,14 @@ import ComposableArchitecture
 @main
 struct redis_proApp: App {
     
-    @Environment(\.scenePhase) var scenePhase
+    // 会造成indexView 多次初始化
+    // @Environment(\.scenePhase) var scenePhase
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
-    let settingsStore = Store(initialState: SettingsState(), reducer: settingsReducer, environment: SettingsEnvironment())
+    // settings
+    var settingsStore:Store<SettingsStore.State, SettingsStore.Action> = Store(initialState: SettingsStore.State()) {
+        SettingsStore()
+    }
     let logger = Logger(label: "app")
     
     // 应用启动只初始化一次
@@ -32,7 +36,10 @@ struct redis_proApp: App {
     var body: some Scene {
         
         WindowGroup {
-            IndexView()
+            IndexView(settingStore: settingsStore)
+                .onAppear {
+                    ViewStore(settingsStore, observe: { $0 }).send(.initial)
+                }
         }
         .commands {
             RedisProCommands()

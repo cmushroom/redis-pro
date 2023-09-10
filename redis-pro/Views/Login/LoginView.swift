@@ -11,17 +11,18 @@ import RediStack
 import Logging
 import ComposableArchitecture
 
+
 struct LoginView: View {
     let logger = Logger(label: "login-view")
-    let store: Store<AppState, AppAction>
+    let store: StoreOf<AppStore>
     
-    init(store: Store<AppState, AppAction>) {
+    init(store: StoreOf<AppStore>) {
         logger.info("login view init...")
         self.store = store
     }
     
     var body: some View {
-        RedisListView(store: store.scope(state: \.favoriteState, action: AppAction.favoriteAction))
+        RedisListView(store: store.scope(state: \.favoriteState, action: AppStore.Action.favoriteAction))
             .onDisappear {
                 logger.info("redis pro login view destroy...")
             }

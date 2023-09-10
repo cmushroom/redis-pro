@@ -107,13 +107,13 @@ extension RediStackClient {
         logger.debug("redis set scan, key: \(key) cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
     
         let command: RedisCommand<(Int, [RESPValue])> = .sscan(RedisKey(key), startingFrom: cursor, matching: keywords, count: count)
-        let r = try await _send(command)
-        return (r.0, r.1.map { $0.string })
+        let r = await _send(command)!
+        return (r.0, r.1.map { $0.description })
     }
     
-    private func _sexist(_ key:String, ele:String?) async throws -> Bool{
+    private func _sexist(_ key:String, ele:String?) async -> Bool{
         let command: RedisCommand<Bool> = .sismember(ele, of: RedisKey(key))
-        return try await _send(command)
+        return await _send(command, false)
     }
     
     func supdate(_ key:String, from:String, to:String) async -> Int {
@@ -124,10 +124,10 @@ extension RediStackClient {
         logger.info("redis set update, key: \(key), from: \(from), to: \(to)")
         
         do {
-            let r = try await _srem(key, ele: from)
+            let r = await _srem(key, ele: from)
             try Assert.isTrue(r > 0, message: "set element: `\(from)` is not exist!")
             
-            return try await _sadd(key, ele: to)
+            return await _sadd(key, ele: to)
         } catch {
             handleError(error)
         }
@@ -141,12 +141,7 @@ extension RediStackClient {
             complete()
         }
         
-        do {
-            return try await _srem(key, ele: ele)
-        } catch {
-            handleError(error)
-        }
-        return 0
+        return await _srem(key, ele: ele)
     }
     
     func sadd(_ key:String, ele:String) async -> Int {
@@ -154,28 +149,23 @@ extension RediStackClient {
         defer {
             complete()
         }
-        do {
-            return try await _sadd(key, ele: ele)
-        } catch {
-            handleError(error)
-        }
-        return 0
+        return await _sadd(key, ele: ele)
     }
     
-    private func _scard(_ key:String) async throws -> Int {
+    private func _scard(_ key:String) async -> Int {
         let command: RedisCommand<Int> = .scard(of: RedisKey(key))
-        return try await _send(command)
+        return await _send(command, 0)
     }
     
-    private func _srem(_ key:String, ele:String) async throws -> Int {
+    private func _srem(_ key:String, ele:String) async -> Int {
         let command: RedisCommand<Int> = .srem(ele, from: RedisKey(key))
-        return try await _send(command)
+        return await _send(command, 0)
     }
     
     
-    private func _sadd(_ key:String, ele:String) async throws -> Int {
+    private func _sadd(_ key:String, ele:String) async -> Int {
         let command: RedisCommand<Int> = .sadd(ele, to: RedisKey(key))
-        return try await _send(command)
+        return await _send(command, 0)
     }
     
     

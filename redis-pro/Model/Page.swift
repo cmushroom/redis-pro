@@ -7,15 +7,15 @@
 
 import Foundation
 
-class Page:ObservableObject, CustomStringConvertible, Equatable {
+class Page: CustomStringConvertible, Equatable {
     static func == (lhs: Page, rhs: Page) -> Bool {
         return lhs.current == rhs.current && lhs.size == rhs.size && lhs.keywords == rhs.keywords
     }
     
-    @Published var current:Int = 1
-    @Published var size:Int = 50
-    @Published var total:Int = 0
-    @Published var keywords:String = ""
+    var current:Int = 1
+    var size:Int = 50
+    var total:Int = 0
+    var keywords:String = ""
     
     var totalPage:Int {
         get {

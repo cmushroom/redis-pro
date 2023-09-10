@@ -11,13 +11,13 @@ import ComposableArchitecture
 
 struct ClientsListView: View {
     
-    var store:Store<ClientListState, ClientListAction>
+    var store:StoreOf<ClientListStore>
     
     var body: some View {
-        WithViewStore(store) { viewStore in
+        WithViewStore(self.store, observe: { $0 }) {viewStore in
             VStack(alignment: .leading, spacing: MTheme.V_SPACING) {
                 
-                NTableView(store: store.scope(state: \.tableState, action: ClientListAction.tableAction))
+                NTableView(store: store.scope(state: \.tableState, action: ClientListStore.Action.tableAction))
                 
                 HStack(alignment: .center , spacing: 8) {
                     Spacer()

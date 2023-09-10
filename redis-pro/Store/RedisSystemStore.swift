@@ -21,79 +21,70 @@ enum RedisSystemViewTypeEnum{
 }
 
 private let logger = Logger(label: "redis-system-store")
-struct RedisSystemState: Equatable {
-    var systemView: RedisSystemViewTypeEnum = .REDIS_INFO
-    var redisInfoState: RedisInfoState = RedisInfoState()
-    var redisConfigState: RedisConfigState = RedisConfigState()
-    var slowLogState: SlowLogState = SlowLogState()
-    var clientListState: ClientListState = ClientListState()
-    var luaState: LuaState = LuaState()
+
+struct RedisSystemStore: Reducer {
     
-    init() {
-        logger.info("redis system state init ...")
-    }
-}
-
-enum RedisSystemAction: Equatable {
-    case initial
-    case setSystemView(RedisSystemViewTypeEnum)
-    case redisInfoAction(RedisInfoAction)
-    case redisConfigAction(RedisConfigAction)
-    case slowLogAction(SlowLogAction)
-    case clientListAction(ClientListAction)
-    case luaAction(LuaAction)
-}
-
-struct RedisSystemEnvironment {
-    var redisInstanceModel:RedisInstanceModel
-}
-
-let redisSystemReducer = Reducer<RedisSystemState, RedisSystemAction, SystemEnvironment<RedisSystemEnvironment>>.combine(
-    redisInfoReducer.pullback(
-        state: \.redisInfoState,
-        action: /RedisSystemAction.redisInfoAction,
-        environment: { env in  .live(environment: RedisInfoEnvironment(redisInstanceModel: env.redisInstanceModel)) }
-    ),
-    redisConfigReducer.pullback(
-        state: \.redisConfigState,
-        action: /RedisSystemAction.redisConfigAction,
-        environment: { env in  .live(environment: RedisConfigEnvironment(redisInstanceModel: env.redisInstanceModel)) }
-    ),
-    slowLogReducer.pullback(
-        state: \.slowLogState,
-        action: /RedisSystemAction.slowLogAction,
-        environment: { env in  .live(environment: SlowLogEnvironment(redisInstanceModel: env.redisInstanceModel)) }
-    ),
-    clientListReducer.pullback(
-        state: \.clientListState,
-        action: /RedisSystemAction.clientListAction,
-        environment: { env in  .live(environment: ClientListEnvironment(redisInstanceModel: env.redisInstanceModel)) }
-    ),
-    luaReducer.pullback(
-        state: \.luaState,
-        action: /RedisSystemAction.luaAction,
-        environment: { env in  .live(environment: LuaEnvironment(redisInstanceModel: env.redisInstanceModel)) }
-    ),
-    Reducer<RedisSystemState, RedisSystemAction, SystemEnvironment<RedisSystemEnvironment>> {
-        state, action, env in
-        switch action {
-        // 初始化已设置的值
-        case .initial:
-            return .none
-        case let .setSystemView(type):
-            state.systemView = type
-            return .none
-        case .redisInfoAction:
-            return .none
-            
-        case .redisConfigAction:
-            return .none
-        case .slowLogAction:
-            return .none
-        case .clientListAction:
-            return .none
-        case .luaAction:
-            return .none
+    struct State: Equatable {
+        var systemView: RedisSystemViewTypeEnum = .REDIS_INFO
+        var redisInfoState: RedisInfoStore.State = RedisInfoStore.State()
+        var redisConfigState: RedisConfigStore.State = RedisConfigStore.State()
+        var slowLogState: SlowLogStore.State = SlowLogStore.State()
+        var clientListState: ClientListStore.State = ClientListStore.State()
+        var luaState: LuaStore.State = LuaStore.State()
+        
+        init() {
+            logger.info("redis system state init ...")
         }
     }
-)
+
+    enum Action: Equatable {
+        case initial
+        case setSystemView(RedisSystemViewTypeEnum)
+        case redisInfoAction(RedisInfoStore.Action)
+        case redisConfigAction(RedisConfigStore.Action)
+        case slowLogAction(SlowLogStore.Action)
+        case clientListAction(ClientListStore.Action)
+        case luaAction(LuaStore.Action)
+    }
+    
+    @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
+    
+    var body: some Reducer<State, Action> {
+        Scope(state: \.redisInfoState, action: /Action.redisInfoAction) {
+            RedisInfoStore()
+        }
+        Scope(state: \.redisConfigState, action: /Action.redisConfigAction) {
+            RedisConfigStore()
+        }
+        Scope(state: \.slowLogState, action: /Action.slowLogAction) {
+            SlowLogStore()
+        }
+        Scope(state: \.clientListState, action: /Action.clientListAction) {
+            ClientListStore()
+        }
+        Scope(state: \.luaState, action: /Action.luaAction) {
+            LuaStore()
+        }
+        Reduce { state, action in
+            switch action {
+            // 初始化已设置的值
+            case .initial:
+                return .none
+            case let .setSystemView(type):
+                state.systemView = type
+                return .none
+            case .redisInfoAction:
+                return .none
+                
+            case .redisConfigAction:
+                return .none
+            case .slowLogAction:
+                return .none
+            case .clientListAction:
+                return .none
+            case .luaAction:
+                return .none
+            }
+        }
+    }
+}

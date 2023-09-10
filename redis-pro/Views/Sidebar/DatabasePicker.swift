@@ -10,10 +10,10 @@ import ComposableArchitecture
 
 struct DatabasePicker: View {
 
-    var store:Store<DatabaseState, DatabaseAction>
+    var store:StoreOf<DatabaseStore>
     
     var body: some View {
-        WithViewStore(store) {viewStore in
+        WithViewStore(self.store, observe: { $0 }) {viewStore in
             
             Menu(content: {
                 ForEach(0 ..< viewStore.databases, id: \.self) { item in

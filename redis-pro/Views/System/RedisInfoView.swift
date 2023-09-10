@@ -10,14 +10,14 @@ import Logging
 import ComposableArchitecture
 
 struct RedisInfoView: View {
-    var store:Store<RedisInfoState, RedisInfoAction>
+    var store:StoreOf<RedisInfoStore>
     
     var body: some View {
-        WithViewStore(store) { viewStore in
+        WithViewStore(self.store, observe: { $0 }) {viewStore in
             VStack(alignment: .leading, spacing: MTheme.V_SPACING) {
-                TabView(selection: viewStore.binding(get: \.section, send: RedisInfoAction.setTab)) {
+                TabView(selection: viewStore.binding(get: \.section, send: RedisInfoStore.Action.setTab)) {
                     ForEach(viewStore.redisInfoModels.indices, id:\.self) { index in
-                        NTableView(store: store.scope(state: \.tableState, action: RedisInfoAction.tableAction))
+                        NTableView(store: store.scope(state: \.tableState, action: RedisInfoStore.Action.tableAction))
                             .tabItem {
                                 Text(viewStore.redisInfoModels[index].section)
                             }

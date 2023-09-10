@@ -10,22 +10,22 @@ import Logging
 import ComposableArchitecture
 
 struct SlowLogView: View {
-    var store:Store<SlowLogState, SlowLogAction>
+    var store:StoreOf<SlowLogStore>
     let logger = Logger(label: "slow-log-view")
     
     var body: some View {
-        WithViewStore(store) { viewStore in
+        WithViewStore(self.store, observe: { $0 }) {viewStore in
             VStack(alignment: .leading, spacing: MTheme.V_SPACING) {
                 // header
                 HStack(alignment: .center, spacing: MTheme.H_SPACING) {
-                    FormItemInt(label: "Slower Than(us)", labelWidth: 120, value: viewStore.binding(\.$slowerThan), suffix: "square.and.pencil", onCommit: {viewStore.send(.setSlowerThan)})
+                    FormItemInt(label: "Slower Than(us)", labelWidth: 120, value: viewStore.$slowerThan, suffix: "square.and.pencil", onCommit: {viewStore.send(.setSlowerThan)})
                         .help("REDIS_SLOW_LOG_SLOWER_THAN")
                         .frame(width: 320)
-                    FormItemInt(label: "Max Len", value: viewStore.binding(\.$maxLen), suffix: "square.and.pencil", onCommit: {viewStore.send(.setMaxLen)})
+                    FormItemInt(label: "Max Len", value: viewStore.$maxLen, suffix: "square.and.pencil", onCommit: {viewStore.send(.setMaxLen)})
                         .help("REDIS_SLOW_LOG_MAX_LEN")
                         .frame(width: 200)
                     
-                    FormItemInt(label: "Size", value: viewStore.binding(\.$size), suffix: "square.and.pencil", onCommit: {viewStore.send(.setSize)})
+                    FormItemInt(label: "Size", value: viewStore.$size, suffix: "square.and.pencil", onCommit: {viewStore.send(.setSize)})
                         .help("REDIS_SLOW_LOG_SIZE")
                         .frame(width: 200)
                     
@@ -34,7 +34,7 @@ struct SlowLogView: View {
                         .help("REDIS_SLOW_LOG_RESET")
                 }
                 
-                NTableView(store: store.scope(state: \.tableState, action: SlowLogAction.tableAction))
+                NTableView(store: store.scope(state: \.tableState, action: SlowLogStore.Action.tableAction))
                 
                 // footer
                 HStack(alignment: .center, spacing: MTheme.H_SPACING_L) {

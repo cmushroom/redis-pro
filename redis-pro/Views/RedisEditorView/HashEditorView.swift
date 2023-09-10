@@ -10,25 +10,33 @@ import Logging
 import ComposableArchitecture
 
 struct HashEditorView: View {
-    var store: Store<HashValueState, HashValueAction>
+    var store: StoreOf<HashValueStore>
+    var keyObjectStore: StoreOf<KeyObjectStore>
     private let logger = Logger(label: "redis-hash-editor")
     
+    init(store: StoreOf<ValueStore>) {
+        self.store = store.scope(state: \.hashValueState, action: ValueStore.Action.hashValueAction)
+        self.keyObjectStore = store.scope(state: \.keyObjectState, action: ValueStore.Action.keyObjectAction)
+    }
+    
+    
     var body: some View {
-        WithViewStore(store) {viewStore in
+        WithViewStore(self.store, observe: { $0 }) {viewStore in
             VStack(alignment: .leading, spacing: 0) {
                 HStack(alignment: .center , spacing: MTheme.H_SPACING) {
                     IconButton(icon: "plus", name: "Add", action: {viewStore.send(.addNew)})
                     IconButton(icon: "trash", name: "Delete", disabled: viewStore.tableState.selectIndex < 0, action: {viewStore.send(.deleteConfirm(viewStore.tableState.selectIndex))})
                 
                     SearchBar(placeholder: "Search field...", onCommit: {viewStore.send(.search($0))})
-                    PageBar(store: store.scope(state: \.pageState, action: HashValueAction.pageAction))
+                    PageBar(store: store.scope(state: \.pageState, action: HashValueStore.Action.pageAction))
                 }
                 .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
                 
-                NTableView(store: store.scope(state: \.tableState, action: HashValueAction.tableAction))
+                NTableView(store: store.scope(state: \.tableState, action: HashValueStore.Action.tableAction))
 
                 // footer
                 HStack(alignment: .center, spacing: 4) {
+                    KeyObjectBar(store: keyObjectStore)
                     Spacer()
                     IconButton(icon: "arrow.clockwise", name: "Refresh", action: {viewStore.send(.refresh)})
 
@@ -39,12 +47,12 @@ struct HashEditorView: View {
                 logger.info("redis hash editor view appear ...")
                 viewStore.send(.initial)
             }
-            .sheet(isPresented: viewStore.binding(\.$editModalVisible), onDismiss: {
+            .sheet(isPresented: viewStore.$editModalVisible, onDismiss: {
             }) {
                 ModalView("Edit hash entry", action: {viewStore.send(.submit)}) {
                     VStack(alignment:.leading, spacing: 8) {
-                        FormItemText(placeholder: "Field", editable: viewStore.isNew, value: viewStore.binding(\.$field))
-                        FormItemTextArea(placeholder: "Value", value: viewStore.binding(\.$value))
+                        FormItemText(placeholder: "Field", editable: viewStore.isNew, value: viewStore.$field)
+                        FormItemTextArea(placeholder: "Value", value: viewStore.$value)
                     }
                 }
             }
@@ -52,10 +60,3 @@ struct HashEditorView: View {
     }
     
 }
-
-//struct KeyValueRowEditorView_Previews: PreviewProvider {
-//    static var redisKeyModel:RedisKeyModel = RedisKeyModel("tes", type: "string")
-//    static var previews: some View {
-//        HashEditorView(redisKeyModel: redisKeyModel)
-//    }
-//}

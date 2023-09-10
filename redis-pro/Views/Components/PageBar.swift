@@ -10,13 +10,13 @@ import Logging
 import ComposableArchitecture
 
 struct PageBar: View {
-    var store:Store<PageState, PageAction>
+    var store:StoreOf<PageStore>
     
     let logger = Logger(label: "page-bar")
     
     var body: some View {
-        WithViewStore(store) { viewStore in
-            
+        WithViewStore(self.store, observe: { $0 }) { viewStore in
+    
             HStack(alignment:.center, spacing: 4) {
                 if viewStore.showTotal {
                     Text("Total: \(viewStore.total)")
@@ -24,7 +24,7 @@ struct PageBar: View {
                         .lineLimit(1)
                         .multilineTextAlignment(.trailing)
                 }
-                Picker("", selection: viewStore.binding(get: \.size, send: PageAction.updateSize)) {
+                Picker("", selection: viewStore.$size) {
                     Text("10").tag(10)
                     Text("50").tag(50)
                     Text("100").tag(100)
@@ -34,7 +34,7 @@ struct PageBar: View {
                 
                 HStack(alignment:.center, spacing: 2) {
                     MIcon(icon: "chevron.left", disabled: !viewStore.hasPrev, action: {viewStore.send(.prevPage)})
-                    Text("\(viewStore.current)/\(viewStore.totalPage)")
+                    Text("\(viewStore.current)/\(viewStore.totalPageText)")
                         .font(MTheme.FONT_FOOTER)
                         .multilineTextAlignment(.center)
                         .lineLimit(1)

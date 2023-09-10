@@ -13,11 +13,13 @@ import Logging
 open class RedisClientBaseTest: RedisBaseTest {
     let logger = Logger(label: "redis-client-test")
     
+    var redisModel: RedisModel!
     var redisClient: RediStackClient!
     
     open override func setUp() {
         logger.info("redis client base test setUp...")
-        redisClient = .init(RedisModel(host: redisHostname, port: redisPort, username: redisUsername, password: redisPassword))
+        self.redisModel = RedisModel(host: redisHostname, port: redisPort, username: redisUsername, password: redisPassword)
+        redisClient = .init(redisModel)
 //            let conn = try await redisClient.initConn(host: redisHostname, port: redisPort, username: redisUsername ?? "", pass: redisPassword ?? "", database: 0)
     }
     

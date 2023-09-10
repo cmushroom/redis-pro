@@ -11,21 +11,17 @@ import ComposableArchitecture
 
 struct SettingsView: View {
 
-    private var labelWidth:CGFloat = 100
-    let store:Store<SettingsState, SettingsAction>
+    private let labelWidth:CGFloat = 160
+    var store:StoreOf<SettingsStore>
     
     private let logger = Logger(label: "settings-view")
-    init(store:Store<SettingsState, SettingsAction>) {
-        logger.info("settings view init")
-        self.store = store
-    }
     
     var body: some View {
-        WithViewStore(store) { viewStore in
+        WithViewStore(self.store, observe: { $0 }) { viewStore in
             Form {
                 VStack(alignment: .leading, spacing: 8) {
                     
-                    Picker(selection: viewStore.binding(get: {$0.defaultFavorite}, send: SettingsAction.setDefaultFavorite),
+                    Picker(selection: viewStore.binding(get: {$0.defaultFavorite}, send: SettingsStore.Action.setDefaultFavorite),
                            label: Text("Default Favorite:").frame(width: labelWidth, alignment: .trailing)
                     ) {
                         Section {
@@ -37,14 +33,21 @@ struct SettingsView: View {
                         }
                     }
                     
-                    Picker(selection: viewStore.binding(get: {$0.colorSchemeValue ?? ColorSchemeEnum.SYSTEM.rawValue}, send: SettingsAction.setColorScheme),
+                    Picker(selection: viewStore.binding(get: {$0.colorSchemeValue ?? ColorSchemeEnum.SYSTEM.rawValue}, send: SettingsStore.Action.setColorScheme),
                            label: Text("Appearance:").frame(width: labelWidth, alignment: .trailing)) {
                         ForEach(ColorSchemeEnum.allCases.map({$0.rawValue}), id: \.self) { item in
                             Text(verbatim: item)
                         }
                     }
                     
-                    FormItemInt(label: "String Max Length", labelWidth:120, tips:"HELP_STRING_GET_RANGE_LENGTH", value: viewStore.binding(get: {$0.stringMaxLength}, send: SettingsAction.setStringMaxLength))
+                    FormItemInt(label: "String Max Length", labelWidth: labelWidth, tips:"HELP_STRING_GET_RANGE_LENGTH", value: viewStore.binding(get: {$0.stringMaxLength}, send: SettingsStore.Action.setStringMaxLength))
+                    
+                    Toggle(isOn: viewStore.binding(get: {$0.fastPage}, send: SettingsStore.Action.setFastPage)) {
+                        Text("Fast Page:")
+                            .frame(width: labelWidth, alignment: .trailing)
+                        }
+                        .toggleStyle(.switch)
+                        .help("HELP_FAST_PAGE")
                     Spacer()
                 }
             }
@@ -56,9 +59,3 @@ struct SettingsView: View {
         }
     }
 }
-
-//struct SettingsView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        SettingsView()
-//    }
-//}

@@ -1,6 +1,6 @@
 {
-    "latestVersionNum": 22,
-    "latestVersion": "2.5.2",
+    "latestVersionNum": 30,
+    "latestVersion": "3.0.0",
     "updateType": "hint",
-    "releaseNotes": "1. 增加字符串长度查询设置，对于超长字符通守getrange改善性能。\n2. 优化线程池关闭方式。"
+    "releaseNotes": "1. 升级TCA，使用Reducer重写store 部分。\n2. 增加快速分页模式, 在查询结果数据量较大情况时，优化查询性能。"
 }

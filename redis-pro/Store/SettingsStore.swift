@@ -13,7 +13,7 @@ import ComposableArchitecture
 private let logger = Logger(label: "settings-store")
 private let userDefaults = UserDefaults.standard
 
-struct SettingsStore: ReducerProtocol {
+struct SettingsStore: Reducer {
     struct State: Equatable {
         var colorSchemeValue:String?
         var defaultFavorite:String = "last"
@@ -34,7 +34,7 @@ struct SettingsStore: ReducerProtocol {
         case setFastPage(Bool)
     }
     
-    var body: some ReducerProtocol<State, Action> {
+    var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
             // 初始化已设置的值

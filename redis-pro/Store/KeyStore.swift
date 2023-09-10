@@ -10,7 +10,7 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "key-store")
 
-struct KeyStore: ReducerProtocol {
+struct KeyStore: Reducer {
     
     struct State: Equatable {
         @BindingState var type: String = RedisKeyTypeEnum.STRING.rawValue
@@ -56,7 +56,7 @@ struct KeyStore: ReducerProtocol {
     @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
     var mainQueue: AnySchedulerOf<DispatchQueue> = .main
     
-    var body: some ReducerProtocol<State, Action> {
+    var body: some Reducer<State, Action> {
         BindingReducer()
         Reduce { state, action in
             switch action {
@@ -80,19 +80,17 @@ struct KeyStore: ReducerProtocol {
                 }
                 
                 let key = state.key
-                return .task {
+                return .run { send in
                     let r = await redisInstanceModel.getClient().ttl(key)
-                    return .setTtl(r)
+                    await send(.setTtl(r))
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
             case let .setTtl(ttl):
                 state.ttl = ttl
                 return .none
             
             case .submit:
-                return .result {
-                    .success(.saveTtl)
+                return .run { send in
+                    await send(.saveTtl)
                 }
                 
             case .saveTtl:
@@ -103,12 +101,9 @@ struct KeyStore: ReducerProtocol {
                 
                 let key = state.key
                 let ttl = state.ttl
-                return .task {
+                return .run { send in
                     let _ = await redisInstanceModel.getClient().expire(key, seconds: ttl)
-                    return .none
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
                 
             case let .setType(type):
                 state.type = type

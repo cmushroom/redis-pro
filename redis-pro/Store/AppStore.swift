@@ -13,7 +13,7 @@ import ComposableArchitecture
 private let logger = Logger(label: "app-store")
 
 
-struct AppStore: ReducerProtocol {
+struct AppStore: Reducer {
     
     struct State: Equatable {
         var id:String = UUID().uuidString
@@ -59,7 +59,7 @@ struct AppStore: ReducerProtocol {
     var mainQueue: AnySchedulerOf<DispatchQueue> = .main
     
     
-    var body: some ReducerProtocol<State, Action> {
+    var body: some Reducer<State, Action> {
         
         Scope(state: \.globalState, action: /Action.globalAction) {
             AppContextStore()

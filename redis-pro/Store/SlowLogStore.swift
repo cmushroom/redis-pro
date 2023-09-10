@@ -14,7 +14,7 @@ import ComposableArchitecture
 private let logger = Logger(label: "redis-config-store")
 
 
-struct SlowLogStore: ReducerProtocol {
+struct SlowLogStore: Reducer {
     struct State: Equatable {
         
         @BindingState var slowerThan:Int = 10000
@@ -53,7 +53,7 @@ struct SlowLogStore: ReducerProtocol {
     @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
     let mainQueue: AnySchedulerOf<DispatchQueue> = .main
     
-    var body: some ReducerProtocol<State, Action> {
+    var body: some Reducer<State, Action> {
         BindingReducer()
         Scope(state: \.tableState, action: /Action.tableAction) {
             TableStore()
@@ -64,26 +64,24 @@ struct SlowLogStore: ReducerProtocol {
             case .initial:
             
                 logger.info("redis config store initial...")
-                return .result {
-                    .success(.getValue)
+                return .run { send in
+                    await send(.getValue)
                 }
                 
             case .refresh:
-                return .result {
-                    .success(.getValue)
+                return .run { send in
+                    await send(.getValue)
                 }
                 
             case .getValue:
                 let size = state.size
-                return .task {
+                return .run { send in
                     let datasource = await redisInstanceModel.getClient().getSlowLog(size)
                     let total = await redisInstanceModel.getClient().slowLogLen()
                     let maxLen = await redisInstanceModel.getClient().getConfigOne(key: "slowlog-max-len")
                     let slowerThan = await redisInstanceModel.getClient().getConfigOne(key: "slowlog-log-slower-than")
-                    return .setValue(datasource, total, NumberHelper.toInt(maxLen), NumberHelper.toInt(slowerThan))
+                    await send(.setValue(datasource, total, NumberHelper.toInt(maxLen), NumberHelper.toInt(slowerThan)))
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
 
             case let .setValue(slowLogs, total, maxLen, slowerThan):
                 state.tableState.datasource = slowLogs
@@ -93,33 +91,26 @@ struct SlowLogStore: ReducerProtocol {
                 
                 return .none
             case .reset:
-                return .task {
+                return .run { send in
                     let _ = await redisInstanceModel.getClient().slowLogReset()
-                    return .refresh
+                    await send(.refresh)
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
                 
             case .setSlowerThan:
                 let slowerThan = state.slowerThan
-                return .task {
+                return .run { send in
                     let _ = await redisInstanceModel.getClient().setConfig(key: "slowlog-log-slower-than", value: "\(slowerThan)")
-                    return .none
+                    await send(.none)
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
             case .setMaxLen:
                 let maxLen = state.maxLen
-                return .task {
+                return .run { send in
                     let _ = await redisInstanceModel.getClient().setConfig(key: "slowlog-max-len", value: "\(maxLen)")
-                    return .none
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
                 
             case .setSize:
-                return .result {
-                    .success(.getValue)
+                return .run { send in
+                    await send(.getValue)
                 }
                 
                 

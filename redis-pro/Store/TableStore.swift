@@ -11,7 +11,7 @@ import ComposableArchitecture
 private let logger = Logger(label: "table-store")
 
 
-struct TableStore: ReducerProtocol {
+struct TableStore: Reducer {
     struct State: Equatable {
         var columns:[NTableColumn] = []
         var datasource: Array<AnyHashable> = []
@@ -33,7 +33,7 @@ struct TableStore: ReducerProtocol {
         case dragComplete(Int, Int)
     }
     
-    var body: some ReducerProtocol<State, Action> {
+    var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
             // 查询所有收藏

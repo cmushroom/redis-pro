@@ -12,7 +12,7 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "rename-store")
 
-struct RenameStore: ReducerProtocol {
+struct RenameStore: Reducer {
     struct State: Equatable {
         var key:String = ""
         var index:Int = -1
@@ -37,7 +37,7 @@ struct RenameStore: ReducerProtocol {
     @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
     var mainQueue: AnySchedulerOf<DispatchQueue> = .main
     
-    var body: some ReducerProtocol<State, Action> {
+    var body: some Reducer<State, Action> {
         BindingReducer()
         Reduce { state, action in
             switch action {
@@ -53,16 +53,13 @@ struct RenameStore: ReducerProtocol {
                 let key = state.key
                 let index = state.index
                 let newKey = state.newKey
-                return .task {
+                return .run { send in
                     
                     let r = await redisInstanceModel.getClient().rename(key, newKey: newKey)
                     if r {
-                        return .setKey(index, newKey)
+                        await send(.setKey(index, newKey))
                     }
-                    return .none
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
                 
             case let .setKey(index, newKey):
                 state.visible = false

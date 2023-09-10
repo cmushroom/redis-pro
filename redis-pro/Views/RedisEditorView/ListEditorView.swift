@@ -44,11 +44,11 @@ struct ListEditorView: View {
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
         }
-        .sheet(isPresented: viewStore.binding(\.$editModalVisible), onDismiss: {
+        .sheet(isPresented: viewStore.$editModalVisible, onDismiss: {
         }) {
             ModalView("Edit list item", action: {viewStore.send(.submit)}) {
                 VStack(alignment:.leading, spacing: MTheme.V_SPACING) {
-                    FormItemTextArea(label: "", placeholder: "value", value: viewStore.binding(\.$editValue))
+                    FormItemTextArea(label: "", placeholder: "value", value: viewStore.$editValue)
                 }
                 
             }

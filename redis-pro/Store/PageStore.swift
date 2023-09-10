@@ -11,7 +11,7 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "page-store")
 
-struct PageStore: ReducerProtocol {
+struct PageStore: Reducer {
     struct State: Equatable {
         var showTotal: Bool = false
         var current:Int = 1
@@ -74,7 +74,7 @@ struct PageStore: ReducerProtocol {
     }
     
     
-    var body: some ReducerProtocol<State, Action> {
+    var body: some Reducer<State, Action> {
         BindingReducer()
         Reduce { state, action in
             switch action {

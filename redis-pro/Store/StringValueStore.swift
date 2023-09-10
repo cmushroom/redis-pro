@@ -12,7 +12,7 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "string-value-store")
 
-struct StringValueStore: ReducerProtocol {
+struct StringValueStore: Reducer {
     struct State: Equatable  {
         var redisKeyModel:RedisKeyModel?
         // 是否是完整字符串, 如果设置最大显示长度, 使用getrange命令取出部分字符串, 防止长字符串过大
@@ -41,7 +41,7 @@ struct StringValueStore: ReducerProtocol {
     @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
     let mainQueue: AnySchedulerOf<DispatchQueue> = .main
     
-    var body: some ReducerProtocol<State, Action> {
+    var body: some Reducer<State, Action> {
         BindingReducer()
         Reduce { state, action in
             switch action {
@@ -51,8 +51,8 @@ struct StringValueStore: ReducerProtocol {
             case .initial:
                 
                 logger.info("value store initial...")
-                return .result {
-                    .success(.getLength)
+                return .run { send in
+                    await send(.getLength)
                 }
                 
             case .getLength:
@@ -65,12 +65,10 @@ struct StringValueStore: ReducerProtocol {
                 }
                 let key = redisKeyModel.key
                 
-                return .task {
+                return .run { send in
                     let r = await redisInstanceModel.getClient().strLen(key)
-                    return .updateLength(r)
+                    await send(.updateLength(r))
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
                 
             case .getValue:
                 guard let redisKeyModel = state.redisKeyModel else {
@@ -85,17 +83,15 @@ struct StringValueStore: ReducerProtocol {
                 let isIntactString = state.isIntactString
                 
                 let key = redisKeyModel.key
-                return .task {
+                return .run { send in
                     let r = isIntactString ? await redisInstanceModel.getClient().get(key) : await redisInstanceModel.getClient().getRange(key, end: stringMaxLength)
-                    return .updateText(r)
+                    await send(.updateText(r))
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
                 
             case .getIntactString:
                 state.isIntactString = true
-                return .result {
-                    .success(.getValue)
+                return .run { send in
+                    await send(.getValue)
                 }
                 
             case .submit:
@@ -106,12 +102,10 @@ struct StringValueStore: ReducerProtocol {
                 let key = redisKeyModel.key
                 let isNew = redisKeyModel.isNew
                 let text = state.text
-                return .task {
+                return .run { send in
                     await redisInstanceModel.getClient().set(key, value: text)
-                    return .submitSuccess(isNew)
+                    await send(.submitSuccess(isNew))
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
                 
             case .submitSuccess:
                 return .none
@@ -122,8 +116,8 @@ struct StringValueStore: ReducerProtocol {
                 
                 state.stringMaxLength = stringMaxLength
                 state.isIntactString = stringMaxLength == -1 || length <= stringMaxLength
-                return .result {
-                    .success(.getValue)
+                return .run { send in
+                    await send(.getValue)
                 }
                 
             case let .updateText(text):
@@ -147,8 +141,8 @@ struct StringValueStore: ReducerProtocol {
                 return .none
                 
             case .refresh:
-                return .result {
-                    .success(.getLength)
+                return .run { send in
+                    await send(.getLength)
                 }
             case .none:
                 return .none

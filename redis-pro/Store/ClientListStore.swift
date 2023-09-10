@@ -13,7 +13,7 @@ import ComposableArchitecture
 private let logger = Logger(label: "client-list-store")
 
 
-struct ClientListStore: ReducerProtocol {
+struct ClientListStore: Reducer {
     struct State: Equatable {
         
         var tableState: TableStore.State = TableStore.State(
@@ -64,7 +64,7 @@ struct ClientListStore: ReducerProtocol {
     @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
     let mainQueue: AnySchedulerOf<DispatchQueue> = .main
     
-    var body: some ReducerProtocol<State, Action> {
+    var body: some Reducer<State, Action> {
         
         Scope(state: \.tableState, action: /Action.tableAction) {
             TableStore()
@@ -75,17 +75,15 @@ struct ClientListStore: ReducerProtocol {
             case .initial:
             
                 logger.info("client list store initial...")
-                return .result {
-                    .success(.getValue)
+                return .run { send in
+                    await send(.getValue)
                 }
             
             case .getValue:
-                return .task {
+                return .run { send in
                     let r = await redisInstanceModel.getClient().clientList()
-                    return .setValue(r)
+                    await send(.setValue(r))
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
             
             case let .setValue(clientLists):
                 state.tableState.datasource = clientLists
@@ -95,12 +93,12 @@ struct ClientListStore: ReducerProtocol {
             case let .killConfirm(index):
 
                 let item = state.tableState.datasource[index] as! ClientModel
-                return .future { callback in
+                return .run { send in
                     Messages.confirm("Kill Client?"
                                      , message: "Are you sure you want to kill client:\(item.addr)? This operation cannot be undone."
                                       , primaryButton: "Kill"
                                       , action: {
-                        callback(.success(.kill(index)))
+                        await send(.kill(index))
                     })
                 }
                 
@@ -108,25 +106,23 @@ struct ClientListStore: ReducerProtocol {
                 let client = state.tableState.datasource[index] as! ClientModel
                 logger.info("kill client, addr: \(client.addr)")
                 
-                return .task {
+                return .run { send in
                     let r = await redisInstanceModel.getClient().clientKill(client)
                     logger.info("do kill client, addr: \(client.addr), r:\(r)")
                     
-                    return .refresh
+                    await send(.refresh)
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
             
             case .refresh:
-                return .result {
-                    .success(.getValue)
+                return .run { send in
+                    await send(.getValue)
                 }
                 
             // table action
             case let .tableAction(.contextMenu(title, index)):
                 if title == "Kill" {
-                    return .result {
-                        .success(.killConfirm(index))
+                    return .run { send in
+                        await send(.killConfirm(index))
                     }
                 }
                 

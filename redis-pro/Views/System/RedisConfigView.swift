@@ -34,11 +34,11 @@ struct RedisConfigView: View {
                     MButton(text: "Refresh", action: {viewStore.send(.refresh)})
                 }
             }
-            .sheet(isPresented: viewStore.binding(\.$editModalVisible), onDismiss: {
+            .sheet(isPresented: viewStore.$editModalVisible, onDismiss: {
             }) {
                 ModalView("Edit Config Key: \(viewStore.editKey)", action: {viewStore.send(.submit)}) {
                     VStack(alignment:.leading, spacing: MTheme.V_SPACING) {
-                        MTextView(text: viewStore.binding(\.$editValue))
+                        MTextView(text: viewStore.$editValue)
                     }
                     .frame(minWidth:500, minHeight:300)
                 }

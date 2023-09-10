@@ -22,8 +22,8 @@ struct IndexView: View {
     
     var body: some View {
         if let state = appState {
-            let redisInstanceModel = RedisInstanceModel(RedisModel(), settingViewStore: ViewStore(settingStore))
-            let redisClient = RediStackClient(RedisModel(), settingViewStore: ViewStore(settingStore))
+            let redisInstanceModel = RedisInstanceModel(RedisModel(), settingViewStore: ViewStore(settingStore, observe: { $0 }))
+            let redisClient = RediStackClient(RedisModel(), settingViewStore: ViewStore(settingStore, observe: { $0 }))
             
             let store: StoreOf<AppStore> = Store(initialState: state) {
                 AppStore()

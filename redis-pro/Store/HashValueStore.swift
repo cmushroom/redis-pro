@@ -14,7 +14,7 @@ import ComposableArchitecture
 private let logger = Logger(label: "hash-value-store")
 
 
-struct HashValueStore: ReducerProtocol {
+struct HashValueStore: Reducer {
     
     struct State: Equatable {
         @BindingState var editModalVisible:Bool = false
@@ -57,7 +57,7 @@ struct HashValueStore: ReducerProtocol {
     @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
     let mainQueue: AnySchedulerOf<DispatchQueue> = .main
     
-    var body: some ReducerProtocol<State, Action> {
+    var body: some Reducer<State, Action> {
         BindingReducer()
         Scope(state: \.tableState, action: /Action.tableAction) {
             TableStore()
@@ -77,21 +77,21 @@ struct HashValueStore: ReducerProtocol {
                 state.pageState.current = 1
                 
                 logger.info("value store initial...")
-                return .result {
-                    .success(.getValue)
+                return .run  { send in
+                    await send(.getValue)
                 }
                 
             case .refresh:
                 logger.info("value store initial...")
-                return .result {
-                    .success(.getValue)
+                return .run  { send in
+                    await send(.getValue)
                 }
                 
             case let .search(keywords):
                 state.pageState.current = 1
                 state.pageState.keywords = keywords
-                return .result {
-                    .success(.getValue)
+                return .run  { send in
+                    await send(.getValue)
                 }
                 
             case .getValue:
@@ -100,19 +100,17 @@ struct HashValueStore: ReducerProtocol {
                 }
                 // 清空
                 if redisKeyModel.isNew {
-                    return .result {
-                        .success(.tableAction(.reset))
+                    return .run  { send in
+                        await send(.tableAction(.reset))
                     }
                 }
                 
                 let key = redisKeyModel.key
                 let page = state.pageState.page
-                return .task {
+                return .run {  send in
                     let res = await redisInstanceModel.getClient().pageHash(key, page: page)
-                    return .setValue(page, res)
+                    await  send(.setValue(page, res))
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
                 
             case let .setValue(page, datasource):
                 state.tableState.datasource = datasource
@@ -144,12 +142,10 @@ struct HashValueStore: ReducerProtocol {
                 let field = state.field
                 let value = state.value
                 let isNewKey = state.redisKeyModel?.isNew ?? false
-                return .task {
+                return .run { send in
                     let r = await redisInstanceModel.getClient().hset(key, field: field, value: value)
-                    return .submitSuccess(isNewKey)
+                    await send(.submitSuccess(isNewKey))
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
                 
             case let .submitSuccess(isNewKey):
                 let item = RedisHashEntryModel(field: state.field, value: state.value)
@@ -169,12 +165,12 @@ struct HashValueStore: ReducerProtocol {
                 }
                 
                 let item = state.tableState.datasource[index] as! RedisHashEntryModel
-                return .future { callback in
+                return .run { send in
                     Messages.confirm(String(format: NSLocalizedString("HASH_DELETE_CONFIRM_TITLE'%@'", comment: ""), item.field)
                                      , message: String(format: NSLocalizedString("HASH_DELETE_CONFIRM_MESSAGE'%@'", comment: ""), item.field)
                                      , primaryButton: "Delete"
                                      , action: {
-                        callback(.success(.deleteKey(index)))
+                        await send(.deleteKey(index))
                     })
                 }
                 
@@ -184,20 +180,20 @@ struct HashValueStore: ReducerProtocol {
                 let item = state.tableState.datasource[index] as! RedisHashEntryModel
                 logger.info("delete hash field, key: \(redisKeyModel.key), field: \(item.field)")
                 
-                return .task {
+                return .run { send in
                     let r = await redisInstanceModel.getClient().hdel(redisKeyModel.key, field: item.field)
                     logger.info("do delete hash field, key: \(redisKeyModel.key), field: \(item.field), r:\(r)")
                     
-                    return r > 0 ? .deleteSuccess(index) : .none
+                    if r > 0 {
+                        await send(.deleteSuccess(index))
+                    }
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
                 
             case let .deleteSuccess(index):
                 state.tableState.datasource.remove(at: index)
                 
-                return .result {
-                    .success(.refresh)
+                return .run  { send in
+                    await send(.refresh)
                 }
                 
             case .none:
@@ -205,16 +201,16 @@ struct HashValueStore: ReducerProtocol {
                 
                 //MARK: -Page action
             case .pageAction(.updateSize):
-                return .result {
-                    .success(.getValue)
+                return .run  { send in
+                    await send(.getValue)
                 }
             case .pageAction(.nextPage):
-                return .result {
-                    .success(.getValue)
+                return .run  { send in
+                    await send(.getValue)
                 }
             case .pageAction(.prevPage):
-                return .result {
-                    .success(.getValue)
+                return .run  { send in
+                    await send(.getValue)
                 }
             case .pageAction:
                 return .none
@@ -224,14 +220,14 @@ struct HashValueStore: ReducerProtocol {
                 // context menu
             case let .tableAction(.contextMenu(title, index)):
                 if title == "Delete" {
-                    return .result {
-                        .success(.deleteConfirm(index))
+                    return .run  { send in
+                        await send(.deleteConfirm(index))
                     }
                 }
                 
                 else  if title == "Edit" {
-                    return .result {
-                        .success(.edit(index))
+                    return .run  { send in
+                        await send(.edit(index))
                     }
                 }
                 
@@ -251,13 +247,13 @@ struct HashValueStore: ReducerProtocol {
                 return .none
                 
             case let .tableAction(.double(index)):
-                return .result {
-                    .success(.edit(index))
+                return .run  { send in
+                    await send(.edit(index))
                 }
                 
             case let .tableAction(.delete(index)):
-                return .result {
-                    .success(.deleteConfirm(index))
+                return .run  { send in
+                    await send(.deleteConfirm(index))
                 }
             case .tableAction:
                 return .none
@@ -292,7 +288,7 @@ struct HashValueStore: ReducerProtocol {
 //            state.pageState.current = 1
 //            
 //            logger.info("value store initial...")
-//            return .result {
+//            return .run  { send in
 //                .success(.getValue)
 //            }
 //            

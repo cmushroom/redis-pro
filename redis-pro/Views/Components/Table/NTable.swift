@@ -72,7 +72,7 @@ class NTableController: NSViewController{
     
     init(_ store: StoreOf<TableStore>) {
         logger.info("table controller init...")
-        self.viewStore = ViewStore(store)
+        self.viewStore = ViewStore(store, observe: {$0})
         
         // init table data
         self.datasource = self.viewStore.datasource

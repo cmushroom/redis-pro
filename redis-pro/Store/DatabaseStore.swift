@@ -12,7 +12,7 @@ import ComposableArchitecture
 private let logger = Logger(label: "database-store")
 
 
-struct DatabaseStore: ReducerProtocol {
+struct DatabaseStore: Reducer {
     struct State: Equatable {
         var database: Int = 0
         var databases:Int = 16
@@ -36,7 +36,7 @@ struct DatabaseStore: ReducerProtocol {
     @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
     var mainQueue: AnySchedulerOf<DispatchQueue> = .main
     
-    var body: some ReducerProtocol<State, Action> {
+    var body: some Reducer<State, Action> {
         BindingReducer()
         Reduce { state, action in
             switch action {
@@ -44,31 +44,26 @@ struct DatabaseStore: ReducerProtocol {
             case .initial:
                 logger.info("database store initial...")
                 state.database = redisInstanceModel.redisModel.database
-                return .result {
-                    .success(.getDatabases)
+                return .run { send in
+                    await send(.getDatabases)
                 }
             case .getDatabases:
-                return .task {
+                return .run { send in
                     let r = await redisInstanceModel.getClient().databases()
-                    return .setDB(r)
+                    await send(.setDB(r))
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
             case let .setDB(databases):
                 state.databases = databases
                 return .none
             case let .selectDB(database):
                 state.database = database
                 
-                return .task {
+                return .run { send in
                     let r = await redisInstanceModel.getClient().selectDB(database)
                     if r {
-                        return .onDBChange(database)
+                        await send(.onDBChange(database))
                     }
-                    return .none
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
                 
             case .onDBChange:
                 return .none

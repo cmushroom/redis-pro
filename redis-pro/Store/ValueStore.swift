@@ -13,7 +13,7 @@ import ComposableArchitecture
 private let logger = Logger(label: "value-store")
 
 
-struct ValueStore: ReducerProtocol {
+struct ValueStore: Reducer {
     
     struct State: Equatable {
         var keyState: KeyStore.State = KeyStore.State()
@@ -48,7 +48,7 @@ struct ValueStore: ReducerProtocol {
     
     @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
     
-    var body: some ReducerProtocol<State, Action> {
+    var body: some Reducer<State, Action> {
         Scope(state: \.keyState, action: /Action.keyAction) {
             KeyStore()
         }

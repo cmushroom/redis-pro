@@ -12,10 +12,9 @@ import ComposableArchitecture
 private let logger = Logger(label: "keys-del-store")
 
 
-struct KeysDelStore: ReducerProtocol {
+struct KeysDelStore: Reducer {
     struct State: Equatable {
-        var tableState: TableStore.State = TableStore.State(columns: [.init(title: "Type", key: "type", width: 120), .init(title: "Key", key: "key", width: 100), .init(title: "Status", key: "statusText", width: 800)]
-                                                            , datasource: [], selectIndex: -1)
+        var tableState: TableStore.State = TableStore.State(columns: [.init(title: "Type", key: "type", width: 120), .init(title: "Key", key: "key", width: 100), .init(title: "Status", key: "statusText", width: 800)], datasource: [], selectIndex: -1)
         
         init() {
             logger.info("keys del state init ...")
@@ -32,10 +31,11 @@ struct KeysDelStore: ReducerProtocol {
         case tableAction(TableStore.Action)
     }
     
+    @Dependency(\.redisClient) var redisClient:RediStackClient
     @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
     
     
-    var body: some ReducerProtocol<State, Action> {
+    var body: some Reducer<State, Action> {
         Scope(state: \.tableState, action: /Action.tableAction) {
             TableStore()
         }

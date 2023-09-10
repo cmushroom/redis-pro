@@ -16,9 +16,9 @@ struct KeyObjectBar: View {
     
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
-            Text("Object Encoding: \(viewStore.encoding)")
-                .font(.body)
-                .padding(EdgeInsets(top: 0, leading: MTheme.H_SPACING, bottom: 0, trailing: MTheme.H_SPACING))
+            FormText(label: "Object Encoding:", value: viewStore.encoding)
+            .padding(EdgeInsets(top: 0, leading: MTheme.H_SPACING, bottom: 0, trailing: MTheme.H_SPACING))
+        
         }
     }
 }

@@ -32,7 +32,7 @@ struct StringEditorView: View {
                     KeyObjectBar(store: keyObjectStore)
                     
                     if (viewStore.isIntactString) {
-                        Text("Lenth: \(viewStore.length)")
+                        FormText(label: "Length:", value: "\(viewStore.length)")
                     } else {
                         Text("Range: 0~\(viewStore.stringMaxLength + 1) / \(viewStore.length)")
                         MButton(text: "Show Intact", action: {viewStore.send(.getIntactString)})

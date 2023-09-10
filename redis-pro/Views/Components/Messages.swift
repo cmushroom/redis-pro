@@ -20,7 +20,7 @@ class Messages {
     
     static let logger = Logger(label: "alert")
     
-    static func confirm(_ title:String, message:String = "", primaryButton:String = "Ok", action: @escaping (() -> Void)) {
+    static func confirm(_ title:String, message:String = "", primaryButton:String = "Ok", action: @escaping (() async -> Void)) {
         
         DispatchQueue.main.async {
             confirmAlert.messageText = StringHelper.ellipses(title, len: 100)
@@ -34,7 +34,9 @@ class Messages {
             confirmAlert.beginSheetModal(for: NSApplication.shared.keyWindow!, completionHandler: { (modalResponse: NSApplication.ModalResponse) -> Void in
                 if(modalResponse == NSApplication.ModalResponse.alertFirstButtonReturn){
                     self.logger.info("alert ok action")
-                    action()
+                    Task {
+                        await action()
+                    }
                 } else if (modalResponse == NSApplication.ModalResponse.alertSecondButtonReturn) {
                     self.logger.info("alert second action")
                 }

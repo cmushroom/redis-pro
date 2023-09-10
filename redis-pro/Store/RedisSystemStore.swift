@@ -22,7 +22,7 @@ enum RedisSystemViewTypeEnum{
 
 private let logger = Logger(label: "redis-system-store")
 
-struct RedisSystemStore: ReducerProtocol {
+struct RedisSystemStore: Reducer {
     
     struct State: Equatable {
         var systemView: RedisSystemViewTypeEnum = .REDIS_INFO
@@ -49,7 +49,7 @@ struct RedisSystemStore: ReducerProtocol {
     
     @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
     
-    var body: some ReducerProtocol<State, Action> {
+    var body: some Reducer<State, Action> {
         Scope(state: \.redisInfoState, action: /Action.redisInfoAction) {
             RedisInfoStore()
         }

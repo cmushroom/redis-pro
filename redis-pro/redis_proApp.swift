@@ -38,7 +38,7 @@ struct redis_proApp: App {
         WindowGroup {
             IndexView(settingStore: settingsStore)
                 .onAppear {
-                    ViewStore(settingsStore).send(.initial)
+                    ViewStore(settingsStore, observe: { $0 }).send(.initial)
                 }
         }
         .commands {

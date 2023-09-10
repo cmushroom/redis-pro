@@ -44,12 +44,12 @@ struct ZSetEditorView: View {
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
         }
-        .sheet(isPresented: viewStore.binding(\.$editModalVisible), onDismiss: {
+        .sheet(isPresented: viewStore.$editModalVisible, onDismiss: {
         }) {
             ModalView("Edit zset element", action: {viewStore.send(.submit)}) {
                 VStack(alignment:.leading, spacing: 8) {
-                    FormItemDouble(label: "Score", placeholder: "score", value: viewStore.binding(\.$editScore))
-                    FormItemTextArea(label: "Value", placeholder: "value", value: viewStore.binding(\.$editValue))
+                    FormItemDouble(label: "Score", placeholder: "score", value: viewStore.$editScore)
+                    FormItemTextArea(label: "Value", placeholder: "value", value: viewStore.$editValue)
                 }
             }
         }

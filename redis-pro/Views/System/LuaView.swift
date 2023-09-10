@@ -28,7 +28,7 @@ struct LuaView: View {
                 VSplitView {
                     VStack(alignment: .leading, spacing: MTheme.V_SPACING){
                         // text editor
-                        MTextEditor(text: viewStore.binding(\.$lua))
+                        MTextEditor(text: viewStore.$lua)
                         
                         // btns
                         HStack(alignment: .center, spacing: MTheme.H_SPACING) {
@@ -42,7 +42,7 @@ struct LuaView: View {
                         
                     }
                     
-                    MTextEditor(text: viewStore.binding(\.$evalResult))
+                    MTextEditor(text: viewStore.$evalResult)
                 }
                 
             }

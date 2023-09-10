@@ -11,7 +11,7 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "key-object-store")
 
-struct KeyObjectStore: ReducerProtocol {
+struct KeyObjectStore: Reducer {
     
     struct State: Equatable {
         var key: String = ""
@@ -44,7 +44,7 @@ struct KeyObjectStore: ReducerProtocol {
     
     @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
     
-    var body: some ReducerProtocol<State, Action> {
+    var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
             // 初始化已设置的值

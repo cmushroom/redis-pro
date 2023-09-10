@@ -11,7 +11,7 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "login-store")
 
-struct LoginStore: ReducerProtocol {
+struct LoginStore: Reducer {
     
     struct State: Equatable {
         var id: String = ""
@@ -84,14 +84,14 @@ struct LoginStore: ReducerProtocol {
     @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
     var mainQueue: AnySchedulerOf<DispatchQueue> = .main
     
-    var body: some ReducerProtocol<State, Action> {
+    var body: some Reducer<State, Action> {
         BindingReducer()
         Reduce { state, action in
             switch action {
             case .add:
                 state.id = UUID().uuidString
-                return .result {
-                    .success(.save)
+                return .run { send in
+                    await send(.save)
                 }
             case .save:
                 return .none
@@ -100,12 +100,10 @@ struct LoginStore: ReducerProtocol {
                 state.loading = true
                 let redis = state.redisModel
                 
-                return .task {
+                return .run { send in
                     let r = await redisInstanceModel.testConnect(redis)
-                    return .setPingR(r)
+                    await  send(.setPingR(r))
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
             case let .setPingR(r):
                 state.pingR =  r ? "Connect successed!" : "Connect fail! "
                 state.loading = false

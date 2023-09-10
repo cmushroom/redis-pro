@@ -13,7 +13,7 @@ import ComposableArchitecture
 private let logger = Logger(label: "app-context-store")
 
 
-struct AppContextStore: ReducerProtocol {
+struct AppContextStore: Reducer {
     struct State: Equatable {
         var loading:Bool = false
         var loadingCount:Int = 0
@@ -28,7 +28,7 @@ struct AppContextStore: ReducerProtocol {
         case hide
     }
     
-    var body: some ReducerProtocol<State, Action> {
+    var body: some Reducer<State, Action> {
         
         Reduce { state, action in
             switch action {

@@ -12,7 +12,7 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "zset-value-store")
 
-struct ZSetValueStore: ReducerProtocol {
+struct ZSetValueStore: Reducer {
     
     // MARK: - state
     struct State: Equatable {
@@ -64,7 +64,7 @@ struct ZSetValueStore: ReducerProtocol {
     var mainQueue: AnySchedulerOf<DispatchQueue> = .main
 
     
-    var body: some ReducerProtocol<State, Action> {
+    var body: some Reducer<State, Action> {
         BindingReducer()
         Scope(state: \.tableState, action: /Action.tableAction) {
             TableStore()
@@ -80,21 +80,21 @@ struct ZSetValueStore: ReducerProtocol {
                 state.pageState.current = 1
                 
                 logger.info("value store initial...")
-                return .result {
-                    .success(.getValue)
+                return .run { send in
+                    await send(.getValue)
                 }
                 
             case .refresh:
                 logger.info("value store initial...")
-                return .result {
-                    .success(.getValue)
+                return .run { send in
+                    await send(.getValue)
                 }
                 
             case let .search(keywords):
                 state.pageState.current = 1
                 state.pageState.keywords = keywords
-                return .result {
-                    .success(.getValue)
+                return .run { send in
+                    await send(.getValue)
                 }
                 
             case .getValue:
@@ -103,19 +103,17 @@ struct ZSetValueStore: ReducerProtocol {
                 }
                 // 清空
                 if redisKeyModel.isNew {
-                    return .result {
-                        .success(.tableAction(.reset))
+                    return .run { send in
+                        await send(.tableAction(.reset))
                     }
                 }
                 
                 let key = redisKeyModel.key
                 let page = state.pageState.page
-                return .task {
+                return .run { send in
                     let res = await redisInstanceModel.getClient().pageZSet(key, page: page)
-                    return .setValue(page, res)
+                    await send(.setValue(page, res))
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
                 
             case let .setValue(page, datasource):
                 state.tableState.datasource = datasource
@@ -152,7 +150,7 @@ struct ZSetValueStore: ReducerProtocol {
                 let isNew = state.isNew
                 let isNewKey = state.redisKeyModel?.isNew ?? false
                 let originEle = isNew ? nil : state.tableState.datasource[state.editIndex] as? RedisZSetItemModel
-                return .task {
+                return .run { send in
                     var r = false
                     if isNew {
                         r = await redisInstanceModel.getClient().zadd(key, score: editScore, ele: editValue)
@@ -160,11 +158,9 @@ struct ZSetValueStore: ReducerProtocol {
                         r = await redisInstanceModel.getClient().zupdate(key, from: originEle!.value, to: editValue, score: editScore)
                     }
                     
-                    return r ? .submitSuccess(isNewKey) : .none
+                    return r ? await send(.submitSuccess(isNewKey)) : await send(.none)
                     
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
             
             // 提交成功， 刷新列表
             case let .submitSuccess(isNewKey):
@@ -189,12 +185,12 @@ struct ZSetValueStore: ReducerProtocol {
                 }
                 
                 let item = state.tableState.datasource[index] as! RedisZSetItemModel
-                return .future { callback in
+                return .run { send in
                     Messages.confirm(StringHelper.format("ZSET_DELETE_CONFIRM_TITLE", item.value)
                                       , message: StringHelper.format("ZSET_DELETE_CONFIRM_MESSAGE", item.value)
                                       , primaryButton: "Delete"
                                       , action: {
-                        callback(.success(.deleteKey(index)))
+                        await send(.deleteKey(index))
                     })
                 }
                 
@@ -204,20 +200,20 @@ struct ZSetValueStore: ReducerProtocol {
                 let item = state.tableState.datasource[index] as! RedisZSetItemModel
                 logger.info("delete zset item, key: \(redisKeyModel.key), value: \(item.value)")
                 
-                return .task {
+                return .run { send in
                     let r = await redisInstanceModel.getClient().zrem(redisKeyModel.key, ele: item.value)
                     logger.info("do delete zset item, key: \(redisKeyModel.key), value: \(item), r:\(r)")
                     
-                    return r > 0 ? .deleteSuccess(index) : .none
+                    if r > 0 {
+                        await send(.deleteSuccess(index))
+                    }
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
                 
             case let .deleteSuccess(index):
                 state.tableState.datasource.remove(at: index)
                 
-                return .result {
-                    .success(.refresh)
+                return .run { send in
+                    await send(.refresh)
                 }
                 
             case .none:
@@ -225,16 +221,16 @@ struct ZSetValueStore: ReducerProtocol {
                 
             // MARK: - page action
             case .pageAction(.updateSize):
-                return .result {
-                    .success(.getValue)
+                return .run { send in
+                    await send(.getValue)
                 }
             case .pageAction(.nextPage):
-                return .result {
-                    .success(.getValue)
+                return .run { send in
+                    await send(.getValue)
                 }
             case .pageAction(.prevPage):
-                return .result {
-                    .success(.getValue)
+                return .run { send in
+                    await send(.getValue)
                 }
             case .pageAction:
                 return .none
@@ -243,14 +239,14 @@ struct ZSetValueStore: ReducerProtocol {
             // delete key
             case let .tableAction(.contextMenu(title, index)):
                 if title == "Delete" {
-                    return .result {
-                        .success(.deleteConfirm(index))
+                    return .run { send in
+                        await send(.deleteConfirm(index))
                     }
                 }
                 
                 else  if title == "Edit" {
-                    return .result {
-                        .success(.edit(index))
+                    return .run { send in
+                        await send(.edit(index))
                     }
                 }
                 
@@ -263,13 +259,13 @@ struct ZSetValueStore: ReducerProtocol {
                 return .none
                 
             case let .tableAction(.double(index)):
-                return .result {
-                    .success(.edit(index))
+                return .run { send in
+                    await send(.edit(index))
                 }
                 
             case let .tableAction(.delete(index)):
-                return .result {
-                    .success(.deleteConfirm(index))
+                return .run { send in
+                    await send(.deleteConfirm(index))
                 }
             case .tableAction:
                 return .none

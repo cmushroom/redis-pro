@@ -24,7 +24,7 @@ struct PageBar: View {
                         .lineLimit(1)
                         .multilineTextAlignment(.trailing)
                 }
-                Picker("", selection: viewStore.binding(\.$size)) {
+                Picker("", selection: viewStore.$size) {
                     Text("10").tag(10)
                     Text("50").tag(50)
                     Text("100").tag(100)

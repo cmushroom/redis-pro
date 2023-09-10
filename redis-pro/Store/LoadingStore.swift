@@ -12,7 +12,7 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "loading-store")
 
-struct LoadingStore: ReducerProtocol {
+struct LoadingStore: Reducer {
     struct State: Equatable {
         var loading: Bool = false
         
@@ -26,7 +26,7 @@ struct LoadingStore: ReducerProtocol {
         case hide
     }
     
-    var body: some ReducerProtocol<State, Action> {
+    var body: some Reducer<State, Action> {
         
         Reduce { state, action in
             switch action {

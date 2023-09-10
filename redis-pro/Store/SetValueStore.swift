@@ -13,7 +13,7 @@ import ComposableArchitecture
 private let logger = Logger(label: "set-value-store")
 
 
-struct SetValueStore: ReducerProtocol {
+struct SetValueStore: Reducer {
     struct State: Equatable {
         @BindingState var editModalVisible:Bool = false
         @BindingState var editValue:String = ""
@@ -60,7 +60,7 @@ struct SetValueStore: ReducerProtocol {
     @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
     var mainQueue: AnySchedulerOf<DispatchQueue> = .main
     
-    var body: some ReducerProtocol<State, Action> {
+    var body: some Reducer<State, Action> {
         BindingReducer()
         Scope(state: \.tableState, action: /Action.tableAction) {
             TableStore()
@@ -76,21 +76,21 @@ struct SetValueStore: ReducerProtocol {
                 state.pageState.current = 1
                 
                 logger.info("value store initial...")
-                return .result {
-                    .success(.getValue)
+                return .run { send in
+                    await send(.getValue)
                 }
                 
             case .refresh:
                 logger.info("value store initial...")
-                return .result {
-                    .success(.getValue)
+                return .run { send in
+                    await send(.getValue)
                 }
                 
             case let .search(keywords):
                 state.pageState.current = 1
                 state.pageState.keywords = keywords
-                return .result {
-                    .success(.getValue)
+                return .run { send in
+                    await send(.getValue)
                 }
                 
             case .getValue:
@@ -99,19 +99,17 @@ struct SetValueStore: ReducerProtocol {
                 }
                 // 清空
                 if redisKeyModel.isNew {
-                    return .result {
-                        .success(.tableAction(.reset))
+                    return .run { send in
+                        await send(.tableAction(.reset))
                     }
                 }
                 
                 let key = redisKeyModel.key
                 let page = state.pageState.page
-                return .task {
+                return .run { send in
                     let res = await redisInstanceModel.getClient().pageSet(key, page: page)
-                    return .setValue(page, res)
+                    await send(.setValue(page, res))
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
                 
             case let .setValue(page, datasource):
                 state.tableState.datasource = datasource
@@ -145,17 +143,15 @@ struct SetValueStore: ReducerProtocol {
                 let isNew = state.isNew
                 let isNewKey = state.redisKeyModel?.isNew ?? false
                 let originEle = isNew ? nil : state.tableState.datasource[state.editIndex] as? String
-                return .task {
+                return .run { send in
                     if isNew {
                         let _ = await redisInstanceModel.getClient().sadd(key, ele: editValue)
                     } else {
                         let _ = await redisInstanceModel.getClient().supdate(key, from: originEle!, to: editValue)
                     }
                     
-                    return .submitSuccess(isNewKey)
+                    await send(.submitSuccess(isNewKey))
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
             
             // 提交成功， 刷新列表
             case let .submitSuccess(isNewKey):
@@ -179,12 +175,12 @@ struct SetValueStore: ReducerProtocol {
                 }
                 
                 let item = state.tableState.datasource[index] as! String
-                return .future { callback in
+                return .run { send in
                     Messages.confirm(String(format: NSLocalizedString("SET_DELETE_CONFIRM_TITLE", comment: ""), item)
                                       , message: String(format: NSLocalizedString("SET_DELETE_CONFIRM_MESSAGE", comment: ""), item)
                                       , primaryButton: "Delete"
                                       , action: {
-                        callback(.success(.deleteKey(index)))
+                        await send(.deleteKey(index))
                     })
                 }
                 
@@ -194,20 +190,18 @@ struct SetValueStore: ReducerProtocol {
                 let item = state.tableState.datasource[index] as! String
                 logger.info("delete set item, key: \(redisKeyModel.key), value: \(item)")
                 
-                return .task {
+                return .run { send in
                     let r = await redisInstanceModel.getClient().srem(redisKeyModel.key, ele: item)
                     logger.info("do delete set item, key: \(redisKeyModel.key), value: \(item), r:\(r)")
                     
-                    return r > 0 ? .deleteSuccess(index) : .none
+                    return r > 0 ? await send(.deleteSuccess(index)) : await send(.none)
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
                 
             case let .deleteSuccess(index):
                 state.tableState.datasource.remove(at: index)
                 
-                return .result {
-                    .success(.refresh)
+                return .run { send in
+                    await send(.refresh)
                 }
                 
             case .none:
@@ -215,16 +209,16 @@ struct SetValueStore: ReducerProtocol {
                 
             // MARK: - page action
             case .pageAction(.updateSize):
-                return .result {
-                    .success(.getValue)
+                return .run { send in
+                    await send(.getValue)
                 }
             case .pageAction(.nextPage):
-                return .result {
-                    .success(.getValue)
+                return .run { send in
+                    await send(.getValue)
                 }
             case .pageAction(.prevPage):
-                return .result {
-                    .success(.getValue)
+                return .run { send in
+                    await send(.getValue)
                 }
             case .pageAction:
                 return .none
@@ -233,14 +227,14 @@ struct SetValueStore: ReducerProtocol {
             // delete key
             case let .tableAction(.contextMenu(title, index)):
                 if title == "Delete" {
-                    return .result {
-                        .success(.deleteConfirm(index))
+                    return .run { send in
+                        await send(.deleteConfirm(index))
                     }
                 }
                 
                 else  if title == "Edit" {
-                    return .result {
-                        .success(.edit(index))
+                    return .run { send in
+                        await send(.edit(index))
                     }
                 }
                 
@@ -256,13 +250,13 @@ struct SetValueStore: ReducerProtocol {
                 
                 
             case let .tableAction(.double(index)):
-                return .result {
-                    .success(.edit(index))
+                return .run { send in
+                    await send(.edit(index))
                 }
                 
             case let .tableAction(.delete(index)):
-                return .result {
-                    .success(.deleteConfirm(index))
+                return .run { send in
+                    await send(.deleteConfirm(index))
                 }
             case .tableAction:
                 return .none

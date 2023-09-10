@@ -10,7 +10,7 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "favorite-store")
 
-struct FavoriteStore: ReducerProtocol {
+struct FavoriteStore: Reducer {
     
     struct State: Equatable {
         var globalState: AppContextStore.State?
@@ -38,7 +38,7 @@ struct FavoriteStore: ReducerProtocol {
     var mainQueue: AnySchedulerOf<DispatchQueue> = .main
     
     
-    var body: some ReducerProtocol<State, Action> {
+    var body: some Reducer<State, Action> {
         Scope(state: \.tableState, action: /Action.tableAction) {
             TableStore()
         }
@@ -78,16 +78,16 @@ struct FavoriteStore: ReducerProtocol {
                 state.tableState.defaultSelectIndex = state.tableState.datasource.count > 0 ? 0 : -1
                 return .none
             case .addNew:
-                return .result {
-                    .success(.save(RedisModel()))
+                return .run { send in
+                    await send(.save(RedisModel()))
                 }
             case let .save(redisModel):
                 logger.info("save redis favorite: \(redisModel)")
                 
                 let index = RedisDefaults.save(redisModel)
                 state.tableState.selectIndex = index
-                return .result {
-                    .success(.getAll)
+                return .run { send in
+                    await send(.getAll)
                 }
             case let .deleteConfirm(index):
                 if state.tableState.datasource.count <= index {
@@ -96,12 +96,12 @@ struct FavoriteStore: ReducerProtocol {
                 
                 let redisModel = state.tableState.datasource[index] as! RedisModel
                 
-                return .future { callback in
+                return .run { send in
                     Messages.confirm(String(format: NSLocalizedString("CONFIRM_FAVORITE_REDIS_TITLE'%@'", comment: ""), redisModel.name)
                                       , message: String(format: NSLocalizedString("CONFIRM_FAVORITE_REDIS_MESSAGE'%@'", comment: ""), redisModel.name)
                                       , primaryButton: "Delete"
                                       , action: {
-                        callback(.success(.delete(index)))
+                        await send(.delete(index))
                     })
                 }
             case let .delete(index):
@@ -119,14 +119,14 @@ struct FavoriteStore: ReducerProtocol {
                 let redisModel = state.tableState.datasource[index] as! RedisModel
                 logger.info("connect to redis server, name: \(redisModel.name), host: \(redisModel.host)")
                 
-                return .task {
+                return .run { send in
                     let r = await redisInstanceModel.connect(redisModel)
                     logger.info("on connect to redis server: \(redisModel) , result: \(r)")
                     RedisDefaults.saveLastUse(redisModel)
-                    return r ? .connectSuccess(redisModel) : .none
+                    if r {
+                        await send(.connectSuccess(redisModel))
+                    }
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
 
             case let .tableAction(.copy(index)):
                 let redisModel = state.tableState.datasource[index] as! RedisModel
@@ -138,8 +138,8 @@ struct FavoriteStore: ReducerProtocol {
                 return .none
                 
             case let .tableAction(.double(index)):
-                return .result {
-                    .success(.connect(index))
+                return .run { send in
+                    await send(.connect(index))
                 }
             case let .tableAction(.selectionChange(index)):
                 guard index > -1 else { return .none }
@@ -149,8 +149,8 @@ struct FavoriteStore: ReducerProtocol {
                 state.loginState.redisModel = redisModel
                 return .none
             case let .tableAction(.delete(index)):
-                return .result {
-                    .success(.deleteConfirm(index))
+                return .run { send in
+                    await send(.deleteConfirm(index))
                 }
             case .tableAction:
                 logger.info("redis favorite table action \(state.tableState.selectIndex)")
@@ -158,13 +158,13 @@ struct FavoriteStore: ReducerProtocol {
                 
             case .loginAction(.connect):
                 let index = state.tableState.selectIndex
-                return .result {
-                    .success(.connect(index))
+                return .run { send in
+                    await send(.connect(index))
                 }
             case .loginAction(.save):
                 let redisModel = state.loginState.redisModel
-                return .result {
-                    .success(.save(redisModel))
+                return .run { send in
+                    await send(.save(redisModel))
                 }
             case .loginAction:
                 logger.info("redis favorite table action \(state.tableState.selectIndex)")

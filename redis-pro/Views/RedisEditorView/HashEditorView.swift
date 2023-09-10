@@ -47,12 +47,12 @@ struct HashEditorView: View {
                 logger.info("redis hash editor view appear ...")
                 viewStore.send(.initial)
             }
-            .sheet(isPresented: viewStore.binding(\.$editModalVisible), onDismiss: {
+            .sheet(isPresented: viewStore.$editModalVisible, onDismiss: {
             }) {
                 ModalView("Edit hash entry", action: {viewStore.send(.submit)}) {
                     VStack(alignment:.leading, spacing: 8) {
-                        FormItemText(placeholder: "Field", editable: viewStore.isNew, value: viewStore.binding(\.$field))
-                        FormItemTextArea(placeholder: "Value", value: viewStore.binding(\.$value))
+                        FormItemText(placeholder: "Field", editable: viewStore.isNew, value: viewStore.$field)
+                        FormItemTextArea(placeholder: "Value", value: viewStore.$value)
                     }
                 }
             }

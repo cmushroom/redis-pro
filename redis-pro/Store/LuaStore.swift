@@ -10,7 +10,7 @@ import Foundation
 import ComposableArchitecture
 
 
-struct LuaStore: ReducerProtocol {
+struct LuaStore: Reducer {
     
     struct State: Equatable {
         @BindingState var lua:String = "\"return {KEYS[1],KEYS[2],ARGV[1],ARGV[2]}\" 2 key1 key2 arg1 arg2"
@@ -32,45 +32,35 @@ struct LuaStore: ReducerProtocol {
     @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
     let mainQueue: AnySchedulerOf<DispatchQueue> = .main
     
-    var body: some ReducerProtocol<State, Action> {
+    var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
                 
             case .eval:
                 let lua = state.lua
-                return .task {
+                return .run { send in
                     let r = await redisInstanceModel.getClient().eval(lua)
-                    return .setLuaResult(r)
+                    await send(.setLuaResult(r))
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
                 
             case .scriptKill:
                 
-                return .task {
+                return .run { send in
                     let _ = await redisInstanceModel.getClient().scriptKill()
-                    return .none
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
                 
             case .scriptFlush:
                 
-                return .task {
+                return .run { send in
                     let _ = await redisInstanceModel.getClient().scriptFlush()
-                    return .none
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
                 
             case .scriptLoad:
                 
                 let lua = state.lua
-                return .task {
-                    return .setLuaSHA("")
+                return .run { send in
+                    await send(.setLuaSHA(""))
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
                 
             case let .setLuaResult(r):
                 state.evalResult = r

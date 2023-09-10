@@ -13,7 +13,7 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "redis-config-store")
 
-struct RedisConfigStore: ReducerProtocol {
+struct RedisConfigStore: Reducer {
     struct State: Equatable {
         
         @BindingState var editModalVisible:Bool = false
@@ -49,7 +49,7 @@ struct RedisConfigStore: ReducerProtocol {
     @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
     let mainQueue: AnySchedulerOf<DispatchQueue> = .main
     
-    var body: some ReducerProtocol<State, Action> {
+    var body: some Reducer<State, Action> {
         BindingReducer()
         Scope(state: \.tableState, action: /Action.tableAction) {
             TableStore()
@@ -60,18 +60,16 @@ struct RedisConfigStore: ReducerProtocol {
             case .initial:
             
                 logger.info("redis config store initial...")
-                return .result {
-                    .success(.getValue)
+                return .run { send in
+                    await send(.getValue)
                 }
             
             case .getValue:
                 let pattern = state.pattern
-                return .task {
+                return .run { send in
                     let r = await redisInstanceModel.getClient().getConfigList(pattern)
-                    return .setValue(r)
+                    await send(.setValue(r))
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
             
             case let .setValue(redisConfigs):
                 state.tableState.datasource = redisConfigs
@@ -80,23 +78,21 @@ struct RedisConfigStore: ReducerProtocol {
                 
 
             case .refresh:
-                return .result {
-                    .success(.getValue)
+                return .run { send in
+                    await send(.getValue)
                 }
                 
             case let .search(keywords):
                 state.pattern = keywords
-                return .result {
-                    .success(.getValue)
+                return .run { send in
+                    await send(.getValue)
                 }
             
             case .rewrite:
-                return .task {
+                return .run { send in
                     let _ = await redisInstanceModel.getClient().configRewrite()
-                    return .refresh
+                    await send(.refresh)
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
             case let .edit(index):
                 
                 state.editIndex = index
@@ -113,26 +109,24 @@ struct RedisConfigStore: ReducerProtocol {
                 let key = state.editKey
                 let value = state.editValue
                 
-                return .task {
+                return .run { send in
                     let _ = await redisInstanceModel.getClient().setConfig(key: key, value: value)
-                    return .refresh
+                    await send(.refresh)
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
                 
             // table action
             case let .tableAction(.contextMenu(title, index)):
               if title == "Edit" {
-                    return .result {
-                        .success(.edit(index))
+                    return .run { send in
+                        await send(.edit(index))
                     }
                 }
                 
                 return .none
                 
             case let .tableAction(.double(index)):
-                return .result {
-                    .success(.edit(index))
+                return .run { send in
+                    await send(.edit(index))
                 }
             case .tableAction:
                 return .none

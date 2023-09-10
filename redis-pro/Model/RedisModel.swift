@@ -34,6 +34,7 @@ class RedisModel: NSObject, Identifiable {
                 "host": host,
                 "port": port,
                 "database": database,
+                "username": username,
                 "password": password,
                 "connectionType": connectionType,
                 "sshHost": sshHost,
@@ -73,6 +74,7 @@ class RedisModel: NSObject, Identifiable {
         self.host = dictionary["host"] as! String
         self.port = dictionary["port"] as! Int
         self.database = dictionary["database"] as! Int
+        self.username = (dictionary["username"] ?? "") as! String
         self.password = dictionary["password"] as! String
         // ssh
         let connectionType:String = dictionary["connectionType"] as? String ?? RedisConnectionTypeEnum.TCP.rawValue

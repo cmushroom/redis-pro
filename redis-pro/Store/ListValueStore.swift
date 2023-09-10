@@ -12,7 +12,7 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "list-value-store")
 
-struct ListValueStore: ReducerProtocol {
+struct ListValueStore: Reducer {
     
     struct State: Equatable {
         @BindingState var editModalVisible:Bool = false
@@ -57,7 +57,7 @@ struct ListValueStore: ReducerProtocol {
     var mainQueue: AnySchedulerOf<DispatchQueue> = .main
     
     
-    var body: some ReducerProtocol<State, Action> {
+    var body: some Reducer<State, Action> {
         BindingReducer()
         Scope(state: \.tableState, action: /Action.tableAction) {
             TableStore()
@@ -73,21 +73,21 @@ struct ListValueStore: ReducerProtocol {
                 state.pageState.current = 1
                 
                 logger.info("value store initial...")
-                return .result {
-                    .success(.getValue)
+                return .run { send in
+                    await send(.getValue)
                 }
                 
             case .refresh:
                 logger.info("value store initial...")
-                return .result {
-                    .success(.getValue)
+                return .run { send in
+                    await send(.getValue)
                 }
                 
             case let .search(keywords):
                 state.pageState.current = 1
                 state.pageState.keywords = keywords
-                return .result {
-                    .success(.getValue)
+                return .run { send in
+                    await send(.getValue)
                 }
                 
             case .getValue:
@@ -96,19 +96,17 @@ struct ListValueStore: ReducerProtocol {
                 }
                 // 清空
                 if redisKeyModel.isNew {
-                    return .result {
-                        .success(.tableAction(.reset))
+                    return .run { send in
+                        await send(.tableAction(.reset))
                     }
                 }
                 
                 let key = redisKeyModel.key
                 let page = state.pageState.page
-                return .task {
+                return .run { send in
                     let res = await redisInstanceModel.getClient().pageList(key, page: page)
-                    return .setValue(page, res)
+                    await send(.setValue(page, res))
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
                 
             case let .setValue(page, datasource):
                 state.tableState.datasource = datasource
@@ -144,7 +142,7 @@ struct ListValueStore: ReducerProtocol {
                 let isNewKey = state.redisKeyModel?.isNew ?? false
                 let pushType = state.pushType
                 let item = pushType == 0 ? state.tableState.datasource[state.editIndex] as? RedisListItemModel : nil
-                return .task {
+                return .run { send in
                     if pushType == -1 {
                         let _ = await redisInstanceModel.getClient().lpush(key, value: editValue)
                     } else if pushType == -2 {
@@ -154,13 +152,11 @@ struct ListValueStore: ReducerProtocol {
                         logger.info("redis list set success, update list")
                     } else {
                         Messages.show("System error!!!")
-                        return .none
+                        return
                     }
                     
-                    return .submitSuccess(isNewKey)
+                    await send(.submitSuccess(isNewKey))
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
             
             // 提交成功， 刷新列表
             case let .submitSuccess(isNewKey):
@@ -177,8 +173,8 @@ struct ListValueStore: ReducerProtocol {
                 }
                 // 刷新列表
                 else {
-                    return .result {
-                        .success(.refresh)
+                    return .run { send in
+                        await send(.refresh)
                     }
                 }
              
@@ -189,12 +185,12 @@ struct ListValueStore: ReducerProtocol {
                 }
                 
                 let item = state.tableState.datasource[index] as! RedisListItemModel
-                return .future { callback in
+                return .run { send in
                     Messages.confirm(String(format: NSLocalizedString("LIST_DELETE_CONFIRM_TITLE'%@'", comment: ""), item.value)
                                       , message: String(format: NSLocalizedString("LIST_DELETE_CONFIRM_MESSAGE", comment: ""), item.index, item.value)
                                       , primaryButton: "Delete"
                                       , action: {
-                        callback(.success(.deleteKey(index)))
+                        await send(.deleteKey(index))
                     })
                 }
                 
@@ -204,20 +200,20 @@ struct ListValueStore: ReducerProtocol {
                 let item = state.tableState.datasource[index] as! RedisListItemModel
                 logger.info("delete list item, key: \(redisKeyModel.key), index: \(item.index), value: \(item.value)")
                 
-                return .task {
+                return .run { send in
                     let r = await redisInstanceModel.getClient().ldel(redisKeyModel.key, index: item.index, value: item.value)
                     logger.info("do delete list item, key: \(redisKeyModel.key), value: \(item.value), r:\(r)")
                     
-                    return r > 0 ? .deleteSuccess(index) : .none
+                    if r > 0 {
+                        await send(.deleteSuccess(index))
+                    }
                 }
-                .receive(on: mainQueue)
-                .eraseToEffect()
                 
             case let .deleteSuccess(index):
                 state.tableState.datasource.remove(at: index)
                 
-                return .result {
-                    .success(.refresh)
+                return .run { send in
+                    await send(.refresh)
                 }
                 
             case .none:
@@ -225,16 +221,16 @@ struct ListValueStore: ReducerProtocol {
                 
             // MARK: - page action
             case .pageAction(.updateSize):
-                return .result {
-                    .success(.getValue)
+                return .run { send in
+                    await send(.getValue)
                 }
             case .pageAction(.nextPage):
-                return .result {
-                    .success(.getValue)
+                return .run { send in
+                    await send(.getValue)
                 }
             case .pageAction(.prevPage):
-                return .result {
-                    .success(.getValue)
+                return .run { send in
+                    await send(.getValue)
                 }
             case .pageAction:
                 return .none
@@ -243,14 +239,14 @@ struct ListValueStore: ReducerProtocol {
             // delete key
             case let .tableAction(.contextMenu(title, index)):
                 if title == "Delete" {
-                    return .result {
-                        .success(.deleteConfirm(index))
+                    return .run { send in
+                        await send(.deleteConfirm(index))
                     }
                 }
                 
                 else  if title == "Edit" {
-                    return .result {
-                        .success(.edit(index))
+                    return .run { send in
+                        await send(.edit(index))
                     }
                 }
                 
@@ -262,13 +258,13 @@ struct ListValueStore: ReducerProtocol {
                 return .none
                 
             case let .tableAction(.double(index)):
-                return .result {
-                    .success(.edit(index))
+                return .run { send in
+                    await send(.edit(index))
                 }
                 
             case let .tableAction(.delete(index)):
-                return .result {
-                    .success(.deleteConfirm(index))
+                return .run { send in
+                    await send(.deleteConfirm(index))
                 }
             case .tableAction:
                 return .none
@@ -310,20 +306,20 @@ struct ListValueStore: ReducerProtocol {
 //            state.pageState.current = 1
 //
 //            logger.info("value store initial...")
-//            return .result {
+//            return .run { send in
 //                .success(.getValue)
 //            }
 //
 //        case .refresh:
 //            logger.info("value store initial...")
-//            return .result {
+//            return .run { send in
 //                .success(.getValue)
 //            }
 //
 //        case let .search(keywords):
 //            state.pageState.current = 1
 //            state.pageState.keywords = keywords
-//            return .result {
+//            return .run { send in
 //                .success(.getValue)
 //            }
 //
@@ -333,7 +329,7 @@ struct ListValueStore: ReducerProtocol {
 //            }
 //            // 清空
 //            if redisKeyModel.isNew {
-//                return .result {
+//                return .run { send in
 //                    .success(.tableAction(.reset))
 //                }
 //            }
@@ -414,7 +410,7 @@ struct ListValueStore: ReducerProtocol {
 //            }
 //            // 刷新列表
 //            else {
-//                return .result {
+//                return .run { send in
 //                    .success(.refresh)
 //                }
 //            }
@@ -453,7 +449,7 @@ struct ListValueStore: ReducerProtocol {
 //        case let .deleteSuccess(index):
 //            state.tableState.datasource.remove(at: index)
 //
-//            return .result {
+//            return .run { send in
 //                .success(.refresh)
 //            }
 //
@@ -462,15 +458,15 @@ struct ListValueStore: ReducerProtocol {
 //
 //        // MARK: - page action
 //        case .pageAction(.updateSize):
-//            return .result {
+//            return .run { send in
 //                .success(.getValue)
 //            }
 //        case .pageAction(.nextPage):
-//            return .result {
+//            return .run { send in
 //                .success(.getValue)
 //            }
 //        case .pageAction(.prevPage):
-//            return .result {
+//            return .run { send in
 //                .success(.getValue)
 //            }
 //        case .pageAction:
@@ -480,13 +476,13 @@ struct ListValueStore: ReducerProtocol {
 //        // delete key
 //        case let .tableAction(.contextMenu(title, index)):
 //            if title == "Delete" {
-//                return .result {
+//                return .run { send in
 //                    .success(.deleteConfirm(index))
 //                }
 //            }
 //
 //            else  if title == "Edit" {
-//                return .result {
+//                return .run { send in
 //                    .success(.edit(index))
 //                }
 //            }
@@ -499,12 +495,12 @@ struct ListValueStore: ReducerProtocol {
 //            return .none
 //
 //        case let .tableAction(.double(index)):
-//            return .result {
+//            return .run { send in
 //                .success(.edit(index))
 //            }
 //
 //        case let .tableAction(.delete(index)):
-//            return .result {
+//            return .run { send in
 //                .success(.deleteConfirm(index))
 //            }
 //        case .tableAction:

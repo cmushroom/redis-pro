@@ -13,7 +13,7 @@ import ComposableArchitecture
 private let logger = Logger(label: "redisKeys-store")
 
 
-struct RedisKeysStore: ReducerProtocol {
+struct RedisKeysStore: Reducer {
     
     struct State: Equatable {
         var database:Int = 0
@@ -74,7 +74,7 @@ struct RedisKeysStore: ReducerProtocol {
     @Dependency(\.redisClient) var redisClient:RediStackClient
     var mainQueue: AnySchedulerOf<DispatchQueue> = .main
     
-    var body: some ReducerProtocol<State, Action> {
+    var body: some Reducer<State, Action> {
         Scope(state: \.tableState, action: /Action.tableAction) {
             TableStore()
         }
@@ -131,9 +131,9 @@ struct RedisKeysStore: ReducerProtocol {
                 
                 // dbsize
             case .dbsize:
-                return .task {
+                return .run { send in
                     let r = await redisInstanceModel.getClient().dbsize()
-                    return .setDBSize(r)
+                    await  send(.setDBSize(r))
                 }
                 
                 // 分页查询 key
@@ -198,12 +198,12 @@ struct RedisKeysStore: ReducerProtocol {
                 
             case let .deleteConfirm(index):
                 let redisKeyModel = state.tableState.datasource[index] as! RedisKeyModel
-                return .future { callback in
+                return .run { send in
                     Messages.confirm(String(format: NSLocalizedString("REDIS_KEY_DELETE_CONFIRM_TITLE'%@'", comment: ""), redisKeyModel.key)
                                      , message: String(format: NSLocalizedString("REDIS_KEY_DELETE_CONFIRM_MESSAGE'%@'", comment: ""), redisKeyModel.key)
                                      , primaryButton: "Delete"
                                      , action: {
-                        callback(.success(.deleteKey(index)))
+                        await send(.deleteKey(index))
                     })
                 }
                 
@@ -235,12 +235,12 @@ struct RedisKeysStore: ReducerProtocol {
                 }
                 
             case .flushDBConfirm:
-                return .future { callback in
+                return .run { send in
                     Messages.confirm("Flush DB ?"
                                      , message: "Are you sure you want to flush db? This operation cannot be undone."
                                      , primaryButton: "Ok"
                                      , action: {
-                        callback(.success(.flushDB))
+                        await send(.flushDB)
                     })
                 }
                 

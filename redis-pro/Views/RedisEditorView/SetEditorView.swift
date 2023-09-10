@@ -44,11 +44,11 @@ struct SetEditorView: View {
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
         }
-        .sheet(isPresented: viewStore.binding(\.$editModalVisible), onDismiss: {
+        .sheet(isPresented: viewStore.$editModalVisible, onDismiss: {
         }) {
             ModalView("Edit set element", action: {viewStore.send(.submit)}) {
                 VStack(alignment:.leading, spacing: MTheme.V_SPACING) {
-                    FormItemTextArea(placeholder: "value", value: viewStore.binding(\.$editValue))
+                    FormItemTextArea(placeholder: "value", value: viewStore.$editValue)
                 }
             }
         }

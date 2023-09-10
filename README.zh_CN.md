@@ -33,6 +33,7 @@
 - [x] redis config update
 - [x] ssh login
 - [x] favorite delete confirm
+- [x] TCA
 - [ ] delete batch
 - [ ] ipad os support
 - [ ] ssh key support

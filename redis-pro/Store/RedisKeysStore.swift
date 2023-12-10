@@ -101,7 +101,7 @@ struct RedisKeysStore: Reducer {
                 logger.info("redis keys store initial...")
                 
                 return .merge(
-                    .send(.search("")),
+                    .send(.search(state.pageState.keywords)),
                     .send(.dbsize)
                 )
                 

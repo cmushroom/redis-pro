@@ -114,6 +114,7 @@
 		6252A4B627F0450200C9536A /* NTableColumn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6252A4B527F0450200C9536A /* NTableColumn.swift */; };
 		6252A4B827F04ACC00C9536A /* TableColumnType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6252A4B727F04ACC00C9536A /* TableColumnType.swift */; };
 		6252A4BA27F0542E00C9536A /* Assert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6252A4B927F0542E00C9536A /* Assert.swift */; };
+		625555E82B2578F200341733 /* KeysDelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 625555E72B2578F200341733 /* KeysDelView.swift */; };
 		625B41BE293AF81100C7766D /* AppCenterAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 625B41BD293AF81100C7766D /* AppCenterAnalytics */; };
 		625B41C0293AF81100C7766D /* AppCenterCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = 625B41BF293AF81100C7766D /* AppCenterCrashes */; };
 		6264BAE72A760CC90051FB61 /* KeyObjectBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6264BAE62A760CC90051FB61 /* KeyObjectBar.swift */; };
@@ -322,6 +323,7 @@
 		6252A4B527F0450200C9536A /* NTableColumn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NTableColumn.swift; sourceTree = "<group>"; };
 		6252A4B727F04ACC00C9536A /* TableColumnType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableColumnType.swift; sourceTree = "<group>"; };
 		6252A4B927F0542E00C9536A /* Assert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assert.swift; sourceTree = "<group>"; };
+		625555E72B2578F200341733 /* KeysDelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeysDelView.swift; sourceTree = "<group>"; };
 		6264BAE62A760CC90051FB61 /* KeyObjectBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyObjectBar.swift; sourceTree = "<group>"; };
 		6264BAE82A7659D40051FB61 /* KeysDelStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeysDelStore.swift; sourceTree = "<group>"; };
 		6264BAEA2A765E870051FB61 /* KeyDelModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyDelModel.swift; sourceTree = "<group>"; };
@@ -640,6 +642,7 @@
 				43CD28B1267C6D0800E11876 /* ClientsListView.swift */,
 				43F22EEC269ED9D500A00F97 /* SlowLogView.swift */,
 				62D741BE288414E00049AB3C /* LuaView.swift */,
+				625555E72B2578F200341733 /* KeysDelView.swift */,
 			);
 			path = System;
 			sourceTree = "<group>";
@@ -1132,6 +1135,7 @@
 				43822042265763D400DA7F9E /* RedisProCommands.swift in Sources */,
 				430A09E625C155F800B60DFC /* FormItemText.swift in Sources */,
 				62E3DCAF28B0C60B00FF865A /* PasteboardHelper.swift in Sources */,
+				625555E82B2578F200341733 /* KeysDelView.swift in Sources */,
 				628F9AA02896A3FB0003B6C0 /* RedisCommandExt.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1438,7 +1442,7 @@
 			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.2.0;
+				minimumVersion = 1.5.0;
 			};
 		};
 		625B41BC293AF81100C7766D /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */ = {

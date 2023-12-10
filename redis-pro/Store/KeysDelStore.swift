@@ -11,9 +11,10 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "keys-del-store")
 
-
 struct KeysDelStore: Reducer {
+    
     struct State: Equatable {
+        var pageState: PageStore.State = PageStore.State()
         var tableState: TableStore.State = TableStore.State(columns: [.init(title: "Type", key: "type", width: 120), .init(title: "Key", key: "key", width: 100), .init(title: "Status", key: "statusText", width: 800)], datasource: [], selectIndex: -1)
         
         init() {
@@ -27,8 +28,10 @@ struct KeysDelStore: Reducer {
         case deleting
         case delKey(Int)
         case delStatus(Int, Int)
+        case search
         case refresh
         case tableAction(TableStore.Action)
+        case pageAction(PageStore.Action)
     }
     
     @Dependency(\.redisClient) var redisClient:RediStackClient
@@ -79,11 +82,14 @@ struct KeysDelStore: Reducer {
                 
                 state.tableState.datasource[index] = key
                 return .none
-                
+            case .search:
+                return .none
             case .refresh:
                 return .none
                 
             case .tableAction:
+                return .none
+            case .pageAction:
                 return .none
             }
         }

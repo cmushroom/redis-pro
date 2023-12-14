@@ -35,6 +35,7 @@
 - [x] favorite delete confirm
 - [x] TCA
 - [ ] delete batch
+- [ ] terminal
 - [ ] ipad os support
 - [ ] ssh key support
 

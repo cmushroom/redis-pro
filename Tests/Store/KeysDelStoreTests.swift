@@ -20,8 +20,14 @@ class KeysDelStoreTests: StoreBaseTests {
             $0.redisClient = redisClient
         }
         
-//        await store.send(.favoriteAction(.connectSuccess(self.redisModel))) {
-//            $0.isConnect = true
-//        }
+        
+        await redisClient.set("__keys_del_str_1", value: UUID.init().uuidString)
+        await redisClient.set("__keys_del_str_2", value: UUID.init().uuidString)
+        await redisClient.set("__keys_del_str_3", value: UUID.init().uuidString)
+        await store.send(.search("__keys_del_str_*")) {
+            $0.pageState = PageStore.State()
+        }
+        
+        XCTAssertEqual(store.state.tableState.datasource.count, 3)
     }
 }

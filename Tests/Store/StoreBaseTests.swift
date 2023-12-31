@@ -18,6 +18,7 @@ class StoreBaseTests: RedisClientBaseTest {
     override func setUp() {
         super.setUp()
         self.redisInstance = RedisInstanceModel(redisModel: redisModel)
+
         logger.info("StoreBaseTests setup...")
     }
     

@@ -19,13 +19,15 @@ struct RedisKeysStore: Reducer {
         var database:Int = 0
         var dbsize:Int = 0
         var keywords:String = ""
-        var searchGroup = 0
+        // 查询批次
+        var countLockId = 0
         
         var mainViewType: MainViewTypeEnum = .EDITOR
         var tableState: TableStore.State = TableStore.State(
             columns: [.init(type: .KEY_TYPE,title: "Type", key: "type", width: 40), .init(title: "Key", key: "key", width: 50)]
             , datasource: [], contextMenus: [.COPY, .RENAME, .DELETE]
-            , selectIndex: -1)
+            , selectIndex: -1
+            ,multiSelect: true)
         var redisSystemState:RedisSystemStore.State = RedisSystemStore.State()
         var valueState: ValueStore.State = ValueStore.State()
         var databaseState: DatabaseStore.State = DatabaseStore.State()
@@ -45,6 +47,7 @@ struct RedisKeysStore: Reducer {
         case refreshCount
         case search(String)
         case getKeys
+        case getCount
         // 1. cursor, 2. searchGroup 查询批次
         case countKeys(Int, Int)
         case setKeys(Page, [RedisKeyModel])
@@ -53,9 +56,9 @@ struct RedisKeysStore: Reducer {
         case setMainViewType(MainViewTypeEnum)
         case addNew
         
-        case deleteConfirm(Int)
-        case deleteKey(Int)
-        case deleteSuccess(Int)
+        case deleteConfirm([Int])
+        case deleteKey([Int])
+        case deleteSuccess([Int])
         
         case onKeyChange(Int)
         case setDBSize(Int)
@@ -70,9 +73,7 @@ struct RedisKeysStore: Reducer {
         case none
     }
 
-    @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
     @Dependency(\.redisClient) var redisClient:RediStackClient
-    var mainQueue: AnySchedulerOf<DispatchQueue> = .main
     
     var body: some Reducer<State, Action> {
         Scope(state: \.tableState, action: /Action.tableAction) {
@@ -117,22 +118,19 @@ struct RedisKeysStore: Reducer {
                 
                 // 搜索
             case let .search(keywords):
-                state.searchGroup += 1
-                let searchGroup = state.searchGroup
-                
                 state.pageState.current = 1
                 state.pageState.total = 0
                 state.pageState.keywords = keywords
                 
                 return .merge(
                     .send(.getKeys),
-                    .send(.countKeys(0, searchGroup))
+                    .send(.getCount)
                 )
                 
                 // dbsize
             case .dbsize:
                 return .run { send in
-                    let r = await redisInstanceModel.getClient().dbsize()
+                    let r = await redisClient.dbsize()
                     await  send(.setDBSize(r))
                 }
                 
@@ -140,17 +138,25 @@ struct RedisKeysStore: Reducer {
             case .getKeys:
                 let page = state.pageState.page
                 return .run { send in
-                    let keysPage = await redisInstanceModel.getClient().pageKeys(page)
+                    let keysPage = await redisClient.pageKeys(page)
                     
                     await send(.setKeys(page, keysPage))
                 }
                 
+            case .getCount:
+                state.countLockId += 1
+                let countLockId = state.countLockId
+                
+                return .run { send in
+                    await send(.countKeys(0, countLockId))
+                }
+                
             // 异步计算key数量, 通过setCount 进行递归调用，直接cursor 返回0
             // 后续可能增加开关，是否查询数量
-            case let .countKeys(cursor, searchGroup):
+            case let .countKeys(cursor, currentLockId):
                 let page = state.pageState.page
-                if searchGroup < state.searchGroup {
-                    logger.info("有新查询批次, 当前count终止")
+                if currentLockId < state.countLockId {
+                    logger.info("有新查询任务, 当前count任务终止")
                     return .none
                 }
                 
@@ -159,21 +165,18 @@ struct RedisKeysStore: Reducer {
                 state.pageState.fastPageMax = redisClient.settingViewStore?.fastPageMax ?? 99
                 
                 return .run { send in
-                    let r = await redisInstanceModel.getClient().countKey(page, cursor: cursor)
-                    return await send(.setCount(r.0, r.1, searchGroup))
+                    let r = await redisClient.countKey(page, cursor: cursor)
+                    await send(.setCount(r.0, r.1, currentLockId))
                 }
                 
                 
             case let .setKeys(_, redisKeys):
-                state.tableState.datasource = redisKeys
-                
-                if !redisKeys.isEmpty {
-                    state.tableState.selectIndex = 0
+                return .run { send in
+                    await send(.tableAction(.setDatasource(redisKeys)))
                 }
-                return .none
             
             case let .setCount(cursor, count, searchGroup):
-                if searchGroup < state.searchGroup {
+                if searchGroup < state.countLockId {
                     return .none
                 }
                 
@@ -196,30 +199,40 @@ struct RedisKeysStore: Reducer {
                     await send(.valueAction(.keyChange(newKey)))
                 }
                 
-            case let .deleteConfirm(index):
-                let redisKeyModel = state.tableState.datasource[index] as! RedisKeyModel
-                return .run { send in
-                    Messages.confirm(String(format: NSLocalizedString("REDIS_KEY_DELETE_CONFIRM_TITLE'%@'", comment: ""), redisKeyModel.key)
-                                     , message: String(format: NSLocalizedString("REDIS_KEY_DELETE_CONFIRM_MESSAGE'%@'", comment: ""), redisKeyModel.key)
-                                     , primaryButton: "Delete"
-                                     , action: {
-                        await send(.deleteKey(index))
-                    })
+            case let .deleteConfirm(indexes):
+                guard !indexes.isEmpty && !state.tableState.isEmpty else {
+                    return .none
                 }
                 
-            case let .deleteKey(index):
-                let redisKeyModel = state.tableState.datasource[index] as! RedisKeyModel
-                logger.info("delete key: \(redisKeyModel.key)")
+                let redisKeys = indexes.map({state.tableState.datasource[$0] as! RedisKeyModel})
+                let msg = (redisKeys.count > 3 ? [redisKeys[0].key, "...", redisKeys[redisKeys.count - 1].key] : redisKeys.map({$0.key})).joined(separator: "\n")
+                
                 
                 return .run { send in
-                    let r = await redisInstanceModel.getClient().del(redisKeyModel.key)
-                    logger.info("on delete redis key: \(index), r:\(r)")
+                    Messages.confirm(
+                        String(format: NSLocalizedString("REDIS_KEY_DELETE_CONFIRM_TITLE'%@'", comment: ""), "\(redisKeys.count)")
+                        , message: String(format: NSLocalizedString("REDIS_KEY_DELETE_CONFIRM_MESSAGE'%@'", comment: ""), msg)
+                        , primaryButton: "Delete"
+                        , action: {
+                            await send(.deleteKey(indexes))
+                        })
+                }
+                
+            case let .deleteKey(indexes):
+                let redisKeys = indexes.map({state.tableState.datasource[$0] as! RedisKeyModel})
+                logger.info("delete key: \(indexes)")
+                
+                return .run { send in
+
+                    let r = await redisClient.del(redisKeys.map({$0.key}))
+                    logger.info("on delete redis key: \(indexes), r:\(r)")
                     
-                    return r > 0 ? await send(.deleteSuccess(index)) : await send(.none)
+                    return r > 0 ? await send(.deleteSuccess(indexes)) : await send(.none)
                 }
                 
-            case let .deleteSuccess(index):
-                state.tableState.datasource.remove(at: index)
+            case let .deleteSuccess(indexes):
+                // 降序排序后逐个删除， 必须先从最后的开始删除
+                indexes.sorted(by: >).forEach({state.tableState.datasource.remove(at: $0)})
                 
                 return .run { send in
                     await send(.refreshCount)
@@ -246,7 +259,7 @@ struct RedisKeysStore: Reducer {
                 
             case .flushDB:
                 return .run { send in
-                    let r = await redisInstanceModel.getClient().flushDB()
+                    let r = await redisClient.flushDB()
                     if r {
                         return await  send(.initial)
                     }
@@ -281,7 +294,7 @@ struct RedisKeysStore: Reducer {
                 PasteboardHelper.copy(item.key)
                 return .none
                 
-            case let .tableAction(.selectionChange(index)):
+            case let .tableAction(.selectionChange(index, _)):
                 return .run { send in
                     await send(.onKeyChange(index))
                 }
@@ -289,9 +302,8 @@ struct RedisKeysStore: Reducer {
                 // delete key
             case let .tableAction(.contextMenu(title, index)):
                 if title == "Delete" {
-                    
                     return .run { send in
-                        await send(.deleteConfirm(index))
+                        await send(.deleteConfirm([index]))
                     }
                 }
                 
@@ -316,7 +328,7 @@ struct RedisKeysStore: Reducer {
                 
             case let .tableAction(.delete(index)):
                 return .run { send in
-                    await send(.deleteConfirm(index))
+                    await send(.deleteConfirm([index]))
                 }
                 
             case .tableAction:

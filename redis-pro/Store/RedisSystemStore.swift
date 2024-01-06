@@ -12,6 +12,7 @@ import SwiftyJSON
 import ComposableArchitecture
 
 enum RedisSystemViewTypeEnum{
+    case KEYS_DEL
     case REDIS_INFO
     case REDIS_CONFIG
     case CLIENT_LIST
@@ -26,6 +27,7 @@ struct RedisSystemStore: Reducer {
     
     struct State: Equatable {
         var systemView: RedisSystemViewTypeEnum = .REDIS_INFO
+        var keysDelState:KeysDelStore.State = KeysDelStore.State()
         var redisInfoState: RedisInfoStore.State = RedisInfoStore.State()
         var redisConfigState: RedisConfigStore.State = RedisConfigStore.State()
         var slowLogState: SlowLogStore.State = SlowLogStore.State()
@@ -40,6 +42,7 @@ struct RedisSystemStore: Reducer {
     enum Action: Equatable {
         case initial
         case setSystemView(RedisSystemViewTypeEnum)
+        case keysDelAction(KeysDelStore.Action)
         case redisInfoAction(RedisInfoStore.Action)
         case redisConfigAction(RedisConfigStore.Action)
         case slowLogAction(SlowLogStore.Action)
@@ -50,6 +53,9 @@ struct RedisSystemStore: Reducer {
     @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
     
     var body: some Reducer<State, Action> {
+        Scope(state: \.keysDelState, action: /Action.keysDelAction) {
+            KeysDelStore()
+        }
         Scope(state: \.redisInfoState, action: /Action.redisInfoAction) {
             RedisInfoStore()
         }
@@ -73,9 +79,11 @@ struct RedisSystemStore: Reducer {
             case let .setSystemView(type):
                 state.systemView = type
                 return .none
+                
+            case .keysDelAction:
+                return .none
             case .redisInfoAction:
                 return .none
-                
             case .redisConfigAction:
                 return .none
             case .slowLogAction:

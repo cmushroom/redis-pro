@@ -24,6 +24,8 @@ class KeysDelStoreTests: StoreBaseTests {
         await redisClient.set("__keys_del_str_1", value: UUID.init().uuidString)
         await redisClient.set("__keys_del_str_2", value: UUID.init().uuidString)
         await redisClient.set("__keys_del_str_3", value: UUID.init().uuidString)
+        await redisClient.set("__keys_del_str_4", value: UUID.init().uuidString)
+        await redisClient.set("__keys_del_str_5", value: UUID.init().uuidString)
         await store.send(.search("__keys_del_str_*")) {
             $0.pageState = PageStore.State()
         }

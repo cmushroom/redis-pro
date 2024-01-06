@@ -19,7 +19,7 @@ struct KeysDelView: View {
             VStack(alignment: .leading, spacing: MTheme.V_SPACING) {
                 // header
                 HStack(alignment: .center, spacing: MTheme.H_SPACING) {
-                    SearchBar(placeholder: "Search...", onCommit: {_ in viewStore.send(.search)})
+                    SearchBar(placeholder: "Search...", onCommit: {viewStore.send(.search($0))})
                     PageBar(store: store.scope(state: \.pageState, action: KeysDelStore.Action.pageAction))
                     Spacer()
                 }
@@ -29,7 +29,7 @@ struct KeysDelView: View {
                 // footer
                 HStack(alignment: .center, spacing: MTheme.H_SPACING_L) {
                     Spacer()
-                    IconButton(icon: "trash", name: "Delete", action: {})
+                    IconButton(icon: "trash", name: "Delete", disabled: viewStore.tableState.isEmpty, action: {viewStore.send(.doDel)})
                 }
                 .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
             }.onAppear {

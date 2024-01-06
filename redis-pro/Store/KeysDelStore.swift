@@ -23,20 +23,18 @@ struct KeysDelStore: Reducer {
     }
     
     enum Action: Equatable {
-        case initial([RedisKeyModel])
+        case initial
+        case search(String)
+        case refresh
         case setValue([KeyDelModel])
-        case deleting
+        case doDel
         case delKey(Int)
         case delStatus(Int, Int)
-        case search
-        case refresh
         case tableAction(TableStore.Action)
         case pageAction(PageStore.Action)
     }
     
     @Dependency(\.redisClient) var redisClient:RediStackClient
-    @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
-    
     
     var body: some Reducer<State, Action> {
         Scope(state: \.tableState, action: /Action.tableAction) {
@@ -44,20 +42,31 @@ struct KeysDelStore: Reducer {
         }
         Reduce { state, action in
             switch action {
-                // 初始化已设置的值
-            case let .initial(keys):
-                
-                logger.info("key del store initial...")
-                let keysDel = keys.map { KeyDelModel($0)}
+
+            case .initial:
                 return .run { send in
-                    await send(.setValue(keysDel))
+                    await send(.search(""))
                 }
+            case let .search(keywords):
+                
+                state.pageState.current = 1
+                state.pageState.total = 0
+                state.pageState.keywords = keywords
+                
+                let page = state.pageState.page
+                return .run { send in
+                    let keysPage = await redisClient.pageKeys(page)
+                    await send(.setValue(keysPage.map({KeyDelModel($0)})))
+                }
+                
+            case .refresh:
+                return .none
                 
             case let .setValue(keys):
                 state.tableState.datasource = keys
                 return .none
                 
-            case .deleting:
+            case .doDel:
                 let keys = state.tableState.datasource as! [KeyDelModel]
                 
                 return .run { send in
@@ -65,13 +74,13 @@ struct KeysDelStore: Reducer {
                         await send(.delKey(index))
                     }
                 }
-              
+                
             case let .delKey(index):
                 
                 let keyModel = state.tableState.datasource[index] as! KeyDelModel
                 
                 return .run { send in
-                    let r = await redisInstanceModel.getClient().del(keyModel.key)
+                    let r = await redisClient.del(keyModel.key)
                     await send(.delStatus(index, r == 0 ? -1 : r))
                 }
                 
@@ -81,10 +90,6 @@ struct KeysDelStore: Reducer {
                 key.status = status
                 
                 state.tableState.datasource[index] = key
-                return .none
-            case .search:
-                return .none
-            case .refresh:
                 return .none
                 
             case .tableAction:

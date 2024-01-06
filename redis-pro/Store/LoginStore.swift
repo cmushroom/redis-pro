@@ -82,6 +82,7 @@ struct LoginStore: Reducer {
     }
     
     @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
+    @Dependency(\.redisClient) var redisClient: RediStackClient
     var mainQueue: AnySchedulerOf<DispatchQueue> = .main
     
     var body: some Reducer<State, Action> {

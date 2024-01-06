@@ -27,6 +27,7 @@ struct IndexView: View {
             
             let store: StoreOf<AppStore> = Store(initialState: state) {
                 AppStore()
+                    ._printChanges()
             } withDependencies: {
                 $0.redisInstance = redisInstanceModel
                 $0.redisClient = redisClient

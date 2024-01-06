@@ -58,6 +58,16 @@ extension RediStackClient {
         return await send(command, 0)
     }
     
+    func del(_ keys:[String]) async -> Int {
+        self.logger.info("delete key \(keys)")
+        guard keys.count > 0 else {
+            return 0
+        }
+        
+        let command:RedisCommand<Int> = .del(keys.map({RedisKey($0)}))
+        return await send(command, 0)
+    }
+    
     func expire(_ key:String, seconds:Int = -1) async -> Bool {
         logger.info("set key expire key:\(key), seconds:\(seconds)")
         

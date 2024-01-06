@@ -31,7 +31,7 @@ struct SetEditorView: View {
                 SearchBar(placeholder: "Search element...", onCommit: {viewStore.send(.search($0))})
                 PageBar(store: store.scope(state: \.pageState, action: SetValueStore.Action.pageAction))
             }
-            .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
+            .padding(EdgeInsets(top: MTheme.V_SPACING, leading: 0, bottom: MTheme.V_SPACING, trailing: 0))
             
             NTableView(store: store.scope(state: \.tableState, action: SetValueStore.Action.tableAction))
 
@@ -42,7 +42,7 @@ struct SetEditorView: View {
                 Spacer()
                 IconButton(icon: "arrow.clockwise", name: "Refresh", action: {viewStore.send(.refresh)})
             }
-            .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
+            .padding(EdgeInsets(top: MTheme.V_SPACING, leading: 0, bottom: 0, trailing: 0))
         }
         .sheet(isPresented: viewStore.$editModalVisible, onDismiss: {
         }) {

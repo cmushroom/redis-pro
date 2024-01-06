@@ -30,18 +30,18 @@ struct HashEditorView: View {
                     SearchBar(placeholder: "Search field...", onCommit: {viewStore.send(.search($0))})
                     PageBar(store: store.scope(state: \.pageState, action: HashValueStore.Action.pageAction))
                 }
-                .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
+                .padding(EdgeInsets(top: MTheme.V_SPACING, leading: 0, bottom: MTheme.V_SPACING, trailing: 0))
                 
                 NTableView(store: store.scope(state: \.tableState, action: HashValueStore.Action.tableAction))
 
                 // footer
-                HStack(alignment: .center, spacing: 4) {
+                HStack(alignment: .center, spacing: 0) {
                     KeyObjectBar(store: keyObjectStore)
                     Spacer()
                     IconButton(icon: "arrow.clockwise", name: "Refresh", action: {viewStore.send(.refresh)})
 
                 }
-                .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
+                .padding(EdgeInsets(top: MTheme.V_SPACING, leading: 0, bottom: 0, trailing: 0))
             }
             .onAppear {
                 logger.info("redis hash editor view appear ...")

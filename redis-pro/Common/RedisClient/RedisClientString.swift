@@ -48,7 +48,7 @@ extension RediStackClient {
         logger.info("get value length, key:\(key)")
         
         let command:RedisCommand<Int> = .strln(RedisKey(key))
-        return await _send(command, 0)
+        return await send(command, 0)
     }
     
     func del(_ key:String) async -> Int {

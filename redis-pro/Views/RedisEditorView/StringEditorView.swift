@@ -28,7 +28,7 @@ struct StringEditorView: View {
                 .background(Color.init(NSColor.textBackgroundColor))
                 
                 // footer
-                HStack(alignment: .center, spacing: MTheme.H_SPACING) {
+                HStack(alignment: .center, spacing: MTheme.V_SPACING) {
                     KeyObjectBar(store: keyObjectStore)
                     
                     if (viewStore.isIntactString) {
@@ -43,7 +43,7 @@ struct StringEditorView: View {
                     IconButton(icon: "arrow.clockwise", name: "Refresh", action: {viewStore.send(.refresh)})
                     IconButton(icon: "checkmark", name: "Submit", disabled: !viewStore.isIntactString, action: {viewStore.send(.submit)})
                 }
-                .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
+                .padding(EdgeInsets(top: MTheme.V_SPACING, leading: 0, bottom: 0, trailing: 0))
                 
             }
             

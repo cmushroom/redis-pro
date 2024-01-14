@@ -12,6 +12,7 @@ import SwiftyJSON
 import ComposableArchitecture
 
 enum RedisSystemViewTypeEnum{
+    case KEYS_DEL
     case REDIS_INFO
     case REDIS_CONFIG
     case CLIENT_LIST
@@ -75,7 +76,6 @@ struct RedisSystemStore: Reducer {
                 return .none
             case .redisInfoAction:
                 return .none
-                
             case .redisConfigAction:
                 return .none
             case .slowLogAction:

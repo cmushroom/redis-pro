@@ -32,7 +32,7 @@ struct ZSetEditorView: View {
                 SearchBar(placeholder: "Search element...", onCommit: {viewStore.send(.search($0))})
                 PageBar(store: store.scope(state: \.pageState, action: ZSetValueStore.Action.pageAction))
             }
-            .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
+            .padding(EdgeInsets(top: MTheme.V_SPACING, leading: 0, bottom: MTheme.V_SPACING, trailing: 0))
             
             NTableView(store: store.scope(state: \.tableState, action: ZSetValueStore.Action.tableAction))
 
@@ -42,12 +42,12 @@ struct ZSetEditorView: View {
                 Spacer()
                 IconButton(icon: "arrow.clockwise", name: "Refresh", action: {viewStore.send(.refresh)})
             }
-            .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
+            .padding(EdgeInsets(top: MTheme.V_SPACING, leading: 0, bottom: 0, trailing: 0))
         }
         .sheet(isPresented: viewStore.$editModalVisible, onDismiss: {
         }) {
             ModalView("Edit zset element", action: {viewStore.send(.submit)}) {
-                VStack(alignment:.leading, spacing: 8) {
+                VStack(alignment:.leading, spacing: MTheme.H_SPACING) {
                     FormItemDouble(label: "Score", placeholder: "score", value: viewStore.$editScore)
                     FormItemTextArea(label: "Value", placeholder: "value", value: viewStore.$editValue)
                 }

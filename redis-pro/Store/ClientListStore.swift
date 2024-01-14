@@ -59,6 +59,7 @@ struct ClientListStore: Reducer {
         case killConfirm(Int)
         case kill(Int)
         case tableAction(TableStore.Action)
+        case none
     }
     
     @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
@@ -94,12 +95,11 @@ struct ClientListStore: Reducer {
 
                 let item = state.tableState.datasource[index] as! ClientModel
                 return .run { send in
-                    Messages.confirm("Kill Client?"
+                    let r = await Messages.confirmAsync("Kill Client?"
                                      , message: "Are you sure you want to kill client:\(item.addr)? This operation cannot be undone."
-                                      , primaryButton: "Kill"
-                                      , action: {
-                        await send(.kill(index))
-                    })
+                                      , primaryButton: "Kill")
+                    
+                    await send(r ? .kill(index) : .none)
                 }
                 
             case let .kill(index):
@@ -128,6 +128,9 @@ struct ClientListStore: Reducer {
                 
                 return .none
             case .tableAction:
+                return .none
+                
+            case .none:
                 return .none
             }
         }

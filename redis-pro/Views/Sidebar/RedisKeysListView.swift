@@ -30,8 +30,8 @@ struct RedisKeysListView: View {
                 // redis key operate ...
                 HStack {
                     IconButton(icon: "plus", name: "Add", action: {viewStore.send(.addNew)})
-                    IconButton(icon: "trash", name: "Delete", disabled: viewStore.tableState.selectIndex == -1
-                               ,action: { viewStore.send(.deleteConfirm(viewStore.tableState.selectIndex))})
+                    IconButton(icon: "trash", name: "Delete", disabled: !viewStore.tableState.isSelect
+                               ,action: { viewStore.send(.deleteConfirm(viewStore.tableState.selectIndexes))})
                     
                     Spacer()
                     DatabasePicker(store: store.scope(state: \.databaseState, action: RedisKeysStore.Action.databaseAction))
@@ -46,6 +46,7 @@ struct RedisKeysListView: View {
     private func sidebarFoot(_ viewStore: ViewStore<RedisKeysStore.State, RedisKeysStore.Action>) -> some View {
         HStack(alignment: .center, spacing: 4) {
             Menu(content: {
+                Button("Keys Del", action: { viewStore.send(.redisSystemAction(.setSystemView(.KEYS_DEL))) })
                 Button("Redis Info", action: { viewStore.send(.redisSystemAction(.setSystemView(.REDIS_INFO))) })
                 Button("Redis Config", action: { viewStore.send(.redisSystemAction(.setSystemView(.REDIS_CONFIG))) })
                 Button("Clients List", action: { viewStore.send(.redisSystemAction(.setSystemView(.CLIENT_LIST))) })
@@ -96,8 +97,6 @@ struct RedisKeysListView: View {
                     .layoutPriority(0)
                 
                 // content
-//                MainView(store: store.scope(state: \.valueState, action: RedisKeysStore.Action.valueAction))
-                
                 VStack(alignment: .leading, spacing: 0){
                     if viewStore.mainViewType == MainViewTypeEnum.EDITOR {
                         RedisValueView(store: store.scope(state: \.valueState, action: RedisKeysStore.Action.valueAction))
@@ -114,7 +113,6 @@ struct RedisKeysListView: View {
                 .layoutPriority(1)
             }
             .onAppear{
-//                viewStore.send(.setDBSize(20))
             }
             .sheet(isPresented: viewStore.binding(get: \.renameState.visible, send: .renameAction(.hide))) {
                 ModalView("Rename", width: MTheme.DIALOG_W, height: 100, action: {viewStore.send(.renameAction(.submit))}) {

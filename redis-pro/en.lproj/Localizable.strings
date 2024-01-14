@@ -38,8 +38,8 @@
 
 // -------------------------------------------------- redis key message start ----------------------------------------------------
 
-"REDIS_KEY_DELETE_CONFIRM_TITLE'%@'" = "Delete key '%@'?";
-"REDIS_KEY_DELETE_CONFIRM_MESSAGE'%@'" = "Are you sure you want to delete the key '%@'? This operation cannot be undone.";
+"REDIS_KEY_DELETE_CONFIRM_TITLE'%@'" = "Delete keys, count: %@?";
+"REDIS_KEY_DELETE_CONFIRM_MESSAGE'%@'" = "Are you sure to delete the keys below?\n%@";
 
 // -------------------------------------------------- redis key message end ------------------------------------------------------
 

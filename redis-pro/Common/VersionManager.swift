@@ -45,14 +45,16 @@ struct VersionManager {
                     
                     // 提示升级
                     if updateType == "hint" {
-                        Messages.confirm("New version \(latestVersion) is available", message: releaseNotes,
-                                      primaryButton: "Upgrade",
-                                      action: {
-                                        if let url = URL(string: Const.RELEASE_URL) {
-                                            NSWorkspace.shared.open(url)
-                                        }
-                                      }
-                        )
+                        Task {
+                            let r = await Messages.confirmAsync("New version \(latestVersion) is available", message: releaseNotes,
+                                                                primaryButton: "Upgrade")
+                            
+                            if r {
+                                if let url = URL(string: Const.RELEASE_URL) {
+                                    NSWorkspace.shared.open(url)
+                                }
+                            }
+                        }
                     }
                     // 强制升级
                     else if updateType == "force" {

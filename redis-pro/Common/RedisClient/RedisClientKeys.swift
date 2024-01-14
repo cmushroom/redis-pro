@@ -85,7 +85,7 @@ extension RediStackClient {
         
     }
     
-    func pageKeys(_ page:Page) async -> [RedisKeyModel] {
+    func pageKeys(_ page: Page) async -> [RedisKeyModel] {
         begin()
         
         let stopwatch = Stopwatch.createStarted()
@@ -124,23 +124,29 @@ extension RediStackClient {
     }
     
     
-    func countKey(_ page:Page, cursor: Int) async -> (Int, Int) {
+    /// 通过scan命令查询key匹配数量
+    /// - Parameters:
+    ///   - page: 分页参数
+    ///   - cursor: 当前游标
+    /// - Returns: 0: 当前游标， 0表示结束查询，同redis scan命令 1: 此次查询到的数量
+    ///
+    func countKey(_ page: Page, cursor: Int) async -> (Int, Int) {
+        let keywords = page.keywords
         // 如果是匹配所，使用dbsize
-        if isMatchAll(page.keywords) {
+        if isMatchAll(keywords) {
             return (0, await dbsize())
         }
         
-        let isScan = isScan(page.keywords)
-        let match = page.keywords.isEmpty ? nil : page.keywords
+        let isScan = isScan(keywords)
+        let match = keywords.isEmpty ? nil : keywords
         
         do {
             // 是否走scan扫描key
             if isScan {
-                
                 let res = try await countScan(cursor: cursor, keywords: match, count: dataCountScanCount)
                 logger.info("count scan keys, current cursor: \(cursor), r: \(res)")
                 
-                // 检查fast page
+                // 检查fast page, 如果启用了快速分页，查到99页结束，否则查询所有总页数
                 if settingViewStore?.fastPage ?? true && ((res.1 + page.total) > ((settingViewStore?.fastPageMax ?? 99) * page.size)) {
                     logger.info("count scan keys, fast page switch is open, stop scan")
                     return (0, res.1)
@@ -148,7 +154,7 @@ extension RediStackClient {
                 
                 return res
             } else {
-                let count = await self.exist(page.keywords) ? 1 : 0
+                let count = await self.exist(keywords) ? 1 : 0
                 return (0, count)
             }
         } catch {

@@ -14,9 +14,10 @@ struct RedisSystemView: View {
     
     var body: some View {
         WithViewStore(self.store, observe: { $0.systemView }) {viewStore in
-        
-//        WithViewStore(store.scope(state: \.systemView)){ viewStore in
+    
             if viewStore.state == RedisSystemViewTypeEnum.REDIS_INFO {
+                RedisInfoView(store: store.scope(state: \.redisInfoState, action: RedisSystemStore.Action.redisInfoAction))
+            }  else if viewStore.state == RedisSystemViewTypeEnum.REDIS_INFO {
                 RedisInfoView(store: store.scope(state: \.redisInfoState, action: RedisSystemStore.Action.redisInfoAction))
             }  else if viewStore.state == RedisSystemViewTypeEnum.CLIENT_LIST {
                 ClientsListView(store: store.scope(state: \.clientListState, action: RedisSystemStore.Action.clientListAction))

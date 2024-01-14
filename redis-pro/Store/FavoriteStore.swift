@@ -35,8 +35,7 @@ struct FavoriteStore: Reducer {
     
     
     @Dependency(\.redisInstance) var redisInstanceModel: RedisInstanceModel
-    var mainQueue: AnySchedulerOf<DispatchQueue> = .main
-    
+    @Dependency(\.redisClient) var redisClient: RediStackClient
     
     var body: some Reducer<State, Action> {
         Scope(state: \.tableState, action: /Action.tableAction) {
@@ -97,12 +96,11 @@ struct FavoriteStore: Reducer {
                 let redisModel = state.tableState.datasource[index] as! RedisModel
                 
                 return .run { send in
-                    Messages.confirm(String(format: NSLocalizedString("CONFIRM_FAVORITE_REDIS_TITLE'%@'", comment: ""), redisModel.name)
+                    let r = await Messages.confirmAsync(String(format: NSLocalizedString("CONFIRM_FAVORITE_REDIS_TITLE'%@'", comment: ""), redisModel.name)
                                       , message: String(format: NSLocalizedString("CONFIRM_FAVORITE_REDIS_MESSAGE'%@'", comment: ""), redisModel.name)
-                                      , primaryButton: "Delete"
-                                      , action: {
-                        await send(.delete(index))
-                    })
+                                      , primaryButton: "Delete")
+                    
+                    return await send(r ? .delete(index) : .none)
                 }
             case let .delete(index):
                 let r = RedisDefaults.delete(index)
@@ -121,6 +119,9 @@ struct FavoriteStore: Reducer {
                 
                 return .run { send in
                     let r = await redisInstanceModel.connect(redisModel)
+                    redisClient.redisModel = redisModel
+                    let _ = await redisClient.initConnection()
+                    
                     logger.info("on connect to redis server: \(redisModel) , result: \(r)")
                     RedisDefaults.saveLastUse(redisModel)
                     if r {
@@ -141,7 +142,7 @@ struct FavoriteStore: Reducer {
                 return .run { send in
                     await send(.connect(index))
                 }
-            case let .tableAction(.selectionChange(index)):
+            case let .tableAction(.selectionChange(index, _)):
                 guard index > -1 else { return .none }
                 
                 logger.info("redis favorite table selection change action, index: \(index)")

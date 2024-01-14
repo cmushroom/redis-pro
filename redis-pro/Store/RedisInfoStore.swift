@@ -11,7 +11,6 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "redis-info-store")
 
-
 struct RedisInfoStore: Reducer {
     struct State: Equatable {
         var section:String = "Server"

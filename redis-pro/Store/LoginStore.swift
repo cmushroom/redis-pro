@@ -83,7 +83,7 @@ struct LoginStore: Reducer {
     
     @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
     @Dependency(\.redisClient) var redisClient: RediStackClient
-    var mainQueue: AnySchedulerOf<DispatchQueue> = .main
+    @Dependency(\.appContext) var appContext: StoreOf<AppContextStore>
     
     var body: some Reducer<State, Action> {
         BindingReducer()
@@ -103,7 +103,9 @@ struct LoginStore: Reducer {
                 
                 return .run { send in
                     let r = await redisInstanceModel.testConnect(redis)
-                    await  send(.setPingR(r))
+                    await send(.setPingR(r))
+                    await send(.setPingR(r))
+                    
                 }
             case let .setPingR(r):
                 state.pingR =  r ? "Connect successed!" : "Connect fail! "

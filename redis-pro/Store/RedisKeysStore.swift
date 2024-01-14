@@ -209,13 +209,12 @@ struct RedisKeysStore: Reducer {
                 
                 
                 return .run { send in
-                    Messages.confirm(
+                    let r = await Messages.confirmAsync(
                         String(format: NSLocalizedString("REDIS_KEY_DELETE_CONFIRM_TITLE'%@'", comment: ""), "\(redisKeys.count)")
                         , message: String(format: NSLocalizedString("REDIS_KEY_DELETE_CONFIRM_MESSAGE'%@'", comment: ""), msg)
-                        , primaryButton: "Delete"
-                        , action: {
-                            await send(.deleteKey(indexes))
-                        })
+                        , primaryButton: "Delete")
+                    
+                    await send(r ? .deleteKey(indexes) : .none)
                 }
                 
             case let .deleteKey(indexes):
@@ -249,12 +248,10 @@ struct RedisKeysStore: Reducer {
                 
             case .flushDBConfirm:
                 return .run { send in
-                    Messages.confirm("Flush DB ?"
+                    let r = await Messages.confirmAsync("Flush DB ?"
                                      , message: "Are you sure you want to flush db? This operation cannot be undone."
-                                     , primaryButton: "Ok"
-                                     , action: {
-                        await send(.flushDB)
-                    })
+                                     , primaryButton: "Ok")
+                    await send(r ? .flushDB : .none)
                 }
                 
             case .flushDB:

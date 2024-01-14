@@ -96,12 +96,11 @@ struct FavoriteStore: Reducer {
                 let redisModel = state.tableState.datasource[index] as! RedisModel
                 
                 return .run { send in
-                    Messages.confirm(String(format: NSLocalizedString("CONFIRM_FAVORITE_REDIS_TITLE'%@'", comment: ""), redisModel.name)
+                    let r = await Messages.confirmAsync(String(format: NSLocalizedString("CONFIRM_FAVORITE_REDIS_TITLE'%@'", comment: ""), redisModel.name)
                                       , message: String(format: NSLocalizedString("CONFIRM_FAVORITE_REDIS_MESSAGE'%@'", comment: ""), redisModel.name)
-                                      , primaryButton: "Delete"
-                                      , action: {
-                        await send(.delete(index))
-                    })
+                                      , primaryButton: "Delete")
+                    
+                    return await send(r ? .delete(index) : .none)
                 }
             case let .delete(index):
                 let r = RedisDefaults.delete(index)

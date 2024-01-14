@@ -13,8 +13,8 @@ import ComposableArchitecture
 @MainActor
 class KeysDelStoreTests: StoreBaseTests {
     func testBasics() async {
-        let store = TestStore(initialState: KeysDelStore.State()) {
-            KeysDelStore()
+        let store = TestStore(initialState: RedisKeysStore.State()) {
+            RedisKeysStore()
         } withDependencies: {
             $0.redisInstance = redisInstance
             $0.redisClient = redisClient

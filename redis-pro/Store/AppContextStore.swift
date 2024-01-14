@@ -42,13 +42,9 @@ struct AppContextStore {
                 return .none
             case .hide:
                 return .run { send in
-                    DispatchQueue.main.asyncAfter(deadline: .now() + DispatchTimeInterval.milliseconds(100)) {
-                        Task {
-                            send(._hide)
-                        }
-                    }
+                    try await Task.sleep(nanoseconds: 100_000_000)
+                    await send(._hide)
                 }
-                
                 
             case ._hide:
                 state.loadingCount -= 1

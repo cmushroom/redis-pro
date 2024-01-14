@@ -7,17 +7,206 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "4F0651B8-DFF5-4203-AEFD-10D08BB26812"
-            shouldBeEnabled = "No"
+            uuid = "370936EE-9DC4-4B13-B6FC-A3775E6187F3"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "redis-pro/Common/RedisClient/RediStackClient.swift"
+            filePath = "redis-pro/Common/NIO/ReadTimeoutHandler.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "72"
-            endingLineNumber = "72"
-            landmarkName = "loading(_:)"
+            startingLineNumber = "39"
+            endingLineNumber = "39"
+            landmarkName = "channelRead(context:data:)"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "CB0EEC7A-3A40-4798-A42C-AECF8D16BA66"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "redis-pro/Common/NIO/ReadTimeoutHandler.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "27"
+            endingLineNumber = "27"
+            landmarkName = "channelActive(context:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "CB0EEC7A-3A40-4798-A42C-AECF8D16BA66 - 3596edf3a758c662"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "redis_pro.ReadTimeoutHandler.channelActive(context: NIOCore.ChannelHandlerContext) -&gt; ()"
+                  moduleName = "redis-pro"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/chengpan/work/dream/redis-pro/redis-pro/Common/NIO/ReadTimeoutHandler.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "27"
+                  endingLineNumber = "27"
+                  offsetFromSymbolStart = "51">
+               </Location>
+               <Location
+                  uuid = "CB0EEC7A-3A40-4798-A42C-AECF8D16BA66 - 185269c105f8c849"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 @Sendable () -&gt; () in redis_pro.ReadTimeoutHandler.channelActive(context: NIOCore.ChannelHandlerContext) -&gt; ()"
+                  moduleName = "redis-pro"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/chengpan/work/dream/redis-pro/redis-pro/Common/NIO/ReadTimeoutHandler.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "29"
+                  endingLineNumber = "29"
+                  offsetFromSymbolStart = "45">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "1BABEFE1-43B7-4E76-A8C6-F354C9078761"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "redis-pro/Store/RedisKeysStore.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "221"
+            endingLineNumber = "221"
+            landmarkName = "body"
+            landmarkType = "24">
+            <Locations>
+               <Location
+                  uuid = "1BABEFE1-43B7-4E76-A8C6-F354C9078761 - a060a3425a637dff"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #7 (inout redis_pro.RedisKeysStore.State, redis_pro.RedisKeysStore.Action) -&gt; ComposableArchitecture.Effect&lt;redis_pro.RedisKeysStore.Action&gt; in redis_pro.RedisKeysStore.body.getter : some"
+                  moduleName = "redis-pro"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/chengpan/work/dream/redis-pro/redis-pro/Store/RedisKeysStore.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "222"
+                  endingLineNumber = "222"
+                  offsetFromSymbolStart = "9193">
+               </Location>
+               <Location
+                  uuid = "1BABEFE1-43B7-4E76-A8C6-F354C9078761 - d914d732fcb0b1fb"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #12 (Swift.Int) -&gt; redis_pro.RedisKeyModel in closure #7 (inout redis_pro.RedisKeysStore.State, redis_pro.RedisKeysStore.Action) -&gt; ComposableArchitecture.Effect&lt;redis_pro.RedisKeysStore.Action&gt; in redis_pro.RedisKeysStore.body.getter : some"
+                  moduleName = "redis-pro"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/chengpan/work/dream/redis-pro/redis-pro/Store/RedisKeysStore.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "222"
+                  endingLineNumber = "222"
+                  offsetFromSymbolStart = "49">
+               </Location>
+               <Location
+                  uuid = "1BABEFE1-43B7-4E76-A8C6-F354C9078761 - a060a3425a637ddc"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #7 (inout redis_pro.RedisKeysStore.State, redis_pro.RedisKeysStore.Action) -&gt; ComposableArchitecture.Effect&lt;redis_pro.RedisKeysStore.Action&gt; in redis_pro.RedisKeysStore.body.getter : some"
+                  moduleName = "redis-pro"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/chengpan/work/dream/redis-pro/redis-pro/Store/RedisKeysStore.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "221"
+                  endingLineNumber = "221"
+                  offsetFromSymbolStart = "9193">
+               </Location>
+               <Location
+                  uuid = "1BABEFE1-43B7-4E76-A8C6-F354C9078761 - d914d732fcb0b1d8"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #12 (Swift.Int) -&gt; redis_pro.RedisKeyModel in closure #7 (inout redis_pro.RedisKeysStore.State, redis_pro.RedisKeysStore.Action) -&gt; ComposableArchitecture.Effect&lt;redis_pro.RedisKeysStore.Action&gt; in redis_pro.RedisKeysStore.body.getter : some"
+                  moduleName = "redis-pro"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/chengpan/work/dream/redis-pro/redis-pro/Store/RedisKeysStore.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "221"
+                  endingLineNumber = "221"
+                  offsetFromSymbolStart = "49">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "47963F63-0B3E-495E-ABBF-A45DC9FC36C4"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "redis-pro/Store/RedisKeysStore.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "217"
+            endingLineNumber = "217"
+            landmarkName = "body"
+            landmarkType = "24">
+            <Locations>
+               <Location
+                  uuid = "47963F63-0B3E-495E-ABBF-A45DC9FC36C4 - 99aad9d1a34a5aed"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for closure #11 @Sendable (ComposableArchitecture.Send&lt;redis_pro.RedisKeysStore.Action&gt;) async -&gt; () in closure #7 (inout redis_pro.RedisKeysStore.State, redis_pro.RedisKeysStore.Action) -&gt; ComposableArchitecture.Effect&lt;redis_pro.RedisKeysStore.Action&gt; in redis_pro.RedisKeysStore.body.getter : some"
+                  moduleName = "redis-pro"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/chengpan/work/dream/redis-pro/redis-pro/Store/RedisKeysStore.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "217"
+                  endingLineNumber = "217"
+                  offsetFromSymbolStart = "233">
+               </Location>
+               <Location
+                  uuid = "47963F63-0B3E-495E-ABBF-A45DC9FC36C4 - 4add8e7507567cec"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(4) suspend resume partial function for closure #11 @Sendable (ComposableArchitecture.Send&lt;redis_pro.RedisKeysStore.Action&gt;) async -&gt; () in closure #7 (inout redis_pro.RedisKeysStore.State, redis_pro.RedisKeysStore.Action) -&gt; ComposableArchitecture.Effect&lt;redis_pro.RedisKeysStore.Action&gt; in redis_pro.RedisKeysStore.body.getter : some"
+                  moduleName = "redis-pro"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/chengpan/work/dream/redis-pro/redis-pro/Store/RedisKeysStore.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "217"
+                  endingLineNumber = "217"
+                  offsetFromSymbolStart = "30">
+               </Location>
+               <Location
+                  uuid = "47963F63-0B3E-495E-ABBF-A45DC9FC36C4 - ff0f3318eb639e93"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(5) suspend resume partial function for closure #11 @Sendable (ComposableArchitecture.Send&lt;redis_pro.RedisKeysStore.Action&gt;) async -&gt; () in closure #7 (inout redis_pro.RedisKeysStore.State, redis_pro.RedisKeysStore.Action) -&gt; ComposableArchitecture.Effect&lt;redis_pro.RedisKeysStore.Action&gt; in redis_pro.RedisKeysStore.body.getter : some"
+                  moduleName = "redis-pro"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/chengpan/work/dream/redis-pro/redis-pro/Store/RedisKeysStore.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "217"
+                  endingLineNumber = "217"
+                  offsetFromSymbolStart = "91">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

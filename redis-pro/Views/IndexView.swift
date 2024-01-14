@@ -42,9 +42,13 @@ struct IndexView: View {
                         } else {
                             LoginView(store: store)
                         }
+                        
+                        
+                        
                     }
                     
-                    LoadingView(store.scope(state: \.globalState, action: AppStore.Action.globalAction))
+                    LoadingView()
+                    
                 }.onAppear {
                     redisInstanceModel.setAppStore(store)
                 }

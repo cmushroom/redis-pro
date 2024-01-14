@@ -83,7 +83,6 @@ class RedisInstanceModel: Identifiable {
         defer {
             self.close()
         }
-        
         logger.info("test connect to redis server: \(redisModel)")
         return  await initRedisClient(redisModel).testConn()
     }

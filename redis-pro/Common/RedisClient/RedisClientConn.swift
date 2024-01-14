@@ -61,6 +61,11 @@ extension RediStackClient {
         return try await getConnPool()
     }
     
+    func refreshConn() async {
+        self.close()
+        try! await self.getConn()
+    }
+    
     func getConnPool() async throws -> RedisClient {
         if self.connPool != nil {
             return self.connPool!
@@ -123,6 +128,7 @@ extension RediStackClient {
         let _username = username?.isEmpty ?? false ? nil : username
         let _password = pass.isEmpty ? nil : pass
         
+        
         let config: RedisConnectionPool.PoolConnectionConfiguration = .init(
             initialDatabase: database
             , username: _username
@@ -132,10 +138,9 @@ extension RediStackClient {
         let pool = RedisConnectionPool(
             configuration: .init(
                 initialServerConnectionAddresses: addresses
-                , connectionCountBehavior: .elastic(maximumConnectionCount: 3, minimumConnectionCount: 2)
+                , connectionCountBehavior: .elastic(maximumConnectionCount: 3, minimumConnectionCount: 1)
                 , connectionConfiguration: config
-//                , retryStrategy: .none
-                , retryStrategy: .exponentialBackoff(initialDelay: .milliseconds(100), backoffFactor: 3, timeout: .seconds(3))
+                , retryStrategy: .exponentialBackoff(initialDelay: .milliseconds(200), backoffFactor: 2, timeout: .seconds(3))
                 , poolDefaultLogger: self.logger
             )
             , boundEventLoop: eventLoop
@@ -145,6 +150,17 @@ extension RediStackClient {
 //        _keepalive()
         self.logger.info("init redis connection pool complete...")
         return pool
+    }
+    
+    public func initClientBootstrap() -> ClientBootstrap {
+        
+        let bootstrap = ClientBootstrap(group: eventLoopGroup)
+            .channelOption(ChannelOptions.socket(SocketOptionLevel(SOL_SOCKET), SO_REUSEADDR), value: 1)
+            .channelInitializer { channel in
+                channel.pipeline.addHandler(ReadTimeoutHandler(timeout: .milliseconds(500)))
+            }
+        
+        return bootstrap
     }
     
 }

@@ -186,12 +186,11 @@ struct ZSetValueStore: Reducer {
                 
                 let item = state.tableState.datasource[index] as! RedisZSetItemModel
                 return .run { send in
-                    Messages.confirm(StringHelper.format("ZSET_DELETE_CONFIRM_TITLE", item.value)
+                    let r = await Messages.confirmAsync(StringHelper.format("ZSET_DELETE_CONFIRM_TITLE", item.value)
                                       , message: StringHelper.format("ZSET_DELETE_CONFIRM_MESSAGE", item.value)
-                                      , primaryButton: "Delete"
-                                      , action: {
-                        await send(.deleteKey(index))
-                    })
+                                      , primaryButton: "Delete")
+                    
+                    await send(r ? .deleteKey(index) : .none)
                 }
                 
             case let .deleteKey(index):

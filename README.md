@@ -33,7 +33,7 @@ support macos (Intel, Apple Silicon) platform,  will support ipad os in the futu
 - [x] ssh login
 - [x] favorite delete confirm
 - [x] TCA
-- [ ] delete batch
+- [x] delete batch
 - [ ] terminal
 - [ ] ipad os support
 - [ ] ssh key

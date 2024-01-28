@@ -8,7 +8,6 @@
 
 import Logging
 import Foundation
-import SwiftyJSON
 import ComposableArchitecture
 
 enum RedisSystemViewTypeEnum{

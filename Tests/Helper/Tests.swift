@@ -31,5 +31,25 @@ final class Tests: XCTestCase {
             // Put the code you want to measure the time of here.
         }
     }
+    
+    func testJson() {
+        let text = "{\"latestVersionNum\": 1}"
+        
+//        let data = Data(text.utf8)
+//        do {
+//           // make sure this JSON is in the format we expect
+//           if let dictionary = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+//               let latestVersionNum = dictionary["latestVersionNum"]
+//              print("Dictionary format: \(dictionary), \(latestVersionNum)")
+//               let b = Int("\(latestVersionNum)") ?? 0
+//               print("\(b > 0)")
+//           }
+//        } catch let error as NSError {
+//           print("Failed to load: \(error.localizedDescription)")
+//        }
+        
+        try JSONDecoder().decode(VersionModel.self, from: text.data(using: .utf8)!)
+        
+    }
 
 }

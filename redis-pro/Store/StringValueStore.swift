@@ -7,7 +7,7 @@
 
 import Logging
 import Foundation
-import SwiftyJSON
+import SwiftJSONFormatter
 import ComposableArchitecture
 
 private let logger = Logger(label: "string-value-store")
@@ -32,7 +32,8 @@ struct StringValueStore: Reducer {
         case getIntactString
         case updateLength(Int)
         case updateText(String)
-        case jsonFormat
+        case jsonPretty
+        case jsonMinify
         case refresh
         case none
     }
@@ -124,20 +125,22 @@ struct StringValueStore: Reducer {
                 state.text = text
                 return .none
                 
-            case .jsonFormat:
+            case .jsonPretty:
                 if state.text.count < 2 {
-                    
-                    Messages.show(BizError("Format json error"))
+                    Messages.show(BizError("Invalid json format!"))
                     return .none
                 }
-                let jsonObj = JSON(parseJSON: state.text)
-                if jsonObj == JSON.null {
-                    Messages.show(BizError("Format json error"))
+                
+                state.text = SwiftJSONFormatter.beautify(state.text, indent: "    ")
+                return .none
+                
+            case .jsonMinify:
+                if state.text.count < 2 {
+                    Messages.show(BizError("Invalid json format!"))
                     return .none
                 }
-                if let string = jsonObj.rawString() {
-                    state.text = string
-                }
+                
+                state.text = SwiftJSONFormatter.minify(state.text)
                 return .none
                 
             case .refresh:

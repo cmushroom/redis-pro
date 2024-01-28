@@ -15,7 +15,7 @@ struct AboutView: View {
            
             Text("感谢以下开源项目及项目维护者").font(.title3).bold()
             Link("RediStack", destination: URL(string: "https://github.com/Mordil/RediStack")!)
-            Link("SwiftyJSON", destination: URL(string: "https://github.com/SwiftyJSON/SwiftyJSON")!)
+            Link("SwiftJSONFormatter", destination: URL(string: "https://github.com/luin/SwiftJSONFormatter")!)
             Link("Puppy", destination: URL(string: "https://github.com/sushichop/Puppy")!)
         }.padding(40)
             .frame(minWidth: 400, maxWidth: 1000, minHeight: 300, maxHeight: 800, alignment: .top)

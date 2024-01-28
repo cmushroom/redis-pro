@@ -8,6 +8,7 @@
 import SwiftUI
 import Logging
 import ComposableArchitecture
+import FloatingButton
 
 struct StringEditorView: View {
     var store: StoreOf<StringValueStore>
@@ -39,7 +40,11 @@ struct StringEditorView: View {
                     }
                 
                     Spacer()
-                    MButton(text: "Pretty Json", action: {viewStore.send(.jsonFormat)})
+                    Menu("Format", content: {
+                        Button("Json Pretty", action: { viewStore.send(.jsonPretty)})
+                        Button("Json Minify", action: { viewStore.send(.jsonMinify)})
+                    })
+                    .frame(width:80)
                     IconButton(icon: "arrow.clockwise", name: "Refresh", action: {viewStore.send(.refresh)})
                     IconButton(icon: "checkmark", name: "Submit", disabled: !viewStore.isIntactString, action: {viewStore.send(.submit)})
                 }

@@ -26,8 +26,9 @@ class ReadTimeoutHandler: ChannelInboundHandler {
         // 当通道激活时，设置读取超时事件
         self.scheduledTimeout = context.eventLoop.scheduleTask(in: self.timeout) {
             // 处理读取超时逻辑，例如关闭通道或发出读取超时错误
-            self.logger.info("NIO read timed out!")
+            self.logger.info("swift nio read timed out!")
             context.close(promise: nil)
+            throw BizError(message: "Read timeout!")
         }
         
         // 继续传递通道激活事件
@@ -39,8 +40,9 @@ class ReadTimeoutHandler: ChannelInboundHandler {
         self.scheduledTimeout?.cancel()
         self.scheduledTimeout = context.eventLoop.scheduleTask(in: self.timeout) {
             // 处理读取超时逻辑，例如关闭通道或发出读取超时错误
-            self.logger.info("NIO read timed out!")
+            self.logger.info("swift nio read timed out!")
             context.close(promise: nil)
+            throw BizError(message: "Read timeout!")
         }
         
         // 继续传递读取事件

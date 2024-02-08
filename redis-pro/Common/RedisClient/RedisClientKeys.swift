@@ -16,7 +16,7 @@ extension RediStackClient {
         logger.debug("redis keys scan, cursor: \(cursor), keywords: \(String(describing: keywords)), count:\(String(describing: count))")
         
         let command:RedisCommand<(Int, [RedisKey])> = .scan(startingFrom: cursor, matching: keywords, count: count)
-        let r = await _send(command)!
+        let r = await _send(command) ?? (0, [])
         return (r.0, r.1.map { $0.rawValue })
     }
     

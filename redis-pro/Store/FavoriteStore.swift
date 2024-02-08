@@ -13,7 +13,6 @@ private let logger = Logger(label: "favorite-store")
 struct FavoriteStore: Reducer {
     
     struct State: Equatable {
-        var globalState: AppContextStore.State?
         var tableState: TableStore.State = TableStore.State(columns: [NTableColumn(title: "FAVORITES", key: "name", width: 50, icon: .APP)], datasource: [], selectIndex: -1, dragable: true)
         var loginState: LoginStore.State = LoginStore.State()
     }

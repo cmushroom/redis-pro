@@ -41,6 +41,10 @@ struct AppContextStore {
                 state.loadingCount += 1
                 return .none
             case .hide:
+                if state.loadingCount <= 0 {
+                    return .none
+                }
+                
                 return .run { send in
                     try await Task.sleep(nanoseconds: 100_000_000)
                     await send(._hide)

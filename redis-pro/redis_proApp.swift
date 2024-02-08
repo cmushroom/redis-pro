@@ -16,6 +16,7 @@ import ComposableArchitecture
 
 @main
 struct redis_proApp: App {
+    private let logger = Logger(label: "app")
     
     // 会造成indexView 多次初始化
     // @Environment(\.scenePhase) var scenePhase
@@ -25,7 +26,6 @@ struct redis_proApp: App {
     var settingsStore:Store<SettingsStore.State, SettingsStore.Action> = Store(initialState: SettingsStore.State()) {
         SettingsStore()
     }
-    let logger = Logger(label: "app")
     
     // 应用启动只初始化一次
     init() {

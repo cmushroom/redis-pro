@@ -9,7 +9,7 @@
 @testable import redis_pro
 import XCTest
 
-final class JSONHelperTest: RedisClientBaseTest {
+final class CodableTest: RedisClientBaseTest {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.

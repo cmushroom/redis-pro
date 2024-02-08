@@ -46,7 +46,7 @@ support macos (Intel, Apple Silicon) platform,  will support ipad os in the futu
 * RediStack a redis client wiritten in swiftNIO 
 * swift-log swift log framework, need puppy implementation
 * Puppy log framework, support console, file
-* SwiftyJSON json convert
+* SwiftJSONFormatter json format
 
 
 

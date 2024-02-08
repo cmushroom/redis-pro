@@ -21,9 +21,4 @@ class StoreBaseTests: RedisClientBaseTest {
 
         logger.info("StoreBaseTests setup...")
     }
-    
-    
-    func testExample() {
-        logger.info("test example ...")
-    }
 }

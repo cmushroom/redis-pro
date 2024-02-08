@@ -42,15 +42,9 @@ struct IndexView: View {
                         } else {
                             LoginView(store: store)
                         }
-                        
-                        
-                        
                     }
                     
                     LoadingView()
-                    
-                }.onAppear {
-                    redisInstanceModel.setAppStore(store)
                 }
             }
             

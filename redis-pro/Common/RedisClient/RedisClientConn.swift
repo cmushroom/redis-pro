@@ -133,14 +133,14 @@ extension RediStackClient {
             initialDatabase: database
             , username: _username
             , password: _password
-            , defaultLogger: self.logger, tcpClient: nil)
+            , defaultLogger: self.logger, tcpClient: initClientBootstrap(eventLoop))
         
         let pool = RedisConnectionPool(
             configuration: .init(
                 initialServerConnectionAddresses: addresses
-                , connectionCountBehavior: .elastic(maximumConnectionCount: 3, minimumConnectionCount: 1)
+                , connectionCountBehavior: .elastic(maximumConnectionCount: 2, minimumConnectionCount: 1)
                 , connectionConfiguration: config
-                , retryStrategy: .exponentialBackoff(initialDelay: .milliseconds(200), backoffFactor: 2, timeout: .seconds(3))
+                , retryStrategy: .exponentialBackoff(initialDelay: .milliseconds(100), backoffFactor: 2, timeout: .seconds(3))
                 , poolDefaultLogger: self.logger
             )
             , boundEventLoop: eventLoop
@@ -152,12 +152,15 @@ extension RediStackClient {
         return pool
     }
     
-    public func initClientBootstrap() -> ClientBootstrap {
-        
-        let bootstrap = ClientBootstrap(group: eventLoopGroup)
-            .channelOption(ChannelOptions.socket(SocketOptionLevel(SOL_SOCKET), SO_REUSEADDR), value: 1)
-            .channelInitializer { channel in
-                channel.pipeline.addHandler(ReadTimeoutHandler(timeout: .milliseconds(500)))
+    public func initClientBootstrap(_ group: EventLoop) -> ClientBootstrap {
+        let bootstrap: ClientBootstrap = ClientBootstrap(group: group)
+//            .connectTimeout(timeout)
+            .channelOption(
+                ChannelOptions.socket(SocketOptionLevel(SOL_SOCKET), SO_REUSEADDR),
+                value: 1
+            )
+            .channelInitializer {
+                $0.pipeline.addRedisProHandlers()
             }
         
         return bootstrap
@@ -165,3 +168,49 @@ extension RediStackClient {
     
 }
 
+
+
+extension ChannelPipeline {
+    /// Adds the baseline channel handlers needed to support sending and receiving messages in Redis Serialization Protocol (RESP) format to the pipeline.
+    ///
+    /// For implementation details, see ``RedisMessageEncoder``, ``RedisByteDecoder``, and ``RedisCommandHandler``.
+    ///
+    /// # Pipeline chart
+    ///                                                 RedisClient.send
+    ///                                                         |
+    ///                                                         v
+    ///     +-------------------------------------------------------------------+
+    ///     |                           ChannelPipeline         |               |
+    ///     |                                TAIL               |               |
+    ///     |    +---------------------------------------------------------+    |
+    ///     |    |                  RedisCommandHandler                    |    |
+    ///     |    +---------------------------------------------------------+    |
+    ///     |               ^                                   |               |
+    ///     |               |                                   v               |
+    ///     |    +---------------------+            +----------------------+    |
+    ///     |    |  RedisByteDecoder   |            |  RedisMessageEncoder |    |
+    ///     |    +---------------------+            +----------------------+    |
+    ///     |               |                                   |               |
+    ///     |               |              HEAD                 |               |
+    ///     +-------------------------------------------------------------------+
+    ///                     ^                                   |
+    ///                     |                                   v
+    ///             +-----------------+                +------------------+
+    ///             | [ Socket.read ] |                | [ Socket.write ] |
+    ///             +-----------------+                +------------------+
+    /// - Returns: A `NIO.EventLoopFuture` that resolves after all handlers have been added to the pipeline.
+    public func addRedisProHandlers() -> EventLoopFuture<Void> {
+        let _: TimeAmount = .milliseconds(1000)
+        
+        let handlers: [(ChannelHandler, name: String)] = [
+//            (IdleStateHandler(readTimeout: timeout, writeTimeout: timeout, allTimeout: timeout), "RediPro.IdleStateHandler"),
+            (MessageToByteHandler(RedisMessageEncoder()), "RediStack.OutgoingHandler"),
+            (ByteToMessageHandler(RedisByteDecoder()), "RediStack.IncomingHandler"),
+            (RedisCommandHandler(), "RediStack.CommandHandler")
+        ]
+        return .andAllSucceed(
+            handlers.map { self.addHandler($0, name: $1) },
+            on: self.eventLoop
+        )
+    }
+}

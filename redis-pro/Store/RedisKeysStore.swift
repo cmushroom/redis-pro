@@ -12,8 +12,8 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "redisKeys-store")
 
-
-struct RedisKeysStore: Reducer {
+@Reducer
+struct RedisKeysStore {
     
     struct State: Equatable {
         var database:Int = 0

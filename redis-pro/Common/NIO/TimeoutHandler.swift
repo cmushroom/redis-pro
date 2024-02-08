@@ -18,6 +18,7 @@ class TimeoutHandler: ChannelInboundHandler {
         // ...
         // 如果接收到预期的数据，取消超时任务
         cancelTimeout()
+        context.fireChannelRead(data)
     }
 
     func errorCaught(context: ChannelHandlerContext, error: Error) {

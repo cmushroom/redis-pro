@@ -8,7 +8,7 @@
 import SwiftUI
 import Logging
 import ComposableArchitecture
-import FloatingButton
+
 
 struct StringEditorView: View {
     var store: StoreOf<StringValueStore>

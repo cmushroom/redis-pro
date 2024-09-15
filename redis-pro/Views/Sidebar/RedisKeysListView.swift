@@ -22,10 +22,10 @@ struct RedisKeysListView: View {
     
     private func sidebarHeader(_ viewStore: ViewStore<RedisKeysStore.State, RedisKeysStore.Action>) -> some View {
         VStack(alignment: .center, spacing: 0) {
-            VStack(alignment: .center, spacing: 2) {
+            VStack(alignment: .center, spacing: 4) {
                 // redis search ...
                 SearchBar(placeholder: "Search keys...", onCommit: {viewStore.send(.search($0))})
-                    .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
+                    .padding(EdgeInsets(top: 4, leading: 0, bottom: 2, trailing: 0))
                 
                 // redis key operate ...
                 HStack {
@@ -37,10 +37,13 @@ struct RedisKeysListView: View {
                     DatabasePicker(store: store.scope(state: \.databaseState, action: RedisKeysStore.Action.databaseAction))
                 }
             }
-            .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
-            Rectangle().frame(height: 1)
-                .padding(.horizontal, 0).foregroundColor(Color.gray.opacity(0.6))
+            .padding(EdgeInsets(top: 4, leading: 4, bottom: 8, trailing: 4))
+//            Rectangle().frame(height: 1)
+//                .padding(0)
+//                .foregroundColor(Color.gray.opacity(0.6))
+//                .zIndex(0)
         }
+        .zIndex(1)
     }
     
     private func sidebarFoot(_ viewStore: ViewStore<RedisKeysStore.State, RedisKeysStore.Action>) -> some View {

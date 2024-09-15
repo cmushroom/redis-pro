@@ -1,4 +1,5 @@
 {
+  "originHash" : "50f5481a1497a5c672e14b705a4a50450e160c38bd63566bf3bf21770599c04e",
   "pins" : [
     {
       "identity" : "appcenter-sdk-apple",
@@ -59,8 +60,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-case-paths",
       "state" : {
-        "revision" : "a5521dde99570789d8cb7c43e51418d7cd1a87ca",
-        "version" : "1.1.2"
+        "revision" : "e593aba2c6222daad7c4f2732a431eed2c09bb07",
+        "version" : "1.3.0"
       }
     },
     {
@@ -86,8 +87,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-composable-architecture",
       "state" : {
-        "revision" : "f815e76b520aacfad4ff35c7e1f036f8add6f4b4",
-        "version" : "1.7.3"
+        "revision" : "115fe5af41d333b6156d4924d7c7058bc77fd580",
+        "version" : "1.9.2"
       }
     },
     {
@@ -226,5 +227,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

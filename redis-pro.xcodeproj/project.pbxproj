@@ -172,6 +172,7 @@
 		62D741BF288414E00049AB3C /* LuaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D741BE288414E00049AB3C /* LuaView.swift */; };
 		62D741C1288415180049AB3C /* LuaStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D741C0288415180049AB3C /* LuaStore.swift */; };
 		62D741C3288416470049AB3C /* RedisClientLua.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D741C2288416470049AB3C /* RedisClientLua.swift */; };
+		62E274A02C849BF0007D5812 /* NSearchFieldHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E2749F2C849BF0007D5812 /* NSearchFieldHistory.swift */; };
 		62E3DCAF28B0C60B00FF865A /* PasteboardHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E3DCAE28B0C60B00FF865A /* PasteboardHelper.swift */; };
 		62E3DCB228B0C93A00FF865A /* TableContextMenuEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E3DCB128B0C93A00FF865A /* TableContextMenuEnum.swift */; };
 		62E8F9D22765019D006A5326 /* MIntField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E8F9D12765019D006A5326 /* MIntField.swift */; };
@@ -385,6 +386,7 @@
 		62D741BE288414E00049AB3C /* LuaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuaView.swift; sourceTree = "<group>"; };
 		62D741C0288415180049AB3C /* LuaStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuaStore.swift; sourceTree = "<group>"; };
 		62D741C2288416470049AB3C /* RedisClientLua.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedisClientLua.swift; sourceTree = "<group>"; };
+		62E2749F2C849BF0007D5812 /* NSearchFieldHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSearchFieldHistory.swift; sourceTree = "<group>"; };
 		62E3DCAE28B0C60B00FF865A /* PasteboardHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasteboardHelper.swift; sourceTree = "<group>"; };
 		62E3DCB128B0C93A00FF865A /* TableContextMenuEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableContextMenuEnum.swift; sourceTree = "<group>"; };
 		62E8F9D12765019D006A5326 /* MIntField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MIntField.swift; sourceTree = "<group>"; };
@@ -859,6 +861,7 @@
 				437BC2482645413000E2C84D /* MDoubleField.swift */,
 				4313576C263AB6A20077EE46 /* MTextEditor.swift */,
 				62F44FE52AADAD2000714D98 /* FormText.swift */,
+				62E2749F2C849BF0007D5812 /* NSearchFieldHistory.swift */,
 			);
 			path = Form;
 			sourceTree = "<group>";
@@ -937,8 +940,9 @@
 		4320AAE825B6740900A8E214 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1410;
-				LastUpgradeCheck = 1410;
+				LastUpgradeCheck = 1540;
 				TargetAttributes = {
 					4320AAEF25B6740900A8E214 = {
 						CreatedOnToolsVersion = 12.3;
@@ -1114,6 +1118,7 @@
 				624F940427FADDD400DF3D3E /* TableCellView.swift in Sources */,
 				432A6ADF26A7C3D200F6DB64 /* RedisConfigView.swift in Sources */,
 				43F22EFF26A129B300A00F97 /* RedisHashEntryModel.swift in Sources */,
+				62E274A02C849BF0007D5812 /* NSearchFieldHistory.swift in Sources */,
 				436BB6972644EED8008B4866 /* FormItemDouble.swift in Sources */,
 				43DFEF3725C29288006EF535 /* FormItemInt.swift in Sources */,
 				4313576D263AB6A20077EE46 /* MTextEditor.swift in Sources */,
@@ -1217,6 +1222,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -1252,6 +1258,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -1280,6 +1287,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -1315,6 +1323,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -1489,7 +1498,7 @@
 			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.7.0;
+				minimumVersion = 1.9.2;
 			};
 		};
 		625B41BC293AF81100C7766D /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */ = {

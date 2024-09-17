@@ -48,6 +48,10 @@ struct SettingsView: View {
                         }
                         .toggleStyle(.switch)
                         .help("HELP_FAST_PAGE")
+                    
+                    
+                    FormItemInt(label: "Search History", labelWidth: labelWidth, tips:"HELP_SEARCH_HISTORY_SIZE", value: viewStore.binding(get: {$0.searchHistorySize}, send: SettingsStore.Action.setStringMaxLength))
+                    
                     Spacer()
                 }
             }

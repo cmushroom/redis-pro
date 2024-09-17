@@ -23,6 +23,8 @@ struct SettingsStore: Reducer {
         var fastPage = true
         // 快速分页阈值, 超过这个数值后, 不再继续查询, 提高查询性能, 减少对redis影响
         var fastPageMax = 99
+        // 搜索历史记录数量
+        var searchHistorySize = 20
     }
 
     enum Action: Equatable {
@@ -30,6 +32,7 @@ struct SettingsStore: Reducer {
         case setColorScheme(String)
         case setDefaultFavorite(String)
         case setStringMaxLength(Int)
+        case setSearchHistorySize(Int)
         case setKeepalive(Int)
         case setFastPage(Bool)
     }
@@ -84,6 +87,13 @@ struct SettingsStore: Reducer {
                 
                 state.stringMaxLength = stringMaxLength
                 UserDefaults.standard.set(stringMaxLength, forKey: UserDefaulsKeysEnum.AppStringMaxLength.rawValue)
+                return .none
+                
+            case let .setSearchHistorySize(searchHistorySize):
+                logger.info("set search history size action, \(searchHistorySize)")
+                
+                state.searchHistorySize = searchHistorySize
+                UserDefaults.standard.set(searchHistorySize, forKey: UserDefaulsKeysEnum.UserSearchHistory.rawValue)
                 return .none
                 
             case let .setKeepalive(keepalive):

@@ -15,6 +15,7 @@ private let logger = Logger(label: "app-store")
 @Reducer
 struct AppStore {
     
+    @ObservableState
     struct State: Equatable {
         var id:String = UUID().uuidString
         // app title
@@ -50,19 +51,19 @@ struct AppStore {
     
     var body: some Reducer<State, Action> {
         
-        Scope(state: \.globalState, action: /Action.globalAction) {
+        Scope(state: \.globalState, action: \.globalAction) {
             AppContextStore()
         }
-        Scope(state: \.loadingState, action: /Action.loadingAction) {
+        Scope(state: \.loadingState, action: \.loadingAction) {
             LoadingStore()
         }
-        Scope(state: \.settingsState, action: /Action.settingsAction) {
+        Scope(state: \.settingsState, action: \.settingsAction) {
             SettingsStore()
         }
-        Scope(state: \.favoriteState, action: /Action.favoriteAction) {
+        Scope(state: \.favoriteState, action: \.favoriteAction) {
             FavoriteStore()
         }
-        Scope(state: \.redisKeysState, action: /Action.redisKeysAction) {
+        Scope(state: \.redisKeysState, action: \.redisKeysAction) {
             RedisKeysStore()
         }
         

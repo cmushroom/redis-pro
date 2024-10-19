@@ -12,14 +12,17 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "string-value-store")
 
-struct StringValueStore: Reducer {
+@Reducer
+struct StringValueStore {
+    
+    @ObservableState
     struct State: Equatable  {
         var redisKeyModel:RedisKeyModel?
         // 是否是完整字符串, 如果设置最大显示长度, 使用getrange命令取出部分字符串, 防止长字符串过大
         var isIntactString: Bool = true
         var stringMaxLength:Int = -1
         var length: Int = -1
-        @BindingState var text:String = ""
+        var text:String = ""
     }
     
     enum Action: BindableAction, Equatable {

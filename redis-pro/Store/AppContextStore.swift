@@ -14,6 +14,8 @@ private let logger = Logger(label: "app-context-store")
 
 @Reducer
 struct AppContextStore {
+    
+    @ObservableState
     struct State: Equatable {
         var loading:Bool = false
         var loadingCount:Int = 0

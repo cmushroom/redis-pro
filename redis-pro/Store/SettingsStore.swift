@@ -13,9 +13,12 @@ import ComposableArchitecture
 private let logger = Logger(label: "settings-store")
 private let userDefaults = UserDefaults.standard
 
-struct SettingsStore: Reducer {
+@Reducer
+struct SettingsStore {
+    
+    @ObservableState
     struct State: Equatable {
-        var colorSchemeValue:String?
+        var colorSchemeValue:String = ColorSchemeEnum.SYSTEM.rawValue
         var defaultFavorite:String = "last"
         var stringMaxLength:Int = Const.DEFAULT_STRING_MAX_LENGTH
         var keepalive:Int = 30

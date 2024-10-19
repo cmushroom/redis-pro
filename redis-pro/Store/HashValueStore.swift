@@ -12,13 +12,14 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "hash-value-store")
 
-
-struct HashValueStore: Reducer {
+@Reducer
+struct HashValueStore {
     
+    @ObservableState
     struct State: Equatable {
-        @BindingState var editModalVisible:Bool = false
-        @BindingState var field:String = ""
-        @BindingState var value:String = ""
+        var editModalVisible:Bool = false
+        var field:String = ""
+        var value:String = ""
         var editIndex:Int = -1
         var isNew:Bool = false
         var redisKeyModel:RedisKeyModel?
@@ -58,10 +59,10 @@ struct HashValueStore: Reducer {
     
     var body: some Reducer<State, Action> {
         BindingReducer()
-        Scope(state: \.tableState, action: /Action.tableAction) {
+        Scope(state: \.tableState, action: \.tableAction) {
             TableStore()
         }
-        Scope(state: \.pageState, action: /Action.pageAction) {
+        Scope(state: \.pageState, action: \.pageAction) {
             PageStore()
         }
 

@@ -12,11 +12,14 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "redis-config-store")
 
-struct RedisConfigStore: Reducer {
+@Reducer
+struct RedisConfigStore {
+    
+    @ObservableState
     struct State: Equatable {
         
-        @BindingState var editModalVisible:Bool = false
-        @BindingState var editValue:String = ""
+        var editModalVisible:Bool = false
+        var editValue:String = ""
         var pattern:String = ""
         var editKey:String = ""
         var editIndex = 0
@@ -50,7 +53,7 @@ struct RedisConfigStore: Reducer {
     
     var body: some Reducer<State, Action> {
         BindingReducer()
-        Scope(state: \.tableState, action: /Action.tableAction) {
+        Scope(state: \.tableState, action: \.tableAction) {
             TableStore()
         }
         Reduce { state, action in

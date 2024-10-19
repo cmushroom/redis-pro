@@ -11,7 +11,10 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "redis-info-store")
 
-struct RedisInfoStore: Reducer {
+@Reducer
+struct RedisInfoStore {
+    
+    @ObservableState
     struct State: Equatable {
         var section:String = "Server"
         var tableState: TableStore.State = TableStore.State(columns: [.init(title: "Key", key: "key", width: 120), .init(title: "Value", key: "value", width: 100), .init(title: "Desc", key: "desc", width: 800)]
@@ -38,7 +41,7 @@ struct RedisInfoStore: Reducer {
     
     
     var body: some Reducer<State, Action> {
-        Scope(state: \.tableState, action: /Action.tableAction) {
+        Scope(state: \.tableState, action: \.tableAction) {
             TableStore()
         }
         Reduce { state, action in

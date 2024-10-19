@@ -12,13 +12,15 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "redis-config-store")
 
-
-struct SlowLogStore: Reducer {
+@Reducer
+struct SlowLogStore {
+    
+    @ObservableState
     struct State: Equatable {
         
-        @BindingState var slowerThan:Int = 10000
-        @BindingState var maxLen:Int = 128
-        @BindingState var size:Int = 50
+        var slowerThan:Int = 10000
+        var maxLen:Int = 128
+        var size:Int = 50
         var total:Int = 0
         
         var tableState: TableStore.State = TableStore.State(columns: [
@@ -54,7 +56,7 @@ struct SlowLogStore: Reducer {
     
     var body: some Reducer<State, Action> {
         BindingReducer()
-        Scope(state: \.tableState, action: /Action.tableAction) {
+        Scope(state: \.tableState, action: \.tableAction) {
             TableStore()
         }
         Reduce { state, action in

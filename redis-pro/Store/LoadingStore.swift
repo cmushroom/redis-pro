@@ -12,7 +12,10 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "loading-store")
 
-struct LoadingStore: Reducer {
+@Reducer
+struct LoadingStore {
+    
+    @ObservableState
     struct State: Equatable {
         var loading: Bool = false
         

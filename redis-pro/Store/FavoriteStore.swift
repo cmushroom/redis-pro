@@ -10,8 +10,10 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "favorite-store")
 
-struct FavoriteStore: Reducer {
+@Reducer
+struct FavoriteStore {
     
+    @ObservableState
     struct State: Equatable {
         var tableState: TableStore.State = TableStore.State(columns: [NTableColumn(title: "FAVORITES", key: "name", width: 50, icon: .APP)], datasource: [], selectIndex: -1, dragable: true)
         var loginState: LoginStore.State = LoginStore.State()
@@ -37,10 +39,10 @@ struct FavoriteStore: Reducer {
     @Dependency(\.redisClient) var redisClient: RediStackClient
     
     var body: some Reducer<State, Action> {
-        Scope(state: \.tableState, action: /Action.tableAction) {
+        Scope(state: \.tableState, action: \.tableAction) {
             TableStore()
         }
-        Scope(state: \.loginState, action: /Action.loginAction) {
+        Scope(state: \.loginState, action: \.loginAction) {
             LoginStore()
         }
         
@@ -133,7 +135,7 @@ struct FavoriteStore: Reducer {
                 PasteboardHelper.copy(redisModel.name)
                 return .none
             
-            case let .tableAction(.dragComplete(from, to)):
+            case let .tableAction(.dragComplete(_, _)):
                 let _ = RedisDefaults.save(state.tableState.datasource as! [RedisModel])
                 return .none
                 

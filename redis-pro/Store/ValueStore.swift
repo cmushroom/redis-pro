@@ -12,9 +12,10 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "value-store")
 
-
-struct ValueStore: Reducer {
+@Reducer
+struct ValueStore {
     
+    @ObservableState
     struct State: Equatable {
         var keyState: KeyStore.State = KeyStore.State()
         var keyObjectState: KeyObjectStore.State = KeyObjectStore.State()
@@ -49,25 +50,25 @@ struct ValueStore: Reducer {
     @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
     
     var body: some Reducer<State, Action> {
-        Scope(state: \.keyState, action: /Action.keyAction) {
+        Scope(state: \.keyState, action: \.keyAction) {
             KeyStore()
         }
-        Scope(state: \.keyObjectState, action: /Action.keyObjectAction) {
+        Scope(state: \.keyObjectState, action: \.keyObjectAction) {
             KeyObjectStore()
         }
-        Scope(state: \.stringValueState, action: /Action.stringValueAction) {
+        Scope(state: \.stringValueState, action: \.stringValueAction) {
             StringValueStore()
         }
-        Scope(state: \.hashValueState, action: /Action.hashValueAction) {
+        Scope(state: \.hashValueState, action: \.hashValueAction) {
             HashValueStore()
         }
-        Scope(state: \.listValueState, action: /Action.listValueAction) {
+        Scope(state: \.listValueState, action: \.listValueAction) {
             ListValueStore()
         }
-        Scope(state: \.setValueState, action: /Action.setValueAction) {
+        Scope(state: \.setValueState, action: \.setValueAction) {
             SetValueStore()
         }
-        Scope(state: \.zsetValueState, action: /Action.zsetValueAction) {
+        Scope(state: \.zsetValueState, action: \.zsetValueAction) {
             ZSetValueStore()
         }
         Reduce { state, action in

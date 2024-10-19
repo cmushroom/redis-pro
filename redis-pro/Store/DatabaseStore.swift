@@ -11,8 +11,10 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "database-store")
 
-
-struct DatabaseStore: Reducer {
+@Reducer
+struct DatabaseStore {
+    
+    @ObservableState
     struct State: Equatable {
         var database: Int = 0
         var databases:Int = 16

@@ -11,12 +11,15 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "rename-store")
 
-struct RenameStore: Reducer {
+@Reducer
+struct RenameStore {
+    
+    @ObservableState
     struct State: Equatable {
         var key:String = ""
         var index:Int = -1
         var visible:Bool = false
-        @BindingState var newKey:String = ""
+        var newKey:String = ""
         
         init() {
             logger.info("string value state init ...")

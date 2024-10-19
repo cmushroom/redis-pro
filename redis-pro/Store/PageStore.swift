@@ -11,11 +11,14 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "page-store")
 
-struct PageStore: Reducer {
+@Reducer
+struct PageStore {
+    
+    @ObservableState
     struct State: Equatable {
         var showTotal: Bool = false
         var current:Int = 1
-        @BindingState var size:Int = 50
+        var size:Int = 50
         var total:Int = 0
         var keywords:String = ""
         var fastPage = true

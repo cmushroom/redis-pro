@@ -15,6 +15,7 @@ private let logger = Logger(label: "redisKeys-store")
 @Reducer
 struct RedisKeysStore {
     
+    @ObservableState
     struct State: Equatable {
         var database:Int = 0
         var dbsize:Int = 0
@@ -76,22 +77,22 @@ struct RedisKeysStore {
     @Dependency(\.redisClient) var redisClient:RediStackClient
     
     var body: some Reducer<State, Action> {
-        Scope(state: \.tableState, action: /Action.tableAction) {
+        Scope(state: \.tableState, action: \.tableAction) {
             TableStore()
         }
-        Scope(state: \.pageState, action: /Action.pageAction) {
+        Scope(state: \.pageState, action: \.pageAction) {
             PageStore()
         }
-        Scope(state: \.redisSystemState, action: /Action.redisSystemAction) {
+        Scope(state: \.redisSystemState, action: \.redisSystemAction) {
             RedisSystemStore()
         }
-        Scope(state: \.valueState, action: /Action.valueAction) {
+        Scope(state: \.valueState, action: \.valueAction) {
             ValueStore()
         }
-        Scope(state: \.databaseState, action: /Action.databaseAction) {
+        Scope(state: \.databaseState, action: \.databaseAction) {
             DatabaseStore()
         }
-        Scope(state: \.renameState, action: /Action.renameAction) {
+        Scope(state: \.renameState, action: \.renameAction) {
             RenameStore()
         }
         
@@ -160,9 +161,9 @@ struct RedisKeysStore {
                     return .none
                 }
                 
-                // 是否开启了快速分页, 默认启用
-                state.pageState.fastPage = redisClient.settingViewStore?.fastPage ?? true
-                state.pageState.fastPageMax = redisClient.settingViewStore?.fastPageMax ?? 99
+                // 是否开启了快速分页, 默认启用 FIXME
+//                state.pageState.fastPage = redisClient.settingViewStore?.fastPage ?? true
+//                state.pageState.fastPageMax = redisClient.settingViewStore?.fastPageMax ?? 99
                 
                 return .run { send in
                     let r = await redisClient.countKey(page, cursor: cursor)
@@ -314,7 +315,7 @@ struct RedisKeysStore {
                 }
                 return .none
                 
-            case let .tableAction(.double(index)):
+            case let .tableAction(.double(_)):
                 let redisKeyModel = state.tableState.datasource[state.tableState.selectIndex] as! RedisKeyModel
                 state.renameState.key = redisKeyModel.key
                 state.renameState.newKey = redisKeyModel.key

@@ -24,9 +24,9 @@ struct AppMain: App {
     
     func openNewWindow() {
         // 通过某种方式标记新窗口
-        let newWindow = WindowGroup {
+        _ = WindowGroup {
             Text("wwww")
         }
-        newWindow.body
+        
     }
 }

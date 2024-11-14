@@ -101,9 +101,9 @@ struct RedisKeysListView: View {
             // content
             VStack(alignment: .leading, spacing: 0){
                 if store.mainViewType == MainViewTypeEnum.EDITOR {
-                    RedisValueView(store: store.scope(state: \.valueState, action: RedisKeysStore.Action.valueAction))
+                    RedisValueView(store: store.scope(state: \.valueState, action: \.valueAction))
                 } else if store.mainViewType == MainViewTypeEnum.SYSTEM {
-                    RedisSystemView(store: store.scope(state: \.redisSystemState, action: RedisKeysStore.Action.redisSystemAction))
+                    RedisSystemView(store: store.scope(state: \.redisSystemState, action: \.redisSystemAction))
                 } else {
                     EmptyView()
                 }

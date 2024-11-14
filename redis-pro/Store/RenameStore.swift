@@ -63,7 +63,7 @@ struct RenameStore {
                     }
                 }
                 
-            case let .setKey(index, newKey):
+            case .setKey(_, _):
                 state.visible = false
                 return .none
             

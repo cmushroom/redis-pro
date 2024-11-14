@@ -140,7 +140,7 @@ struct ValueStore {
                 }
             
             // MARK: key action
-            case let .keyAction(.setKey(key)):
+            case .keyAction(.setKey(_)):
                 let redisKeyModel = state.keyState.redisKeyModel
                 return .run {  send in
                     await send(.setKeyModel(redisKeyModel))

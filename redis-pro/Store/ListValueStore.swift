@@ -160,7 +160,7 @@ struct ListValueStore: Reducer {
                 }
             
             // 提交成功， 刷新列表
-            case let .submitSuccess(isNewKey):
+            case .submitSuccess(_):
                 if state.isNew {
                     state.isNew = false
                 }

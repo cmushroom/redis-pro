@@ -21,7 +21,7 @@ extension RediStackClient {
         }
         do {
             let start:Int = (page.current - 1) * page.size
-            let r1 = try await llen(key)
+            let r1 = await llen(key)
             let r2 = try await _lrange(key, start: start, stop: start + page.size - 1)
             let total = r1
             page.total = total

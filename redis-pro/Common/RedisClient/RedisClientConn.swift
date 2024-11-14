@@ -63,7 +63,7 @@ extension RediStackClient {
     
     func refreshConn() async {
         self.close()
-        try! await self.getConn()
+        let _ = try! await self.getConn()
     }
     
     func getConnPool() async throws -> RedisClient {

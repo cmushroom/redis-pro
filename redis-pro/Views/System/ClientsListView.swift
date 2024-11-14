@@ -17,7 +17,7 @@ struct ClientsListView: View {
         WithViewStore(self.store, observe: { $0 }) {viewStore in
             VStack(alignment: .leading, spacing: MTheme.V_SPACING) {
                 
-                NTableView(store: store.scope(state: \.tableState, action: ClientListStore.Action.tableAction))
+                NTableView(store: store.scope(state: \.tableState, action: \.tableAction))
                 
                 HStack(alignment: .center , spacing: 8) {
                     Spacer()

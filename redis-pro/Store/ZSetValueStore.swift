@@ -164,7 +164,7 @@ struct ZSetValueStore {
                 }
             
             // 提交成功， 刷新列表
-            case let .submitSuccess(isNewKey):
+            case .submitSuccess(_):
                 let editValue = state.editValue
                 let editScore = "\(state.editScore)"
                 // 修改，刷新单个值

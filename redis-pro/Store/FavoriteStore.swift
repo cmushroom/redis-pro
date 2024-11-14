@@ -135,7 +135,7 @@ struct FavoriteStore {
                 PasteboardHelper.copy(redisModel.name)
                 return .none
             
-            case let .tableAction(.dragComplete(_, _)):
+            case .tableAction(.dragComplete(_, _)):
                 let _ = RedisDefaults.save(state.tableState.datasource as! [RedisModel])
                 return .none
                 

@@ -315,7 +315,7 @@ struct RedisKeysStore {
                 }
                 return .none
                 
-            case let .tableAction(.double(_)):
+            case .tableAction(.double(_)):
                 let redisKeyModel = state.tableState.datasource[state.tableState.selectIndex] as! RedisKeyModel
                 state.renameState.key = redisKeyModel.key
                 state.renameState.newKey = redisKeyModel.key

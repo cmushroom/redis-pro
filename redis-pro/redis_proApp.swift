@@ -7,12 +7,9 @@
 
 import Foundation
 import SwiftUI
-import AppCenter
-import AppCenterAnalytics
-import AppCenterCrashes
 import Logging
-import Cocoa
 import ComposableArchitecture
+import FirebaseCore
 
 @main
 struct redis_proApp: App {
@@ -36,9 +33,9 @@ struct redis_proApp: App {
     @SceneBuilder var body: some Scene {
         
         WindowGroup {
-            IndexView(store: Store(initialState: AppStore.State()) {
+            IndexView(settingStore: self.settingsStore, store: Store(initialState: AppStore.State()) {
                 AppStore()
-            }, settingStore: self.settingsStore))
+            })
         }
         .commands {
             CommandMenu("New Window") {
@@ -76,7 +73,7 @@ struct redis_proApp: App {
                             AppStore()
                         }
                         // 创建新的 SwiftUI 视图，并用 NSHostingViewController 包装
-                        let newViewController = NSHostingController(rootView: IndexView(store: store))
+                        let newViewController = NSHostingController(rootView: IndexView(settingStore: self.settingsStore, store: store))
                         
                         // 为新的窗口内容创建一个新 tab
                         windowController.addTab(with: newViewController, matchingSizeOf: keyWindow)
@@ -118,11 +115,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         logger.info("redis pro launch complete")
         
-        // appcenter
-        AppCenter.start(withAppSecret: "310d1d33-2570-46f9-a60d-8a862cdef6c7", services:[
-            Analytics.self,
-            Crashes.self
-        ])
+        // firebase
+        FirebaseApp.configure()
         
         let colorSchemeValue = UserDefaults.standard.string(forKey: UserDefaulsKeysEnum.AppColorScheme.rawValue) ?? ColorSchemeEnum.SYSTEM.rawValue
         if colorSchemeValue == ColorSchemeEnum.SYSTEM.rawValue {

@@ -37,7 +37,7 @@ extension RediStackClient {
                 let total = try await _setCountScan(key, keywords: match)
                 page.total = total
             } else {
-                let exist = try await _sexist(key, ele: page.keywords)
+                let exist = await _sexist(key, ele: page.keywords)
                 if exist {
                     r = [page.keywords]
                     page.total = 1
@@ -55,7 +55,7 @@ extension RediStackClient {
     private func _setCountScan(_ key:String, keywords:String?) async throws -> Int {
         if isMatchAll(keywords ?? "") {
             logger.info("keywords is match all, use scard...")
-            return try await _scard(key)
+            return await _scard(key)
         }
         
         var cursor:Int = 0

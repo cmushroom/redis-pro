@@ -59,7 +59,7 @@ struct LuaStore: Reducer {
                 
             case .scriptLoad:
                 
-                let lua = state.lua
+                _ = state.lua
                 return .run { send in
                     await send(.setLuaSHA(""))
                 }

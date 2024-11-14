@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>953810279718-c4an65fkg3r0fnorhkaip9lnpd2snm6o.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.953810279718-c4an65fkg3r0fnorhkaip9lnpd2snm6o</string>
+	<key>API_KEY</key>
+	<string>AIzaSyC345KQXDFRerGuF5BexWFXzC2o8krKH-4</string>
+	<key>GCM_SENDER_ID</key>
+	<string>953810279718</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.cmushroom.redis-pro</string>
+	<key>PROJECT_ID</key>
+	<string>redis-pro</string>
+	<key>STORAGE_BUCKET</key>
+	<string>redis-pro.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:953810279718:ios:d0f4b921762f61022d75e7</string>
+</dict>
+</plist>

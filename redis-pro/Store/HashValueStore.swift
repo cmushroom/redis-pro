@@ -143,11 +143,11 @@ struct HashValueStore {
                 let value = state.value
                 let isNewKey = state.redisKeyModel?.isNew ?? false
                 return .run { send in
-                    let r = await redisInstanceModel.getClient().hset(key, field: field, value: value)
+                    _ = await redisInstanceModel.getClient().hset(key, field: field, value: value)
                     await send(.submitSuccess(isNewKey))
                 }
                 
-            case let .submitSuccess(isNewKey):
+            case .submitSuccess(_):
                 let item = RedisHashEntryModel(field: state.field, value: state.value)
                 if state.isNew {
                     state.tableState.selectIndex = 0

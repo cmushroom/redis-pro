@@ -28,12 +28,12 @@ struct ListEditorView: View {
                 IconButton(icon: "trash", name: "Delete", disabled: store.tableState.selectIndex < 0, action: {store.send(.deleteConfirm(store.tableState.selectIndex))})
                 
                 Spacer()
-                PageBar(store: store.scope(state: \.pageState, action: ListValueStore.Action.pageAction))
+                PageBar(store: store.scope(state: \.pageState, action: \.pageAction))
             }
             .padding(EdgeInsets(top: MTheme.V_SPACING, leading: 0, bottom: MTheme.V_SPACING, trailing: 0))
             
             
-            NTableView(store: store.scope(state: \.tableState, action: ListValueStore.Action.tableAction))
+            NTableView(store: store.scope(state: \.tableState, action: \.tableAction))
 
             // footer
             HStack(alignment: .center, spacing: MTheme.H_SPACING) {

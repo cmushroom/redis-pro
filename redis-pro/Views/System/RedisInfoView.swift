@@ -17,7 +17,7 @@ struct RedisInfoView: View {
             VStack(alignment: .leading, spacing: MTheme.V_SPACING) {
                 TabView(selection: viewStore.binding(get: \.section, send: RedisInfoStore.Action.setTab)) {
                     ForEach(viewStore.redisInfoModels.indices, id:\.self) { index in
-                        NTableView(store: store.scope(state: \.tableState, action: RedisInfoStore.Action.tableAction))
+                        NTableView(store: store.scope(state: \.tableState, action: \.tableAction))
                             .tabItem {
                                 Text(viewStore.redisInfoModels[index].section)
                             }

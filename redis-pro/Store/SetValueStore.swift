@@ -155,7 +155,7 @@ struct SetValueStore: Reducer {
                 }
             
             // 提交成功， 刷新列表
-            case let .submitSuccess(isNewKey):
+            case .submitSuccess(_):
                 let editValue = state.editValue
                 // 修改，刷新单个值
                 if state.isNew {

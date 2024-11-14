@@ -12,15 +12,13 @@ class Page: CustomStringConvertible, Equatable {
         return lhs.current == rhs.current && lhs.size == rhs.size && lhs.keywords == rhs.keywords
     }
     
-    var current:Int = 1
-    var size:Int = 50
-    var total:Int = 0
-    var keywords:String = ""
+    var current: Int = 1
+    var size: Int = 50
+    var total: Int = 0
+    var keywords: String = ""
     
     var totalPage:Int {
-        get {
-            return total < 1 ? 1 : (total % size == 0 ? total / size : total / size + 1)
-        }
+        total < 1 ? 1 : (total % size == 0 ? total / size : total / size + 1)
     }
     
     var start: Int {

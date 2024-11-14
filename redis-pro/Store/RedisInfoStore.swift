@@ -13,6 +13,8 @@ private let logger = Logger(label: "redis-info-store")
 
 @Reducer
 struct RedisInfoStore {
+    
+    @ObservableState
     struct State: Equatable {
         var section:String = "Server"
         var tableState: TableStore.State = TableStore.State(columns: [.init(title: "Key", key: "key", width: 120), .init(title: "Value", key: "value", width: 100), .init(title: "Desc", key: "desc", width: 800)]

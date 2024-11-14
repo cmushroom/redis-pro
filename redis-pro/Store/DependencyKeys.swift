@@ -7,6 +7,7 @@
 
 import Foundation
 import Dependencies
+import ComposableArchitecture
 
 private enum RedisInstanceKey: DependencyKey {
     static let liveValue = RedisInstanceModel(redisModel: RedisModel())
@@ -16,10 +17,15 @@ private enum RedisClientKey: DependencyKey {
     static let liveValue = RediStackClient(RedisModel())
 }
 
-
-//private enum AppContextKey: DependencyKey {
-//    static let liveValue = AppContext()
-//}
+/// app 上下文
+struct AppContext {
+    let store: StoreOf<AppContextStore>
+}
+private enum AppContextKey: DependencyKey {
+    static let liveValue = Store(initialState: AppContextStore.State()) {
+        AppContextStore()
+    }
+}
 
 
 extension DependencyValues {
@@ -33,8 +39,8 @@ extension DependencyValues {
         set { self[RedisClientKey.self] = newValue }
     }
     
-    //    var appContext: AppContext {
-    //      get { self[AppContextKey.self] }
-    //      set { self[AppContextKey.self] = newValue }
-    //    }
+    var appContext: StoreOf<AppContextStore> {
+      get { self[AppContextKey.self] }
+      set { self[AppContextKey.self] = newValue }
+    }
 }

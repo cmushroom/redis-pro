@@ -8,18 +8,19 @@
 
 import Logging
 import Foundation
-import SwiftyJSON
 import ComposableArchitecture
 
 private let logger = Logger(label: "redis-config-store")
 
 @Reducer
 struct SlowLogStore {
+    
+    @ObservableState
     struct State: Equatable {
         
-        @BindingState var slowerThan:Int = 10000
-        @BindingState var maxLen:Int = 128
-        @BindingState var size:Int = 50
+        var slowerThan:Int = 10000
+        var maxLen:Int = 128
+        var size:Int = 50
         var total:Int = 0
         
         var tableState: TableStore.State = TableStore.State(columns: [

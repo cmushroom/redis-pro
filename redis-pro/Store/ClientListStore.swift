@@ -7,13 +7,14 @@
 
 import Logging
 import Foundation
-import SwiftyJSON
 import ComposableArchitecture
 
 private let logger = Logger(label: "client-list-store")
 
 @Reducer
 struct ClientListStore {
+    
+    @ObservableState
     struct State: Equatable {
         
         var tableState: TableStore.State = TableStore.State(
@@ -59,6 +60,7 @@ struct ClientListStore {
         case killConfirm(Int)
         case kill(Int)
         case tableAction(TableStore.Action)
+        case none
     }
     
     @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
@@ -94,12 +96,11 @@ struct ClientListStore {
 
                 let item = state.tableState.datasource[index] as! ClientModel
                 return .run { send in
-                    Messages.confirm("Kill Client?"
+                    let r = await Messages.confirmAsync("Kill Client?"
                                      , message: "Are you sure you want to kill client:\(item.addr)? This operation cannot be undone."
-                                      , primaryButton: "Kill"
-                                      , action: {
-                        await send(.kill(index))
-                    })
+                                      , primaryButton: "Kill")
+                    
+                    await send(r ? .kill(index) : .none)
                 }
                 
             case let .kill(index):
@@ -128,6 +129,9 @@ struct ClientListStore {
                 
                 return .none
             case .tableAction:
+                return .none
+                
+            case .none:
                 return .none
             }
         }

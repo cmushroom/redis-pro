@@ -117,6 +117,10 @@ class NTableController: NSViewController{
         if self.viewStore.dragable {
             tableView.registerForDraggedTypes([pasteboardType])
         }
+        // 设置是否多选
+        if self.viewStore.multiSelect {
+            tableView.allowsMultipleSelection = true
+        }
         
         // bind datasource, select index
         arrayController.bind(.contentArray, to: self, withKeyPath: "datasource", options: nil)
@@ -131,8 +135,7 @@ class NTableController: NSViewController{
         self.viewStore.publisher.defaultSelectIndex
             .sink(receiveValue: {
                 self.logger.info("table store select index publisher, index: \($0)")
-                let selectIndex = min($0, self.viewStore.datasource.count - 1)
-                self.arrayController.setSelectionIndex(selectIndex)
+                self.arrayController.setSelectionIndex($0)
             })
             .store(in: &self.cancellables)
         
@@ -140,10 +143,9 @@ class NTableController: NSViewController{
         self.viewStore.publisher.datasource
             .sink(receiveValue: {
                 self.logger.info("table store data source publisher, data source length: \($0.count)")
-                let selectIndex = min(self.viewStore.selectIndex, $0.count - 1)
                 
                 self.datasource = $0
-                self.arrayController.setSelectionIndex(selectIndex)
+                self.arrayController.setSelectionIndex(self.viewStore.selectIndex)
             })
             .store(in: &self.cancellables)
         
@@ -315,9 +317,9 @@ extension NTableController: NSTableViewDelegate {
         guard let tableView = notification.object as? NSTableView else {return}
         
         let selectIndex = tableView.selectedRow
-        self.logger.info("table coordinator selection did change, selectedRow: \(selectIndex)")
-        
-        self.viewStore.send(.selectionChange(selectIndex))
+        let selectIndexes: [Int] = Array(tableView.selectedRowIndexes)
+        self.logger.info("table selection did change, select index: \(selectIndex), indexes: \(selectIndexes)")
+        self.viewStore.send(.selectionChange(selectIndex, selectIndexes))
     }
     
 }

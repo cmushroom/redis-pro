@@ -17,7 +17,7 @@ struct RedisValueEditView: View {
     
     var body: some View {
         WithViewStore(self.store, observe: { $0.keyState }) { viewStore in
-            VStack(alignment: .leading, spacing: 4)  {
+            VStack(alignment: .leading, spacing: 0)  {
                 if viewStore.type == RedisKeyTypeEnum.STRING.rawValue {
                     StringEditorView(store: store)
                 }

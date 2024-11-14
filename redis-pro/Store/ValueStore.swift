@@ -15,6 +15,7 @@ private let logger = Logger(label: "value-store")
 @Reducer
 struct ValueStore {
     
+    @ObservableState
     struct State: Equatable {
         var keyState: KeyStore.State = KeyStore.State()
         var keyObjectState: KeyObjectStore.State = KeyObjectStore.State()

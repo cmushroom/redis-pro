@@ -11,6 +11,7 @@ import Logging
 
 struct NSearchField: NSViewRepresentable {
     @Binding var value: String
+    @Binding var editing: Bool
     var placeholder: String
     var onCommit: ((String) -> Void)?
     
@@ -52,32 +53,39 @@ struct NSearchField: NSViewRepresentable {
         
         // MARK: - NSTextFieldDelegate Methods
 //        func searchFieldDidStartSearching(textField: NSSearchField) {
-//            editing = true
-//            logger.debug("search field text change, value: \(textField.stringValue)")
+//            logger.info("search field text change, value: \(textField.stringValue)")
 //        }
 //
 //        
 //        func searchFieldDidEndSearching(textField: NSSearchField) {
-//            parent.value = textField.stringValue
-//            editing = true
-//            logger.debug("search field text change, value: \(textField.stringValue)")
+//            logger.info("search field text change, value: \(textField.stringValue)")
 //        }
+        
+        
+        func controlTextDidBeginEditing(_ obj: Notification) {
+            if obj.object is NSSearchField {
+                logger.info("NSearchField-begin editing...")
+                parent.editing = true
+            }
+        }
         
         func controlTextDidChange(_ obj: Notification) {
             guard let textField = obj.object as? NSSearchField else { return }
             parent.value = textField.stringValue
             editing = true
-            logger.debug("search field text change, value: \(textField.stringValue)")
+            parent.editing = true
+            logger.info("NSearchField-content change, value: \(textField.stringValue)")
 
         }
 
         func controlTextDidEndEditing(_ obj: Notification) {
             guard let textField = obj.object as? NSSearchField else { return }
             let value = textField.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
+            logger.info("NSearchField-end editing, value: \(value)")
             parent.value =  value
-            logger.debug("search field end editing, value: \(value)")
             if editing {
                 editing = false
+                parent.editing = false
                 parent.onCommit?(value)
             }
         }
@@ -90,6 +98,7 @@ struct NSearchField: NSViewRepresentable {
                 logger.debug("on search field enter commit, text: \(parent.value)")
                 parent.onCommit?(parent.value)
                 editing = false
+                parent.editing = false
                 
                 return true
              }

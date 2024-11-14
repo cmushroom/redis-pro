@@ -22,7 +22,6 @@ class RedisKeyModel: NSObject, Identifiable {
         return key
     }
     
-    
     convenience init(_ key:String, type:String) {
         self.init()
         self.key = key

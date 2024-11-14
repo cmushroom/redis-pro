@@ -15,25 +15,31 @@ import ComposableArchitecture
 class RedisInstanceModel: Identifiable {
     var redisModel:RedisModel
     private var rediStackClient:RediStackClient?
-    private var appContextviewStore:ViewStoreOf<AppContextStore>?
     private var settingViewStore:ViewStoreOf<SettingsStore>?
     
     let logger = Logger(label: "redis-instance")
     
-    
-    convenience init(_ redisModel:RedisModel, settingViewStore: ViewStoreOf<SettingsStore>?) {
-        self.init(redisModel: redisModel)
-        self.settingViewStore = settingViewStore
-    }
     
     init(redisModel: RedisModel) {
         self.redisModel = redisModel
         logger.info("redis instance model init")
     }
     
+<<<<<<< HEAD
     func setAppStore(_ appStore: StoreOf<AppStore>) {
         let globalStore = appStore.scope(state: \.globalState, action: \.globalAction)
         self.appContextviewStore = ViewStore(globalStore, observe: { $0 })
+=======
+    convenience init(_ redisModel:RedisModel, settingViewStore: ViewStoreOf<SettingsStore>?) {
+        self.init(redisModel: redisModel)
+        self.settingViewStore = settingViewStore
+    }
+    
+    convenience init(_ redisClient: RediStackClient, settingViewStore: ViewStoreOf<SettingsStore>?) {
+        self.init(redisModel: redisClient.redisModel)
+        self.rediStackClient = redisClient
+        self.settingViewStore = settingViewStore
+>>>>>>> ed1dcbb68f3672a1bf145aa2a250be79d2000ff9
     }
     
     // get client
@@ -51,7 +57,6 @@ class RedisInstanceModel: Identifiable {
         logger.info("init new redis client, redisModel: \(redisModel)")
         self.redisModel = redisModel
         let client = RediStackClient(redisModel, settingViewStore: settingViewStore)
-        client.setAppContextStore(self.appContextviewStore)
         
         self.rediStackClient = client
         return client
@@ -76,7 +81,6 @@ class RedisInstanceModel: Identifiable {
         defer {
             self.close()
         }
-        
         logger.info("test connect to redis server: \(redisModel)")
         return  await initRedisClient(redisModel).testConn()
     }

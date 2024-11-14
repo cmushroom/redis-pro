@@ -10,17 +10,16 @@ import SwiftUI
 import ComposableArchitecture
 
 struct LoadingView: View {
-    let store:StoreOf<AppContextStore>
-    
     private var logger = Logger(label: "loading-view")
     
-    init(_ store: Store<AppContextStore.State, AppContextStore.Action>) {
+    @Dependency(\.appContext) var appContext
+    
+    init() {
         logger.info("loading view init...")
-        self.store = store
     }
     
     var body: some View {
-        WithViewStore(self.store, observe: { $0 }) {viewStore in
+        WithViewStore(appContext, observe: { $0 }) {viewStore in
             HStack{
                 EmptyView()
             }

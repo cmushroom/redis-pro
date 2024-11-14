@@ -8,10 +8,10 @@
 
 import Logging
 import Foundation
-import SwiftyJSON
 import ComposableArchitecture
 
 enum RedisSystemViewTypeEnum{
+    case KEYS_DEL
     case REDIS_INFO
     case REDIS_CONFIG
     case CLIENT_LIST
@@ -25,6 +25,7 @@ private let logger = Logger(label: "redis-system-store")
 @Reducer
 struct RedisSystemStore {
     
+    @ObservableState
     struct State: Equatable {
         var systemView: RedisSystemViewTypeEnum = .REDIS_INFO
         var redisInfoState: RedisInfoStore.State = RedisInfoStore.State()
@@ -76,7 +77,6 @@ struct RedisSystemStore {
                 return .none
             case .redisInfoAction:
                 return .none
-                
             case .redisConfigAction:
                 return .none
             case .slowLogAction:

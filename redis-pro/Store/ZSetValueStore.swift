@@ -7,7 +7,6 @@
 
 import Logging
 import Foundation
-import SwiftyJSON
 import ComposableArchitecture
 
 private let logger = Logger(label: "zset-value-store")
@@ -16,10 +15,11 @@ private let logger = Logger(label: "zset-value-store")
 struct ZSetValueStore {
     
     // MARK: - state
+    @ObservableState
     struct State: Equatable {
-        @BindingState var editModalVisible:Bool = false
-        @BindingState var editValue:String = ""
-        @BindingState var editScore:Double = 0
+        var editModalVisible:Bool = false
+        var editValue:String = ""
+        var editScore:Double = 0
         
         var editIndex:Int = -1
         var isNew:Bool = false
@@ -187,12 +187,11 @@ struct ZSetValueStore {
                 
                 let item = state.tableState.datasource[index] as! RedisZSetItemModel
                 return .run { send in
-                    Messages.confirm(StringHelper.format("ZSET_DELETE_CONFIRM_TITLE", item.value)
+                    let r = await Messages.confirmAsync(StringHelper.format("ZSET_DELETE_CONFIRM_TITLE", item.value)
                                       , message: StringHelper.format("ZSET_DELETE_CONFIRM_MESSAGE", item.value)
-                                      , primaryButton: "Delete"
-                                      , action: {
-                        await send(.deleteKey(index))
-                    })
+                                      , primaryButton: "Delete")
+                    
+                    await send(r ? .deleteKey(index) : .none)
                 }
                 
             case let .deleteKey(index):

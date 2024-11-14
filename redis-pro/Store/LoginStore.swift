@@ -13,22 +13,23 @@ private let logger = Logger(label: "login-store")
 
 @Reducer
 struct LoginStore {
-    
+
+    @ObservableState
     struct State: Equatable {
         var id: String = ""
-        @BindingState var name:String = ""
-        @BindingState var host: String = "127.0.0.1"
-        @BindingState var port: Int = 6379
-        @BindingState var database: Int = 0
-        @BindingState var username: String = ""
-        @BindingState var password: String = ""
-        @BindingState var connectionType:String = "tcp"
+        var name:String = ""
+        var host: String = "127.0.0.1"
+        var port: Int = 6379
+        var database: Int = 0
+        var username: String = ""
+        var password: String = ""
+        var connectionType:String = "tcp"
         
         // ssh
-        @BindingState var sshHost:String = ""
-        @BindingState var sshPort:Int = 22
-        @BindingState var sshUser:String = ""
-        @BindingState var sshPass:String = ""
+        var sshHost:String = ""
+        var sshPort:Int = 22
+        var sshUser:String = ""
+        var sshPass:String = ""
         
         var pingR: String = ""
         var loading: Bool = false
@@ -83,10 +84,10 @@ struct LoginStore {
     }
     
     @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
-    var mainQueue: AnySchedulerOf<DispatchQueue> = .main
+    @Dependency(\.redisClient) var redisClient: RediStackClient
+    @Dependency(\.appContext) var appContext: StoreOf<AppContextStore>
     
     var body: some Reducer<State, Action> {
-        BindingReducer()
         Reduce { state, action in
             switch action {
             case .add:
@@ -103,7 +104,9 @@ struct LoginStore {
                 
                 return .run { send in
                     let r = await redisInstanceModel.testConnect(redis)
-                    await  send(.setPingR(r))
+                    await send(.setPingR(r))
+                    await send(.setPingR(r))
+                    
                 }
             case let .setPingR(r):
                 state.pingR =  r ? "Connect successed!" : "Connect fail! "

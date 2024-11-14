@@ -8,17 +8,18 @@
 
 import Logging
 import Foundation
-import SwiftyJSON
 import ComposableArchitecture
 
 private let logger = Logger(label: "redis-config-store")
 
 @Reducer
 struct RedisConfigStore {
+    
+    @ObservableState
     struct State: Equatable {
         
-        @BindingState var editModalVisible:Bool = false
-        @BindingState var editValue:String = ""
+        var editModalVisible:Bool = false
+        var editValue:String = ""
         var pattern:String = ""
         var editKey:String = ""
         var editIndex = 0

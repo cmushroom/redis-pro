@@ -15,6 +15,8 @@ import Cocoa
 
 class RediStackClient {
     let logger = Logger(label: "redis-client")
+    @Dependency(\.appContext) var appContext
+    
     var redisModel:RedisModel
     
     // conn
@@ -36,6 +38,7 @@ class RediStackClient {
     var recursionCountSize:Int = 5000
     
     private var observers = [NSObjectProtocol]()
+    private var networkMonitor = NetworkMonitor()
     
     var appContextViewStore:ViewStore<AppContextStore.State, AppContextStore.Action>?
     var settingViewStore: ViewStoreOf<SettingsStore>?
@@ -46,6 +49,7 @@ class RediStackClient {
     }
     
     init(_ redisModel:RedisModel) {
+        self.logger.info("init redis client, param: \(redisModel)")
         self.redisModel = redisModel
         
         // 监听app退出
@@ -56,10 +60,18 @@ class RediStackClient {
                 shutdown()
             }
         )
+        
+//        networkMonitor.startMonitoring({ connected in
+//            self.logger.info("network had change, refresh connections, network: \(connected)")
+//            if (connected) {
+//                await self.refreshConn()
+//            }
+//        })
     }
     
     deinit {
         observers.forEach(NotificationCenter.default.removeObserver)
+        networkMonitor.stopMonitoring()
     }
     
     func setAppContextStore(_ globalStore: ViewStore<AppContextStore.State, AppContextStore.Action>?) {
@@ -68,11 +80,7 @@ class RediStackClient {
     
     func loading(_ bool: Bool) {
         DispatchQueue.main.async {
-            if bool {
-                self.appContextViewStore?.send(.show)
-            } else {
-                self.appContextViewStore?.send(.hide)
-            }
+            ViewStore(self.appContext, observe: {$0}).send( bool ? .show : .hide)
         }
     }
     

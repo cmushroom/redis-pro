@@ -14,6 +14,8 @@ private let logger = Logger(label: "loading-store")
 
 @Reducer
 struct LoadingStore {
+    
+    @ObservableState
     struct State: Equatable {
         var loading: Bool = false
         

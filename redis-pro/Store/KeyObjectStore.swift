@@ -14,6 +14,7 @@ private let logger = Logger(label: "key-object-store")
 @Reducer
 struct KeyObjectStore {
     
+    @ObservableState
     struct State: Equatable {
         var key: String = ""
         var encoding: String = ""

@@ -126,31 +126,6 @@ struct LoginForm: View {
         }
     }
     
-//    private func tcpTab() -> some View {
-//        WithViewStore(self.store, observe: ViewState.init) { viewStore in
-//            Form {
-//                Section {
-//                    VStack(alignment: .leading, spacing: 14) {
-//                        FormItemText(label: "Name", placeholder: "name", value: viewStore.$name)
-//                        FormItemText(label: "Host", placeholder: "host", value: viewStore.$host)
-//                        FormItemInt(label: "Port", placeholder: "port", value: viewStore.$port)
-//                        FormItemText(label: "User", placeholder: "default", value: viewStore.$username)
-//                        FormItemPassword(label: "Password", value: viewStore.$password)
-//                        FormItemInt(label: "Database", value: viewStore.$database)
-//                    }
-//                }
-//
-//                footer(viewStore)
-//            }
-//            .padding(.horizontal, 18.0)
-//            .tabItem {
-//                Text("TCP/IP")
-//            }
-//            .tag(RedisConnectionTypeEnum.TCP.rawValue)
-//        }
-//    }
-//
-    
     var sshTab: some View {
         WithViewStore(self.store, observe: ViewState.init) { viewStore in
             Form {
@@ -182,36 +157,6 @@ struct LoginForm: View {
             .padding(.horizontal, 18.0)
         }
     }
-//    private func sshTab(_ viewStore: ViewStoreOf<LoginStore>) -> some View {
-//        Form {
-//            Section {
-//                VStack(alignment: .leading, spacing: 12) {
-//                    FormItemText(label: "Name", placeholder: "name", value: viewStore.$name)
-//                    FormItemText(label: "Host", placeholder: "host", value: viewStore.$host)
-//                    FormItemInt(label: "Port", placeholder: "port", value: viewStore.$port)
-//                    FormItemText(label: "User", placeholder: "default", value: viewStore.$username)
-//                    FormItemPassword(label: "Password", value: viewStore.$password)
-//                    FormItemInt(label: "Database", value: viewStore.$database)
-//                }
-//            }
-//
-//            Section() {
-//                    Divider().padding(.vertical, 2)
-//
-//                    VStack(alignment: .leading, spacing: 12) {
-//                        FormItemText(label: "SSH Host", placeholder: "name", value: viewStore.$sshHost)
-//                        FormItemInt(label: "SSH Port", placeholder: "port", value: viewStore.$sshPort)
-//                        FormItemText(label: "SSH User", placeholder: "host", value: viewStore.$sshUser)
-//                        FormItemPassword(label: "SSH Pass", value: viewStore.$sshPass)
-//                    }
-//                }
-//            footer(viewStore)
-//        }
-//        .padding(.horizontal, 18.0)
-//        .tabItem {
-//            Label("SSH", systemImage: "bolt.fill")
-//        }.tag(RedisConnectionTypeEnum.SSH.rawValue)
-//    }
     
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in

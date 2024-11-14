@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 import Logging
-import SwiftyJSON
 
 struct VersionManager {
     let logger = Logger(label: "version-manager")
@@ -31,31 +30,28 @@ struct VersionManager {
                     return
                 }
                 
-                let jsonObj = JSON(parseJSON: contents)
-                let latestVersionNum = jsonObj["latestVersionNum"]
-                let latestVersion = String(describing: jsonObj["latestVersion"])
-                let updateType = String(describing: jsonObj["updateType"])
-                let releaseNotes = String(describing: jsonObj["releaseNotes"])
+                let versionInfo = try JSONDecoder().decode(VersionModel.self, from: contents.data(using: .utf8)!)
                 
                 let currentVersionInt = Int("\(currentVersionNum ?? 0)") ?? 0
-                let latestVersionInt = Int("\(latestVersionNum)") ?? 0
-                logger.info("compare latest version, latest version: \(latestVersionInt), current version: \(currentVersionInt)")
-                if latestVersionInt > currentVersionInt {
+                logger.info("compare latest version, latest version info: \(versionInfo), current version: \(currentVersionInt)")
+                if versionInfo.latestVersionNum > currentVersionInt {
                     logger.info("get new version success, please update!")
                     
                     // 提示升级
-                    if updateType == "hint" {
-                        Messages.confirm("New version \(latestVersion) is available", message: releaseNotes,
-                                      primaryButton: "Upgrade",
-                                      action: {
-                                        if let url = URL(string: Const.RELEASE_URL) {
-                                            NSWorkspace.shared.open(url)
-                                        }
-                                      }
-                        )
+                    if versionInfo.updateType == "hint" {
+                        Task {
+                            let r = await Messages.confirmAsync("New version \(versionInfo.latestVersion) is available", message: versionInfo.releaseNotes,
+                                                                primaryButton: "Upgrade")
+                            
+                            if r {
+                                if let url = URL(string: Const.RELEASE_URL) {
+                                    NSWorkspace.shared.open(url)
+                                }
+                            }
+                        }
                     }
                     // 强制升级
-                    else if updateType == "force" {
+                    else if versionInfo.updateType == "force" {
                         
                     }
                 } else {

@@ -6,6 +6,11 @@
   
 */
 
+// -------------------------------------------------- redis settings start -------------------------------------------------------
+"HELP_SEARCH_HISTORY_SIZE" = "key search history record size, 0 means no record!";
+// -------------------------------------------------- redis settings end   -------------------------------------------------------
+
+
 // -------------------------------------------------- redis help message start ---------------------------------------------------
 
 "HELP_SEARCH_BAR" = "支持redis glob 风格的模式参数, 示例: key*, re?is";
@@ -38,8 +43,8 @@
 
 // -------------------------------------------------- redis key message start ----------------------------------------------------
 
-"REDIS_KEY_DELETE_CONFIRM_TITLE'%@'" = "Delete key '%@'?";
-"REDIS_KEY_DELETE_CONFIRM_MESSAGE'%@'" = "Are you sure you want to delete the key '%@'? This operation cannot be undone.";
+"REDIS_KEY_DELETE_CONFIRM_TITLE'%@'" = "Delete keys, count: %@?";
+"REDIS_KEY_DELETE_CONFIRM_MESSAGE'%@'" = "Are you sure to delete the keys below?\n%@";
 
 // -------------------------------------------------- redis key message end ------------------------------------------------------
 

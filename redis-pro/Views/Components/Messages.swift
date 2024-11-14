@@ -44,6 +44,35 @@ class Messages {
         }
     }
     
+    
+    static func confirmAsync(_ title:String, message:String = "", primaryButton:String = "Ok") async -> Bool {
+        
+        return await withCheckedContinuation { continuation in
+            
+            DispatchQueue.main.async {
+                confirmAlert.messageText = StringHelper.ellipses(title, len: 100)
+                confirmAlert.informativeText = StringHelper.ellipses(message, len: 200)
+                
+                confirmAlert.buttons[0].title = primaryButton
+                confirmAlert.buttons[1].title = "Cancel"
+                
+                confirmAlert.alertStyle = NSAlert.Style.warning
+                
+                confirmAlert.beginSheetModal(for: NSApplication.shared.keyWindow!, completionHandler: { (modalResponse: NSApplication.ModalResponse) -> Void in
+                    if(modalResponse == NSApplication.ModalResponse.alertFirstButtonReturn){
+                        self.logger.info("alert ok action")
+                        continuation.resume(returning: true)
+                    } else if (modalResponse == NSApplication.ModalResponse.alertSecondButtonReturn) {
+                        self.logger.info("alert second action")
+                        continuation.resume(returning: false)
+                    } else {
+                        continuation.resume(returning: false)
+                    }
+                })
+            }
+        }
+    }
+    
     static func show(_ title:String) {
         DispatchQueue.main.async {
             self.alert.messageText = title

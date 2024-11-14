@@ -7,16 +7,17 @@
 
 import Logging
 import Foundation
-import SwiftyJSON
 import ComposableArchitecture
 
 private let logger = Logger(label: "set-value-store")
 
 @Reducer
 struct SetValueStore {
+    
+    @ObservableState
     struct State: Equatable {
-        @BindingState var editModalVisible:Bool = false
-        @BindingState var editValue:String = ""
+        var editModalVisible:Bool = false
+        var editValue:String = ""
         // 1: LPUSH, 2: RPUSH
         var pushType:Int = 0
         var editIndex:Int = -1
@@ -176,12 +177,11 @@ struct SetValueStore {
                 
                 let item = state.tableState.datasource[index] as! String
                 return .run { send in
-                    Messages.confirm(String(format: NSLocalizedString("SET_DELETE_CONFIRM_TITLE", comment: ""), item)
+                    let r = await Messages.confirmAsync(String(format: NSLocalizedString("SET_DELETE_CONFIRM_TITLE", comment: ""), item)
                                       , message: String(format: NSLocalizedString("SET_DELETE_CONFIRM_MESSAGE", comment: ""), item)
-                                      , primaryButton: "Delete"
-                                      , action: {
-                        await send(.deleteKey(index))
-                    })
+                                      , primaryButton: "Delete")
+                    
+                    await send(r ? .deleteKey(index) : .none)
                 }
                 
             case let .deleteKey(index):

@@ -22,30 +22,34 @@ struct RedisKeysListView: View {
     
     private func sidebarHeader(_ viewStore: ViewStore<RedisKeysStore.State, RedisKeysStore.Action>) -> some View {
         VStack(alignment: .center, spacing: 0) {
-            VStack(alignment: .center, spacing: 2) {
+            VStack(alignment: .center, spacing: 4) {
                 // redis search ...
                 SearchBar(placeholder: "Search keys...", onCommit: {viewStore.send(.search($0))})
-                    .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
+                    .padding(EdgeInsets(top: 4, leading: 0, bottom: 2, trailing: 0))
                 
                 // redis key operate ...
                 HStack {
                     IconButton(icon: "plus", name: "Add", action: {viewStore.send(.addNew)})
-                    IconButton(icon: "trash", name: "Delete", disabled: viewStore.tableState.selectIndex == -1
-                               ,action: { viewStore.send(.deleteConfirm(viewStore.tableState.selectIndex))})
+                    IconButton(icon: "trash", name: "Delete", disabled: !viewStore.tableState.isSelect
+                               ,action: { viewStore.send(.deleteConfirm(viewStore.tableState.selectIndexes))})
                     
                     Spacer()
                     DatabasePicker(store: store.scope(state: \.databaseState, action: \.databaseAction))
                 }
             }
-            .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
-            Rectangle().frame(height: 1)
-                .padding(.horizontal, 0).foregroundColor(Color.gray.opacity(0.6))
+            .padding(EdgeInsets(top: 4, leading: 4, bottom: 8, trailing: 4))
+//            Rectangle().frame(height: 1)
+//                .padding(0)
+//                .foregroundColor(Color.gray.opacity(0.6))
+//                .zIndex(0)
         }
+        .zIndex(1)
     }
     
     private func sidebarFoot(_ viewStore: ViewStore<RedisKeysStore.State, RedisKeysStore.Action>) -> some View {
         HStack(alignment: .center, spacing: 4) {
             Menu(content: {
+                Button("Keys Del", action: { viewStore.send(.redisSystemAction(.setSystemView(.KEYS_DEL))) })
                 Button("Redis Info", action: { viewStore.send(.redisSystemAction(.setSystemView(.REDIS_INFO))) })
                 Button("Redis Config", action: { viewStore.send(.redisSystemAction(.setSystemView(.REDIS_CONFIG))) })
                 Button("Clients List", action: { viewStore.send(.redisSystemAction(.setSystemView(.CLIENT_LIST))) })
@@ -96,8 +100,11 @@ struct RedisKeysListView: View {
                     .layoutPriority(0)
                 
                 // content
+<<<<<<< HEAD
 //                MainView(store: store.scope(state: \.valueState, action: \.valueAction))
                 
+=======
+>>>>>>> ed1dcbb68f3672a1bf145aa2a250be79d2000ff9
                 VStack(alignment: .leading, spacing: 0){
                     if viewStore.mainViewType == MainViewTypeEnum.EDITOR {
                         RedisValueView(store: store.scope(state: \.valueState, action: \.valueAction))
@@ -114,7 +121,6 @@ struct RedisKeysListView: View {
                 .layoutPriority(1)
             }
             .onAppear{
-//                viewStore.send(.setDBSize(20))
             }
             .sheet(isPresented: viewStore.binding(get: \.renameState.visible, send: .renameAction(.hide))) {
                 ModalView("Rename", width: MTheme.DIALOG_W, height: 100, action: {viewStore.send(.renameAction(.submit))}) {

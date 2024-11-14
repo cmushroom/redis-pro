@@ -1,6 +1,6 @@
 {
-    "latestVersionNum": 30,
-    "latestVersion": "3.0.0",
+    "latestVersionNum": 31,
+    "latestVersion": "3.1.0",
     "updateType": "hint",
-    "releaseNotes": "1. 升级TCA，使用Reducer重写store 部分。\n2. 增加快速分页模式, 在查询结果数据量较大情况时，优化查询性能。"
+    "releaseNotes": "1. 增加批量删除功能。\n2. 编辑器样式调整。\n3. 修复查询空时, table select index 数值异常问题。 \n4.  刷新按钮时使用当前查询关键字。 \n5. 修复查询空时, table select index 数值异常问题。\n6. 优化查询时loading中断问题。\n7. 使用async优化确认框。"
 }

@@ -13,9 +13,10 @@ private let logger = Logger(label: "key-store")
 @Reducer
 struct KeyStore {
     
+    @ObservableState
     struct State: Equatable {
-        @BindingState var type: String = RedisKeyTypeEnum.STRING.rawValue
-        @BindingState var key: String = ""
+        var type: String = RedisKeyTypeEnum.STRING.rawValue
+        var key: String = ""
         var ttl: Int = -1
 
         var isNew: Bool = false

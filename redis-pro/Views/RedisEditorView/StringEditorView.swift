@@ -15,8 +15,8 @@ struct StringEditorView: View {
     private let logger = Logger(label: "string-editor")
     
     init(store: StoreOf<ValueStore>) {
-        self.store = store.scope(state: \.stringValueState, action: ValueStore.Action.stringValueAction)
-        self.keyObjectStore = store.scope(state: \.keyObjectState, action: ValueStore.Action.keyObjectAction)
+        self.store = store.scope(state: \.stringValueState, action: \.stringValueAction)
+        self.keyObjectStore = store.scope(state: \.keyObjectState, action: \.keyObjectAction)
     }
     
     var body: some View {

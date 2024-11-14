@@ -22,7 +22,7 @@ struct LoginView: View {
     }
     
     var body: some View {
-        RedisListView(store: store.scope(state: \.favoriteState, action: AppStore.Action.favoriteAction))
+        RedisListView(store: store.scope(state: \.favoriteState, action: \.favoriteAction))
             .onDisappear {
                 logger.info("redis pro login view destroy...")
             }

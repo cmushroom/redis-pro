@@ -21,7 +21,7 @@ struct RedisListView: View {
                        spacing: 0) {
                     
                     NTableView(
-                        store: store.scope(state: \.tableState, action: FavoriteStore.Action.tableAction)
+                        store: store.scope(state: \.tableState, action: \.tableAction)
                     )
                     
                     // footer
@@ -41,7 +41,7 @@ struct RedisListView: View {
                        .onAppear{
                            onLoad(viewStore)
                        }
-                LoginForm(store: store.scope(state: \.loginState, action: FavoriteStore.Action.loginAction))
+                LoginForm(store: store.scope(state: \.loginState, action: \.loginAction))
                     .frame(minWidth: 800, maxWidth: .infinity, minHeight: 520, maxHeight: .infinity)
             }
         }

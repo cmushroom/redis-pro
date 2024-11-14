@@ -32,7 +32,7 @@ class RedisInstanceModel: Identifiable {
     }
     
     func setAppStore(_ appStore: StoreOf<AppStore>) {
-        let globalStore = appStore.scope(state: \.globalState, action: AppStore.Action.globalAction)
+        let globalStore = appStore.scope(state: \.globalState, action: \.globalAction)
         self.appContextviewStore = ViewStore(globalStore, observe: { $0 })
     }
     

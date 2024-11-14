@@ -15,8 +15,8 @@ struct HashEditorView: View {
     private let logger = Logger(label: "redis-hash-editor")
     
     init(store: StoreOf<ValueStore>) {
-        self.store = store.scope(state: \.hashValueState, action: ValueStore.Action.hashValueAction)
-        self.keyObjectStore = store.scope(state: \.keyObjectState, action: ValueStore.Action.keyObjectAction)
+        self.store = store.scope(state: \.hashValueState, action: \.hashValueAction)
+        self.keyObjectStore = store.scope(state: \.keyObjectState, action: \.keyObjectAction)
     }
     
     
@@ -28,11 +28,11 @@ struct HashEditorView: View {
                     IconButton(icon: "trash", name: "Delete", disabled: viewStore.tableState.selectIndex < 0, action: {viewStore.send(.deleteConfirm(viewStore.tableState.selectIndex))})
                 
                     SearchBar(placeholder: "Search field...", onCommit: {viewStore.send(.search($0))})
-                    PageBar(store: store.scope(state: \.pageState, action: HashValueStore.Action.pageAction))
+                    PageBar(store: store.scope(state: \.pageState, action:\.pageAction))
                 }
                 .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
                 
-                NTableView(store: store.scope(state: \.tableState, action: HashValueStore.Action.tableAction))
+                NTableView(store: store.scope(state: \.tableState, action: \.tableAction))
 
                 // footer
                 HStack(alignment: .center, spacing: 4) {

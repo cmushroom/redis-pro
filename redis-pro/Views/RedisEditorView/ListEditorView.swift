@@ -16,8 +16,8 @@ struct ListEditorView: View {
     let logger = Logger(label: "redis-list-editor")
     
     init(store: StoreOf<ValueStore>) {
-        self.store = store.scope(state: \.listValueState, action: ValueStore.Action.listValueAction)
-        self.keyObjectStore = store.scope(state: \.keyObjectState, action: ValueStore.Action.keyObjectAction)
+        self.store = store.scope(state: \.listValueState, action: \.listValueAction)
+        self.keyObjectStore = store.scope(state: \.keyObjectState, action: \.keyObjectAction)
     }
     
     var body: some View {
@@ -29,12 +29,12 @@ struct ListEditorView: View {
                 IconButton(icon: "trash", name: "Delete", disabled: viewStore.tableState.selectIndex < 0, action: {viewStore.send(.deleteConfirm(viewStore.tableState.selectIndex))})
                 
                 Spacer()
-                PageBar(store: store.scope(state: \.pageState, action: ListValueStore.Action.pageAction))
+                PageBar(store: store.scope(state: \.pageState, action: \.pageAction))
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
             
             
-            NTableView(store: store.scope(state: \.tableState, action: ListValueStore.Action.tableAction))
+            NTableView(store: store.scope(state: \.tableState, action: \.tableAction))
 
             // footer
             HStack(alignment: .center, spacing: MTheme.H_SPACING) {

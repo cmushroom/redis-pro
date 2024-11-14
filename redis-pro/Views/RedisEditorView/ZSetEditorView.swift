@@ -17,8 +17,8 @@ struct ZSetEditorView: View {
     
     
     init(store: StoreOf<ValueStore>) {
-        self.store = store.scope(state: \.zsetValueState, action: ValueStore.Action.zsetValueAction)
-        self.keyObjectStore = store.scope(state: \.keyObjectState, action: ValueStore.Action.keyObjectAction)
+        self.store = store.scope(state: \.zsetValueState, action: \.zsetValueAction)
+        self.keyObjectStore = store.scope(state: \.keyObjectState, action: \.keyObjectAction)
     }
     
     var body: some View {
@@ -30,11 +30,11 @@ struct ZSetEditorView: View {
                 IconButton(icon: "trash", name: "Delete", disabled: viewStore.tableState.selectIndex < 0, action: {viewStore.send(.deleteConfirm(viewStore.tableState.selectIndex))})
 
                 SearchBar(placeholder: "Search element...", onCommit: {viewStore.send(.search($0))})
-                PageBar(store: store.scope(state: \.pageState, action: ZSetValueStore.Action.pageAction))
+                PageBar(store: store.scope(state: \.pageState, action: \.pageAction))
             }
             .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
             
-            NTableView(store: store.scope(state: \.tableState, action: ZSetValueStore.Action.tableAction))
+            NTableView(store: store.scope(state: \.tableState, action: \.tableAction))
 
             // footer
             HStack(alignment: .center, spacing: 4) {

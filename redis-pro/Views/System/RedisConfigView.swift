@@ -27,7 +27,7 @@ struct RedisConfigView: View {
                         .help("REDIS_CONFIG_REWRITE")
                 }.padding(MTheme.HEADER_PADDING)
                 
-                NTableView(store: store.scope(state: \.tableState, action: RedisConfigStore.Action.tableAction))
+                NTableView(store: store.scope(state: \.tableState, action: \.tableAction))
                 
                 HStack(alignment: .center , spacing: MTheme.H_SPACING) {
                     Spacer()

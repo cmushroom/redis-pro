@@ -39,7 +39,7 @@ extension RediStackClient {
                 let total = try await _hashCountScan(key, keywords: match)
                 page.total = total
             } else {
-                let value = try await _hget(key, field: page.keywords)
+                let value = await _hget(key, field: page.keywords)
                 if value != nil {
                     r.append(RedisHashEntryModel(field: page.keywords, value: value))
                     page.total = 1
@@ -95,7 +95,7 @@ extension RediStackClient {
         var keys:[(String, String?)] = []
         
         while true {
-            let res = try await _hscan(key, keywords: keywords, cursor: cursor, count: dataScanCount)
+            let res = await _hscan(key, keywords: keywords, cursor: cursor, count: dataScanCount)
             logger.info("hash loop scan page, current cursor: \(cursor), total count: \(keys.count)")
             cursor = res.0
             keys = keys + res.1

@@ -12,12 +12,12 @@ import ComposableArchitecture
 struct RedisKeysListView: View {
     
     var appStore:StoreOf<AppStore>
-    var store:Store<RedisKeysStore.State, RedisKeysStore.Action>
+    var store:StoreOf<RedisKeysStore>
     let logger = Logger(label: "redis-key-list-view")
     
     init(_ store:StoreOf<AppStore>) {
         self.appStore = store
-        self.store = store.scope(state: \.redisKeysState, action: AppStore.Action.redisKeysAction)
+        self.store = store.scope(state: \.redisKeysState, action: \.redisKeysAction)
     }
     
     private func sidebarHeader(_ viewStore: ViewStore<RedisKeysStore.State, RedisKeysStore.Action>) -> some View {
@@ -34,7 +34,7 @@ struct RedisKeysListView: View {
                                ,action: { viewStore.send(.deleteConfirm(viewStore.tableState.selectIndex))})
                     
                     Spacer()
-                    DatabasePicker(store: store.scope(state: \.databaseState, action: RedisKeysStore.Action.databaseAction))
+                    DatabasePicker(store: store.scope(state: \.databaseState, action: \.databaseAction))
                 }
             }
             .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
@@ -68,7 +68,7 @@ struct RedisKeysListView: View {
             Text("dbsize: \(viewStore.dbsize)")
                 .font(MTheme.FONT_FOOTER)
                 .lineLimit(1)
-            PageBar(store: store.scope(state: \.pageState, action: RedisKeysStore.Action.pageAction))
+            PageBar(store: store.scope(state: \.pageState, action: \.pageAction))
         }
     }
     
@@ -77,7 +77,7 @@ struct RedisKeysListView: View {
             // header area
             sidebarHeader(viewStore)
             
-            NTableView(store: store.scope(state: \.tableState, action: RedisKeysStore.Action.tableAction))
+            NTableView(store: store.scope(state: \.tableState, action: \.tableAction))
             
             // footer
             sidebarFoot(viewStore)
@@ -96,13 +96,13 @@ struct RedisKeysListView: View {
                     .layoutPriority(0)
                 
                 // content
-//                MainView(store: store.scope(state: \.valueState, action: RedisKeysStore.Action.valueAction))
+//                MainView(store: store.scope(state: \.valueState, action: \.valueAction))
                 
                 VStack(alignment: .leading, spacing: 0){
                     if viewStore.mainViewType == MainViewTypeEnum.EDITOR {
-                        RedisValueView(store: store.scope(state: \.valueState, action: RedisKeysStore.Action.valueAction))
+                        RedisValueView(store: store.scope(state: \.valueState, action: \.valueAction))
                     } else if viewStore.mainViewType == MainViewTypeEnum.SYSTEM {
-                        RedisSystemView(store: store.scope(state: \.redisSystemState, action: RedisKeysStore.Action.redisSystemAction))
+                        RedisSystemView(store: store.scope(state: \.redisSystemState, action: \.redisSystemAction))
                     } else {
                         EmptyView()
                     }

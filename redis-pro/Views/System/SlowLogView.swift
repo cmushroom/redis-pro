@@ -34,7 +34,7 @@ struct SlowLogView: View {
                         .help("REDIS_SLOW_LOG_RESET")
                 }
                 
-                NTableView(store: store.scope(state: \.tableState, action: SlowLogStore.Action.tableAction))
+                NTableView(store: store.scope(state: \.tableState, action: \.tableAction))
                 
                 // footer
                 HStack(alignment: .center, spacing: MTheme.H_SPACING_L) {

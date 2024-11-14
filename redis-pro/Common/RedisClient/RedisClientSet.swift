@@ -37,7 +37,7 @@ extension RediStackClient {
                 let total = try await _setCountScan(key, keywords: match)
                 page.total = total
             } else {
-                let exist = try await _sexist(key, ele: page.keywords)
+                let exist = await _sexist(key, ele: page.keywords)
                 if exist {
                     r = [page.keywords]
                     page.total = 1

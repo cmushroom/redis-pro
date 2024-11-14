@@ -17,15 +17,15 @@ struct RedisSystemView: View {
         
 //        WithViewStore(store.scope(state: \.systemView)){ viewStore in
             if viewStore.state == RedisSystemViewTypeEnum.REDIS_INFO {
-                RedisInfoView(store: store.scope(state: \.redisInfoState, action: RedisSystemStore.Action.redisInfoAction))
+                RedisInfoView(store: store.scope(state: \.redisInfoState, action: \.redisInfoAction))
             }  else if viewStore.state == RedisSystemViewTypeEnum.CLIENT_LIST {
-                ClientsListView(store: store.scope(state: \.clientListState, action: RedisSystemStore.Action.clientListAction))
+                ClientsListView(store: store.scope(state: \.clientListState, action: \.clientListAction))
             } else if viewStore.state == RedisSystemViewTypeEnum.SLOW_LOG {
-                SlowLogView(store: store.scope(state: \.slowLogState, action: RedisSystemStore.Action.slowLogAction))
+                SlowLogView(store: store.scope(state: \.slowLogState, action: \.slowLogAction))
             } else if viewStore.state == RedisSystemViewTypeEnum.REDIS_CONFIG {
-                RedisConfigView(store: store.scope(state: \.redisConfigState, action: RedisSystemStore.Action.redisConfigAction))
+                RedisConfigView(store: store.scope(state: \.redisConfigState, action: \.redisConfigAction))
             } else if viewStore.state == RedisSystemViewTypeEnum.LUA {
-                LuaView(store: store.scope(state: \.luaState, action: RedisSystemStore.Action.luaAction))
+                LuaView(store: store.scope(state: \.luaState, action: \.luaAction))
             } else {
                 EmptyView()
             }

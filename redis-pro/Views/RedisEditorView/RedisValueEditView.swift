@@ -16,31 +16,30 @@ struct RedisValueEditView: View {
     let logger = Logger(label: "redis-value-edit-view")
     
     var body: some View {
-        WithViewStore(self.store, observe: { $0.keyState }) { viewStore in
             VStack(alignment: .leading, spacing: 0)  {
-                if viewStore.type == RedisKeyTypeEnum.STRING.rawValue {
+                if store.keyState.type == RedisKeyTypeEnum.STRING.rawValue {
                     StringEditorView(store: store)
                 }
                 // HASH
-                else if viewStore.type == RedisKeyTypeEnum.HASH.rawValue {
+                else if store.keyState.type == RedisKeyTypeEnum.HASH.rawValue {
                     HashEditorView(store: store)
                 }
                 // LIST
-                else if viewStore.type == RedisKeyTypeEnum.LIST.rawValue {
+                else if store.keyState.type == RedisKeyTypeEnum.LIST.rawValue {
                     ListEditorView(store: store)
                 }
                 // SET
-                else if viewStore.type == RedisKeyTypeEnum.SET.rawValue {
+                else if store.keyState.type == RedisKeyTypeEnum.SET.rawValue {
                     SetEditorView(store: store)
                 }
                 // ZSET
-                else if viewStore.type == RedisKeyTypeEnum.ZSET.rawValue {
+                else if store.keyState.type == RedisKeyTypeEnum.ZSET.rawValue {
                     ZSetEditorView(store: store)
                 } else {
                     EmptyView()
                 }
             }
-        }
+        
         
     }
     

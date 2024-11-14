@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-struct App: App {
+struct AppMain: App {
     @SceneBuilder var body: some Scene {
         WindowGroup {
-            ContentView()
+            Text("wwww")
         }
         .commands {
             CommandMenu("New Window") {
@@ -25,12 +25,8 @@ struct App: App {
     func openNewWindow() {
         // 通过某种方式标记新窗口
         let newWindow = WindowGroup {
-            ContentView(tag: UUID().uuidString) // 每个窗口都有独特的 tag
+            Text("wwww")
         }
         newWindow.body
     }
-}
-
-#Preview {
-    App()
 }

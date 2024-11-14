@@ -15,40 +15,39 @@ struct RedisListView: View {
     var store:StoreOf<FavoriteStore>
     
     var body: some View {
-        WithViewStore(self.store, observe: { $0 }) {viewStore in
-            HSplitView {
-                VStack(alignment: .leading,
-                       spacing: 0) {
-                    
-                    NTableView(
-                        store: store.scope(state: \.tableState, action: FavoriteStore.Action.tableAction)
-                    )
-                    
-                    // footer
-                    HStack(alignment: .center) {
-                        MIcon(icon: "plus", fontSize: 13, action: {
-                            viewStore.send(.addNew)
-                        })
-                        MIcon(icon: "minus", fontSize: 13, disabled: viewStore.tableState.selectIndex < 0, action: {
-                            viewStore.send(.deleteConfirm(viewStore.tableState.selectIndex))
-                        })
-                    }
-                    .padding(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
+        HSplitView {
+            VStack(alignment: .leading,
+                   spacing: 0) {
+                
+                NTableView(
+                    store: store.scope(state: \.tableState, action: \.tableAction)
+                )
+                
+                // footer
+                HStack(alignment: .center) {
+                    MIcon(icon: "plus", fontSize: 13, action: {
+                        store.send(.addNew)
+                    })
+                    MIcon(icon: "minus", fontSize: 13, disabled: store.tableState.selectIndex < 0, action: {
+                        store.send(.deleteConfirm(store.tableState.selectIndex))
+                    })
                 }
-                       .padding(0)
-                       .frame(minWidth:200)
-                       .layoutPriority(0)
-                       .onAppear{
-                           onLoad(viewStore)
-                       }
-                LoginForm(store: store.scope(state: \.loginState, action: FavoriteStore.Action.loginAction))
-                    .frame(minWidth: 800, maxWidth: .infinity, minHeight: 520, maxHeight: .infinity)
+                .padding(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
             }
+                   .padding(0)
+                   .frame(minWidth:200)
+                   .layoutPriority(0)
+                   .onAppear{
+                       onLoad(store)
+                   }
+            LoginForm(store: store.scope(state: \.loginState, action: \.loginAction))
+                .frame(minWidth: 800, maxWidth: .infinity, minHeight: 520, maxHeight: .infinity)
         }
+        
     }
     
-    func onLoad(_ viewStore:ViewStore<FavoriteStore.State, FavoriteStore.Action>) {
-        viewStore.send(.getAll)
-        viewStore.send(.initDefaultSelection)
+    func onLoad(_ store:StoreOf<FavoriteStore>) {
+        store.send(.getAll)
+        store.send(.initDefaultSelection)
     }
 }

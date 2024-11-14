@@ -19,12 +19,14 @@ struct LoadingView: View {
     }
     
     var body: some View {
-        WithViewStore(appContext, observe: { $0 }) {viewStore in
-            HStack{
-                EmptyView()
+        WithPerceptionTracking {
+            WithViewStore(appContext, observe: { $0 }) {viewStore in
+                HStack{
+                    EmptyView()
+                }
+                .frame(height: 0)
+                .overlay(MSpin(loading: viewStore.loading))
             }
-            .frame(height: 0)
-            .overlay(MSpin(loading: viewStore.loading))
         }
     }
 }

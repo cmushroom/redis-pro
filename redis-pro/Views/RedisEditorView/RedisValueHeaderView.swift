@@ -11,36 +11,29 @@ import ComposableArchitecture
 
 struct RedisValueHeaderView: View {
     
-    var store: StoreOf<KeyStore>
+    @Perception.Bindable var store: StoreOf<KeyStore>
     let logger = Logger(label: "redis-value-header")
     
-    private func ttlView(_ viewStore: ViewStore<KeyStore.State, KeyStore.Action>) -> some View {
+    private func ttlView() -> some View {
         HStack(alignment:.center, spacing: 0) {
-            FormItemInt(label: "TTL(s)", value: viewStore.binding(get: \.ttl, send: KeyStore.Action.setTtl), suffix: "square.and.pencil", onCommit: { viewStore.send(.saveTtl)})
-                .disabled(viewStore.isNew)
+            FormItemInt(label: "TTL(s)", value: $store.ttl, suffix: "square.and.pencil", onCommit: { store.send(.saveTtl)})
+                .disabled(store.isNew)
                 .help("HELP_TTL")
                 .frame(width: 260)
         }
     }
     
     var body: some View {
-        WithViewStore(self.store, observe: { $0 }) {viewStore in
             
-            HStack(alignment: .center, spacing: 6) {
-                FormItemText(label: "Key", labelWidth: 40, required: true, editable: viewStore.isNew, value: viewStore.binding(get: \.key, send: KeyStore.Action.setKey))
-                    .frame(maxWidth: .infinity)
+        HStack(alignment: .center, spacing: 6) {
+            FormItemText(label: "Key", labelWidth: 40, required: true, editable: store.isNew, value: $store.key)
+                .frame(maxWidth: .infinity)
 
-                Spacer()
-                RedisKeyTypePicker(label: "Type", value: viewStore.binding(get: \.type, send: KeyStore.Action.setType), disabled: !viewStore.isNew)
-                ttlView(viewStore)
-            }
+            Spacer()
+            RedisKeyTypePicker(label: "Type", value: $store.type, disabled: !store.isNew)
+            ttlView()
         }
+        
     }
     
 }
-
-//struct RedisValueHeaderView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        RedisValueHeaderView(redisKeyModel: RedisKeyModel(key: "test", type: RedisKeyTypeEnum.STRING.rawValue))
-//    }
-//}

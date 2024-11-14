@@ -40,14 +40,6 @@ class RediStackClient {
     private var observers = [NSObjectProtocol]()
     private var networkMonitor = NetworkMonitor()
     
-    var appContextViewStore:ViewStore<AppContextStore.State, AppContextStore.Action>?
-    var settingViewStore: ViewStoreOf<SettingsStore>?
-    
-    convenience init(_ redisModel:RedisModel, settingViewStore: ViewStoreOf<SettingsStore>?) {
-        self.init(redisModel)
-        self.settingViewStore = settingViewStore
-    }
-    
     init(_ redisModel:RedisModel) {
         self.logger.info("init redis client, param: \(redisModel)")
         self.redisModel = redisModel
@@ -72,10 +64,6 @@ class RediStackClient {
     deinit {
         observers.forEach(NotificationCenter.default.removeObserver)
         networkMonitor.stopMonitoring()
-    }
-    
-    func setAppContextStore(_ globalStore: ViewStore<AppContextStore.State, AppContextStore.Action>?) {
-        self.appContextViewStore = globalStore
     }
     
     func loading(_ bool: Bool) {

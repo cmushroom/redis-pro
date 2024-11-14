@@ -11,22 +11,21 @@ import ComposableArchitecture
 
 struct ListEditorView: View {
     
-    var store:StoreOf<ListValueStore>
+    @Perception.Bindable var store:StoreOf<ListValueStore>
     var keyObjectStore: StoreOf<KeyObjectStore>
     let logger = Logger(label: "redis-list-editor")
     
     init(store: StoreOf<ValueStore>) {
-        self.store = store.scope(state: \.listValueState, action: ValueStore.Action.listValueAction)
-        self.keyObjectStore = store.scope(state: \.keyObjectState, action: ValueStore.Action.keyObjectAction)
+        self.store = store.scope(state: \.listValueState, action: \.listValueAction)
+        self.keyObjectStore = store.scope(state: \.keyObjectState, action: \.keyObjectAction)
     }
     
     var body: some View {
-        WithViewStore(self.store, observe: { $0 }) { viewStore in
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .center , spacing: 4) {
-                IconButton(icon: "plus", name: "Add head", action: { viewStore.send(.addNew(-1))})
-                IconButton(icon: "plus", name: "Add tail", action: { viewStore.send(.addNew(-2))})
-                IconButton(icon: "trash", name: "Delete", disabled: viewStore.tableState.selectIndex < 0, action: {viewStore.send(.deleteConfirm(viewStore.tableState.selectIndex))})
+                IconButton(icon: "plus", name: "Add head", action: { store.send(.addNew(-1))})
+                IconButton(icon: "plus", name: "Add tail", action: { store.send(.addNew(-2))})
+                IconButton(icon: "trash", name: "Delete", disabled: store.tableState.selectIndex < 0, action: {store.send(.deleteConfirm(store.tableState.selectIndex))})
                 
                 Spacer()
                 PageBar(store: store.scope(state: \.pageState, action: ListValueStore.Action.pageAction))
@@ -40,20 +39,22 @@ struct ListEditorView: View {
             HStack(alignment: .center, spacing: MTheme.H_SPACING) {
                 KeyObjectBar(store: keyObjectStore)
                 Spacer()
-                IconButton(icon: "arrow.clockwise", name: "Refresh", action: {viewStore.send(.refresh)})
+                IconButton(icon: "arrow.clockwise", name: "Refresh", action: {store.send(.refresh)})
             }
             .padding(EdgeInsets(top: MTheme.V_SPACING, leading: 0, bottom: 0, trailing: 0))
         }
-        .sheet(isPresented: viewStore.$editModalVisible, onDismiss: {
+        .sheet(isPresented: $store.editModalVisible, onDismiss: {
         }) {
-            ModalView("Edit list item", action: {viewStore.send(.submit)}) {
-                VStack(alignment:.leading, spacing: MTheme.V_SPACING) {
-                    FormItemTextArea(label: "", placeholder: "value", value: viewStore.$editValue)
+            WithPerceptionTracking {
+                ModalView("Edit list item", action: {store.send(.submit)}) {
+                    VStack(alignment:.leading, spacing: MTheme.V_SPACING) {
+                        FormItemTextArea(label: "", placeholder: "value", value: $store.editValue)
+                    }
+                    
                 }
-                
             }
         }
-        }
+        
     }
 }
 

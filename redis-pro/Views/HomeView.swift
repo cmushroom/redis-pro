@@ -15,26 +15,16 @@ struct HomeView: View {
     var store:StoreOf<AppStore>
 
     var body: some View {
-        WithViewStore(self.store, observe: { $0.title }) { viewStore in
-            
-            RedisKeysListView(store)
-                .onAppear {
-                    logger.info("redis pro home view init complete")
-                    viewStore.send(.initial)
-                }
-                .onDisappear {
-                    logger.info("redis pro home view destroy...")
-                    viewStore.send(.onClose)
-                }
-            // 设置window标题
-            .navigationTitle(viewStore.state)
-            
-        }
+        RedisKeysListView(store)
+            .onAppear {
+                logger.info("redis pro home view init complete")
+                store.send(.initial)
+            }
+            .onDisappear {
+                logger.info("redis pro home view destroy...")
+                store.send(.onClose)
+            }
+        // 设置window标题
+        .navigationTitle(store.title)
     }
 }
-
-//struct HomeView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        HomeView()
-//    }
-//}

@@ -27,7 +27,7 @@ struct FormItemInt: View {
 //            MTextField(value: valueProxy, placeholder: placeholder ?? label, suffix: suffix, onCommit: onCommit, autoCommit: autoCommit)
             MIntField(value: $value, placeholder: placeholder ?? label, onCommit: onCommit).help(tips ?? "")
             if(tips != nil) {
-                MIcon(icon: "questionmark.circle", fontSize: 12).help(tips!)
+                MIcon(icon: "questionmark.circle", fontSize: 13).help(tips!)
             }
         }
     }

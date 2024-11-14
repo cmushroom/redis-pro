@@ -12,29 +12,29 @@ import ComposableArchitecture
 struct RedisKeysListView: View {
     
     var appStore:StoreOf<AppStore>
-    var store:Store<RedisKeysStore.State, RedisKeysStore.Action>
+    var store:StoreOf<RedisKeysStore>
     let logger = Logger(label: "redis-key-list-view")
     
     init(_ store:StoreOf<AppStore>) {
         self.appStore = store
-        self.store = store.scope(state: \.redisKeysState, action: AppStore.Action.redisKeysAction)
+        self.store = store.scope(state: \.redisKeysState, action: \.redisKeysAction)
     }
     
-    private func sidebarHeader(_ viewStore: ViewStore<RedisKeysStore.State, RedisKeysStore.Action>) -> some View {
+    private func sidebarHeader(_ store: StoreOf<RedisKeysStore>) -> some View {
         VStack(alignment: .center, spacing: 0) {
             VStack(alignment: .center, spacing: 4) {
                 // redis search ...
-                SearchBar(placeholder: "Search keys...", onCommit: {viewStore.send(.search($0))})
+                SearchBar(placeholder: "Search keys...", onCommit: {store.send(.search($0))})
                     .padding(EdgeInsets(top: 4, leading: 0, bottom: 2, trailing: 0))
                 
                 // redis key operate ...
                 HStack {
-                    IconButton(icon: "plus", name: "Add", action: {viewStore.send(.addNew)})
-                    IconButton(icon: "trash", name: "Delete", disabled: !viewStore.tableState.isSelect
-                               ,action: { viewStore.send(.deleteConfirm(viewStore.tableState.selectIndexes))})
+                    IconButton(icon: "plus", name: "Add", action: {store.send(.addNew)})
+                    IconButton(icon: "trash", name: "Delete", disabled: !store.tableState.isSelect
+                               ,action: { store.send(.deleteConfirm(store.tableState.selectIndexes))})
                     
                     Spacer()
-                    DatabasePicker(store: store.scope(state: \.databaseState, action: RedisKeysStore.Action.databaseAction))
+                    DatabasePicker(store: store.scope(state: \.databaseState, action: \.databaseAction))
                 }
             }
             .padding(EdgeInsets(top: 4, leading: 4, bottom: 8, trailing: 4))
@@ -46,16 +46,16 @@ struct RedisKeysListView: View {
         .zIndex(1)
     }
     
-    private func sidebarFoot(_ viewStore: ViewStore<RedisKeysStore.State, RedisKeysStore.Action>) -> some View {
+    private func sidebarFoot(_ store: StoreOf<RedisKeysStore>) -> some View {
         HStack(alignment: .center, spacing: 4) {
             Menu(content: {
-                Button("Keys Del", action: { viewStore.send(.redisSystemAction(.setSystemView(.KEYS_DEL))) })
-                Button("Redis Info", action: { viewStore.send(.redisSystemAction(.setSystemView(.REDIS_INFO))) })
-                Button("Redis Config", action: { viewStore.send(.redisSystemAction(.setSystemView(.REDIS_CONFIG))) })
-                Button("Clients List", action: { viewStore.send(.redisSystemAction(.setSystemView(.CLIENT_LIST))) })
-                Button("Slow Log", action: { viewStore.send(.redisSystemAction(.setSystemView(.SLOW_LOG))) })
-                Button("Lua", action: { viewStore.send(.redisSystemAction(.setSystemView(.LUA))) })
-                Button("Flush DB", action: {viewStore.send(.flushDBConfirm)})
+                Button("Keys Del", action: { store.send(.redisSystemAction(.setSystemView(.KEYS_DEL))) })
+                Button("Redis Info", action: { store.send(.redisSystemAction(.setSystemView(.REDIS_INFO))) })
+                Button("Redis Config", action: { store.send(.redisSystemAction(.setSystemView(.REDIS_CONFIG))) })
+                Button("Clients List", action: { store.send(.redisSystemAction(.setSystemView(.CLIENT_LIST))) })
+                Button("Slow Log", action: { store.send(.redisSystemAction(.setSystemView(.SLOW_LOG))) })
+                Button("Lua", action: { store.send(.redisSystemAction(.setSystemView(.LUA))) })
+                Button("Flush DB", action: {store.send(.flushDBConfirm)})
             }, label: {
                 Label("", systemImage: "ellipsis.circle")
                 .foregroundColor(.primary)
@@ -65,65 +65,66 @@ struct RedisKeysListView: View {
             .frame(width:30)
             .menuStyle(BorderlessButtonMenuStyle())
             
-            MIcon(icon: "arrow.clockwise", fontSize: 12, action: {viewStore.send(.refresh)})
+            MIcon(icon: "arrow.clockwise", fontSize: 12, action: {store.send(.refresh)})
                 .help("HELP_REFRESH")
             
             Spacer(minLength: 0)
-            Text("dbsize: \(viewStore.dbsize)")
+            Text("dbsize: \(store.dbsize)")
                 .font(MTheme.FONT_FOOTER)
                 .lineLimit(1)
-            PageBar(store: store.scope(state: \.pageState, action: RedisKeysStore.Action.pageAction))
+            PageBar(store: store.scope(state: \.pageState, action: \.pageAction))
         }
     }
     
-    private func sidebar(_ viewStore: ViewStore<RedisKeysStore.State, RedisKeysStore.Action>) -> some View {
+    private func sidebar(_ store: StoreOf<RedisKeysStore>) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             // header area
-            sidebarHeader(viewStore)
+            sidebarHeader(store)
             
-            NTableView(store: store.scope(state: \.tableState, action: RedisKeysStore.Action.tableAction))
+            NTableView(store: store.scope(state: \.tableState, action: \.tableAction))
             
             // footer
-            sidebarFoot(viewStore)
+            sidebarFoot(store)
                 .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 6))
             
         }
     }
     
     var body: some View {
-        WithViewStore(self.store, observe: { $0 }) {viewStore in
-            HSplitView {
-                // sidebar
-                sidebar(viewStore)
-                    .padding(0)
-                    .frame(minWidth:280, idealWidth: 360, maxWidth: .infinity)
-                    .layoutPriority(0)
+        HSplitView {
+            // sidebar
+            sidebar(store)
+                .padding(0)
+                .frame(minWidth:280, idealWidth: 360, maxWidth: .infinity)
+                .layoutPriority(0)
+            
+            // content
+            VStack(alignment: .leading, spacing: 0){
+                if store.mainViewType == MainViewTypeEnum.EDITOR {
+                    RedisValueView(store: store.scope(state: \.valueState, action: RedisKeysStore.Action.valueAction))
+                } else if store.mainViewType == MainViewTypeEnum.SYSTEM {
+                    RedisSystemView(store: store.scope(state: \.redisSystemState, action: RedisKeysStore.Action.redisSystemAction))
+                } else {
+                    EmptyView()
+                }
                 
-                // content
-                VStack(alignment: .leading, spacing: 0){
-                    if viewStore.mainViewType == MainViewTypeEnum.EDITOR {
-                        RedisValueView(store: store.scope(state: \.valueState, action: RedisKeysStore.Action.valueAction))
-                    } else if viewStore.mainViewType == MainViewTypeEnum.SYSTEM {
-                        RedisSystemView(store: store.scope(state: \.redisSystemState, action: RedisKeysStore.Action.redisSystemAction))
-                    } else {
-                        EmptyView()
-                    }
-                    
-                    Spacer()
-                }
-                .padding(4)
-                .frame(minWidth: 600, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
-                .layoutPriority(1)
+                Spacer()
             }
-            .onAppear{
-            }
-            .sheet(isPresented: viewStore.binding(get: \.renameState.visible, send: .renameAction(.hide))) {
-                ModalView("Rename", width: MTheme.DIALOG_W, height: 100, action: {viewStore.send(.renameAction(.submit))}) {
-                    VStack(alignment:.leading, spacing: 8) {
-                        FormItemText(label: "New name", placeholder: "New key name", value: viewStore.binding(get: \.renameState.newKey, send: { .renameAction(.setNewKey($0)) }))
-                    }
-                }
-            }
+            .padding(4)
+            .frame(minWidth: 600, maxWidth: .infinity, minHeight: 400, maxHeight: .infinity)
+            .layoutPriority(1)
         }
+        .onAppear{
+        }
+        //FIXME
+//        .sheet(isPresented: store.binding(get: \.renameState.visible, send: .renameAction(.hide))) {
+//            ModalView("Rename", width: MTheme.DIALOG_W, height: 100, action: {store.send(.renameAction(.submit))}) {
+//                VStack(alignment:.leading, spacing: 8) {
+//                    //FIXME
+////                    FormItemText(label: "New name", placeholder: "New key name", value: $store.renameState.newKey)
+//                }
+//            }
+//        }
+        
     }
 }

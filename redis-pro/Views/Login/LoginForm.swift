@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Logging
-import Cocoa
 import ComposableArchitecture
 
 struct LoginForm: View {
@@ -15,107 +14,74 @@ struct LoginForm: View {
     
     @Environment(\.openURL) var openURL
     
-    let store:StoreOf<LoginStore>
-    var viewStore1: ViewStoreOf<LoginStore>
-    
-    struct ViewState: Equatable {
-       @BindingViewState var name: String
-       @BindingViewState var host: String
-       @BindingViewState var port: Int
-       @BindingViewState var username: String
-       @BindingViewState var password: String
-       @BindingViewState var database: Int
-       @BindingViewState var sshHost: String
-       @BindingViewState var sshPort: Int
-       @BindingViewState var sshUser: String
-       @BindingViewState var sshPass: String
-        
-        init(bindingViewStore: BindingViewStore<LoginStore.State>) {
-              self._name = bindingViewStore.$name
-              self._host = bindingViewStore.$host
-              self._port = bindingViewStore.$port
-              self._username = bindingViewStore.$username
-              self._password = bindingViewStore.$password
-              self._database = bindingViewStore.$database
-              self._sshHost = bindingViewStore.$sshHost
-              self._sshPort = bindingViewStore.$sshPort
-              self._sshUser = bindingViewStore.$sshUser
-              self._sshPass = bindingViewStore.$sshPass
-        }
-     }
-    
-    init(store: StoreOf<LoginStore>) {
-        self.store = store
-        self.viewStore1 = ViewStore(store, observe: {$0})
-    }
+    @Perception.Bindable var store:StoreOf<LoginStore>
    
     var footer: some View {
-        WithViewStore(self.store, observe: {$0} ) { viewStore in
-            Section {
-                Divider()
-                    .padding(.vertical, 8)
-                VStack(alignment: .center, spacing: 10) {
-                    HStack(alignment: .center){
-                        if !viewStore.loading {
-                            Button(action: {
-                                guard let url = URL(string: Const.REPO_URL) else {
-                                    return
-                                }
-                                openURL(url)
-                            }) {
-                                Image(systemName: "questionmark.circle")
-                                    .font(.system(size: 16.0))
+        Section {
+            Divider()
+                .padding(.vertical, 8)
+            VStack(alignment: .center, spacing: 10) {
+                HStack(alignment: .center){
+                    if !store.loading {
+                        Button(action: {
+                            guard let url = URL(string: Const.REPO_URL) else {
+                                return
                             }
-                            .buttonStyle(PlainButtonStyle())
+                            openURL(url)
+                        }) {
+                            Image(systemName: "questionmark.circle")
+                                .font(.system(size: 16.0))
                         }
-                        
-                        MLoading(text: viewStore.pingR,
-                                 loadingText: "Connecting...",
-                                 loading: viewStore.loading)
-                        .help(viewStore.pingR)
-                        
-                        Spacer()
-                        
-                        MButton(text: "Connect"
-                                , action: {
-                            viewStore.send(.connect)
-                        }
-                                , disabled: viewStore.loading, keyEquivalent: .return)
-                        .buttonStyle(BorderedButtonStyle())
-                        .keyboardShortcut(.defaultAction)
-                        
+                        .buttonStyle(PlainButtonStyle())
                     }
                     
-                    HStack(alignment: .center){
-                        MButton(text: "Add to Favorites", action: {
-                            viewStore.send(.add)
-                        })
-                        Spacer()
-                        MButton(text: "Save changes", action: {
-                            viewStore.send(.save)
-                        })
-                        Spacer()
-                        MButton(text: "Test connection", action: {
-                            viewStore.send(.testConnect)
-                        }, disabled: viewStore.loading)
+                    MLoading(text: store.pingR,
+                                loadingText: "Connecting...",
+                                loading: store.loading)
+                    .help(store.pingR)
+                    
+                    Spacer()
+                    
+                    MButton(text: "Connect"
+                            , action: {
+                        store.send(.connect)
                     }
+                            , disabled: store.loading, keyEquivalent: .return)
+                    .buttonStyle(BorderedButtonStyle())
+                    .keyboardShortcut(.defaultAction)
+                    
+                }
+                
+                HStack(alignment: .center){
+                    MButton(text: "Add to Favorites", action: {
+                        store.send(.add)
+                    })
+                    Spacer()
+                    MButton(text: "Save changes", action: {
+                        store.send(.save)
+                    })
+                    Spacer()
+                    MButton(text: "Test connection", action: {
+                        store.send(.testConnect)
+                    }, disabled: store.loading)
                 }
             }
         }
+        
     }
     
     var tcpView: some View {
-        WithViewStore(self.store, observe: ViewState.init) { viewStore in
+        
             Form {
                 VStack {
                     Section {
                         VStack(alignment: .leading, spacing: 14) {
-                            FormItemText(label: "Name", placeholder: "name", value: viewStore.$name)
-                            FormItemText(label: "Host", placeholder: "host", value: viewStore.$host)
-                            FormItemInt(label: "Port", placeholder: "port", value: viewStore.$port)
-                            FormItemText(label: "User", placeholder: "default", value: viewStore.$username)
-                            FormItemPassword(label: "Password", value: viewStore.$password)
-                            FormItemInt(label: "Database", value: viewStore.$database)
+                            FormItemText(label: "Name", placeholder: "name", value: $store.name)
+                            FormItemText(label: "Host", placeholder: "host", value: $store.host)
+                            FormItemInt(label: "Port", placeholder: "port", value: $store.port)
+                            FormItemText(label: "User", placeholder: "default", value: $store.username)
+                            FormItemPassword(label: "Password", value: $store.password)
+                            FormItemInt(label: "Database", value: $store.database)
                         }
                     }
                     
@@ -123,44 +89,43 @@ struct LoginForm: View {
                 }
             }
             .padding(.horizontal, 18.0)
-        }
+        
     }
     
     var sshTab: some View {
-        WithViewStore(self.store, observe: ViewState.init) { viewStore in
-            Form {
-                VStack {
-                    Section {
-                        VStack(alignment: .leading, spacing: 12) {
-                            FormItemText(label: "Name", placeholder: "name", value: viewStore.$name)
-                            FormItemText(label: "Host", placeholder: "host", value: viewStore.$host)
-                            FormItemInt(label: "Port", placeholder: "port", value: viewStore.$port)
-                            FormItemText(label: "User", placeholder: "default", value: viewStore.$username)
-                            FormItemPassword(label: "Password", value: viewStore.$password)
-                            FormItemInt(label: "Database", value: viewStore.$database)
-                        }
+        Form {
+            VStack {
+                Section {
+                    VStack(alignment: .leading, spacing: 12) {
+                        FormItemText(label: "Name", placeholder: "name", value: $store.name)
+                        FormItemText(label: "Host", placeholder: "host", value: $store.host)
+                        FormItemInt(label: "Port", placeholder: "port", value: $store.port)
+                        FormItemText(label: "User", placeholder: "default", value: $store.username)
+                        FormItemPassword(label: "Password", value: $store.password)
+                        FormItemInt(label: "Database", value: $store.database)
                     }
-                    
-                    Divider().padding(.vertical, 2)
-                    Section {
-                        VStack(alignment: .leading, spacing: 12) {
-                            FormItemText(label: "SSH Host", placeholder: "name", value: viewStore.$sshHost)
-                            FormItemInt(label: "SSH Port", placeholder: "port", value: viewStore.$sshPort)
-                            FormItemText(label: "SSH User", placeholder: "host", value: viewStore.$sshUser)
-                            FormItemPassword(label: "SSH Pass", value: viewStore.$sshPass)
-                        }
-                    }
-                    
-                    footer
                 }
+                
+                Divider().padding(.vertical, 2)
+                Section {
+                    VStack(alignment: .leading, spacing: 12) {
+                        FormItemText(label: "SSH Host", placeholder: "name", value: $store.sshHost)
+                        FormItemInt(label: "SSH Port", placeholder: "port", value: $store.sshPort)
+                        FormItemText(label: "SSH User", placeholder: "host", value: $store.sshUser)
+                        FormItemPassword(label: "SSH Pass", value: $store.sshPass)
+                    }
+                }
+                
+                footer
             }
-            .padding(.horizontal, 18.0)
         }
+        .padding(.horizontal, 18.0)
+        
     }
     
     var body: some View {
-        WithViewStore(self.store, observe: { $0 }) { viewStore in
-            TabView(selection: viewStore.$connectionType) {
+        
+            TabView(selection: $store.connectionType) {
                 // tcp
                 tcpView
                 .tabItem {
@@ -174,14 +139,8 @@ struct LoginForm: View {
                 }.tag(RedisConnectionTypeEnum.SSH.rawValue)
             }
             .padding(20.0)
-            .frame(width: 500.0, height: viewStore.height)
+            .frame(width: 500.0, height: store.height)
         }
-    }
+    
     
 }
-
-//struct LoginForm_Previews: PreviewProvider {
-//    static var previews: some View {
-//        LoginForm(redisFavoriteModel: RedisFavoriteModel(), redisModel: RedisModel())
-//    }
-//}

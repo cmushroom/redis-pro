@@ -146,11 +146,11 @@ extension RediStackClient {
                 let res = try await countScan(cursor: cursor, keywords: match, count: dataCountScanCount)
                 logger.info("count scan keys, current cursor: \(cursor), r: \(res)")
                 
-                // 检查fast page, 如果启用了快速分页，查到99页结束，否则查询所有总页数
-                if settingViewStore?.fastPage ?? true && ((res.1 + page.total) > ((settingViewStore?.fastPageMax ?? 99) * page.size)) {
-                    logger.info("count scan keys, fast page switch is open, stop scan")
-                    return (0, res.1)
-                }
+                // 检查fast page, 如果启用了快速分页，查到99页结束，否则查询所有总页数 FIXME
+//                if settingViewStore?.fastPage ?? true && ((res.1 + page.total) > ((settingViewStore?.fastPageMax ?? 99) * page.size)) {
+//                    logger.info("count scan keys, fast page switch is open, stop scan")
+//                    return (0, res.1)
+//                }
                 
                 return res
             } else {

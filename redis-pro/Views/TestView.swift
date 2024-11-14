@@ -6,13 +6,16 @@
 //
 
 import SwiftUI
+import ComposableArchitecture
 
 struct TestView: View {
+    var store: StoreOf<AppStore>
+    var tag: String = "defaultTag"
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Text("Window with tag: \(store.isConnect),  id: \(store.id)")
+            .frame(width: 300, height: 200)
+        Button("connect", action: { store.send(.onConnect) })
+        Button("disconnect", action: { store.send(.onDisconnect) })
     }
-}
-
-#Preview {
-    TestView()
 }

@@ -15,7 +15,6 @@ import ComposableArchitecture
 class RedisInstanceModel: Identifiable {
     var redisModel:RedisModel
     private var rediStackClient:RediStackClient?
-    private var settingViewStore:ViewStoreOf<SettingsStore>?
     
     let logger = Logger(label: "redis-instance")
     
@@ -25,15 +24,9 @@ class RedisInstanceModel: Identifiable {
         logger.info("redis instance model init")
     }
     
-    convenience init(_ redisModel:RedisModel, settingViewStore: ViewStoreOf<SettingsStore>?) {
-        self.init(redisModel: redisModel)
-        self.settingViewStore = settingViewStore
-    }
-    
-    convenience init(_ redisClient: RediStackClient, settingViewStore: ViewStoreOf<SettingsStore>?) {
+    convenience init(_ redisClient: RediStackClient) {
         self.init(redisModel: redisClient.redisModel)
         self.rediStackClient = redisClient
-        self.settingViewStore = settingViewStore
     }
     
     // get client
@@ -50,7 +43,7 @@ class RedisInstanceModel: Identifiable {
         
         logger.info("init new redis client, redisModel: \(redisModel)")
         self.redisModel = redisModel
-        let client = RediStackClient(redisModel, settingViewStore: settingViewStore)
+        let client = RediStackClient(redisModel)
         
         self.rediStackClient = client
         return client

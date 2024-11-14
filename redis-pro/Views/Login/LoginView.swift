@@ -14,7 +14,8 @@ import ComposableArchitecture
 
 struct LoginView: View {
     let logger = Logger(label: "login-view")
-    let store: StoreOf<AppStore>
+    
+    @Perception.Bindable var store: StoreOf<AppStore>
     
     init(store: StoreOf<AppStore>) {
         logger.info("login view init...")
@@ -22,7 +23,7 @@ struct LoginView: View {
     }
     
     var body: some View {
-        RedisListView(store: store.scope(state: \.favoriteState, action: AppStore.Action.favoriteAction))
+        RedisListView(store: store.scope(state: \.favoriteState, action: \.favoriteAction))
             .onDisappear {
                 logger.info("redis pro login view destroy...")
             }
@@ -31,9 +32,3 @@ struct LoginView: View {
             }
     }
 }
-
-//struct Login_Previews: PreviewProvider {
-//    static var previews: some View {
-//        LoginView()
-//    }
-//}

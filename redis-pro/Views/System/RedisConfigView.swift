@@ -11,42 +11,43 @@ import ComposableArchitecture
 
 struct RedisConfigView: View {
     
-    var store:StoreOf<RedisConfigStore>
+    @Perception.Bindable var store:StoreOf<RedisConfigStore>
     let logger = Logger(label: "redis-config-view")
     
     var body: some View {
-        
-        WithViewStore(self.store, observe: { $0 }) {viewStore in
-            VStack(alignment: .leading, spacing: MTheme.V_SPACING) {
-                HStack(alignment: .center , spacing: MTheme.H_SPACING) {
-                    
-                    SearchBar(placeholder: "Search config...", onCommit: {viewStore.send(.search($0))})
+        VStack(alignment: .leading, spacing: MTheme.V_SPACING) {
+            HStack(alignment: .center , spacing: MTheme.H_SPACING) {
+                
+                SearchBar(placeholder: "Search config...", onCommit: {store.send(.search($0))})
 
-                    Spacer()
-                    MButton(text: "Rewrite", action: {viewStore.send(.rewrite)})
-                        .help("REDIS_CONFIG_REWRITE")
-                }.padding(MTheme.HEADER_PADDING)
-                
-                NTableView(store: store.scope(state: \.tableState, action: RedisConfigStore.Action.tableAction))
-                
-                HStack(alignment: .center , spacing: MTheme.H_SPACING) {
-                    Spacer()
-                    MButton(text: "Refresh", action: {viewStore.send(.refresh)})
-                }
+                Spacer()
+                MButton(text: "Rewrite", action: {store.send(.rewrite)})
+                    .help("REDIS_CONFIG_REWRITE")
+            }.padding(MTheme.HEADER_PADDING)
+            
+            NTableView(store: store.scope(state: \.tableState, action: \.tableAction))
+            
+            HStack(alignment: .center , spacing: MTheme.H_SPACING) {
+                Spacer()
+                MButton(text: "Refresh", action: {store.send(.refresh)})
             }
-            .sheet(isPresented: viewStore.$editModalVisible, onDismiss: {
-            }) {
-                ModalView("Edit Config Key: \(viewStore.editKey)", action: {viewStore.send(.submit)}) {
+        }
+        .sheet(isPresented: $store.editModalVisible, onDismiss: {
+        }) {
+            
+            WithPerceptionTracking {
+                ModalView("Edit Config Key: \(store.editKey)", action: {store.send(.submit)}) {
                     VStack(alignment:.leading, spacing: MTheme.V_SPACING) {
-                        MTextView(text: viewStore.$editValue)
+                        MTextView(text: $store.editValue)
                     }
                     .frame(minWidth:500, minHeight:300)
                 }
             }
-            .onAppear {
-                viewStore.send(.initial)
-            }
         }
+        .onAppear {
+            store.send(.initial)
+        }
+        
     }
     
 }

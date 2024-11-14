@@ -13,7 +13,8 @@ import ComposableArchitecture
 private let logger = Logger(label: "settings-store")
 private let userDefaults = UserDefaults.standard
 
-struct SettingsStore: Reducer {
+@Reducer
+struct SettingsStore {
     struct State: Equatable {
         var colorSchemeValue:String?
         var defaultFavorite:String = "last"

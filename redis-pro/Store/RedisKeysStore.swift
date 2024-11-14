@@ -12,8 +12,8 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "redisKeys-store")
 
-
-struct RedisKeysStore: Reducer {
+@Reducer
+struct RedisKeysStore {
     
     struct State: Equatable {
         var database:Int = 0
@@ -75,22 +75,22 @@ struct RedisKeysStore: Reducer {
     var mainQueue: AnySchedulerOf<DispatchQueue> = .main
     
     var body: some Reducer<State, Action> {
-        Scope(state: \.tableState, action: /Action.tableAction) {
+        Scope(state: \.tableState, action: \.tableAction) {
             TableStore()
         }
-        Scope(state: \.pageState, action: /Action.pageAction) {
+        Scope(state: \.pageState, action: \.pageAction) {
             PageStore()
         }
-        Scope(state: \.redisSystemState, action: /Action.redisSystemAction) {
+        Scope(state: \.redisSystemState, action: \.redisSystemAction) {
             RedisSystemStore()
         }
-        Scope(state: \.valueState, action: /Action.valueAction) {
+        Scope(state: \.valueState, action: \.valueAction) {
             ValueStore()
         }
-        Scope(state: \.databaseState, action: /Action.databaseAction) {
+        Scope(state: \.databaseState, action: \.databaseAction) {
             DatabaseStore()
         }
-        Scope(state: \.renameState, action: /Action.renameAction) {
+        Scope(state: \.renameState, action: \.renameAction) {
             RenameStore()
         }
         
@@ -305,7 +305,7 @@ struct RedisKeysStore: Reducer {
                 }
                 return .none
                 
-            case let .tableAction(.double(index)):
+            case .tableAction(.double(_)):
                 let redisKeyModel = state.tableState.datasource[state.tableState.selectIndex] as! RedisKeyModel
                 state.renameState.key = redisKeyModel.key
                 state.renameState.newKey = redisKeyModel.key

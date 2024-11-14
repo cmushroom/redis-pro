@@ -12,8 +12,8 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "app-context-store")
 
-
-struct AppContextStore: Reducer {
+@Reducer
+struct AppContextStore {
     struct State: Equatable {
         var loading:Bool = false
         var loadingCount:Int = 0

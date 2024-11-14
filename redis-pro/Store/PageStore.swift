@@ -11,7 +11,8 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "page-store")
 
-struct PageStore: Reducer {
+@Reducer
+struct PageStore {
     struct State: Equatable {
         var showTotal: Bool = false
         var current:Int = 1

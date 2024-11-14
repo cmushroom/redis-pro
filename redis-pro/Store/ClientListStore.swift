@@ -12,8 +12,8 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "client-list-store")
 
-
-struct ClientListStore: Reducer {
+@Reducer
+struct ClientListStore {
     struct State: Equatable {
         
         var tableState: TableStore.State = TableStore.State(
@@ -66,7 +66,7 @@ struct ClientListStore: Reducer {
     
     var body: some Reducer<State, Action> {
         
-        Scope(state: \.tableState, action: /Action.tableAction) {
+        Scope(state: \.tableState, action: \.tableAction) {
             TableStore()
         }
         Reduce { state, action in

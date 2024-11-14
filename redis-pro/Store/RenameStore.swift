@@ -12,7 +12,8 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "rename-store")
 
-struct RenameStore: Reducer {
+@Reducer
+struct RenameStore {
     struct State: Equatable {
         var key:String = ""
         var index:Int = -1
@@ -61,7 +62,7 @@ struct RenameStore: Reducer {
                     }
                 }
                 
-            case let .setKey(index, newKey):
+            case .setKey(_, _):
                 state.visible = false
                 return .none
             

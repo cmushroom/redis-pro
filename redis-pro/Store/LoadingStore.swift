@@ -12,7 +12,8 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "loading-store")
 
-struct LoadingStore: Reducer {
+@Reducer
+struct LoadingStore {
     struct State: Equatable {
         var loading: Bool = false
         

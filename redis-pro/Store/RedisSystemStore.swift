@@ -22,7 +22,8 @@ enum RedisSystemViewTypeEnum{
 
 private let logger = Logger(label: "redis-system-store")
 
-struct RedisSystemStore: Reducer {
+@Reducer
+struct RedisSystemStore {
     
     struct State: Equatable {
         var systemView: RedisSystemViewTypeEnum = .REDIS_INFO
@@ -50,19 +51,19 @@ struct RedisSystemStore: Reducer {
     @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
     
     var body: some Reducer<State, Action> {
-        Scope(state: \.redisInfoState, action: /Action.redisInfoAction) {
+        Scope(state: \.redisInfoState, action: \.redisInfoAction) {
             RedisInfoStore()
         }
-        Scope(state: \.redisConfigState, action: /Action.redisConfigAction) {
+        Scope(state: \.redisConfigState, action: \.redisConfigAction) {
             RedisConfigStore()
         }
-        Scope(state: \.slowLogState, action: /Action.slowLogAction) {
+        Scope(state: \.slowLogState, action: \.slowLogAction) {
             SlowLogStore()
         }
-        Scope(state: \.clientListState, action: /Action.clientListAction) {
+        Scope(state: \.clientListState, action: \.clientListAction) {
             ClientListStore()
         }
-        Scope(state: \.luaState, action: /Action.luaAction) {
+        Scope(state: \.luaState, action: \.luaAction) {
             LuaStore()
         }
         Reduce { state, action in

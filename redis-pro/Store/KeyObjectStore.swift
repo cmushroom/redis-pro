@@ -11,7 +11,8 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "key-object-store")
 
-struct KeyObjectStore: Reducer {
+@Reducer
+struct KeyObjectStore {
     
     struct State: Equatable {
         var key: String = ""

@@ -10,8 +10,8 @@ import Foundation
 import ComposableArchitecture
 private let logger = Logger(label: "table-store")
 
-
-struct TableStore: Reducer {
+@Reducer
+struct TableStore {
     struct State: Equatable {
         var columns:[NTableColumn] = []
         var datasource: Array<AnyHashable> = []

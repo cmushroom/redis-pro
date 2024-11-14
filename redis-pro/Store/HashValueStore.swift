@@ -13,8 +13,8 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "hash-value-store")
 
-
-struct HashValueStore: Reducer {
+@Reducer
+struct HashValueStore {
     
     struct State: Equatable {
         @BindingState var editModalVisible:Bool = false
@@ -59,10 +59,10 @@ struct HashValueStore: Reducer {
     
     var body: some Reducer<State, Action> {
         BindingReducer()
-        Scope(state: \.tableState, action: /Action.tableAction) {
+        Scope(state: \.tableState, action: \.tableAction) {
             TableStore()
         }
-        Scope(state: \.pageState, action: /Action.pageAction) {
+        Scope(state: \.pageState, action: \.pageAction) {
             PageStore()
         }
 
@@ -143,11 +143,11 @@ struct HashValueStore: Reducer {
                 let value = state.value
                 let isNewKey = state.redisKeyModel?.isNew ?? false
                 return .run { send in
-                    let r = await redisInstanceModel.getClient().hset(key, field: field, value: value)
+                    _ = await redisInstanceModel.getClient().hset(key, field: field, value: value)
                     await send(.submitSuccess(isNewKey))
                 }
                 
-            case let .submitSuccess(isNewKey):
+            case .submitSuccess(_):
                 let item = RedisHashEntryModel(field: state.field, value: state.value)
                 if state.isNew {
                     state.tableState.selectIndex = 0

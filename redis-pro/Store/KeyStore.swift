@@ -10,7 +10,8 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "key-store")
 
-struct KeyStore: Reducer {
+@Reducer
+struct KeyStore {
     
     struct State: Equatable {
         @BindingState var type: String = RedisKeyTypeEnum.STRING.rawValue

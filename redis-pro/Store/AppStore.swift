@@ -12,8 +12,8 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "app-store")
 
-
-struct AppStore: Reducer {
+@Reducer
+struct AppStore {
     
     struct State: Equatable {
         var id:String = UUID().uuidString
@@ -44,7 +44,7 @@ struct AppStore: Reducer {
         }
     }
 
-    enum Action:Equatable {
+    enum Action {
         case initial
         case onStart
         case onClose
@@ -61,19 +61,19 @@ struct AppStore: Reducer {
     
     var body: some Reducer<State, Action> {
         
-        Scope(state: \.globalState, action: /Action.globalAction) {
+        Scope(state: \.globalState, action: \.globalAction) {
             AppContextStore()
         }
-        Scope(state: \.loadingState, action: /Action.loadingAction) {
+        Scope(state: \.loadingState, action: \.loadingAction) {
             LoadingStore()
         }
-        Scope(state: \.settingsState, action: /Action.settingsAction) {
+        Scope(state: \.settingsState, action: \.settingsAction) {
             SettingsStore()
         }
-        Scope(state: \.favoriteState, action: /Action.favoriteAction) {
+        Scope(state: \.favoriteState, action: \.favoriteAction) {
             FavoriteStore()
         }
-        Scope(state: \.redisKeysState, action: /Action.redisKeysAction) {
+        Scope(state: \.redisKeysState, action: \.redisKeysAction) {
             RedisKeysStore()
         }
         

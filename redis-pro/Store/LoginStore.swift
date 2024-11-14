@@ -11,7 +11,8 @@ import ComposableArchitecture
 
 private let logger = Logger(label: "login-store")
 
-struct LoginStore: Reducer {
+@Reducer
+struct LoginStore {
     
     struct State: Equatable {
         var id: String = ""

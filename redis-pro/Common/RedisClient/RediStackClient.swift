@@ -15,9 +15,8 @@ import Cocoa
 
 class RediStackClient {
     let logger = Logger(label: "redis-client")
-    @Dependency(\.appContext) var appContext
-    
     var redisModel:RedisModel
+    var appContextStore: StoreOf<AppContextStore>? = nil
     
     // conn
     let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 2)
@@ -43,7 +42,7 @@ class RediStackClient {
     init(_ redisModel:RedisModel) {
         self.logger.info("init redis client, param: \(redisModel)")
         self.redisModel = redisModel
-        
+       
         // 监听app退出
         observers.append(
             NotificationCenter.default.addObserver(forName: NSApplication.willTerminateNotification, object: nil, queue: .main) { [self] _ in
@@ -68,7 +67,7 @@ class RediStackClient {
     
     func loading(_ bool: Bool) {
         DispatchQueue.main.async {
-            ViewStore(self.appContext, observe: {$0}).send( bool ? .show : .hide)
+            self.appContextStore?.send(bool ? .show : .hide)
         }
     }
     

@@ -22,6 +22,7 @@ struct AppStore {
         var title:String = ""
         // 是否已经连接 redis server
         var isConnect: Bool = false
+        @Shared(.inMemory("appContext")) var appContext = AppContextStore.State()
         var globalState = AppContextStore.State()
         var loadingState = LoadingStore.State()
         var favoriteState = FavoriteStore.State()
@@ -30,7 +31,6 @@ struct AppStore {
 
         init() {
             logger.info("app state init ...")
-            
         }
     }
 
@@ -41,6 +41,7 @@ struct AppStore {
         case onConnect
         case onDisconnect
         case globalAction(AppContextStore.Action)
+        case appContextAction(AppContextStore.Action)
         case loadingAction(LoadingStore.Action)
         case favoriteAction(FavoriteStore.Action)
         case settingsAction(SettingsStore.Action)
@@ -52,6 +53,9 @@ struct AppStore {
     var body: some Reducer<State, Action> {
         
         Scope(state: \.globalState, action: \.globalAction) {
+            AppContextStore()
+        }
+        Scope(state: \.appContext, action: \.appContextAction) {
             AppContextStore()
         }
         Scope(state: \.loadingState, action: \.loadingAction) {
@@ -103,6 +107,8 @@ struct AppStore {
             case .settingsAction:
                 return .none
             case .redisKeysAction:
+                return .none
+            case .appContextAction:
                 return .none
             }
         }

@@ -63,7 +63,7 @@ class NTableController: NSViewController{
     // drag
     let pasteboardType = NSPasteboard.PasteboardType.string
     
-    var viewStore: ViewStore<TableStore.State, TableStore.Action>
+    var store: StoreOf<TableStore>
     var cancellables: Set<AnyCancellable> = []
     
     var observation: NSKeyValueObservation?
@@ -72,11 +72,11 @@ class NTableController: NSViewController{
     
     init(_ store: StoreOf<TableStore>) {
         logger.info("table controller init...")
-        self.viewStore = ViewStore(store, observe: {$0})
+        self.store = store
         
         // init table data
-        self.datasource = self.viewStore.datasource
-        self.arrayController.setSelectionIndex(self.viewStore.selectIndex)
+        self.datasource = self.store.datasource
+        self.arrayController.setSelectionIndex(self.store.selectIndex)
         
         super.init(nibName: nil, bundle: nil)
         
@@ -114,11 +114,11 @@ class NTableController: NSViewController{
         tableView.allowsEmptySelection = false
         
         // 设置可drag
-        if self.viewStore.dragable {
+        if self.store.dragable {
             tableView.registerForDraggedTypes([pasteboardType])
         }
         // 设置是否多选
-        if self.viewStore.multiSelect {
+        if self.store.multiSelect {
             tableView.allowsMultipleSelection = true
         }
         
@@ -131,8 +131,7 @@ class NTableController: NSViewController{
         setupView()
         setupTableView()
         
-        // 监听默认选中
-        self.viewStore.publisher.defaultSelectIndex
+        self.store.publisher.defaultSelectIndex
             .sink(receiveValue: {
                 self.logger.info("table store select index publisher, index: \($0)")
                 self.arrayController.setSelectionIndex($0)
@@ -140,19 +139,19 @@ class NTableController: NSViewController{
             .store(in: &self.cancellables)
         
         // 监听数据变化
-        self.viewStore.publisher.datasource
+        self.store.publisher.datasource
             .sink(receiveValue: {
                 self.logger.info("table store data source publisher, data source length: \($0.count)")
                 
                 self.datasource = $0
-                self.arrayController.setSelectionIndex(self.viewStore.selectIndex)
+                self.arrayController.setSelectionIndex(self.store.selectIndex)
             })
             .store(in: &self.cancellables)
         
         // init context menu
-        if !viewStore.contextMenus.isEmpty {
+        if !store.contextMenus.isEmpty {
             let menu = NSMenu()
-            viewStore.contextMenus.forEach { item in
+            store.contextMenus.forEach { item in
                 let menuItem = NSMenuItem(title: item.rawValue, action: #selector(contextMenuAction(_:)), keyEquivalent: item.ext.keyEquivalent)
                 
                 menu.addItem(menuItem)
@@ -209,7 +208,7 @@ class NTableController: NSViewController{
         
         tableView.doubleAction = #selector(onDoubleAction(_:))
         
-        for column in viewStore.columns {
+        for column in store.columns {
             let col = NSTableColumn(identifier: NSUserInterfaceItemIdentifier(rawValue: column.key))
             col.width = column.width ?? column.type.width
             col.title = column.title
@@ -237,7 +236,7 @@ class NTableController: NSViewController{
             logger.info("on delete key down, delete index: \(selectIndex)")
             
             if selectIndex > -1 {
-                self.viewStore.send(.delete(selectIndex))
+                self.store.send(.delete(selectIndex))
             }
         }
         // cmd
@@ -246,14 +245,14 @@ class NTableController: NSViewController{
                 logger.info("on table keyboard event: copy, index: \(selectIndex)")
                 
                 if selectIndex > -1 {
-                    self.viewStore.send(.copy(selectIndex))
+                    self.store.send(.copy(selectIndex))
                 }
             }
             else if event.charactersIgnoringModifiers == "e" {
                 logger.info("on table keyboard event: edit, index: \(selectIndex)")
                 
                 if selectIndex > -1 {
-                    self.viewStore.send(.double(selectIndex))
+                    self.store.send(.double(selectIndex))
                 }
             }
         }
@@ -268,7 +267,7 @@ class NTableController: NSViewController{
             return
         }
         
-        self.viewStore.send(.double(selectIndex))
+        self.store.send(.double(selectIndex))
     }
     
     
@@ -285,9 +284,9 @@ class NTableController: NSViewController{
         
         logger.info("context menu action, menu: \(menuItem.title), index: \(index)")
         if menuItem.title == "Copy" {
-            self.viewStore.send(.copy(index))
+            self.store.send(.copy(index))
         } else {
-            self.viewStore.send(.contextMenu(menuItem.title, index))
+            self.store.send(.contextMenu(menuItem.title, index))
         }
     }
     
@@ -303,7 +302,7 @@ extension NTableController: NSTableViewDelegate {
         }
         
         
-        guard let column = self.viewStore.columns.filter({ $0.key == tableColumn.identifier.rawValue}).first else { return nil }
+        guard let column = self.store.columns.filter({ $0.key == tableColumn.identifier.rawValue}).first else { return nil }
         
         var tableCellView = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(column.key), owner: self) as? TableCellView
         if tableCellView == nil {
@@ -319,7 +318,7 @@ extension NTableController: NSTableViewDelegate {
         let selectIndex = tableView.selectedRow
         let selectIndexes: [Int] = Array(tableView.selectedRowIndexes)
         self.logger.info("table selection did change, select index: \(selectIndex), indexes: \(selectIndexes)")
-        self.viewStore.send(.selectionChange(selectIndex, selectIndexes))
+        self.store.send(.selectionChange(selectIndex, selectIndexes))
     }
     
 }
@@ -331,7 +330,7 @@ extension NTableController: NSTableViewDataSource {
     // For the source table view
     func tableView(_ tableView: NSTableView, pasteboardWriterForRow row: Int) -> NSPasteboardWriting? {
 
-        let rowAnyObj = self.viewStore.datasource[row]
+        let rowAnyObj = self.store.datasource[row]
       
         let value = "\(rowAnyObj.hashValue)"
         
@@ -354,7 +353,7 @@ extension NTableController: NSTableViewDataSource {
         guard
             let that = info.draggingPasteboard.pasteboardItems?.first,
             let theString = that.string(forType: pasteboardType),
-            let originalRow = self.viewStore.datasource.firstIndex(where: { item in
+            let originalRow = self.store.datasource.firstIndex(where: { item in
                 return "\(item.hashValue)" == theString
             })
         else { return false }
@@ -370,7 +369,7 @@ extension NTableController: NSTableViewDataSource {
         
         // Persist the ordering by saving your data model
         // saveAccountsReordered(at: originalRow, to: newRow)
-        self.viewStore.send(.dragComplete(originalRow, row))
+        self.store.send(.dragComplete(originalRow, row))
         logger.info("drad complete, at: \(originalRow), to: \(row)")
         
         return true

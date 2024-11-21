@@ -31,11 +31,22 @@ struct redis_proApp: App {
     }
     
     @SceneBuilder var body: some Scene {
-        
-        WindowGroup {
-            IndexView(settingStore: self.settingsStore, store: Store(initialState: AppStore.State()) {
+        let store:StoreOf<AppStore> = {
+            let redisClient = RediStackClient(RedisModel())
+            let store = Store(initialState: AppStore.State()) {
                 AppStore()
-            })
+                    ._printChanges()
+            } withDependencies: {
+                $0.redisClient = redisClient
+            }
+            redisClient.appContextStore = store.scope(state: \.appContext, action: \.appContextAction)
+            return store
+        }()
+       
+            
+        WindowGroup {
+            IndexView(store: store)
+            
         }
         .commands {
             CommandMenu("New Window") {
@@ -73,7 +84,7 @@ struct redis_proApp: App {
                             AppStore()
                         }
                         // 创建新的 SwiftUI 视图，并用 NSHostingViewController 包装
-                        let newViewController = NSHostingController(rootView: IndexView(settingStore: self.settingsStore, store: store))
+                        let newViewController = NSHostingController(rootView: IndexView(store: store))
                         
                         // 为新的窗口内容创建一个新 tab
                         windowController.addTab(with: newViewController, matchingSizeOf: keyWindow)

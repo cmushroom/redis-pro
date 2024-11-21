@@ -12,7 +12,7 @@ import Foundation
 struct MSpin: View {
     var loading:Bool = false
     
-    var spin: some View {
+    var body: some View {
         loading ?
                 VStack(alignment:.center, spacing: 8) {
                     ProgressView()
@@ -25,10 +25,6 @@ struct MSpin: View {
                 .shadow(color: .black.opacity(0.6), radius: 8, x: 4, y: 4)
                 .colorScheme(.dark)
             : nil
-    }
-    
-    var body: some View {
-        spin
     }
 }
 

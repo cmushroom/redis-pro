@@ -1,5 +1,5 @@
 {
-  "originHash" : "b9551669eac0c416e174712d0a90e02d3dc585f7656506a4a8207e16da8a7627",
+  "originHash" : "9ed16bed4add74a9e350adddbf584ce88da37da340c4eae53ba92663456aa678",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -177,8 +177,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-composable-architecture",
       "state" : {
-        "revision" : "a952dde0bf2b13048843c8dcc72cf21737d67b0c",
-        "version" : "1.16.0"
+        "revision" : "69247baf7be2fd6f5820192caef0082d01849cd0",
+        "version" : "1.16.1"
       }
     },
     {
@@ -231,8 +231,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-log.git",
       "state" : {
-        "revision" : "e97a6fcb1ab07462881ac165fdbb37f067e205d5",
-        "version" : "1.5.4"
+        "revision" : "32e8d724467f8fe623624570367e3d50c5638e46",
+        "version" : "1.5.2"
       }
     },
     {
@@ -303,8 +303,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-syntax",
       "state" : {
-        "revision" : "6ad4ea24b01559dde0773e3d091f1b9e36175036",
-        "version" : "509.0.2"
+        "revision" : "0687f71944021d616d34d922343dcef086855920",
+        "version" : "600.0.1"
       }
     },
     {

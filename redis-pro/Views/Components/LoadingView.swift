@@ -10,23 +10,17 @@ import SwiftUI
 import ComposableArchitecture
 
 struct LoadingView: View {
-    private var logger = Logger(label: "loading-view")
+    private let logger = Logger(label: "loading-view")
     
-    @Dependency(\.appContext) var appContext
-    
-    init() {
-        logger.info("loading view init...")
-    }
+    let store: StoreOf<AppContextStore>
     
     var body: some View {
         WithPerceptionTracking {
-            WithViewStore(appContext, observe: { $0 }) {viewStore in
-                HStack{
-                    EmptyView()
-                }
-                .frame(height: 0)
-                .overlay(MSpin(loading: viewStore.loading))
+            HStack{
+                EmptyView()
             }
+            .frame(height: 0)
+            .overlay(MSpin(loading: store.loading))
         }
     }
 }

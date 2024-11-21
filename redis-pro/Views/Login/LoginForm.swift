@@ -15,11 +15,10 @@ struct LoginForm: View {
     @Environment(\.openURL) var openURL
     
     @Perception.Bindable var store:StoreOf<LoginStore>
-   
+    
     var footer: some View {
         Section {
-            Divider()
-                .padding(.vertical, 8)
+            Divider().padding(.vertical, 8)
             VStack(alignment: .center, spacing: 10) {
                 HStack(alignment: .center){
                     if !store.loading {
@@ -35,18 +34,22 @@ struct LoginForm: View {
                         .buttonStyle(PlainButtonStyle())
                     }
                     
-                    MLoading(text: store.pingR,
-                                loadingText: "Connecting...",
-                                loading: store.loading)
-                    .help(store.pingR)
+                        Text(store.pingR)
+                        Text("hello pingR")
+                        Text("r: \(store.pingR)|| \(store.loading)")
+                    WithPerceptionTracking {
+                        MLoading(text: store.pingR,
+                                 loadingText: "Connecting...",
+                                 loading: store.loading)
+                        .help(store.pingR)
+                    }
                     
                     Spacer()
                     
-                    MButton(text: "Connect"
-                            , action: {
-                        store.send(.connect)
-                    }
-                            , disabled: store.loading, keyEquivalent: .return)
+                    MButton(text: "Connect",
+                            action: { store.send(.connect) },
+                            disabled: store.loading,
+                            keyEquivalent: .return )
                     .buttonStyle(BorderedButtonStyle())
                     .keyboardShortcut(.defaultAction)
                     
@@ -67,7 +70,6 @@ struct LoginForm: View {
                 }
             }
         }
-        
     }
     
     var tcpView: some View {
@@ -124,23 +126,24 @@ struct LoginForm: View {
     }
     
     var body: some View {
-        
+        WithPerceptionTracking {
             TabView(selection: $store.connectionType) {
                 // tcp
                 tcpView
-                .tabItem {
-                    Text("TCP/IP")
-                }.tag(RedisConnectionTypeEnum.TCP.rawValue)
+                    .tabItem {
+                        Text("TCP/IP")
+                    }.tag(RedisConnectionTypeEnum.TCP.rawValue)
                 
                 // ssh
                 sshTab
-                .tabItem {
-                    Label("SSH", systemImage: "bolt.fill")
-                }.tag(RedisConnectionTypeEnum.SSH.rawValue)
+                    .tabItem {
+                        Label("SSH", systemImage: "bolt.fill")
+                    }.tag(RedisConnectionTypeEnum.SSH.rawValue)
             }
             .padding(20.0)
             .frame(width: 500.0, height: store.height)
         }
+    }
     
     
 }

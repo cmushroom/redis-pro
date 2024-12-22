@@ -15,7 +15,7 @@ import ComposableArchitecture
 struct LoginView: View {
     let logger = Logger(label: "login-view")
     
-    @Perception.Bindable var store: StoreOf<AppStore>
+    var store: StoreOf<AppStore>
     
     init(store: StoreOf<AppStore>) {
         logger.info("login view init...")

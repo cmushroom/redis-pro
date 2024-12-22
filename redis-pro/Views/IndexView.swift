@@ -27,12 +27,12 @@ struct IndexView: View {
             ZStack {
                 VStack {
                     Text("\(store.isConnect)")
-                    //                if (store.isConnect) {
-                    //                    Text("hello")
-                    ////                    HomeView(store: store)
-                    //                } else {
-                    ////                    LoginView(store: store)
-                    //                }
+                    if (store.isConnect) {
+                        Text("hello")
+                        //                    HomeView(store: store)
+                    } else {
+                        LoginView(store: store)
+                    }
                 }
                 
                 //            LoadingView()

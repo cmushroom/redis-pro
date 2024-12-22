@@ -124,23 +124,22 @@ struct LoginForm: View {
     }
     
     var body: some View {
-        
+        WithPerceptionTracking {
             TabView(selection: $store.connectionType) {
                 // tcp
                 tcpView
-                .tabItem {
-                    Text("TCP/IP")
-                }.tag(RedisConnectionTypeEnum.TCP.rawValue)
+                    .tabItem {
+                        Text("TCP/IP")
+                    }.tag(RedisConnectionTypeEnum.TCP.rawValue)
                 
                 // ssh
                 sshTab
-                .tabItem {
-                    Label("SSH", systemImage: "bolt.fill")
-                }.tag(RedisConnectionTypeEnum.SSH.rawValue)
+                    .tabItem {
+                        Label("SSH", systemImage: "bolt.fill")
+                    }.tag(RedisConnectionTypeEnum.SSH.rawValue)
             }
             .padding(20.0)
             .frame(width: 500.0, height: store.height)
         }
-    
-    
+    }
 }

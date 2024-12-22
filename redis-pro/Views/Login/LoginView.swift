@@ -24,11 +24,5 @@ struct LoginView: View {
     
     var body: some View {
         RedisListView(store: store.scope(state: \.favoriteState, action: \.favoriteAction))
-            .onDisappear {
-                logger.info("redis pro login view destroy...")
-            }
-            .onAppear {
-                logger.info("redis pro login view init complete")
-            }
     }
 }

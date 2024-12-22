@@ -34,6 +34,11 @@ extension RediStackClient {
     
     /// test redis connection
     func testConn() async -> Bool {
+        begin()
+        defer {
+            complete()
+        }
+        
         do {
             var conn:RedisConnection
             

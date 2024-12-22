@@ -34,6 +34,8 @@ struct LoginStore {
         var pingR: String = ""
         var loading: Bool = false
         
+        @Shared(.inMemory("appContext")) var appContext = AppContextStore.State()
+        
         var height:CGFloat {
             connectionType == RedisConnectionTypeEnum.SSH.rawValue ? 500 : 380
         }
@@ -79,15 +81,17 @@ struct LoginStore {
         case testConnect
         case connect
         case setPingR(Bool)
+        case appContextAction(AppContextStore.Action)
         case none
         case binding(BindingAction<State>)
     }
     
-    @Dependency(\.redisInstance) var redisInstanceModel:RedisInstanceModel
     @Dependency(\.redisClient) var redisClient: RediStackClient
-    @Dependency(\.appContext) var appContext: StoreOf<AppContextStore>
     
     var body: some Reducer<State, Action> {
+        Scope(state: \.appContext, action: \.appContextAction) {
+            AppContextStore()
+        }
         Reduce { state, action in
             switch action {
             case .add:
@@ -100,13 +104,11 @@ struct LoginStore {
             case .testConnect:
                 logger.info("test connect to redis server, name: \(state.name), host: \(state.host)")
                 state.loading = true
-                let redis = state.redisModel
+                redisClient.redisModel = state.redisModel
                 
                 return .run { send in
-                    let r = await redisInstanceModel.testConnect(redis)
+                    let r = await redisClient.testConn()
                     await send(.setPingR(r))
-                    await send(.setPingR(r))
-                    
                 }
             case let .setPingR(r):
                 state.pingR =  r ? "Connect successed!" : "Connect fail! "
@@ -117,6 +119,8 @@ struct LoginStore {
             case .none:
                 return .none
             case .binding:
+                return .none
+            case .appContextAction:
                 return .none
             }
         }

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MLoading: View {
-    var text:String = ""
+    var text:String
     var loadingText:String = "Connecting..."
     var loading:Bool = false
     var body: some View {
@@ -23,11 +23,5 @@ struct MLoading: View {
                 .multilineTextAlignment(.leading)
                 .lineLimit(1)
         }
-    }
-}
-
-struct MLoading_Previews: PreviewProvider {
-    static var previews: some View {
-        MLoading()
     }
 }

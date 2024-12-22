@@ -11,7 +11,7 @@ import ComposableArchitecture
 
 struct RedisListView: View {
     let logger = Logger(label: "redis-login")
-
+    
     var store:StoreOf<FavoriteStore>
     
     var body: some View {

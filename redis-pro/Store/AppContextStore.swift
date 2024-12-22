@@ -44,6 +44,7 @@ struct AppContextStore {
                 return .none
             case .hide:
                 if state.loadingCount <= 0 {
+                    state.loading = false
                     return .none
                 }
                 

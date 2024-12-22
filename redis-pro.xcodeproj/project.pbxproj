@@ -53,6 +53,7 @@
 		4373C50525C3F0B6002B700E /* UserDefaultsKeysEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4373C50425C3F0B6002B700E /* UserDefaultsKeysEnum.swift */; };
 		4373C50925C3F218002B700E /* RedisModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4373C50825C3F218002B700E /* RedisModel.swift */; };
 		4373C50C25C3FC81002B700E /* LoginForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4373C50B25C3FC81002B700E /* LoginForm.swift */; };
+		437499582CE875D600869391 /* SwiftSyntax in Frameworks */ = {isa = PBXBuildFile; productRef = 437499572CE875D600869391 /* SwiftSyntax */; };
 		437BC2452645272E00E2C84D /* DoubleFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BC2442645272E00E2C84D /* DoubleFormatter.swift */; };
 		437BC24726452AE400E2C84D /* StringFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BC24626452AE400E2C84D /* StringFormatter.swift */; };
 		437BC2492645413000E2C84D /* MDoubleField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BC2482645413000E2C84D /* MDoubleField.swift */; };
@@ -420,6 +421,7 @@
 				CEA1EF55277C56DD00D300E9 /* NIOFoundationCompat in Frameworks */,
 				62FD85D62A7E6020005DE558 /* RediStack in Frameworks */,
 				629E0B772CE629B1001CDC77 /* Puppy in Frameworks */,
+				437499582CE875D600869391 /* SwiftSyntax in Frameworks */,
 				CEA1EF53277C56DD00D300E9 /* NIOEmbedded in Frameworks */,
 				629E0B7F2CE62E88001CDC77 /* ComposableArchitecture in Frameworks */,
 				CEA1EF59277C56DD00D300E9 /* NIOTLS in Frameworks */,
@@ -914,6 +916,7 @@
 				629E0B762CE629B1001CDC77 /* Puppy */,
 				629E0B7E2CE62E88001CDC77 /* ComposableArchitecture */,
 				629E0B812CE63047001CDC77 /* FirebaseAnalyticsWithoutAdIdSupport */,
+				437499572CE875D600869391 /* SwiftSyntax */,
 			);
 			productName = "redis-pro";
 			productReference = 4320AAF025B6740900A8E214 /* redis-pro.app */;
@@ -975,6 +978,7 @@
 				629E0B752CE629B1001CDC77 /* XCRemoteSwiftPackageReference "Puppy" */,
 				629E0B7D2CE62E88001CDC77 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
 				629E0B802CE63047001CDC77 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				437499562CE875D600869391 /* XCRemoteSwiftPackageReference "swift-syntax" */,
 			);
 			productRefGroup = 4320AAF125B6740900A8E214 /* Products */;
 			projectDirPath = "";
@@ -1486,6 +1490,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		437499562CE875D600869391 /* XCRemoteSwiftPackageReference "swift-syntax" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/swiftlang/swift-syntax.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 600.0.1;
+			};
+		};
 		6237D030275C954A000ACD6A /* XCRemoteSwiftPackageReference "swift-log" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-log.git";
@@ -1515,7 +1527,7 @@
 			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.16.0;
+				minimumVersion = 1.16.1;
 			};
 		};
 		629E0B802CE63047001CDC77 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
@@ -1553,6 +1565,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		437499572CE875D600869391 /* SwiftSyntax */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 437499562CE875D600869391 /* XCRemoteSwiftPackageReference "swift-syntax" */;
+			productName = SwiftSyntax;
+		};
 		6237D031275C954A000ACD6A /* Logging */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 6237D030275C954A000ACD6A /* XCRemoteSwiftPackageReference "swift-log" */;

@@ -20,7 +20,7 @@ struct IndexView: View {
             ZStack {
                 VStack {
                     if (store.isConnect) {
-//                        HomeView(store: store)
+                        HomeView(store: store)
                     } else {
                         LoginView(store: store)
                     }

@@ -16,45 +16,41 @@ struct redis_proApp: App {
     private let logger = Logger(label: "app")
     
     // 会造成indexView 多次初始化
-    // @Environment(\.scenePhase) var scenePhase
+//    @Environment(\.scenePhase) var scenePhase
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     // settings
     var settingsStore:StoreOf<SettingsStore> = Store(initialState: SettingsStore.State()) {
         SettingsStore()
     }
+//    private var store:StoreOf<AppStore>
+    private var rootStore = Store(initialState: RootStore.State()) {
+        RootStore()
+    }
+    private var mainWindowId = UUID().uuidString
     
     // 应用启动只初始化一次
     init() {
-        // logger
+        // logger init
         LoggerFactory().setUp()
+        rootStore.send(.addWindow(mainWindowId))
     }
     
-    @SceneBuilder var body: some Scene {
-        let store:StoreOf<AppStore> = {
-            let redisClient = RediStackClient(RedisModel())
-            let store = Store(initialState: AppStore.State()) {
-                AppStore()
-                    ._printChanges()
-            } withDependencies: {
-                $0.redisClient = redisClient
-            }
-            redisClient.appContextStore = store.scope(state: \.appContext, action: \.appContextAction)
-            return store
-        }()
+    var body: some Scene {
        
-            
         WindowGroup {
-            IndexView(store: store)
-            
+            IndexView(store: rootStore.scope(state: \.windows[id: self.mainWindowId]!, action: \.windows[id: self.mainWindowId]))
         }
         .commands {
-            CommandMenu("New Window") {
+            CommandGroup(replacing: CommandGroupPlacement.toolbar) {
                 Button(action: openNewWindow) {
-                    Text("New Window")
+                    Text("New Tab")
                 }
                 .keyboardShortcut("T", modifiers: [.command])
             }
+        }
+        .commands {
+            RedisProCommands()
         }
         
 //        WindowGroup {
@@ -75,45 +71,30 @@ struct redis_proApp: App {
             SettingsView(store: settingsStore)
         }
     }
+    
     func openNewWindow() {
-        if let keyWindow = NSApplication.shared.keyWindow {
-                    // 获取当前的窗口控制器
-                    if let windowController = keyWindow.windowController {
+        guard let currentWindow = NSApp.keyWindow else { return }
+            
+        // 创建新窗口
+        currentWindow.windowController?.newWindowForTab(nil)
+        
+        // 获取新创建的窗口
+        guard let newWindow = NSApp.windows.last,
+              newWindow != currentWindow else { return }
+        
+        // 替换内容视图
                         
-                        let store = Store(initialState: AppStore.State()) {
-                            AppStore()
-                        }
-                        // 创建新的 SwiftUI 视图，并用 NSHostingViewController 包装
-                        let newViewController = NSHostingController(rootView: IndexView(store: store))
-                        
-                        // 为新的窗口内容创建一个新 tab
-                        windowController.addTab(with: newViewController, matchingSizeOf: keyWindow)
-                    }
-                }
+        let windowId = UUID().uuidString
+        rootStore.send(.addWindow(windowId))
+        let store = rootStore.scope(state: \.windows[id: windowId]!, action: \.windows[id: windowId])
+      
+        let customView = IndexView(store: store)
+        newWindow.contentViewController = NSHostingController(rootView: customView)
+        
+        // 添加到标签页
+        currentWindow.addTabbedWindow(newWindow, ordered: .above)
     }
 }
-
-extension NSWindowController {
-    func addTab(with viewController: NSViewController, matchingSizeOf window: NSWindow) {
-           // 获取当前窗口的尺寸
-           let windowFrame = window.frame
-           
-           // 创建一个新的 NSWindow，并设置为与原窗口大小一致
-           let newWindow = NSWindow(
-               contentRect: windowFrame,
-               styleMask: [.titled, .closable, .resizable, .miniaturizable],
-               backing: .buffered,
-               defer: false
-           )
-           
-           // 将 SwiftUI 视图嵌入到新窗口的内容视图中
-           newWindow.contentViewController = viewController
-           
-           // 添加新的 tab，并保证窗口大小一致
-           self.window?.addTabbedWindow(newWindow, ordered: .above)
-       }
-}
-
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     let logger = Logger(label: "redis-app")

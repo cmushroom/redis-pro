@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-class RedisModel: NSObject, Identifiable {
+class RedisModel: NSObject, Identifiable, Codable {
     @objc var id: String = UUID().uuidString
     @objc var name: String = "New Favorite"
     var host: String = "127.0.0.1"
@@ -94,5 +94,41 @@ class RedisModel: NSObject, Identifiable {
     
     override var description: String {
         return "RedisModel:[id:\(id), name:\(name), host:\(host), port:\(port), password:\(password), database:\(database), type:\(connectionType), sshHost:\(sshHost), sshPort:\(sshPort),sshUser:\(sshUser)]"
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case id, name, host, port, database, username, password, connectionType, sshHost, sshPort, sshUser, sshPass
+    }
+    
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(String.self, forKey: .id)
+        name = try container.decode(String.self, forKey: .name)
+        host = try container.decode(String.self, forKey: .host)
+        port = try container.decode(Int.self, forKey: .port)
+        database = try container.decode(Int.self, forKey: .database)
+        username = try container.decode(String.self, forKey: .username)
+        password = try container.decode(String.self, forKey: .password)
+        connectionType = try container.decode(String.self, forKey: .connectionType)
+        sshHost = try container.decode(String.self, forKey: .sshHost)
+        sshPort = try container.decode(Int.self, forKey: .sshPort)
+        sshUser = try container.decode(String.self, forKey: .sshUser)
+        sshPass = try container.decode(String.self, forKey: .sshPass)
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(name, forKey: .name)
+        try container.encode(host, forKey: .host)
+        try container.encode(port, forKey: .port)
+        try container.encode(database, forKey: .database)
+        try container.encode(username, forKey: .username)
+        try container.encode(password, forKey: .password)
+        try container.encode(connectionType, forKey: .connectionType)
+        try container.encode(sshHost, forKey: .sshHost)
+        try container.encode(sshPort, forKey: .sshPort)
+        try container.encode(sshUser, forKey: .sshUser)
+        try container.encode(sshPass, forKey: .sshPass)
     }
 }

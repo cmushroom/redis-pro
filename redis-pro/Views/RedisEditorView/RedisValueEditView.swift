@@ -16,6 +16,7 @@ struct RedisValueEditView: View {
     let logger = Logger(label: "redis-value-edit-view")
     
     var body: some View {
+        WithPerceptionTracking {
             VStack(alignment: .leading, spacing: 0)  {
                 if store.keyState.type == RedisKeyTypeEnum.STRING.rawValue {
                     StringEditorView(store: store)
@@ -39,8 +40,7 @@ struct RedisValueEditView: View {
                     EmptyView()
                 }
             }
-        
-        
+        }
     }
     
 }

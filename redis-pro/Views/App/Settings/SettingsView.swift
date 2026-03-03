@@ -12,7 +12,7 @@ import ComposableArchitecture
 struct SettingsView: View {
 
     private let labelWidth:CGFloat = 160
-    @Perception.Bindable var store:StoreOf<SettingsStore>
+    @Perception.Bindable var store: StoreOf<SettingsStore>
     
     private let logger = Logger(label: "settings-view")
     
@@ -21,7 +21,7 @@ struct SettingsView: View {
             Form {
                 VStack(alignment: .leading, spacing: 8) {
                     
-                    Picker(selection: $store.defaultFavorite.sending(\.setDefaultFavorite),
+                    Picker(selection: $store.defaultFavorite,
                            label: Text("Default Favorite:").frame(width: labelWidth, alignment: .trailing)
                     ) {
                         Section {
@@ -33,24 +33,23 @@ struct SettingsView: View {
                         }
                     }
                     
-                    Picker(selection: $store.colorSchemeValue.sending(\.setColorScheme),
+                    Picker(selection: $store.colorSchemeValue,
                            label: Text("Appearance:").frame(width: labelWidth, alignment: .trailing)) {
                         ForEach(ColorSchemeEnum.allCases.map({$0.rawValue}), id: \.self) { item in
                             Text(verbatim: item)
                         }
                     }
                     
-                    FormItemInt(label: "String Max Length", labelWidth: labelWidth, tips:"HELP_STRING_GET_RANGE_LENGTH", value: $store.stringMaxLength.sending(\.setStringMaxLength))
+                    FormItemInt(label: "String Max Length", labelWidth: labelWidth, tips:"HELP_STRING_GET_RANGE_LENGTH", value: $store.stringMaxLength)
                     
-                    Toggle(isOn: $store.fastPage.sending(\.setFastPage)) {
+                    Toggle(isOn: $store.fastPage) {
                         Text("Fast Page:")
                             .frame(width: labelWidth, alignment: .trailing)
                     }
                     .toggleStyle(.switch)
                     .help("HELP_FAST_PAGE")
                     
-                    
-                    FormItemInt(label: "Search History", labelWidth: labelWidth, tips:"HELP_SEARCH_HISTORY_SIZE", value: $store.searchHistorySize.sending(\.setSearchHistorySize))
+                    FormItemInt(label: "Search History", labelWidth: labelWidth, tips:"HELP_SEARCH_HISTORY_SIZE", value: $store.searchHistorySize)
                     
                     Spacer()
                 }

@@ -16,7 +16,7 @@ private let logger = Logger(label: "app-store")
 struct AppStore {
     
     @ObservableState
-    struct State: Equatable {
+    struct State: Equatable, Identifiable {
         var id:String = UUID().uuidString
         // app title
         var title:String = ""
@@ -28,10 +28,6 @@ struct AppStore {
         var favoriteState = FavoriteStore.State()
         var settingsState = SettingsStore.State()
         var redisKeysState = RedisKeysStore.State()
-
-        init() {
-            logger.info("app state init ...")
-        }
     }
 
     enum Action:Equatable {
@@ -47,8 +43,8 @@ struct AppStore {
         case settingsAction(SettingsStore.Action)
         case redisKeysAction(RedisKeysStore.Action)
     }
-
-    @Dependency(\.redisInstance) var redisInstanceModel: RedisInstanceModel
+    
+    @Dependency(\.redisClient) var redisClient: RediStackClient
     
     var body: some Reducer<State, Action> {
         
@@ -79,10 +75,9 @@ struct AppStore {
             case .onStart:
                 logger.info("app store on start...")
                 return .none
-            
             case .onClose:
                 logger.info("app store on close...")
-                redisInstanceModel.close()
+                redisClient.close()
                 state.isConnect = false
                 return .none
             case .onConnect:

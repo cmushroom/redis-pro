@@ -23,11 +23,19 @@ struct redis_proApp: App {
     var settingsStore:StoreOf<SettingsStore> = Store(initialState: SettingsStore.State()) {
         SettingsStore()
     }
-//    private var store:StoreOf<AppStore>
+    
+    private var store = Store(initialState: AppStore.State()) {
+        AppStore()
+            ._printChanges()
+    } withDependencies: {
+        $0.redisClient = RediStackClient(RedisModel())
+    }
+    
+    private var mainWindowId = UUID().uuidString
     private var rootStore = Store(initialState: RootStore.State()) {
         RootStore()
+            ._printChanges()
     }
-    private var mainWindowId = UUID().uuidString
     
     // 应用启动只初始化一次
     init() {
@@ -39,7 +47,10 @@ struct redis_proApp: App {
     var body: some Scene {
        
         WindowGroup {
-            IndexView(store: rootStore.scope(state: \.windows[id: self.mainWindowId]!, action: \.windows[id: self.mainWindowId]))
+            IndexView(store: store)
+                .onAppear {
+                    print("index view on appear")
+                }
         }
         .commands {
             CommandGroup(replacing: CommandGroupPlacement.toolbar) {
@@ -84,10 +95,15 @@ struct redis_proApp: App {
         
         // 替换内容视图
                         
-        let windowId = UUID().uuidString
-        rootStore.send(.addWindow(windowId))
-        let store = rootStore.scope(state: \.windows[id: windowId]!, action: \.windows[id: windowId])
-      
+//        let windowId = UUID().uuidString
+//        rootStore.send(.addWindow(windowId))
+//        let store = rootStore.scope(state: \.windows[id: windowId]!, action: \.windows[id: windowId])
+        let store = Store(initialState: AppStore.State()) {
+            AppStore()
+                ._printChanges()
+        } withDependencies: {
+            $0.redisClient = RediStackClient(RedisModel())
+        }
         let customView = IndexView(store: store)
         newWindow.contentViewController = NSHostingController(rootView: customView)
         

@@ -53,7 +53,6 @@
 		4373C50525C3F0B6002B700E /* UserDefaultsKeysEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4373C50425C3F0B6002B700E /* UserDefaultsKeysEnum.swift */; };
 		4373C50925C3F218002B700E /* RedisModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4373C50825C3F218002B700E /* RedisModel.swift */; };
 		4373C50C25C3FC81002B700E /* LoginForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4373C50B25C3FC81002B700E /* LoginForm.swift */; };
-		437499582CE875D600869391 /* SwiftSyntax in Frameworks */ = {isa = PBXBuildFile; productRef = 437499572CE875D600869391 /* SwiftSyntax */; };
 		437BC2452645272E00E2C84D /* DoubleFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BC2442645272E00E2C84D /* DoubleFormatter.swift */; };
 		437BC24726452AE400E2C84D /* StringFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BC24626452AE400E2C84D /* StringFormatter.swift */; };
 		437BC2492645413000E2C84D /* MDoubleField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BC2482645413000E2C84D /* MDoubleField.swift */; };
@@ -68,6 +67,9 @@
 		43BB012326390BC20039565E /* ModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BB012226390BC20039565E /* ModalView.swift */; };
 		43BCCD3526A919B8000BE45F /* MSecureField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BCCD3426A919B8000BE45F /* MSecureField.swift */; };
 		43BCCD3726A91E85000BE45F /* FormItemPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BCCD3626A91E85000BE45F /* FormItemPassword.swift */; };
+		43C216AA2D44E06700FB5119 /* RootStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C216A92D44E06700FB5119 /* RootStore.swift */; };
+		43C216AE2D53132100FB5119 /* ErrorExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C216AD2D53132100FB5119 /* ErrorExt.swift */; };
+		43C216B02D537DA300FB5119 /* ShareStateExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C216AF2D537DA300FB5119 /* ShareStateExt.swift */; };
 		43CD286E2670A03800E11876 /* VersionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD286D2670A03800E11876 /* VersionManager.swift */; };
 		43CD28712670C3DD00E11876 /* ColorSchemeEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD28702670C3DD00E11876 /* ColorSchemeEnum.swift */; };
 		43CD28742670E8BE00E11876 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CD28732670E8BE00E11876 /* SettingsView.swift */; };
@@ -284,6 +286,9 @@
 		43BB012226390BC20039565E /* ModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalView.swift; sourceTree = "<group>"; };
 		43BCCD3426A919B8000BE45F /* MSecureField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSecureField.swift; sourceTree = "<group>"; };
 		43BCCD3626A91E85000BE45F /* FormItemPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormItemPassword.swift; sourceTree = "<group>"; };
+		43C216A92D44E06700FB5119 /* RootStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootStore.swift; sourceTree = "<group>"; };
+		43C216AD2D53132100FB5119 /* ErrorExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorExt.swift; sourceTree = "<group>"; };
+		43C216AF2D537DA300FB5119 /* ShareStateExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareStateExt.swift; sourceTree = "<group>"; };
 		43CD2868267091B600E11876 /* .version */ = {isa = PBXFileReference; lastKnownFileType = text; path = .version; sourceTree = "<group>"; };
 		43CD286D2670A03800E11876 /* VersionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionManager.swift; sourceTree = "<group>"; };
 		43CD28702670C3DD00E11876 /* ColorSchemeEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSchemeEnum.swift; sourceTree = "<group>"; };
@@ -421,7 +426,6 @@
 				CEA1EF55277C56DD00D300E9 /* NIOFoundationCompat in Frameworks */,
 				62FD85D62A7E6020005DE558 /* RediStack in Frameworks */,
 				629E0B772CE629B1001CDC77 /* Puppy in Frameworks */,
-				437499582CE875D600869391 /* SwiftSyntax in Frameworks */,
 				CEA1EF53277C56DD00D300E9 /* NIOEmbedded in Frameworks */,
 				629E0B7F2CE62E88001CDC77 /* ComposableArchitecture in Frameworks */,
 				CEA1EF59277C56DD00D300E9 /* NIOTLS in Frameworks */,
@@ -602,6 +606,7 @@
 				4301C82E26B0EEB800C08E19 /* Stopwatch.swift */,
 				6252A4B927F0542E00C9536A /* Assert.swift */,
 				62283B202B525AB300782720 /* NetworkMonitor.swift */,
+				43C216AD2D53132100FB5119 /* ErrorExt.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -733,6 +738,7 @@
 		626C4C0E281D32E200B7A542 /* Store */ = {
 			isa = PBXGroup;
 			children = (
+				43C216A92D44E06700FB5119 /* RootStore.swift */,
 				626C4C13281D485A00B7A542 /* AppStore.swift */,
 				626C4C0F281D331D00B7A542 /* FavoriteStore.swift */,
 				62D1BA9B2848F1F800F41CAD /* AppContextStore.swift */,
@@ -759,6 +765,7 @@
 				62D741BC284C66560049AB3C /* ClientListStore.swift */,
 				62D741C0288415180049AB3C /* LuaStore.swift */,
 				624770222A515D9700A4AF74 /* DependencyKeys.swift */,
+				43C216AF2D537DA300FB5119 /* ShareStateExt.swift */,
 			);
 			path = Store;
 			sourceTree = "<group>";
@@ -916,7 +923,6 @@
 				629E0B762CE629B1001CDC77 /* Puppy */,
 				629E0B7E2CE62E88001CDC77 /* ComposableArchitecture */,
 				629E0B812CE63047001CDC77 /* FirebaseAnalyticsWithoutAdIdSupport */,
-				437499572CE875D600869391 /* SwiftSyntax */,
 			);
 			productName = "redis-pro";
 			productReference = 4320AAF025B6740900A8E214 /* redis-pro.app */;
@@ -978,7 +984,6 @@
 				629E0B752CE629B1001CDC77 /* XCRemoteSwiftPackageReference "Puppy" */,
 				629E0B7D2CE62E88001CDC77 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
 				629E0B802CE63047001CDC77 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-				437499562CE875D600869391 /* XCRemoteSwiftPackageReference "swift-syntax" */,
 			);
 			productRefGroup = 4320AAF125B6740900A8E214 /* Products */;
 			projectDirPath = "";
@@ -1053,6 +1058,7 @@
 				431266D8261C66E100FB6B69 /* MTheme.swift in Sources */,
 				62283B282B5283C100782720 /* ReadTimeoutHandler.swift in Sources */,
 				437C0937264952B300F1904C /* MTabView.swift in Sources */,
+				43C216AE2D53132100FB5119 /* ErrorExt.swift in Sources */,
 				CE3A187D282525AB00988515 /* KeyStore.swift in Sources */,
 				62CB3D722619AE050061E8C3 /* HomeView.swift in Sources */,
 				CE3A1883282536BB00988515 /* StringValueStore.swift in Sources */,
@@ -1135,6 +1141,7 @@
 				620AF6C027D488D0002D6895 /* RedisClientZSet.swift in Sources */,
 				4314A33E2624370E00053FEE /* SearchBar.swift in Sources */,
 				62E8F9D22765019D006A5326 /* MIntField.swift in Sources */,
+				43C216AA2D44E06700FB5119 /* RootStore.swift in Sources */,
 				431266DE261D45C500FB6B69 /* MIcon.swift in Sources */,
 				627B2DD72A6D33FF00ADB5DA /* KeyObjectStore.swift in Sources */,
 				62D741BB284B827A0049AB3C /* SlowLogStore.swift in Sources */,
@@ -1165,6 +1172,7 @@
 				62D741BF288414E00049AB3C /* LuaView.swift in Sources */,
 				431266EE261D517500FB6B69 /* RedisKeyTypePicker.swift in Sources */,
 				62E8F9D62765EC97006A5326 /* NSecureField.swift in Sources */,
+				43C216B02D537DA300FB5119 /* ShareStateExt.swift in Sources */,
 				62D741BD284C66560049AB3C /* ClientListStore.swift in Sources */,
 				620AF6BA27D48848002D6895 /* RedisClientHash.swift in Sources */,
 				62D741C3288416470049AB3C /* RedisClientLua.swift in Sources */,
@@ -1490,14 +1498,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		437499562CE875D600869391 /* XCRemoteSwiftPackageReference "swift-syntax" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/swiftlang/swift-syntax.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 600.0.1;
-			};
-		};
 		6237D030275C954A000ACD6A /* XCRemoteSwiftPackageReference "swift-log" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-log.git";
@@ -1527,7 +1527,7 @@
 			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.16.1;
+				minimumVersion = 1.17.1;
 			};
 		};
 		629E0B802CE63047001CDC77 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
@@ -1565,11 +1565,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		437499572CE875D600869391 /* SwiftSyntax */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 437499562CE875D600869391 /* XCRemoteSwiftPackageReference "swift-syntax" */;
-			productName = SwiftSyntax;
-		};
 		6237D031275C954A000ACD6A /* Logging */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 6237D030275C954A000ACD6A /* XCRemoteSwiftPackageReference "swift-log" */;

@@ -89,6 +89,8 @@ class Messages {
             message = (error as! BizError).message
         } else if error is RedisError {
             message = (error as! RedisError).message
+        } else if error is RedisConnectionPoolError {
+            message = (error as! RedisConnectionPoolError).message
         } else {
             message = "\(error)"
         }

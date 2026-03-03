@@ -89,6 +89,7 @@ struct LoginStore {
     @Dependency(\.redisClient) var redisClient: RediStackClient
     
     var body: some Reducer<State, Action> {
+        BindingReducer()
         Scope(state: \.appContext, action: \.appContextAction) {
             AppContextStore()
         }

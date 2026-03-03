@@ -34,15 +34,12 @@ struct LoginForm: View {
                         .buttonStyle(PlainButtonStyle())
                     }
                     
-                        Text(store.pingR)
-                        Text("hello pingR")
-                        Text("r: \(store.pingR)|| \(store.loading)")
-                    WithPerceptionTracking {
+//                    WithPerceptionTracking {
                         MLoading(text: store.pingR,
                                  loadingText: "Connecting...",
                                  loading: store.loading)
                         .help(store.pingR)
-                    }
+//                    }
                     
                     Spacer()
                     

@@ -12,7 +12,15 @@ import ComposableArchitecture
 struct IndexView: View {
     let logger = Logger(label: "index-view")
     
-    let store:StoreOf<AppStore>
+    // let store:StoreOf<AppStore>
+    // 每个窗口独立持有自己的 Store
+    private var store:StoreOf<AppStore>
+    
+    
+    init(store:StoreOf<AppStore>) {
+        logger.info("index view init...")
+        self.store = store
+    }
     
     var body: some View {
         
@@ -28,6 +36,8 @@ struct IndexView: View {
                 
 //                LoadingView(store: store.scope(state: \.appContext, action: \.appContextAction))
             }
+        }.onAppear {
+            logger.info("index view on appear inner...")
         }
     }
 }

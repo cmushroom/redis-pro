@@ -17,17 +17,6 @@ private enum RedisClientKey: DependencyKey {
     static let liveValue = RediStackClient(RedisModel())
 }
 
-/// app 上下文
-struct AppContext {
-    let store: StoreOf<AppContextStore>
-}
-private enum AppContextKey: DependencyKey {
-    static let liveValue = Store(initialState: AppContextStore.State()) {
-        AppContextStore()
-    }
-}
-
-
 extension DependencyValues {
     var redisInstance: RedisInstanceModel {
         get { self[RedisInstanceKey.self] }
@@ -37,10 +26,5 @@ extension DependencyValues {
     var redisClient: RediStackClient {
         get { self[RedisClientKey.self] }
         set { self[RedisClientKey.self] = newValue }
-    }
-    
-    var appContext: StoreOf<AppContextStore> {
-      get { self[AppContextKey.self] }
-      set { self[AppContextKey.self] = newValue }
     }
 }

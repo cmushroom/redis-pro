@@ -7,6 +7,7 @@
 
 import Logging
 import Foundation
+import Dependencies
 import ComposableArchitecture
 
 private let logger = Logger(label: "root-store")
@@ -18,12 +19,15 @@ struct RootStore {
     struct State {
         var windows: IdentifiedArrayOf<AppStore.State> = []
         var title: String = "Redis Pro"
+        var settings: SettingsStore.State = SettingsStore.State()
     }
     
     enum Action {
         case windows(IdentifiedActionOf<AppStore>)
         case addWindow(String)
         case close
+        case none
+        case settings(SettingsStore.Action)
     }
     
     var body: some Reducer<State, Action> {
@@ -32,19 +36,34 @@ struct RootStore {
             case let .addWindow(id):
                 logger.info("add new window: \(id)")
                     
-                state.windows.append(AppStore.State(id: id))
-                return .none
+                let redisClient = RediStackClient(RedisModel())
+                let appState = withDependencies {
+                    $0.redisClient = redisClient
+                } operation: {
+                    // Construct the feature's model
+                    AppStore.State(id: id)
+                }
+                state.windows.append(appState)
+                return .run { send in
+                    redisClient.sendAction = send
+                    await send(.none)
+                }
+//                return .none
             case .close:
                 logger.info("close window")
                 state.windows.removeLast()
                 return .none
+            case .none:
+                return .none
             case .windows(_):
                 return .none
+            case .settings(_):
+                return .none
             }
+            
         }
         .forEach(\.windows, action: \.windows) {
             AppStore()
-                .dependency(\.redisClient, RediStackClient(RedisModel()))
         }
 
     }

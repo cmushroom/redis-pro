@@ -15,8 +15,10 @@ import Cocoa
 
 class RediStackClient {
     let logger = Logger(label: "redis-client")
+    var id: String = UUID().uuidString
     var redisModel:RedisModel
     var appContextStore: StoreOf<AppContextStore>? = nil
+    var sendAction: Send<RootStore.Action>? = nil
     
     // conn
     let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 2)

@@ -15,6 +15,7 @@ struct FavoriteStore {
     
     @ObservableState
     struct State: Equatable {
+        @Shared(.appStorage("UserDefaulsKeysEnum.AppColorScheme.rawValue")) var colorScheme:String = "system"
         var tableState: TableStore.State = TableStore.State(columns: [NTableColumn(title: "FAVORITES", key: "name", width: 50, icon: .APP)], datasource: [], selectIndex: -1, dragable: true)
         var loginState: LoginStore.State = LoginStore.State()
     }
@@ -34,8 +35,6 @@ struct FavoriteStore {
         case none
     }
     
-    
-    @Dependency(\.redisInstance) var redisInstanceModel: RedisInstanceModel
     @Dependency(\.redisClient) var redisClient: RediStackClient
     
     var body: some Reducer<State, Action> {
@@ -52,6 +51,7 @@ struct FavoriteStore {
             case .getAll:
                 state.tableState.datasource = RedisDefaults.getAll()
     //            state.tableState.defaultSelectIndex = 1
+                print("........... color scheme: \(state.colorScheme)")
                 return .none
             // 设置默认选中
             case .initDefaultSelection:
@@ -119,9 +119,8 @@ struct FavoriteStore {
                 logger.info("connect to redis server, name: \(redisModel.name), host: \(redisModel.host)")
                 
                 return .run { send in
-                    let r = await redisInstanceModel.connect(redisModel)
                     redisClient.redisModel = redisModel
-                    let _ = await redisClient.initConnection()
+                    let r = await redisClient.initConnection()
                     
                     logger.info("on connect to redis server: \(redisModel) , result: \(r)")
                     RedisDefaults.saveLastUse(redisModel)

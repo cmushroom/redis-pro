@@ -22,6 +22,8 @@ enum UserDefaulsKeysEnum: String {
     // fast page
     case AppFastPage = "App.FastPage"
     
+    case AppFastPageMax = "App.FastPageMax"
+    
     case UserSearchHistory = "User.SearchHistory"
     
 }

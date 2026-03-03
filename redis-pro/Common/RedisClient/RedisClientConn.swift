@@ -22,8 +22,8 @@ extension RediStackClient {
         }
         
         do {
-            let _ = try await getConn()
-            return true
+            let conn = try await getConn()
+            return await checkConn(conn)
             
         } catch {
             handleError(error)
@@ -52,6 +52,20 @@ extension RediStackClient {
                 conn.close()
             }
             
+            return try await _send(conn, .ping) == "PONG"
+        } catch {
+            Messages.show(error)
+            return false
+        }
+    }
+    
+    func checkConn(_ conn: RedisClient) async -> Bool {
+        begin()
+        defer {
+            complete()
+        }
+        
+        do {
             return try await _send(conn, .ping) == "PONG"
         } catch {
             Messages.show(error)
@@ -93,10 +107,10 @@ extension RediStackClient {
                   pass:String,
                   database:Int
     ) async throws -> RedisConnection {
-        logger.info("redis client- init new redis connection, host: \(host), port: \(port), pass: \(pass), database: \(database)")
+        logger.info("redis client: init new redis connection, host: \(host), port: \(port), pass: \(pass), database: \(database)")
         return try await withCheckedThrowingContinuation { continuation in
             do {
-                let eventLoop = MultiThreadedEventLoopGroup(numberOfThreads: 4).next()
+                let eventLoop = MultiThreadedEventLoopGroup(numberOfThreads: 1).next()
                 var configuration: RedisConnection.Configuration
                 if (pass.isEmpty) {
                     configuration = try RedisConnection.Configuration(hostname: host, port: port, initialDatabase: database, defaultLogger: logger)
@@ -159,7 +173,7 @@ extension RediStackClient {
     
     public func initClientBootstrap(_ group: EventLoop) -> ClientBootstrap {
         let bootstrap: ClientBootstrap = ClientBootstrap(group: group)
-//            .connectTimeout(timeout)
+            .connectTimeout(.seconds(3))
             .channelOption(
                 ChannelOptions.socket(SocketOptionLevel(SOL_SOCKET), SO_REUSEADDR),
                 value: 1
